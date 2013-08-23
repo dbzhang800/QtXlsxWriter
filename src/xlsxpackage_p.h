@@ -1,0 +1,70 @@
+/****************************************************************************
+** Copyright (c) 2013 Debao Zhang <hello@debao.me>
+** All right reserved.
+**
+** Permission is hereby granted, free of charge, to any person obtaining
+** a copy of this software and associated documentation files (the
+** "Software"), to deal in the Software without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Software, and to
+** permit persons to whom the Software is furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be
+** included in all copies or substantial portions of the Software.
+**
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+** NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+** LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+** OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**
+****************************************************************************/
+#ifndef QXLSX_PACKAGE_H
+#define QXLSX_PACKAGE_H
+
+#include <QString>
+
+namespace QXlsx {
+
+class Workbook;
+class ZipWriter;
+
+class Package
+{
+public:
+    Package(Workbook *workbook);
+
+    bool createPackage(const QString &packageName=QString());
+
+private:
+    void writeWorksheetFiles(ZipWriter &zipWriter);
+//    void writeChartsheetFiles(ZipWriter &zipWriter);
+    void writeWorkbookFile(ZipWriter &zipWriter);
+//    void writeChartFiles(ZipWriter &zipWriter);
+//    void writeDrawingFiles(ZipWriter &zipWriter);
+//    void writeVmlFiles(ZipWriter &zipWriter);
+//    void writeCommentFiles(ZipWriter &zipWriter);
+//    void writeTableFiles(ZipWriter &zipWriter);
+    void writeSharedStringsFile(ZipWriter &zipWriter);
+    void writeDocPropsFiles(ZipWriter &zipWriter);
+    void writeContentTypesFiles(ZipWriter &zipWriter);
+    void writeStylesFiles(ZipWriter &zipWriter);
+    void writeThemeFile(ZipWriter &zipWriter);
+    void writeRootRelsFile(ZipWriter &zipWriter);
+    void writeWorkbookRelsFile(ZipWriter &zipWriter);
+    void writeWorksheetRelsFile(ZipWriter &zipWriter);
+//    void writeChartsheetRelsFile(ZipWriter &zipWriter);
+//    void writeImageFiles(ZipWriter &zipWriter);
+//    void writeVbaProjectFiles(ZipWriter &zipWriter);
+
+    Workbook * m_workbook;
+    int m_worksheet_count;
+    int m_chartsheet_count;
+};
+
+} // namespace QXlsx
+
+#endif // QXLSX_PACKAGE_H
