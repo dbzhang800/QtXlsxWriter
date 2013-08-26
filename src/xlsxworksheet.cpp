@@ -247,13 +247,6 @@ int Worksheet::checkDimensions(int row, int col, bool ignore_row, bool ignore_co
     if (row >= m_xls_rowmax || col >= m_xls_colmax)
         return -1;
 
-//    // In optimization mode we don't change dimensions for rows
-//    // that are already written.
-//    if (!ignore_row && !ignore_col && m_optimization == 1) {
-//        if (row < m_previous_row)
-//            return -1;
-//    }
-
     if (!ignore_row) {
         if (row < m_dim_rowmin) m_dim_rowmin = row;
         if (row > m_dim_rowmax) m_dim_rowmax = row;

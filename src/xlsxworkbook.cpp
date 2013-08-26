@@ -44,7 +44,6 @@ Workbook::Workbook(QObject *parent) :
     m_window_width = 16095;
     m_window_height = 9660;
 
-    m_optimization_enabled = false;
     m_strings_to_numbers_enabled = false;
     m_activesheet = 0;
     m_firstsheet = 0;
@@ -76,33 +75,6 @@ void Workbook::save(const QString &name)
     //Create the package based on current workbook
     Package package(this);
     package.createPackage(name);
-}
-
-/*!
-  Reduces the amount of data stored in memory so
-  that large files can be written efficiently
-
-  Note, in this mode a row of data is written and
-  then discarded when a cell in a new row is added
-  via one of the worksheet write_() methods. As such
-  data should be written in sequential row order once
-  this mode is on.
-
-  It is used to optimise speed and reduce memory usage.
-  However, these design goals meant that it wasn't easy
-  to implement features that many users requested such as
-  writing formatting and data separately.
-
-  This feature is disabled by default.
- */
-void Workbook::setOptimizationEnabled(bool enable)
-{
-    m_optimization_enabled = enable;
-}
-
-bool Workbook::isOptimizationEnabled() const
-{
-    return m_optimization_enabled;
 }
 
 /*

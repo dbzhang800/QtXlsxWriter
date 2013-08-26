@@ -48,7 +48,6 @@ public:
     Format *addFormat();
 //    void addChart();
     void defineName(const QString &name, const QString &formula);
-    void setOptimizationEnabled(bool enable=true);
     void setStringsToNumbersEnabled(bool enable=true);
 
     void save(const QString &name);
@@ -60,14 +59,12 @@ private:
     QList<Worksheet *> worksheets() const;
     SharedStrings *sharedStrings();
     Styles *styles();
-    bool isOptimizationEnabled() const;
     bool isStringsToNumbersEnabled() const;
     void saveToXmlFile(QIODevice *device);
 
     SharedStrings *m_sharedStrings;
     QList<Worksheet *> m_worksheets;
     Styles *m_styles;
-    bool m_optimization_enabled; //constant_memory
     bool m_strings_to_numbers_enabled;
 
     int m_x_window;
