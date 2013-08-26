@@ -413,7 +413,7 @@ void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, const X
 
     } else if (data.dataType == XlsxCellData::Boolean) {
         writer.writeAttribute("t", "b");
-        writer.writeTextElement("v", data.value.toBool() ? "True" : "False");
+        writer.writeTextElement("v", data.value.toBool() ? "1" : "0");
     } else if (data.dataType == XlsxCellData::Blank) {
         //Ok, empty here.
     }
