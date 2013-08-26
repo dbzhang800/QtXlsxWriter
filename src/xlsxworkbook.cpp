@@ -89,7 +89,7 @@ void Workbook::save(const QString &name)
   this mode is on.
 
   It is used to optimise speed and reduce memory usage.
-  However, these design goals meant that it wasn’t easy
+  However, these design goals meant that it wasn't easy
   to implement features that many users requested such as
   writing formatting and data separately.
 
@@ -108,7 +108,7 @@ bool Workbook::isOptimizationEnabled() const
 /*
   Enable the worksheet.write() method to convert strings
   to numbers, where possible, using float() in order to avoid
-  an Excel warning about “Numbers Stored as Text”.
+  an Excel warning about "Numbers Stored as Text".
 
   The default is false
  */
