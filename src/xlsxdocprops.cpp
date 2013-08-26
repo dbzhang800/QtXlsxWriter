@@ -120,8 +120,8 @@ void DocProps::saveToXmlFile_Core(QIODevice *device)
     writer.writeCharacters(QDateTime::currentDateTime().toString(Qt::ISODate));
     writer.writeEndElement();//dcterms:created
 
-    writer.writeTextElement("cp", "category", "");
-    writer.writeTextElement("cp", "contentStatus", "");
+    writer.writeTextElement("cp:category", "");
+    writer.writeTextElement("cp:contentStatus", "");
     writer.writeEndElement(); //cp:coreProperties
     writer.writeEndDocument();
 }
