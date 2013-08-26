@@ -37,7 +37,7 @@ class Package
 public:
     Package(Workbook *workbook);
 
-    bool createPackage(const QString &packageName=QString());
+    bool createPackage(const QString &packageName);
 
 private:
     void writeWorksheetFiles(ZipWriter &zipWriter);

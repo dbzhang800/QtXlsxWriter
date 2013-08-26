@@ -32,8 +32,8 @@
 
 namespace QXlsx {
 
-Workbook::Workbook(const QString &name, QObject *parent) :
-    QObject(parent), m_fileName(name)
+Workbook::Workbook(QObject *parent) :
+    QObject(parent)
 {
     m_sharedStrings = new SharedStrings(this);
     m_styles = new Styles(this);
@@ -49,24 +49,13 @@ Workbook::Workbook(const QString &name, QObject *parent) :
     m_activesheet = 0;
     m_firstsheet = 0;
     m_table_count = 0;
-    m_closed = false;
 }
 
 Workbook::~Workbook()
 {
-    close();
 }
 
-void Workbook::close()
-{
-    if (m_closed)
-        return;
-
-    m_closed = true;
-    saveWorkbook();
-}
-
-void Workbook::saveWorkbook()
+void Workbook::save(const QString &name)
 {
     //Add a default worksheet if non have been added.
     if (m_worksheets.size() == 0)
@@ -84,15 +73,9 @@ void Workbook::saveWorkbook()
             sheet->setActived(true);
     }
 
-
     //Create the package based on current workbook
     Package package(this);
-    package.createPackage();
-}
-
-QString Workbook::fileName() const
-{
-    return m_fileName;
+    package.createPackage(name);
 }
 
 /*!

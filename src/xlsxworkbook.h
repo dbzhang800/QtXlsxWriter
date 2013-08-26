@@ -41,7 +41,7 @@ class Workbook : public QObject
 {
     Q_OBJECT
 public:
-    Workbook(const QString &name, QObject *parent=0);
+    Workbook(QObject *parent=0);
     ~Workbook();
 
     Worksheet *addWorksheet(const QString &name = QString());
@@ -51,7 +51,7 @@ public:
     void setOptimizationEnabled(bool enable=true);
     void setStringsToNumbersEnabled(bool enable=true);
 
-    void close();
+    void save(const QString &name);
 
 private:
     friend class Package;
@@ -60,14 +60,9 @@ private:
     QList<Worksheet *> worksheets() const;
     SharedStrings *sharedStrings();
     Styles *styles();
-    QString fileName() const;
     bool isOptimizationEnabled() const;
     bool isStringsToNumbersEnabled() const;
     void saveToXmlFile(QIODevice *device);
-    void saveWorkbook();
-
-    QString m_fileName;
-    bool m_closed;
 
     SharedStrings *m_sharedStrings;
     QList<Worksheet *> m_worksheets;

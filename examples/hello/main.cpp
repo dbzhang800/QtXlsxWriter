@@ -2,15 +2,18 @@
 #include "xlsxworkbook.h"
 #include "xlsxworksheet.h"
 
-int main(int argc, char* argv[])
-{
 #ifdef Q_OS_MAC
-    QXlsx::Workbook workbook("../../../Test.xlsx");
+#  define DATA_PATH "../../../"
 #else
-    QXlsx::Workbook workbook("Test.xlsx");
+#  define DATA_PATH "./"
 #endif
+
+int main()
+{
+    QXlsx::Workbook workbook;
     QXlsx::Worksheet *sheet = workbook.addWorksheet();
     sheet->write("A1", "Hello Qt!");
-    workbook.close();
+    workbook.save(DATA_PATH"Test.xlsx");
+    workbook.save(DATA_PATH"Test.zip");
     return 0;
 }

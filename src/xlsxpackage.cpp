@@ -87,8 +87,7 @@ Package::Package(Workbook *workbook) :
 
 bool Package::createPackage(const QString &packageName)
 {
-    QString fileName = packageName.isEmpty() ? m_workbook->fileName() : packageName;
-    ZipWriter zipWriter(fileName);
+    ZipWriter zipWriter(packageName);
 
     writeWorksheetFiles(zipWriter);
 //    writeChartsheetFiles(zipWriter);
