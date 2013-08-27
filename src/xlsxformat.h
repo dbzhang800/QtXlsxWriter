@@ -25,48 +25,100 @@
 #ifndef QXLSX_FORMAT_H
 #define QXLSX_FORMAT_H
 
-#include <QObject>
 #include <QFont>
 #include <QColor>
 
 namespace QXlsx {
 
 class Styles;
+class Worksheet;
 
-class Format : public QObject
+class Format
 {
-    Q_OBJECT
 public:
-    void setFont(const QFont &font);
+    enum FontScript
+    {
+        FontScriptNormal,
+        FontScriptSuper,
+        FontScriptSub
+    };
+
+    enum FontUnderline
+    {
+        FontUnderlineNone,
+        FontUnderlineSingle,
+        FontUnderlineDouble,
+        FontUnderlineSingleAccounting,
+        FontUnderlineDoubleAccounting
+    };
+
+    int fontSize() const;
+    void setFontSize(int size);
+    bool fontItalic() const;
+    void setFontItalic(bool italic);
+    bool fontStrikeOut() const;
+    void setFontStricOut(bool);
+    QColor fontColor() const;
+    void setFontColor(const QColor &);
+    bool fontBold() const;
+    void setFontBold(bool bold);
+    FontScript fontScript() const;
+    void setFontScript(FontScript);
+    FontUnderline fontUnderline() const;
+    void setFontUnderline(FontUnderline);
+    bool fontOutline() const;
+    void setFontOutline(bool outline);
+    QString fontName() const;
+    void setFontName(const QString &);
+
     void setForegroundColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
 
 private:
     friend class Styles;
-    explicit Format(QObject *parent = 0);
+    friend class Worksheet;
+    explicit Format();
+
+    struct Font
+    {
+        int size;
+        bool italic;
+        bool strikeOut;
+        QColor color;
+        bool bold;
+        FontScript scirpt;
+        FontUnderline underline;
+        bool outline;
+        bool shadow;
+        QString name;
+        int family;
+        int charset;
+        QString scheme;
+        int condense;
+        int extend;
+
+        //helper member
+        bool redundant;  //same with the fonts used by some other Formats
+        int index; //index in the Font list
+    } m_font;
+
+    bool hasFont() const {return !m_font.redundant;}
+    int fontIndex() const {return m_font.index;}
+    void setFontIndex(int index) {m_font.index = index;}
+    int fontFamily() const{return m_font.family;}
+    bool fontShadow() const {return m_font.shadow;}
+    QString fontScheme() const {return m_font.scheme;}
+
 
     bool isDxfFormat() const;
+    int xfIndex() const {return m_xf_index;}
+    void setXfIndex(int index) {m_xf_index = index; m_font.index=index;}
 
     //num
     int numFormatIndex() const {return m_num_format_index;}
 
-    //fonts
-    bool hasFont() const {return m_has_font;}
-    int fontIndex() const {return m_font_index;}
-    QString fontName() const;
-    bool bold() const;
-    bool italic() const;
-    bool fontStrikout() const;
-    bool fontOutline() const;
-    bool fontShadow() const;
-    bool fontUnderline() const;
-    QColor fontColor() const;
-    int fontSize() const;
-    int fontFamily() const{return m_font_family;}
     int theme() const {return m_theme;}
     int colorIndexed() const {return m_color_indexed;}
-    QString fontScheme() const {return m_font_scheme;}
-    void setHasFont(bool has) {m_has_font=has;}
 
     //fills
     bool hasFill() const {return m_has_fill;}
@@ -86,10 +138,8 @@ private:
 
     bool m_has_font;
     int m_font_index;
-    QFont m_font;
     int m_font_family;
     QString m_font_scheme;
-    QColor m_font_color;
     QColor m_bg_color;
     QColor m_fg_color;
     int m_theme;

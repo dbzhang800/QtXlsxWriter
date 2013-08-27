@@ -35,17 +35,19 @@ Styles::Styles(QObject *parent) :
 {
     m_fill_count = 2; //Starts from 2
     m_borders_count = 1;
-    m_font_count = 1;
+    m_font_count = 0;
 
     //Add the default cell format
     Format *format = addFormat();
-    format->setHasFont(true);
     format->setHasBorder(true);
 }
 
 Format *Styles::addFormat()
 {
-    Format *format = new Format(this);
+    Format *format = new Format();
+    format->setXfIndex(m_formats.size());
+    m_font_count += 1;
+
     m_formats.append(format);
     return format;
 }
@@ -109,18 +111,33 @@ void Styles::writeFonts(XmlStreamWriter &writer)
     foreach (Format *format, m_xf_formats) {
         if (format->hasFont()) {
             writer.writeStartElement("font");
-            if (format->bold())
+            if (format->fontBold())
                 writer.writeEmptyElement("b");
-            if (format->italic())
+            if (format->fontItalic())
                 writer.writeEmptyElement("i");
-            if (format->fontStrikout())
+            if (format->fontStrikeOut())
                 writer.writeEmptyElement("strike");
             if (format->fontOutline())
                 writer.writeEmptyElement("outline");
             if (format->fontShadow())
                 writer.writeEmptyElement("shadow");
-            if (format->fontUnderline()) //More option
+            if (format->fontUnderline() != Format::FontUnderlineNone) {
                 writer.writeEmptyElement("u");
+                if (format->fontUnderline() == Format::FontUnderlineDouble)
+                    writer.writeAttribute("val", "double");
+                else if (format->fontUnderline() == Format::FontUnderlineSingleAccounting)
+                    writer.writeAttribute("val", "singleAccounting");
+                else if (format->fontUnderline() == Format::FontUnderlineDoubleAccounting)
+                    writer.writeAttribute("val", "doubleAccounting");
+            }
+            if (format->fontScript() != Format::FontScriptNormal) {
+                writer.writeEmptyElement("vertAligh");
+                if (format->fontScript() == Format::FontScriptSuper)
+                    writer.writeAttribute("val", "superscript");
+                else
+                    writer.writeAttribute("val", "subscript");
+            }
+
             if (!format->isDxfFormat()) {
                 writer.writeEmptyElement("sz");
                 writer.writeAttribute("val", QString::number(format->fontSize()));

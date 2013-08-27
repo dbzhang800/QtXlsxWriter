@@ -47,7 +47,6 @@ void ZipWriter::addFile(const QString &filePath, QIODevice *device)
 
 void ZipWriter::addFile(const QString &filePath, const QByteArray &data)
 {
-    qDebug()<<filePath<<data.size();
     m_writer->addFile(filePath, data);
 }
 

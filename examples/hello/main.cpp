@@ -18,6 +18,8 @@ int main()
     sheet->write("D7", true);
 
     QXlsx::Worksheet *sheet2 = workbook.addWorksheet();
+    //Rows and columns are zero indexed.
+    //The first cell in a worksheet, "A1", is (0, 0).
     sheet2->write(0, 0, "First");
     sheet2->write(1, 0, "Second");
     sheet2->write(2, 0, "Third");

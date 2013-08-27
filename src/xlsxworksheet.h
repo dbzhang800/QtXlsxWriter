@@ -47,8 +47,8 @@ struct XlsxCellData
         ArrayFormula,
         Boolean
     };
-    XlsxCellData(const QVariant &data=QVariant(), CellDataType type=Blank) :
-        value(data), dataType(type), format(0)
+    XlsxCellData(const QVariant &data=QVariant(), CellDataType type=Blank, Format *format=0) :
+        value(data), dataType(type), format(format)
     {
 
     }
@@ -63,13 +63,13 @@ class Worksheet : public QObject
 {
     Q_OBJECT
 public:
-    int write(const QString row_column, const QVariant &value);
-    int write(int row, int column, const QVariant &value);
-    int writeString(int row, int column, const QString &value);
-    int writeNumber(int row, int column, double value);
-    int writeFormula(int row, int column, const QString &formula, double result=0);
-    int writeBlank(int row, int column);
-    int writeBool(int row, int column, bool value);
+    int write(const QString row_column, const QVariant &value, Format *format=0);
+    int write(int row, int column, const QVariant &value, Format *format=0);
+    int writeString(int row, int column, const QString &value, Format *format=0);
+    int writeNumber(int row, int column, double value, Format *format=0);
+    int writeFormula(int row, int column, const QString &formula, Format *format=0, double result=0);
+    int writeBlank(int row, int column, Format *format=0);
+    int writeBool(int row, int column, bool value, Format *format=0);
 
     void setRightToLeft(bool enable);
     void setZeroValuesHidden(bool enable);

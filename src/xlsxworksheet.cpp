@@ -24,6 +24,7 @@
 ****************************************************************************/
 #include "xlsxworksheet.h"
 #include "xlsxworkbook.h"
+#include "xlsxformat.h"
 #include "xlsxutility_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xmlstreamwriter_p.h"
@@ -124,34 +125,34 @@ void Worksheet::setZeroValuesHidden(bool enable)
     m_show_zeros = !enable;
 }
 
-int Worksheet::write(int row, int column, const QVariant &value)
+int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 {
     bool ok;
     int ret = 0;
 
     if (value.isNull()) { //blank
-        ret = writeBlank(row, column);
+        ret = writeBlank(row, column, format);
     } else if (value.type() == QMetaType::Bool) { //Bool
-        ret = writeBool(row,column, value.toBool());
+        ret = writeBool(row,column, value.toBool(), format);
     } else if (value.toDateTime().isValid()) { //DateTime
 
     } else if (value.toDouble(&ok), ok) { //Number
         if (!m_workbook->isStringsToNumbersEnabled() && value.type() == QMetaType::QString) {
             //Don't convert string to number if the flag not enabled.
-            ret = writeString(row, column, value.toString());
+            ret = writeString(row, column, value.toString(), format);
         } else {
-            ret = writeNumber(row, column, value.toDouble());
+            ret = writeNumber(row, column, value.toDouble(), format);
         }
     } else if (value.type() == QMetaType::QUrl) { //url
 
     } else if (value.type() == QMetaType::QString) { //string
         QString token = value.toString();
         if (token.startsWith("=")) {
-            ret = writeFormula(row, column, token);
+            ret = writeFormula(row, column, token, format);
         } else if (token.startsWith("{") && token.endsWith("}")) {
 
         } else {
-            ret = writeString(row, column, token);
+            ret = writeString(row, column, token, format);
         }
     } else { //Wrong type
 
@@ -162,16 +163,16 @@ int Worksheet::write(int row, int column, const QVariant &value)
 }
 
 //convert the "A1" notation to row/column notation
-int Worksheet::write(const QString row_column, const QVariant &value)
+int Worksheet::write(const QString row_column, const QVariant &value, Format *format)
 {
     QPoint pos = xl_cell_to_rowcol(row_column);
     if (pos == QPoint(-1, -1)) {
         return -1;
     }
-    return write(pos.x(), pos.y(), value);
+    return write(pos.x(), pos.y(), value, format);
 }
 
-int Worksheet::writeString(int row, int column, const QString &value)
+int Worksheet::writeString(int row, int column, const QString &value, Format *format)
 {
     int error = 0;
     QString content = value;
@@ -186,20 +187,20 @@ int Worksheet::writeString(int row, int column, const QString &value)
     SharedStrings *sharedStrings = m_workbook->sharedStrings();
     int index = sharedStrings->addSharedString(content);
 
-    m_table[row][column] = XlsxCellData(index, XlsxCellData::String);
+    m_table[row][column] = XlsxCellData(index, XlsxCellData::String, format);
     return error;
 }
 
-int Worksheet::writeNumber(int row, int column, double value)
+int Worksheet::writeNumber(int row, int column, double value, Format *format)
 {
     if (checkDimensions(row, column))
         return -1;
 
-    m_table[row][column] = XlsxCellData(value, XlsxCellData::Number);
+    m_table[row][column] = XlsxCellData(value, XlsxCellData::Number, format);
     return 0;
 }
 
-int Worksheet::writeFormula(int row, int column, const QString &content, double result)
+int Worksheet::writeFormula(int row, int column, const QString &content, Format *format, double result)
 {
     int error = 0;
     QString formula = content;
@@ -210,28 +211,28 @@ int Worksheet::writeFormula(int row, int column, const QString &content, double 
     if (formula.startsWith("="))
         formula.remove(0,1);
 
-    XlsxCellData data(result, XlsxCellData::Formula);
+    XlsxCellData data(result, XlsxCellData::Formula, format);
     data.formula = formula;
     m_table[row][column] = data;
 
     return error;
 }
 
-int Worksheet::writeBlank(int row, int column)
+int Worksheet::writeBlank(int row, int column, Format *format)
 {
     if (checkDimensions(row, column))
         return -1;
 
-    m_table[row][column] = XlsxCellData(QVariant(), XlsxCellData::Blank);
+    m_table[row][column] = XlsxCellData(QVariant(), XlsxCellData::Blank, format);
     return 0;
 }
 
-int Worksheet::writeBool(int row, int column, bool value)
+int Worksheet::writeBool(int row, int column, bool value, Format *format)
 {
     if (checkDimensions(row, column))
         return -1;
 
-    m_table[row][column] = XlsxCellData(value, XlsxCellData::Boolean);
+    m_table[row][column] = XlsxCellData(value, XlsxCellData::Boolean, format);
     return 0;
 }
 
@@ -386,8 +387,10 @@ void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, const X
 
     writer.writeStartElement("c");
     writer.writeAttribute("r", cell_range);
-    //Style used by the cell, row /col
-    //    writer.writeAttribute("s", QString::number(""));
+
+    //Style used by the cell, row or col
+    if (data.format)
+        writer.writeAttribute("s", QString::number(data.format->xfIndex()));
 
     if (data.dataType == XlsxCellData::String) {
         //data.data: Index of the string in sharedStringTable
