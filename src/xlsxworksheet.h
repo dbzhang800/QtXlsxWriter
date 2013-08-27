@@ -37,27 +37,9 @@ class Workbook;
 class XmlStreamWriter;
 class Format;
 
-struct XlsxCellData
-{
-    enum CellDataType {
-        Blank,
-        String,
-        Number,
-        Formula,
-        ArrayFormula,
-        Boolean
-    };
-    XlsxCellData(const QVariant &data=QVariant(), CellDataType type=Blank, Format *format=0) :
-        value(data), dataType(type), format(format)
-    {
-
-    }
-
-    QVariant value;
-    QString formula;
-    CellDataType dataType;
-    Format *format;
-};
+struct XlsxCellData;
+struct XlsxRowInfo;
+struct XlsxColumnInfo;
 
 class Worksheet : public QObject
 {
@@ -71,13 +53,18 @@ public:
     int writeBlank(int row, int column, Format *format=0);
     int writeBool(int row, int column, bool value, Format *format=0);
 
+    bool setRow(int row, double height, Format* format=0, bool hidden=false);
+    bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
+
     void setRightToLeft(bool enable);
     void setZeroValuesHidden(bool enable);
 
 private:
     friend class Package;
     friend class Workbook;
-    explicit Worksheet(const QString &sheetName, int sheetIndex, Workbook *parent=0);
+    Worksheet(const QString &sheetName, int sheetIndex, Workbook *parent=0);
+    ~Worksheet();
+
     virtual bool isChartsheet() const;
     QString name() const;
     int index() const;
@@ -91,12 +78,16 @@ private:
     int checkDimensions(int row, int col, bool ignore_row=false, bool ignore_col=false);
     QString generateDimensionString();
     void writeSheetData(XmlStreamWriter &writer);
-    void writeCellData(XmlStreamWriter &writer, int row, int col, const XlsxCellData &data);
+    void writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell);
     void calculateSpans();
 
     Workbook *m_workbook;
-    QMap<int, QMap<int, XlsxCellData> > m_table;
+    QMap<int, QMap<int, XlsxCellData *> > m_cellTable;
     QMap<int, QMap<int, QString> > m_comments;
+    QMap<int, XlsxRowInfo *> m_rowsInfo;
+    QList<XlsxColumnInfo *> m_colsInfo;
+    QMap<int, XlsxColumnInfo *> m_colsInfoHelper;//Not owns the XlsxColumnInfo
+
 
     int m_xls_rowmax;
     int m_xls_colmax;
@@ -125,7 +116,5 @@ private:
 };
 
 } //QXlsx
-
-Q_DECLARE_TYPEINFO(QXlsx::XlsxCellData, Q_MOVABLE_TYPE);
 
 #endif // XLSXWORKSHEET_H
