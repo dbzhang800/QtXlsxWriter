@@ -52,6 +52,27 @@ public:
         FontUnderlineDoubleAccounting
     };
 
+    enum HorizontalAlignment
+    {
+        AlignHGeneral,
+        AlignLeft,
+        AlignHCenter,
+        AlignRight,
+        AlignHFill,
+        AlignHJustify,
+        AlignHMerge,
+        AlignHDistributed
+    };
+
+    enum VerticalAlignment
+    {
+        AlignTop,
+        AlignVCenter,
+        AlignBottom,
+        AlignVJustify,
+        AlignVDistributed
+    };
+
     int fontSize() const;
     void setFontSize(int size);
     bool fontItalic() const;
@@ -71,15 +92,28 @@ public:
     QString fontName() const;
     void setFontName(const QString &);
 
+    HorizontalAlignment horizontalAlignment() const;
+    void setHorizontalAlignment(HorizontalAlignment align);
+    VerticalAlignment verticalAlignment() const;
+    void setVerticalAlignment(VerticalAlignment align);
+    bool textWrap() const;
+    void setTextWarp(bool textWrap);
+    int rotation() const;
+    void setRotation(int rotation);
+    int indent() const;
+    void setIndent(int indent);
+    bool shrinkToFit() const;
+    void setShrinkToFit(bool shink);
+
     void setForegroundColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
 
 private:
     friend class Styles;
     friend class Worksheet;
-    explicit Format();
+    Format();
 
-    struct Font
+    struct FontData
     {
         int size;
         bool italic;
@@ -109,6 +143,19 @@ private:
     bool fontShadow() const {return m_font.shadow;}
     QString fontScheme() const {return m_font.scheme;}
 
+    struct AlignmentData
+    {
+        HorizontalAlignment alignH;
+        VerticalAlignment alignV;
+        bool wrap;
+        int rotation;
+        int indent;
+        bool shinkToFit;
+    } m_alignment;
+
+    bool alignmentChanged() const;
+    QString horizontalAlignmentString() const;
+    QString verticalAlignmentString() const;
 
     bool isDxfFormat() const;
     int xfIndex() const {return m_xf_index;}

@@ -33,6 +33,7 @@
 #include <QDateTime>
 #include <QPoint>
 #include <QFile>
+#include <QDebug>
 
 #include <stdint.h>
 

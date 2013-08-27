@@ -46,6 +46,13 @@ Format::Format()
     m_font.redundant = false;
     m_font.index = 0;
 
+    m_alignment.alignH = AlignHGeneral;
+    m_alignment.alignV = AlignBottom;
+    m_alignment.wrap = false;
+    m_alignment.rotation = 0;
+    m_alignment.indent = 0;
+    m_alignment.shinkToFit = false;
+
     m_is_dxf_fomat = false;
 
     m_xf_index = 0;
@@ -150,6 +157,156 @@ QString Format::fontName() const
 void Format::setFontName(const QString &name)
 {
     m_font.name = name;
+}
+
+Format::HorizontalAlignment Format::horizontalAlignment() const
+{
+    return m_alignment.alignH;
+}
+
+void Format::setHorizontalAlignment(HorizontalAlignment align)
+{
+    if (m_alignment.indent &&(align != AlignHGeneral && align != AlignLeft &&
+                              align != AlignRight && align != AlignHDistributed)) {
+        m_alignment.indent = 0;
+    }
+
+    if (m_alignment.shinkToFit && (align == AlignHFill || align == AlignHJustify
+                                   || align == AlignHDistributed)) {
+        m_alignment.shinkToFit = false;
+    }
+
+    m_alignment.alignH = align;
+}
+
+Format::VerticalAlignment Format::verticalAlignment() const
+{
+    return m_alignment.alignV;
+}
+
+void Format::setVerticalAlignment(VerticalAlignment align)
+{
+    m_alignment.alignV = align;
+}
+
+bool Format::textWrap() const
+{
+    return m_alignment.wrap;
+}
+
+void Format::setTextWarp(bool wrap)
+{
+    if (wrap && m_alignment.shinkToFit)
+        m_alignment.shinkToFit = false;
+
+    m_alignment.wrap = wrap;
+}
+
+int Format::rotation() const
+{
+    return m_alignment.rotation;
+}
+
+void Format::setRotation(int rotation)
+{
+    m_alignment.rotation = rotation;
+}
+
+int Format::indent() const
+{
+    return m_alignment.indent;
+}
+
+void Format::setIndent(int indent)
+{
+    if (indent && (m_alignment.alignH != AlignHGeneral
+                   && m_alignment.alignH != AlignLeft
+                   && m_alignment.alignH != AlignRight
+                   && m_alignment.alignH != AlignHJustify)) {
+        m_alignment.alignH = AlignLeft;
+    }
+    m_alignment.indent = indent;
+}
+
+bool Format::shrinkToFit() const
+{
+    return m_alignment.shinkToFit;
+}
+
+void Format::setShrinkToFit(bool shink)
+{
+    if (shink && m_alignment.wrap)
+        m_alignment.wrap = false;
+    if (shink && (m_alignment.alignH == AlignHFill
+                  || m_alignment.alignH == AlignHJustify
+                  || m_alignment.alignH == AlignHDistributed)) {
+        m_alignment.alignH = AlignLeft;
+    }
+
+    m_alignment.shinkToFit = shink;
+}
+
+bool Format::alignmentChanged() const
+{
+    return m_alignment.alignH != AlignHGeneral
+            || m_alignment.alignV != AlignBottom
+            || m_alignment.indent != 0
+            || m_alignment.wrap
+            || m_alignment.rotation != 0
+            || m_alignment.shinkToFit;
+}
+
+QString Format::horizontalAlignmentString() const
+{
+    QString alignH;
+    switch (m_alignment.alignH) {
+    case Format::AlignLeft:
+        alignH = "left";
+        break;
+    case Format::AlignHCenter:
+        alignH = "center";
+        break;
+    case Format::AlignRight:
+        alignH = "right";
+        break;
+    case Format::AlignHFill:
+        alignH = "fill";
+        break;
+    case Format::AlignHJustify:
+        alignH = "justify";
+        break;
+    case Format::AlignHMerge:
+        alignH = "centerContinuous";
+        break;
+    case Format::AlignHDistributed:
+        alignH = "distributed";
+        break;
+    default:
+        break;
+    }
+    return alignH;
+}
+
+QString Format::verticalAlignmentString() const
+{
+    QString align;
+    switch (m_alignment.alignV) {
+    case AlignTop:
+        align = "top";
+        break;
+    case AlignVCenter:
+        align = "center";
+        break;
+    case AlignVJustify:
+        align = "justify";
+        break;
+    case AlignVDistributed:
+        align = "distributed";
+        break;
+    default:
+        break;
+    }
+    return align;
 }
 
 bool Format::isDxfFormat() const

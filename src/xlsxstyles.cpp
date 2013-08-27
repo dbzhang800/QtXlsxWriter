@@ -238,6 +238,27 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
             writer.writeAttribute("applyFont", "1");
         if (format->fillIndex() > 0)
             writer.writeAttribute("applyBorder", "1");
+        if (format->alignmentChanged())
+            writer.writeAttribute("applyAlignment", "1");
+
+        if (format->alignmentChanged()) {
+            writer.writeEmptyElement("alignment");
+            QString alignH = format->horizontalAlignmentString();
+            if (!alignH.isEmpty())
+                writer.writeAttribute("horizontal", alignH);
+            QString alignV = format->verticalAlignmentString();
+            if (!alignV.isEmpty())
+                writer.writeAttribute("vertical", alignV);
+            if (format->indent())
+                writer.writeAttribute("indent", QString::number(format->indent()));
+            if (format->textWrap())
+                writer.writeAttribute("wrapText", "1");
+            if (format->shrinkToFit())
+                writer.writeAttribute("shrinkToFit", "1");
+            if (format->shrinkToFit())
+                writer.writeAttribute("shrinkToFit", "1");
+        }
+
         writer.writeEndElement();//xf
     }
     writer.writeEndElement();//cellXfs

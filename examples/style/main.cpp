@@ -17,6 +17,7 @@ int main()
     QXlsx::Format *format1 = workbook.addFormat();
     format1->setFontColor(QColor(Qt::red));
     format1->setFontSize(15);
+    format1->setHorizontalAlignment(QXlsx::Format::AlignHCenter);
     sheet->write("A1", "Hello Qt!", format1);
     sheet->write("B3", 12345, format1);
 
