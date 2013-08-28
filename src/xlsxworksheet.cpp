@@ -369,21 +369,23 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     //    writer.writeAttribute("x14ac:dyDescent", "0.25");
     writer.writeEndElement();//sheetFormatPr
 
-    writer.writeStartElement("cols");
-    foreach (XlsxColumnInfo *col_info, m_colsInfo) {
-        writer.writeStartElement("col");
-        writer.writeAttribute("min", QString::number(col_info->column_min));
-        writer.writeAttribute("max", QString::number(col_info->column_max));
-        writer.writeAttribute("width", QString::number(col_info->width, 'g', 15));
-        if (col_info->format)
-            writer.writeAttribute("style", QString::number(col_info->format->xfIndex()));
-        if (col_info->hidden)
-            writer.writeAttribute("hidden", "1");
-        if (col_info->width)
-            writer.writeAttribute("customWidth", "1");
-        writer.writeEndElement();//col
+    if (!m_colsInfo.isEmpty()) {
+        writer.writeStartElement("cols");
+        foreach (XlsxColumnInfo *col_info, m_colsInfo) {
+            writer.writeStartElement("col");
+            writer.writeAttribute("min", QString::number(col_info->column_min));
+            writer.writeAttribute("max", QString::number(col_info->column_max));
+            writer.writeAttribute("width", QString::number(col_info->width, 'g', 15));
+            if (col_info->format)
+                writer.writeAttribute("style", QString::number(col_info->format->xfIndex()));
+            if (col_info->hidden)
+                writer.writeAttribute("hidden", "1");
+            if (col_info->width)
+                writer.writeAttribute("customWidth", "1");
+            writer.writeEndElement();//col
+        }
+        writer.writeEndElement();//cols
     }
-    writer.writeEndElement();//cols
 
     writer.writeStartElement("sheetData");
     if (m_dim_rowmax == INT32_MIN) {
