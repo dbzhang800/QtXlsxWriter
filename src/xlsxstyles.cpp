@@ -36,7 +36,7 @@ namespace QXlsx {
 Styles::Styles(QObject *parent) :
     QObject(parent)
 {
-    m_fill_count = 2; //Starts from 2
+    m_fill_count = 0;
     m_borders_count = 0;
     m_font_count = 0;
 }
@@ -63,6 +63,8 @@ void Styles::prepareStyles()
     m_xf_formats = Format::s_xfFormats;
     m_dxf_formats = Format::s_dxfFormats;
 
+    if (m_xf_formats.isEmpty())
+        m_xf_formats.append(this->addFormat());
     //fonts
     QMap<QByteArray, int> fontsKeyCache;
     foreach (Format *format, m_xf_formats) {
@@ -126,7 +128,7 @@ void Styles::prepareStyles()
            format->setFillRedundant(false);
        }
     }
-    m_fill_count = fillsKeyCache.size() + 2;
+    m_fill_count = fillsKeyCache.size();
 }
 
 void Styles::clearExtraFormatInfo()
