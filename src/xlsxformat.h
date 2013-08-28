@@ -27,6 +27,8 @@
 
 #include <QFont>
 #include <QColor>
+#include <QByteArray>
+#include <QList>
 
 namespace QXlsx {
 
@@ -73,12 +75,63 @@ public:
         AlignVDistributed
     };
 
+    enum BorderStyle
+    {
+        BorderNone,
+        BorderThin,
+        BorderMedium,
+        BorderDashed,
+        BorderDotted,
+        BorderThick,
+        BorderDouble,
+        BorderHair,
+        BorderMediumDashed,
+        BorderDashDot,
+        BorderMediumDashDot,
+        BorderDashDotDot,
+        BorderMediumDashDotDot,
+        BorderSlantDashDot
+    };
+
+    enum DiagonalBorderType
+    {
+        DiagonalBorderNone,
+        DiagonalBorderDown,
+        DiagonalBorderUp,
+        DiagnoalBorderBoth
+    };
+
+    enum FillPattern
+    {
+        PatternNone,
+        PatternSolid,
+        PatternMediumGray,
+        PatternDarkGray,
+        PatternLightGray,
+        PatternDarkHorizontal,
+        PatternDarkVertical,
+        PatternDarkDown,
+        PatternDarkUp,
+        PatternDarkGrid,
+        PatternDarkTrellis,
+        PatternLightHorizontal,
+        PatternLightVertical,
+        PatternLightDown,
+        PatternLightUp,
+        PatternLightTrellis,
+        PatternGray125,
+        PatternGray0625
+    };
+
+    int numberFormat() const;
+    void setNumberFormat(int format);
+
     int fontSize() const;
     void setFontSize(int size);
     bool fontItalic() const;
     void setFontItalic(bool italic);
     bool fontStrikeOut() const;
-    void setFontStricOut(bool);
+    void setFontStrikeOut(bool);
     QColor fontColor() const;
     void setFontColor(const QColor &);
     bool fontBold() const;
@@ -105,13 +158,55 @@ public:
     bool shrinkToFit() const;
     void setShrinkToFit(bool shink);
 
-    void setForegroundColor(const QColor &color);
-    void setBackgroundColor(const QColor &color);
+    void setBorderStyle(BorderStyle style);
+    void setBorderColor(const QColor &color);
+    BorderStyle leftBorderStyle() const;
+    void setLeftBorderStyle(BorderStyle style);
+    QColor leftBorderColor() const;
+    void setLeftBorderColor(const QColor &color);
+    BorderStyle rightBorderStyle() const;
+    void setRightBorderStyle(BorderStyle style);
+    QColor rightBorderColor() const;
+    void setRightBorderColor(const QColor &color);
+    BorderStyle topBorderStyle() const;
+    void setTopBorderStyle(BorderStyle style);
+    QColor topBorderColor() const;
+    void setTopBorderColor(const QColor &color);
+    BorderStyle bottomBorderStyle() const;
+    void setBottomBorderStyle(BorderStyle style);
+    QColor bottomBorderColor() const;
+    void setBottomBorderColor(const QColor &color);
+    BorderStyle diagonalBorderStyle() const;
+    void setDiagonalBorderStyle(BorderStyle style);
+    DiagonalBorderType diagonalBorderType() const;
+    void setDiagonalBorderType(DiagonalBorderType style);
+    QColor diagonalBorderColor() const;
+    void setDiagonalBorderColor(const QColor &color);
+
+    FillPattern fillPattern() const;
+    void setFillPattern(FillPattern pattern);
+    QColor patternForegroundColor() const;
+    void setPatternForegroundColor(const QColor &color);
+    QColor patternBackgroundColor() const;
+    void setPatternBackgroundColor(const QColor &color);
+
+    bool locked() const;
+    void setLocked(bool locked);
+    bool hidden() const;
+    void setHidden(bool hidden);
+
+    bool operator == (const Format &format) const;
+    bool operator != (const Format &format) const;
 
 private:
     friend class Styles;
     friend class Worksheet;
     Format();
+
+    struct NumberData
+    {
+        int formatIndex;
+    } m_number;
 
     struct FontData
     {
@@ -132,13 +227,16 @@ private:
         int extend;
 
         //helper member
-        bool redundant;  //same with the fonts used by some other Formats
-        int index; //index in the Font list
+        bool _dirty; //key re-generated is need.
+        QByteArray _key;
+        bool _redundant;  //same font already used by some other Formats
+        int _index; //index in the Font list
     } m_font;
-
-    bool hasFont() const {return !m_font.redundant;}
-    int fontIndex() const {return m_font.index;}
-    void setFontIndex(int index) {m_font.index = index;}
+    bool hasFont() const {return !m_font._redundant;}
+    void setFontRedundant(bool redundant) {m_font._redundant = redundant;}
+    int fontIndex() const {return m_font._index;}
+    void setFontIndex(int index) {m_font._index = index;}
+    QByteArray fontKey() const;
     int fontFamily() const{return m_font.family;}
     bool fontShadow() const {return m_font.shadow;}
     QString fontScheme() const {return m_font.scheme;}
@@ -157,46 +255,75 @@ private:
     QString horizontalAlignmentString() const;
     QString verticalAlignmentString() const;
 
+    struct BorderData
+    {
+        BorderStyle left;
+        BorderStyle right;
+        BorderStyle top;
+        BorderStyle bottom;
+        BorderStyle diagonal;
+        QColor leftColor;
+        QColor rightColor;
+        QColor topColor;
+        QColor bottomColor;
+        QColor diagonalColor;
+        DiagonalBorderType diagonalType;
+
+        //helper member
+        bool _dirty; //key re-generated is need.
+        QByteArray _key;
+        bool _redundant;  //same border already used by some other Formats
+        int _index; //index in the border list
+    } m_border;
+
+    QByteArray borderKey() const;
+    bool hasBorders() const {return !m_border._redundant;}
+    void setBorderRedundant(bool redundant) {m_border._redundant = redundant;}
+    int borderIndex() const {return m_border._index;}
+    void setBorderIndex(int index) {m_border._index = index;}
+
+    struct FillData {
+        FillPattern pattern;
+        QColor bgColor;
+        QColor fgColor;
+
+        //helper member
+        bool _dirty; //key re-generated is need.
+        QByteArray _key;
+        bool _redundant;  //same border already used by some other Formats
+        int _index; //index in the border list
+    } m_fill;
+
+    QByteArray fillKey() const;
+    bool hasFill() const {return !m_fill._redundant;}
+    void setFillRedundant(bool redundant) {m_fill._redundant = redundant;}
+    int fillIndex() const {return m_fill._index;}
+    void setFillIndex(int index) {m_fill._index = index;}
+
+    struct ProtectionData {
+        bool locked;
+        bool hidden;
+    } m_protection;
+
+    bool m_dirty; //The key re-generation is need.
+    QByteArray m_formatKey;
+    QByteArray formatKey() const;
+
+    static QList<Format *> s_xfFormats;
+    int m_xf_index;
+    int xfIndex(bool generateIfNotValid=true); //Generate index when first called.
+    void clearExtraInfos();
+
+    bool m_is_dxf_fomat;
+    int m_dxf_index;
+    static QList<Format *> s_dxfFormats;
     bool isDxfFormat() const;
-    int xfIndex() const {return m_xf_index;}
-    void setXfIndex(int index) {m_xf_index = index; m_font.index=index;}
 
-    //num
-    int numFormatIndex() const {return m_num_format_index;}
-
+    int m_theme;
+    int m_color_indexed;
     int theme() const {return m_theme;}
     int colorIndexed() const {return m_color_indexed;}
 
-    //fills
-    bool hasFill() const {return m_has_fill;}
-    int fillIndex() const {return m_fill_index;}
-
-    //borders
-    bool hasBorders() const {return m_has_borders;}
-    void setHasBorder(bool has) {m_has_borders=has;}
-    int borderIndex() const {return m_border_index;}
-
-    bool m_is_dxf_fomat;
-
-    int m_xf_index;
-    int m_dxf_index;
-
-    int m_num_format_index;
-
-    bool m_has_font;
-    int m_font_index;
-    int m_font_family;
-    QString m_font_scheme;
-    QColor m_bg_color;
-    QColor m_fg_color;
-    int m_theme;
-    int m_color_indexed;
-
-    bool m_has_fill;
-    int m_fill_index;
-
-    bool m_has_borders;
-    int m_border_index;
 };
 
 } // namespace QXlsx

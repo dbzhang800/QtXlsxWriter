@@ -18,12 +18,14 @@ int main()
     format1->setFontColor(QColor(Qt::red));
     format1->setFontSize(15);
     format1->setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    format1->setBorderStyle(QXlsx::Format::BorderDashDotDot);
     sheet->write("A1", "Hello Qt!", format1);
     sheet->write("B3", 12345, format1);
 
     QXlsx::Format *format2 = workbook.addFormat();
     format2->setFontBold(true);
     format2->setFontUnderline(QXlsx::Format::FontUnderlineDouble);
+    format2->setFillPattern(QXlsx::Format::PatternLightUp);
     sheet->write("C5", "=44+33", format2);
     sheet->write("D7", true, format2);
 

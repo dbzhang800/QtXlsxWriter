@@ -38,17 +38,21 @@ class Styles : public QObject
 {
 public:
     explicit Styles(QObject *parent=0);
+    ~Styles();
     Format *addFormat();
 
+    void prepareStyles();
+    void clearExtraFormatInfo();
     void saveToXmlFile(QIODevice *device);
 
 private:
     void writeFonts(XmlStreamWriter &writer);
     void writeFills(XmlStreamWriter &writer);
+    void writeFill(XmlStreamWriter &writer, Format *format);
     void writeBorders(XmlStreamWriter &writer);
+    void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color);
     void writeCellXfs(XmlStreamWriter &writer);
     void writeDxfs(XmlStreamWriter &writer);
-
 
     QList<Format *> m_formats;
     QList<Format *> m_xf_formats;

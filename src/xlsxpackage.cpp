@@ -89,6 +89,7 @@ bool Package::createPackage(const QString &packageName)
 {
     ZipWriter zipWriter(packageName);
 
+    m_workbook->styles()->clearExtraFormatInfo(); //These info will be generated when write the worksheet data.
     writeWorksheetFiles(zipWriter);
 //    writeChartsheetFiles(zipWriter);
     writeWorkbookFile(zipWriter);
@@ -100,6 +101,7 @@ bool Package::createPackage(const QString &packageName)
     writeSharedStringsFile(zipWriter);
     writeDocPropsFiles(zipWriter);
     writeContentTypesFiles(zipWriter);
+    m_workbook->styles()->prepareStyles();
     writeStylesFiles(zipWriter);
     writeThemeFile(zipWriter);
     writeRootRelsFile(zipWriter);
