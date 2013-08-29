@@ -23,6 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxworkbook.h"
+#include "xlsxworkbook_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxworksheet.h"
 #include "xlsxstyles_p.h"
@@ -32,44 +33,52 @@
 
 namespace QXlsx {
 
-Workbook::Workbook(QObject *parent) :
-    QObject(parent)
+WorkbookPrivate::WorkbookPrivate(Workbook *q) :
+    q_ptr(q)
 {
-    m_sharedStrings = new SharedStrings(this);
-    m_styles = new Styles(this);
+    sharedStrings = new SharedStrings(q);
+    styles = new Styles(q);
 
+    x_window = 240;
+    y_window = 15;
+    window_width = 16095;
+    window_height = 9660;
 
-    m_x_window = 240;
-    m_y_window = 15;
-    m_window_width = 16095;
-    m_window_height = 9660;
+    strings_to_numbers_enabled = false;
+    date1904 = false;
+    activesheet = 0;
+    firstsheet = 0;
+    table_count = 0;
+}
 
-    m_strings_to_numbers_enabled = false;
-    m_date1904 = false;
-    m_activesheet = 0;
-    m_firstsheet = 0;
-    m_table_count = 0;
+Workbook::Workbook(QObject *parent) :
+    QObject(parent), d_ptr(new WorkbookPrivate(this))
+{
+
 }
 
 Workbook::~Workbook()
 {
+    delete d_ptr;
 }
 
 void Workbook::save(const QString &name)
 {
+    Q_D(Workbook);
+
     //Add a default worksheet if non have been added.
-    if (m_worksheets.size() == 0)
+    if (d->worksheets.size() == 0)
         addWorksheet();
 
     //Ensure that at least one worksheet has been selected.
-    if (m_activesheet == 0) {
-        m_worksheets[0]->setHidden(false);
-        m_worksheets[0]->setSelected(true);
+    if (d->activesheet == 0) {
+        d->worksheets[0]->setHidden(false);
+        d->worksheets[0]->setSelected(true);
     }
 
     //Set the active sheet
-    foreach (Worksheet *sheet, m_worksheets) {
-        if (sheet->index() == m_activesheet)
+    foreach (Worksheet *sheet, d->worksheets) {
+        if (sheet->index() == d->activesheet)
             sheet->setActived(true);
     }
 
@@ -80,7 +89,8 @@ void Workbook::save(const QString &name)
 
 bool Workbook::isDate1904() const
 {
-    return m_date1904;
+    Q_D(const Workbook);
+    return d->date1904;
 }
 
 /*
@@ -92,7 +102,8 @@ bool Workbook::isDate1904() const
 */
 void Workbook::setDate1904(bool date1904)
 {
-    m_date1904 = date1904;
+    Q_D(Workbook);
+    d->date1904 = date1904;
 }
 
 /*
@@ -104,12 +115,14 @@ void Workbook::setDate1904(bool date1904)
  */
 void Workbook::setStringsToNumbersEnabled(bool enable)
 {
-    m_strings_to_numbers_enabled = enable;
+    Q_D(Workbook);
+    d->strings_to_numbers_enabled = enable;
 }
 
 bool Workbook::isStringsToNumbersEnabled() const
 {
-    return m_strings_to_numbers_enabled;
+    Q_D(const Workbook);
+    return d->strings_to_numbers_enabled;
 }
 
 void Workbook::defineName(const QString &name, const QString &formula)
@@ -119,38 +132,45 @@ void Workbook::defineName(const QString &name, const QString &formula)
 
 Worksheet *Workbook::addWorksheet(const QString &name)
 {
+    Q_D(Workbook);
+
     QString worksheetName = name;
-    int index = m_worksheets.size()+1;
+    int index = d->worksheets.size()+1;
     if (name.isEmpty())
         worksheetName = QString("Sheet%1").arg(index);
 
     Worksheet *sheet = new Worksheet(worksheetName, index, this);
-    m_worksheets.append(sheet);
+    d->worksheets.append(sheet);
     return sheet;
 }
 
 Format *Workbook::addFormat()
 {
-    return m_styles->addFormat();
+    Q_D(Workbook);
+    return d->styles->addFormat();
 }
 
 QList<Worksheet *> Workbook::worksheets() const
 {
-    return m_worksheets;
+    Q_D(const Workbook);
+    return d->worksheets;
 }
 
 SharedStrings *Workbook::sharedStrings()
 {
-    return m_sharedStrings;
+    Q_D(Workbook);
+    return d->sharedStrings;
 }
 
 Styles *Workbook::styles()
 {
-    return m_styles;
+    Q_D(Workbook);
+    return d->styles;
 }
 
 void Workbook::saveToXmlFile(QIODevice *device)
 {
+    Q_D(Workbook);
     XmlStreamWriter writer(device);
 
     writer.writeStartDocument("1.0", true);
@@ -166,26 +186,26 @@ void Workbook::saveToXmlFile(QIODevice *device)
 //    writer.writeAttribute("codeName", "{37E998C4-C9E5-D4B9-71C8-EB1FF731991C}");
 
     writer.writeEmptyElement("workbookPr");
-    if (m_date1904)
+    if (d->date1904)
         writer.writeAttribute("date1904", "1");
     writer.writeAttribute("defaultThemeVersion", "124226");
 
     writer.writeStartElement("bookViews");
     writer.writeEmptyElement("workbookView");
-    writer.writeAttribute("xWindow", QString::number(m_x_window));
-    writer.writeAttribute("yWindow", QString::number(m_y_window));
-    writer.writeAttribute("windowWidth", QString::number(m_window_width));
-    writer.writeAttribute("windowHeight", QString::number(m_window_height));
+    writer.writeAttribute("xWindow", QString::number(d->x_window));
+    writer.writeAttribute("yWindow", QString::number(d->y_window));
+    writer.writeAttribute("windowWidth", QString::number(d->window_width));
+    writer.writeAttribute("windowHeight", QString::number(d->window_height));
     //Store the firstSheet when it isn't the default
-    if (m_firstsheet > 0)
-        writer.writeAttribute("firstSheet", QString::number(m_firstsheet + 1));
+    if (d->firstsheet > 0)
+        writer.writeAttribute("firstSheet", QString::number(d->firstsheet + 1));
     //Store the activeTab when it isn't the first sheet
-    if (m_activesheet > 0)
-        writer.writeAttribute("activeTab", QString::number(m_activesheet));
+    if (d->activesheet > 0)
+        writer.writeAttribute("activeTab", QString::number(d->activesheet));
     writer.writeEndElement();//bookviews
 
     writer.writeStartElement("sheets");
-    foreach (Worksheet *sheet, m_worksheets) {
+    foreach (Worksheet *sheet, d->worksheets) {
         writer.writeEmptyElement("sheet");
         writer.writeAttribute("name", sheet->name());
         writer.writeAttribute("sheetId", QString::number(sheet->index()));

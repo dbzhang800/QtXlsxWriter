@@ -23,6 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxworksheet.h"
+#include "xlsxworksheet_p.h"
 #include "xlsxworkbook.h"
 #include "xlsxformat.h"
 #include "xlsxutility_p.h"
@@ -39,55 +40,157 @@
 
 namespace QXlsx {
 
-struct XlsxCellData
+WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
+    q_ptr(p)
 {
-    enum CellDataType {
-        Blank,
-        String,
-        Number,
-        Formula,
-        ArrayFormula,
-        Boolean,
-        DateTime
-    };
-    XlsxCellData(const QVariant &data=QVariant(), CellDataType type=Blank, Format *format=0) :
-        value(data), dataType(type), format(format)
-    {
+    xls_rowmax = 1048576;
+    xls_colmax = 16384;
+    xls_strmax = 32767;
+    dim_rowmin = INT32_MAX;
+    dim_rowmax = INT32_MIN;
+    dim_colmin = INT32_MAX;
+    dim_colmax = INT32_MIN;
 
+    previous_row = 0;
+
+    outline_row_level = 0;
+    outline_col_level = 0;
+
+    default_row_height = 15;
+    default_row_zeroed = false;
+
+    hidden = false;
+    selected = false;
+    actived = false;
+    right_to_left = false;
+    show_zeros = true;
+}
+
+WorksheetPrivate::~WorksheetPrivate()
+{
+    typedef QMap<int, XlsxCellData *> RowMap;
+    foreach (RowMap row, cellTable) {
+        foreach (XlsxCellData *item, row)
+            delete item;
     }
 
-    QVariant value;
-    QString formula;
-    CellDataType dataType;
-    Format *format;
-};
+    foreach (XlsxRowInfo *row, rowsInfo)
+        delete row;
 
-struct XlsxRowInfo
+    foreach (XlsxColumnInfo *col, colsInfo)
+        delete col;
+}
+
+/*
+  Calculate the "spans" attribute of the <row> tag. This is an
+  XLSX optimisation and isn't strictly required. However, it
+  makes comparing files easier. The span is the same for each
+  block of 16 rows.
+ */
+void WorksheetPrivate::calculateSpans()
 {
-    XlsxRowInfo(double height, Format *format, bool hidden) :
-        height(height), format(format), hidden(hidden)
-    {
+    row_spans.clear();
+    int span_min = INT32_MAX;
+    int span_max = INT32_MIN;
 
+    for (int row_num = dim_rowmin; row_num <= dim_rowmax; row_num++) {
+        if (cellTable.contains(row_num)) {
+            for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
+                if (cellTable[row_num].contains(col_num)) {
+                    if (span_max == INT32_MIN) {
+                        span_min = col_num;
+                        span_max = col_num;
+                    } else {
+                        if (col_num < span_min)
+                            span_min = col_num;
+                        if (col_num > span_max)
+                            span_max = col_num;
+                    }
+                }
+            }
+        }
+        if (comments.contains(row_num)) {
+            for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
+                if (comments[row_num].contains(col_num)) {
+                    if (span_max == INT32_MIN) {
+                        span_min = col_num;
+                        span_max = col_num;
+                    } else {
+                        if (col_num < span_min)
+                            span_min = col_num;
+                        if (col_num > span_max)
+                            span_max = col_num;
+                    }
+                }
+            }
+        }
+
+        if ((row_num + 1)%16 == 0 || row_num == dim_rowmax) {
+            int span_index = row_num / 16;
+            if (span_max != INT32_MIN) {
+                span_min += 1;
+                span_max += 1;
+                row_spans[span_index] = QString("%1:%2").arg(span_min).arg(span_max);
+                span_max = INT32_MIN;
+            }
+        }
+    }
+}
+
+
+QString WorksheetPrivate::generateDimensionString()
+{
+    if (dim_rowmax == INT32_MIN && dim_colmax == INT32_MIN) {
+        //If the max dimensions are equal to INT32_MIN, then no dimension have been set
+        //and we use the default "A1"
+        return "A1";
     }
 
-    double height;
-    Format *format;
-    bool hidden;
-};
-
-struct XlsxColumnInfo
-{
-    XlsxColumnInfo(int column_min, int column_max, double width, Format *format, bool hidden) :
-        column_min(column_min), column_max(column_max), width(width), format(format), hidden(hidden)
-    {
-
+    if (dim_rowmax == INT32_MIN) {
+        //row dimensions aren't set but the column dimensions are set
+        if (dim_colmin == dim_colmax) {
+            //The dimensions are a single cell and not a range
+            return xl_rowcol_to_cell(0, dim_colmin);
+        } else {
+            const QString cell_1 = xl_rowcol_to_cell(0, dim_colmin);
+            const QString cell_2 = xl_rowcol_to_cell(0, dim_colmax);
+            return cell_1 + ":" + cell_2;
+        }
     }
-    int column_min;
-    int column_max;
-    double width;
-    Format *format;
-    bool hidden;
-};
+
+    if (dim_rowmin == dim_rowmax && dim_colmin == dim_colmax) {
+        //Single cell
+        return xl_rowcol_to_cell(dim_rowmin, dim_rowmin);
+    }
+
+    QString cell_1 = xl_rowcol_to_cell(dim_rowmin, dim_colmin);
+    QString cell_2 = xl_rowcol_to_cell(dim_rowmax, dim_colmax);
+    return cell_1 + ":" + cell_2;
+}
+
+/*
+  Check that row and col are valid and store the max and min
+  values for use in other methods/elements. The ignore_row /
+  ignore_col flags is used to indicate that we wish to perform
+  the dimension check without storing the value. The ignore
+  flags are use by setRow() and dataValidate.
+*/
+int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ignore_col)
+{
+    if (row >= xls_rowmax || col >= xls_colmax)
+        return -1;
+
+    if (!ignore_row) {
+        if (row < dim_rowmin) dim_rowmin = row;
+        if (row > dim_rowmax) dim_rowmax = row;
+    }
+    if (!ignore_col) {
+        if (col < dim_colmin) dim_colmin = col;
+        if (col > dim_colmax) dim_colmax = col;
+    }
+
+    return 0;
+}
 
 /*!
  * \brief Worksheet::Worksheet
@@ -96,44 +199,16 @@ struct XlsxColumnInfo
  * \param parent
  */
 Worksheet::Worksheet(const QString &name, int index, Workbook *parent) :
-    QObject(parent), m_workbook(parent), m_name(name), m_index(index)
+    QObject(parent), d_ptr(new WorksheetPrivate(this))
 {
-    m_xls_rowmax = 1048576;
-    m_xls_colmax = 16384;
-    m_xls_strmax = 32767;
-    m_dim_rowmin = INT32_MAX;
-    m_dim_rowmax = INT32_MIN;
-    m_dim_colmin = INT32_MAX;
-    m_dim_colmax = INT32_MIN;
-
-    m_previous_row = 0;
-
-    m_outline_row_level = 0;
-    m_outline_col_level = 0;
-
-    m_default_row_height = 15;
-    m_default_row_zeroed = false;
-
-    m_hidden = false;
-    m_selected = false;
-    m_actived = false;
-    m_right_to_left = false;
-    m_show_zeros = true;
+    d_ptr->name = name;
+    d_ptr->index = index;
+    d_ptr->workbook = parent;
 }
 
 Worksheet::~Worksheet()
 {
-    typedef QMap<int, XlsxCellData *> RowMap;
-    foreach (RowMap row, m_cellTable) {
-        foreach (XlsxCellData *item, row)
-            delete item;
-    }
-
-    foreach (XlsxRowInfo *row, m_rowsInfo)
-        delete row;
-
-    foreach (XlsxColumnInfo *col, m_colsInfo)
-        delete col;
+    delete d_ptr;
 }
 
 bool Worksheet::isChartsheet() const
@@ -143,58 +218,72 @@ bool Worksheet::isChartsheet() const
 
 QString Worksheet::name() const
 {
-    return m_name;
+    Q_D(const Worksheet);
+    return d->name;
 }
 
 int Worksheet::index() const
 {
-    return m_index;
+    Q_D(const Worksheet);
+    return d->index;
 }
 
 bool Worksheet::isHidden() const
 {
-    return m_hidden;
+    Q_D(const Worksheet);
+    return d->hidden;
 }
 
 bool Worksheet::isSelected() const
 {
-    return m_selected;
+    Q_D(const Worksheet);
+    return d->selected;
 }
 
 bool Worksheet::isActived() const
 {
-    return m_actived;
+    Q_D(const Worksheet);
+    return d->actived;
 }
 
 void Worksheet::setHidden(bool hidden)
 {
-    m_hidden = hidden;
+    Q_D(Worksheet);
+    d->hidden = hidden;
 }
 
 void Worksheet::setSelected(bool select)
 {
-    m_selected = select;
+    Q_D(Worksheet);
+    d->selected = select;
 }
 
 void Worksheet::setActived(bool act)
 {
-    m_actived = act;
+    Q_D(Worksheet);
+    d->actived = act;
 }
 
 void Worksheet::setRightToLeft(bool enable)
 {
-    m_right_to_left = enable;
+    Q_D(Worksheet);
+    d->right_to_left = enable;
 }
 
 void Worksheet::setZeroValuesHidden(bool enable)
 {
-    m_show_zeros = !enable;
+    Q_D(Worksheet);
+    d->show_zeros = !enable;
 }
 
 int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 {
+    Q_D(Worksheet);
     bool ok;
     int ret = 0;
+
+    if (d->checkDimensions(row, column))
+        return -1;
 
     if (value.isNull()) { //blank
         ret = writeBlank(row, column, format);
@@ -203,7 +292,7 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
     } else if (value.toDateTime().isValid()) { //DateTime
         ret = writeDateTime(row, column, value.toDateTime(), format);
     } else if (value.toDouble(&ok), ok) { //Number
-        if (!m_workbook->isStringsToNumbersEnabled() && value.type() == QMetaType::QString) {
+        if (!d->workbook->isStringsToNumbersEnabled() && value.type() == QMetaType::QString) {
             //Don't convert string to number if the flag not enabled.
             ret = writeString(row, column, value.toString(), format);
         } else {
@@ -240,37 +329,40 @@ int Worksheet::write(const QString row_column, const QVariant &value, Format *fo
 
 int Worksheet::writeString(int row, int column, const QString &value, Format *format)
 {
+    Q_D(Worksheet);
     int error = 0;
     QString content = value;
-    if (checkDimensions(row, column))
+    if (d->checkDimensions(row, column))
         return -1;
 
-    if (value.size() > m_xls_strmax) {
-        content = value.left(m_xls_strmax);
+    if (value.size() > d->xls_strmax) {
+        content = value.left(d->xls_strmax);
         error = -2;
     }
 
-    SharedStrings *sharedStrings = m_workbook->sharedStrings();
+    SharedStrings *sharedStrings = d->workbook->sharedStrings();
     int index = sharedStrings->addSharedString(content);
 
-    m_cellTable[row][column] = new XlsxCellData(index, XlsxCellData::String, format);
+    d->cellTable[row][column] = new XlsxCellData(index, XlsxCellData::String, format);
     return error;
 }
 
 int Worksheet::writeNumber(int row, int column, double value, Format *format)
 {
-    if (checkDimensions(row, column))
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
         return -1;
 
-    m_cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Number, format);
+    d->cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Number, format);
     return 0;
 }
 
 int Worksheet::writeFormula(int row, int column, const QString &content, Format *format, double result)
 {
+    Q_D(Worksheet);
     int error = 0;
     QString formula = content;
-    if (checkDimensions(row, column))
+    if (d->checkDimensions(row, column))
         return -1;
 
     //Remove the formula '=' sign if exists
@@ -279,64 +371,44 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
 
     XlsxCellData *data = new XlsxCellData(result, XlsxCellData::Formula, format);
     data->formula = formula;
-    m_cellTable[row][column] = data;
+    d->cellTable[row][column] = data;
 
     return error;
 }
 
 int Worksheet::writeBlank(int row, int column, Format *format)
 {
-    if (checkDimensions(row, column))
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
         return -1;
 
-    m_cellTable[row][column] = new XlsxCellData(QVariant(), XlsxCellData::Blank, format);
+    d->cellTable[row][column] = new XlsxCellData(QVariant(), XlsxCellData::Blank, format);
     return 0;
 }
 
 int Worksheet::writeBool(int row, int column, bool value, Format *format)
 {
-    if (checkDimensions(row, column))
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
         return -1;
 
-    m_cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Boolean, format);
+    d->cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Boolean, format);
     return 0;
 }
 
 int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *format)
 {
-    if (checkDimensions(row, column))
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
         return -1;
 
-    m_cellTable[row][column] = new XlsxCellData(dt, XlsxCellData::DateTime, format);
-    return 0;
-}
-
-/*
-  Check that row and col are valid and store the max and min
-  values for use in other methods/elements. The ignore_row /
-  ignore_col flags is used to indicate that we wish to perform
-  the dimension check without storing the value. The ignore
-  flags are use by setRow() and dataValidate.
-*/
-int Worksheet::checkDimensions(int row, int col, bool ignore_row, bool ignore_col)
-{
-    if (row >= m_xls_rowmax || col >= m_xls_colmax)
-        return -1;
-
-    if (!ignore_row) {
-        if (row < m_dim_rowmin) m_dim_rowmin = row;
-        if (row > m_dim_rowmax) m_dim_rowmax = row;
-    }
-    if (!ignore_col) {
-        if (col < m_dim_colmin) m_dim_colmin = col;
-        if (col > m_dim_colmax) m_dim_colmax = col;
-    }
-
+    d->cellTable[row][column] = new XlsxCellData(dt, XlsxCellData::DateTime, format);
     return 0;
 }
 
 void Worksheet::saveToXmlFile(QIODevice *device)
 {
+    Q_D(Worksheet);
     XmlStreamWriter writer(device);
 
     writer.writeStartDocument("1.0", true);
@@ -350,38 +422,38 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     //    writer.writeAttribute("mc:Ignorable", "x14ac");
 
     writer.writeStartElement("dimension");
-    writer.writeAttribute("ref", generateDimensionString());
+    writer.writeAttribute("ref", d->generateDimensionString());
     writer.writeEndElement();//dimension
 
     writer.writeStartElement("sheetViews");
     writer.writeStartElement("sheetView");
-    if (!m_show_zeros)
+    if (!d->show_zeros)
         writer.writeAttribute("showZeros", "0");
-    if (m_right_to_left)
+    if (d->right_to_left)
         writer.writeAttribute("rightToLeft", "1");
-    if (m_selected)
+    if (d->selected)
         writer.writeAttribute("tabSelected", "1");
     writer.writeAttribute("workbookViewId", "0");
     writer.writeEndElement();//sheetView
     writer.writeEndElement();//sheetViews
 
     writer.writeStartElement("sheetFormatPr");
-    writer.writeAttribute("defaultRowHeight", QString::number(m_default_row_height));
-    if (m_default_row_height != 15)
+    writer.writeAttribute("defaultRowHeight", QString::number(d->default_row_height));
+    if (d->default_row_height != 15)
         writer.writeAttribute("customHeight", "1");
-    if (m_default_row_zeroed)
+    if (d->default_row_zeroed)
         writer.writeAttribute("zeroHeight", "1");
-    if (m_outline_row_level)
-        writer.writeAttribute("outlineLevelRow", QString::number(m_outline_row_level));
-    if (m_outline_col_level)
-        writer.writeAttribute("outlineLevelCol", QString::number(m_outline_col_level));
+    if (d->outline_row_level)
+        writer.writeAttribute("outlineLevelRow", QString::number(d->outline_row_level));
+    if (d->outline_col_level)
+        writer.writeAttribute("outlineLevelCol", QString::number(d->outline_col_level));
     //for Excel 2010
     //    writer.writeAttribute("x14ac:dyDescent", "0.25");
     writer.writeEndElement();//sheetFormatPr
 
-    if (!m_colsInfo.isEmpty()) {
+    if (!d->colsInfo.isEmpty()) {
         writer.writeStartElement("cols");
-        foreach (XlsxColumnInfo *col_info, m_colsInfo) {
+        foreach (XlsxColumnInfo *col_info, d->colsInfo) {
             writer.writeStartElement("col");
             writer.writeAttribute("min", QString::number(col_info->column_min));
             writer.writeAttribute("max", QString::number(col_info->column_max));
@@ -398,10 +470,10 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     }
 
     writer.writeStartElement("sheetData");
-    if (m_dim_rowmax == INT32_MIN) {
+    if (d->dim_rowmax == INT32_MIN) {
         //If the max dimensions are equal to INT32_MIN, then there is no data to write
     } else {
-        writeSheetData(writer);
+        d->writeSheetData(writer);
     }
     writer.writeEndElement();//sheetData
 
@@ -409,59 +481,29 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-QString Worksheet::generateDimensionString()
-{
-    if (m_dim_rowmax == INT32_MIN && m_dim_colmax == INT32_MIN) {
-        //If the max dimensions are equal to INT32_MIN, then no dimension have been set
-        //and we use the default "A1"
-        return "A1";
-    }
-
-    if (m_dim_rowmax == INT32_MIN) {
-        //row dimensions aren't set but the column dimensions are set
-        if (m_dim_colmin == m_dim_colmax) {
-            //The dimensions are a single cell and not a range
-            return xl_rowcol_to_cell(0, m_dim_colmin);
-        } else {
-            const QString cell_1 = xl_rowcol_to_cell(0, m_dim_colmin);
-            const QString cell_2 = xl_rowcol_to_cell(0, m_dim_colmax);
-            return cell_1 + ":" + cell_2;
-        }
-    }
-
-    if (m_dim_rowmin == m_dim_rowmax && m_dim_colmin == m_dim_colmax) {
-        //Single cell
-        return xl_rowcol_to_cell(m_dim_rowmin, m_dim_rowmin);
-    }
-
-    QString cell_1 = xl_rowcol_to_cell(m_dim_rowmin, m_dim_colmin);
-    QString cell_2 = xl_rowcol_to_cell(m_dim_rowmax, m_dim_colmax);
-    return cell_1 + ":" + cell_2;
-}
-
-void Worksheet::writeSheetData(XmlStreamWriter &writer)
+void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
 {
     calculateSpans();
-    for (int row_num = m_dim_rowmin; row_num <= m_dim_rowmax; row_num++) {
-        if (!(m_cellTable.contains(row_num) || m_comments.contains(row_num) || m_rowsInfo.contains(row_num))) {
+    for (int row_num = dim_rowmin; row_num <= dim_rowmax; row_num++) {
+        if (!(cellTable.contains(row_num) || comments.contains(row_num) || rowsInfo.contains(row_num))) {
             //Only process rows with cell data / comments / formatting
             continue;
         }
 
         int span_index = row_num / 16;
         QString span;
-        if (m_row_spans.contains(span_index))
-            span = m_row_spans[span_index];
+        if (row_spans.contains(span_index))
+            span = row_spans[span_index];
 
-        if (m_cellTable.contains(row_num)) {
+        if (cellTable.contains(row_num)) {
             writer.writeStartElement("row");
             writer.writeAttribute("r", QString::number(row_num + 1));
 
             if (!span.isEmpty())
                 writer.writeAttribute("spans", span);
 
-            if (m_rowsInfo.contains(row_num)) {
-                XlsxRowInfo *rowInfo = m_rowsInfo[row_num];
+            if (rowsInfo.contains(row_num)) {
+                XlsxRowInfo *rowInfo = rowsInfo[row_num];
                 if (rowInfo->format) {
                     writer.writeAttribute("s", QString::number(rowInfo->format->xfIndex()));
                     writer.writeAttribute("customFormat", "1");
@@ -474,13 +516,13 @@ void Worksheet::writeSheetData(XmlStreamWriter &writer)
                     writer.writeAttribute("hidden", "1");
             }
 
-            for (int col_num = m_dim_colmin; col_num <= m_dim_colmax; col_num++) {
-                if (m_cellTable[row_num].contains(col_num)) {
-                    writeCellData(writer, row_num, col_num, m_cellTable[row_num][col_num]);
+            for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
+                if (cellTable[row_num].contains(col_num)) {
+                    writeCellData(writer, row_num, col_num, cellTable[row_num][col_num]);
                 }
             }
             writer.writeEndElement(); //row
-        } else if (m_comments.contains(row_num)){
+        } else if (comments.contains(row_num)){
 
         } else {
 
@@ -488,7 +530,7 @@ void Worksheet::writeSheetData(XmlStreamWriter &writer)
     }
 }
 
-void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell)
+void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell)
 {
     //This is the innermost loop so efficiency is important.
     QString cell_range = xl_rowcol_to_cell_fast(row, col);
@@ -499,10 +541,10 @@ void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCel
     //Style used by the cell, row or col
     if (cell->format)
         writer.writeAttribute("s", QString::number(cell->format->xfIndex()));
-    else if (m_rowsInfo.contains(row) && m_rowsInfo[row]->format)
-        writer.writeAttribute("s", QString::number(m_rowsInfo[row]->format->xfIndex()));
-    else if (m_colsInfoHelper.contains(col) && m_colsInfoHelper[col]->format)
-        writer.writeAttribute("s", QString::number(m_colsInfoHelper[col]->format->xfIndex()));
+    else if (rowsInfo.contains(row) && rowsInfo[row]->format)
+        writer.writeAttribute("s", QString::number(rowsInfo[row]->format->xfIndex()));
+    else if (colsInfoHelper.contains(col) && colsInfoHelper[col]->format)
+        writer.writeAttribute("s", QString::number(colsInfoHelper[col]->format->xfIndex()));
 
     if (cell->dataType == XlsxCellData::String) {
         //cell->data: Index of the string in sharedStringTable
@@ -527,72 +569,16 @@ void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCel
         //Ok, empty here.
     } else if (cell->dataType == XlsxCellData::DateTime) {
         QDateTime epoch(QDate(1899, 12, 31));
-        if (m_workbook->isDate1904())
+        if (workbook->isDate1904())
             epoch = QDateTime(QDate(1904, 1, 1));
         qint64 delta = epoch.msecsTo(cell->value.toDateTime());
         double excel_time = delta / (1000*60*60*24);
         //Account for Excel erroneously treating 1900 as a leap year.
-        if (!m_workbook->isDate1904() && excel_time > 59)
+        if (!workbook->isDate1904() && excel_time > 59)
             excel_time += 1;
         writer.writeTextElement("v", QString::number(excel_time, 'g', 15));
     }
     writer.writeEndElement(); //c
-}
-
-/*
-  Calculate the "spans" attribute of the <row> tag. This is an
-  XLSX optimisation and isn't strictly required. However, it
-  makes comparing files easier. The span is the same for each
-  block of 16 rows.
- */
-void Worksheet::calculateSpans()
-{
-    m_row_spans.clear();
-    int span_min = INT32_MAX;
-    int span_max = INT32_MIN;
-
-    for (int row_num = m_dim_rowmin; row_num <= m_dim_rowmax; row_num++) {
-        if (m_cellTable.contains(row_num)) {
-            for (int col_num = m_dim_colmin; col_num <= m_dim_colmax; col_num++) {
-                if (m_cellTable[row_num].contains(col_num)) {
-                    if (span_max == INT32_MIN) {
-                        span_min = col_num;
-                        span_max = col_num;
-                    } else {
-                        if (col_num < span_min)
-                            span_min = col_num;
-                        if (col_num > span_max)
-                            span_max = col_num;
-                    }
-                }
-            }
-        }
-        if (m_comments.contains(row_num)) {
-            for (int col_num = m_dim_colmin; col_num <= m_dim_colmax; col_num++) {
-                if (m_comments[row_num].contains(col_num)) {
-                    if (span_max == INT32_MIN) {
-                        span_min = col_num;
-                        span_max = col_num;
-                    } else {
-                        if (col_num < span_min)
-                            span_min = col_num;
-                        if (col_num > span_max)
-                            span_max = col_num;
-                    }
-                }
-            }
-        }
-
-        if ((row_num + 1)%16 == 0 || row_num == m_dim_rowmax) {
-            int span_index = row_num / 16;
-            if (span_max != INT32_MIN) {
-                span_min += 1;
-                span_max += 1;
-                m_row_spans[span_index] = QString("%1:%2").arg(span_min).arg(span_max);
-                span_max = INT32_MIN;
-            }
-        }
-    }
 }
 
 /*
@@ -601,17 +587,18 @@ void Worksheet::calculateSpans()
  */
 bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
 {
-    int min_col = m_dim_colmax == INT32_MIN ? 0 : m_dim_colmin;
+    Q_D(Worksheet);
+    int min_col = d->dim_colmax == INT32_MIN ? 0 : d->dim_colmin;
 
-    if (checkDimensions(row, min_col))
+    if (d->checkDimensions(row, min_col))
         return false;
 
-    if (m_rowsInfo.contains(row)) {
-        m_rowsInfo[row]->height = height;
-        m_rowsInfo[row]->format = format;
-        m_rowsInfo[row]->hidden = hidden;
+    if (d->rowsInfo.contains(row)) {
+        d->rowsInfo[row]->height = height;
+        d->rowsInfo[row]->format = format;
+        d->rowsInfo[row]->hidden = hidden;
     } else {
-        m_rowsInfo[row] = new XlsxRowInfo(height, format, hidden);
+        d->rowsInfo[row] = new XlsxRowInfo(height, format, hidden);
     }
     return true;
 }
@@ -624,19 +611,20 @@ bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
  */
 bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *format, bool hidden)
 {
+    Q_D(Worksheet);
     bool ignore_row = true;
     bool ignore_col = (format || (width && hidden)) ? false : true;
 
-    if (checkDimensions(0, colLast, ignore_row, ignore_col))
+    if (d->checkDimensions(0, colLast, ignore_row, ignore_col))
         return false;
-    if (checkDimensions(0, colFirst, ignore_row, ignore_col))
+    if (d->checkDimensions(0, colFirst, ignore_row, ignore_col))
         return false;
 
     XlsxColumnInfo *info = new XlsxColumnInfo(colFirst, colLast, width, format, hidden);
-    m_colsInfo.append(info);
+    d->colsInfo.append(info);
 
     for (int col=colFirst; col<=colLast; ++col)
-        m_colsInfoHelper[col] = info;
+        d->colsInfoHelper[col] = info;
 
     return true;
 }

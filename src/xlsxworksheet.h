@@ -38,13 +38,11 @@ class Workbook;
 class XmlStreamWriter;
 class Format;
 
-struct XlsxCellData;
-struct XlsxRowInfo;
-struct XlsxColumnInfo;
-
+class WorksheetPrivate;
 class Worksheet : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Worksheet)
 public:
     int write(const QString row_column, const QVariant &value, Format *format=0);
     int write(int row, int column, const QVariant &value, Format *format=0);
@@ -77,44 +75,8 @@ private:
     void setSelected(bool select);
     void setActived(bool act);
     void saveToXmlFile(QIODevice *device);
-    int checkDimensions(int row, int col, bool ignore_row=false, bool ignore_col=false);
-    QString generateDimensionString();
-    void writeSheetData(XmlStreamWriter &writer);
-    void writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell);
-    void calculateSpans();
 
-    Workbook *m_workbook;
-    QMap<int, QMap<int, XlsxCellData *> > m_cellTable;
-    QMap<int, QMap<int, QString> > m_comments;
-    QMap<int, XlsxRowInfo *> m_rowsInfo;
-    QList<XlsxColumnInfo *> m_colsInfo;
-    QMap<int, XlsxColumnInfo *> m_colsInfoHelper;//Not owns the XlsxColumnInfo
-
-
-    int m_xls_rowmax;
-    int m_xls_colmax;
-    int m_xls_strmax;
-    int m_dim_rowmin;
-    int m_dim_rowmax;
-    int m_dim_colmin;
-    int m_dim_colmax;
-    int m_previous_row;
-
-    QMap<int, QString> m_row_spans;
-
-    int m_outline_row_level;
-    int m_outline_col_level;
-
-    int m_default_row_height;
-    bool m_default_row_zeroed;
-
-    QString m_name;
-    int m_index;
-    bool m_hidden;
-    bool m_selected;
-    bool m_actived;
-    bool m_right_to_left;
-    bool m_show_zeros;
+    WorksheetPrivate * const d_ptr;
 };
 
 } //QXlsx

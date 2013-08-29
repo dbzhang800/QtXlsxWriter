@@ -15,7 +15,10 @@ HEADERS += $$PWD/xlsxdocprops_p.h \
     $$PWD/xlsxstyles_p.h \
     $$PWD/xlsxworksheet.h \
     $$PWD/zipwriter_p.h \
-    $$PWD/xlsxpackage_p.h
+    $$PWD/xlsxpackage_p.h \
+    $$PWD/xlsxworkbook_p.h \
+    $$PWD/xlsxworksheet_p.h \
+    $$PWD/xlsxformat_p.h
 
 SOURCES += $$PWD/xlsxdocprops.cpp \
     $$PWD/xlsxrelationships.cpp \

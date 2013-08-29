@@ -60,8 +60,8 @@ Format *Styles::addFormat()
  */
 void Styles::prepareStyles()
 {
-    m_xf_formats = Format::s_xfFormats;
-    m_dxf_formats = Format::s_dxfFormats;
+    m_xf_formats = Format::xfFormats();
+    m_dxf_formats = Format::dxfFormats();
 
     if (m_xf_formats.isEmpty())
         m_xf_formats.append(this->addFormat());

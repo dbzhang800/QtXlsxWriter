@@ -34,9 +34,12 @@ namespace QXlsx {
 
 class Styles;
 class Worksheet;
+class WorksheetPrivate;
 
+class FormatPrivate;
 class Format
 {
+    Q_DECLARE_PRIVATE(Format)
 public:
     enum FontScript
     {
@@ -123,6 +126,8 @@ public:
         PatternGray0625
     };
 
+    ~Format();
+
     int numberFormat() const;
     void setNumberFormat(int format);
 
@@ -201,129 +206,47 @@ public:
 private:
     friend class Styles;
     friend class Worksheet;
+    friend class WorksheetPrivate;
     Format();
 
-    struct NumberData
-    {
-        int formatIndex;
-    } m_number;
-
-    struct FontData
-    {
-        int size;
-        bool italic;
-        bool strikeOut;
-        QColor color;
-        bool bold;
-        FontScript scirpt;
-        FontUnderline underline;
-        bool outline;
-        bool shadow;
-        QString name;
-        int family;
-        int charset;
-        QString scheme;
-        int condense;
-        int extend;
-
-        //helper member
-        bool _dirty; //key re-generated is need.
-        QByteArray _key;
-        bool _redundant;  //same font already used by some other Formats
-        int _index; //index in the Font list
-    } m_font;
-    bool hasFont() const {return !m_font._redundant;}
-    void setFontRedundant(bool redundant) {m_font._redundant = redundant;}
-    int fontIndex() const {return m_font._index;}
-    void setFontIndex(int index) {m_font._index = index;}
+    bool hasFont() const;
+    void setFontRedundant(bool redundant);
+    int fontIndex() const;
+    void setFontIndex(int index);
     QByteArray fontKey() const;
-    int fontFamily() const{return m_font.family;}
-    bool fontShadow() const {return m_font.shadow;}
-    QString fontScheme() const {return m_font.scheme;}
-
-    struct AlignmentData
-    {
-        HorizontalAlignment alignH;
-        VerticalAlignment alignV;
-        bool wrap;
-        int rotation;
-        int indent;
-        bool shinkToFit;
-    } m_alignment;
+    int fontFamily() const;
+    bool fontShadow() const;
+    QString fontScheme() const;
 
     bool alignmentChanged() const;
     QString horizontalAlignmentString() const;
     QString verticalAlignmentString() const;
 
-    struct BorderData
-    {
-        BorderStyle left;
-        BorderStyle right;
-        BorderStyle top;
-        BorderStyle bottom;
-        BorderStyle diagonal;
-        QColor leftColor;
-        QColor rightColor;
-        QColor topColor;
-        QColor bottomColor;
-        QColor diagonalColor;
-        DiagonalBorderType diagonalType;
-
-        //helper member
-        bool _dirty; //key re-generated is need.
-        QByteArray _key;
-        bool _redundant;  //same border already used by some other Formats
-        int _index; //index in the border list
-    } m_border;
-
     QByteArray borderKey() const;
-    bool hasBorders() const {return !m_border._redundant;}
-    void setBorderRedundant(bool redundant) {m_border._redundant = redundant;}
-    int borderIndex() const {return m_border._index;}
-    void setBorderIndex(int index) {m_border._index = index;}
-
-    struct FillData {
-        FillPattern pattern;
-        QColor bgColor;
-        QColor fgColor;
-
-        //helper member
-        bool _dirty; //key re-generated is need.
-        QByteArray _key;
-        bool _redundant;  //same border already used by some other Formats
-        int _index; //index in the border list
-    } m_fill;
+    bool hasBorders() const;
+    void setBorderRedundant(bool redundant);
+    int borderIndex() const;
+    void setBorderIndex(int index);
 
     QByteArray fillKey() const;
-    bool hasFill() const {return !m_fill._redundant;}
-    void setFillRedundant(bool redundant) {m_fill._redundant = redundant;}
-    int fillIndex() const {return m_fill._index;}
-    void setFillIndex(int index) {m_fill._index = index;}
+    bool hasFill() const;
+    void setFillRedundant(bool redundant);
+    int fillIndex() const;
+    void setFillIndex(int index);
 
-    struct ProtectionData {
-        bool locked;
-        bool hidden;
-    } m_protection;
-
-    bool m_dirty; //The key re-generation is need.
-    QByteArray m_formatKey;
     QByteArray formatKey() const;
 
-    static QList<Format *> s_xfFormats;
-    int m_xf_index;
+    static QList<Format *> xfFormats();
+    static QList<Format *> dxfFormats();
     int xfIndex(bool generateIfNotValid=true); //Generate index when first called.
     void clearExtraInfos();
 
-    bool m_is_dxf_fomat;
-    int m_dxf_index;
-    static QList<Format *> s_dxfFormats;
     bool isDxfFormat() const;
 
-    int m_theme;
-    int m_color_indexed;
-    int theme() const {return m_theme;}
-    int colorIndexed() const {return m_color_indexed;}
+    int theme() const;
+    int colorIndexed() const;
 
+    FormatPrivate * const d_ptr;
 };
 
 } // namespace QXlsx

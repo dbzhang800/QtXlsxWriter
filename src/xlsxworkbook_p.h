@@ -22,53 +22,37 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXWORKBOOK_H
-#define XLSXWORKBOOK_H
-
-#include <QObject>
-#include <QList>
-class QIODevice;
+#ifndef XLSXWORKBOOK_P_H
+#define XLSXWORKBOOK_P_H
+#include "xlsxworkbook.h"
 
 namespace QXlsx {
 
-class Worksheet;
-class Format;
-class SharedStrings;
-class Styles;
-class Package;
-
-class WorkbookPrivate;
-class Workbook : public QObject
+class WorkbookPrivate
 {
-    Q_OBJECT
-    Q_DECLARE_PRIVATE(Workbook)
+    Q_DECLARE_PUBLIC(Workbook)
 public:
-    Workbook(QObject *parent=0);
-    ~Workbook();
+    WorkbookPrivate(Workbook *q);
 
-    QList<Worksheet *> worksheets() const;
-    Worksheet *addWorksheet(const QString &name = QString());
-    Format *addFormat();
-//    void addChart();
-    void defineName(const QString &name, const QString &formula);
-    bool isDate1904() const;
-    void setDate1904(bool date1904);
-    bool isStringsToNumbersEnabled() const;
-    void setStringsToNumbersEnabled(bool enable=true);
+    Workbook *q_ptr;
 
-    void save(const QString &name);
+    SharedStrings *sharedStrings;
+    QList<Worksheet *> worksheets;
+    Styles *styles;
 
-private:
-    friend class Package;
-    friend class Worksheet;
+    bool strings_to_numbers_enabled;
+    bool date1904;
 
-    SharedStrings *sharedStrings();
-    Styles *styles();
-    void saveToXmlFile(QIODevice *device);
+    int x_window;
+    int y_window;
+    int window_width;
+    int window_height;
 
-    WorkbookPrivate * const d_ptr;
+    int activesheet;
+    int firstsheet;
+    int table_count;
 };
 
-} //QXlsx
+}
 
-#endif // XLSXWORKBOOK_H
+#endif // XLSXWORKBOOK_P_H
