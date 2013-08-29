@@ -30,6 +30,7 @@
 #include <QMap>
 #include <QVariant>
 class QIODevice;
+class QDateTime;
 
 namespace QXlsx {
 class Package;
@@ -52,6 +53,7 @@ public:
     int writeFormula(int row, int column, const QString &formula, Format *format=0, double result=0);
     int writeBlank(int row, int column, Format *format=0);
     int writeBool(int row, int column, bool value, Format *format=0);
+    int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
 
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);

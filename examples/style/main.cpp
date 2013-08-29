@@ -45,6 +45,10 @@ int main()
             sheet->write(row, col, row+col);
     sheet->setColumn(8, 15, 5.0, format4);
 
+    QXlsx::Format *format5 = workbook.addFormat();
+    format5->setNumberFormat(22);
+    sheet->write("A5", QDate(2013, 8, 29), format5);
+
     workbook.save(DATA_PATH"TestStyle.xlsx");
     return 0;
 }

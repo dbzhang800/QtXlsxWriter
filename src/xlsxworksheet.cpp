@@ -47,7 +47,8 @@ struct XlsxCellData
         Number,
         Formula,
         ArrayFormula,
-        Boolean
+        Boolean,
+        DateTime
     };
     XlsxCellData(const QVariant &data=QVariant(), CellDataType type=Blank, Format *format=0) :
         value(data), dataType(type), format(format)
@@ -200,7 +201,7 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
     } else if (value.type() == QMetaType::Bool) { //Bool
         ret = writeBool(row,column, value.toBool(), format);
     } else if (value.toDateTime().isValid()) { //DateTime
-
+        ret = writeDateTime(row, column, value.toDateTime(), format);
     } else if (value.toDouble(&ok), ok) { //Number
         if (!m_workbook->isStringsToNumbersEnabled() && value.type() == QMetaType::QString) {
             //Don't convert string to number if the flag not enabled.
@@ -298,6 +299,15 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
         return -1;
 
     m_cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Boolean, format);
+    return 0;
+}
+
+int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *format)
+{
+    if (checkDimensions(row, column))
+        return -1;
+
+    m_cellTable[row][column] = new XlsxCellData(dt, XlsxCellData::DateTime, format);
     return 0;
 }
 
@@ -499,7 +509,8 @@ void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCel
         writer.writeAttribute("t", "s");
         writer.writeTextElement("v", cell->value.toString());
     } else if (cell->dataType == XlsxCellData::Number){
-        writer.writeTextElement("v", cell->value.toString());
+        double value = cell->value.toDouble();
+        writer.writeTextElement("v", QString::number(value, 'g', 15));
     } else if (cell->dataType == XlsxCellData::Formula) {
         bool ok = true;
         cell->formula.toDouble(&ok);
@@ -514,6 +525,16 @@ void Worksheet::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCel
         writer.writeTextElement("v", cell->value.toBool() ? "1" : "0");
     } else if (cell->dataType == XlsxCellData::Blank) {
         //Ok, empty here.
+    } else if (cell->dataType == XlsxCellData::DateTime) {
+        QDateTime epoch(QDate(1899, 12, 31));
+        if (m_workbook->isDate1904())
+            epoch = QDateTime(QDate(1904, 1, 1));
+        qint64 delta = epoch.msecsTo(cell->value.toDateTime());
+        double excel_time = delta / (1000*60*60*24);
+        //Account for Excel erroneously treating 1900 as a leap year.
+        if (!m_workbook->isDate1904() && excel_time > 59)
+            excel_time += 1;
+        writer.writeTextElement("v", QString::number(excel_time, 'g', 15));
     }
     writer.writeEndElement(); //c
 }
