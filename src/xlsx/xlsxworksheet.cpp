@@ -130,7 +130,7 @@ void WorksheetPrivate::calculateSpans()
             if (span_max != INT32_MIN) {
                 span_min += 1;
                 span_max += 1;
-                row_spans[span_index] = QString("%1:%2").arg(span_min).arg(span_max);
+                row_spans[span_index] = QStringLiteral("%1:%2").arg(span_min).arg(span_max);
                 span_max = INT32_MIN;
             }
         }
@@ -143,7 +143,7 @@ QString WorksheetPrivate::generateDimensionString()
     if (dim_rowmax == INT32_MIN && dim_colmax == INT32_MIN) {
         //If the max dimensions are equal to INT32_MIN, then no dimension have been set
         //and we use the default "A1"
-        return "A1";
+        return QStringLiteral("A1");
     }
 
     if (dim_rowmax == INT32_MIN) {
@@ -154,7 +154,7 @@ QString WorksheetPrivate::generateDimensionString()
         } else {
             const QString cell_1 = xl_rowcol_to_cell(0, dim_colmin);
             const QString cell_2 = xl_rowcol_to_cell(0, dim_colmax);
-            return cell_1 + ":" + cell_2;
+            return cell_1 + QLatin1String(":") + cell_2;
         }
     }
 
@@ -165,7 +165,7 @@ QString WorksheetPrivate::generateDimensionString()
 
     QString cell_1 = xl_rowcol_to_cell(dim_rowmin, dim_colmin);
     QString cell_2 = xl_rowcol_to_cell(dim_rowmax, dim_colmax);
-    return cell_1 + ":" + cell_2;
+    return cell_1 + QLatin1String(":") + cell_2;
 }
 
 /*
@@ -302,9 +302,9 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 
     } else if (value.type() == QMetaType::QString) { //string
         QString token = value.toString();
-        if (token.startsWith("=")) {
+        if (token.startsWith(QLatin1String("="))) {
             ret = writeFormula(row, column, token, format);
-        } else if (token.startsWith("{") && token.endsWith("}")) {
+        } else if (token.startsWith(QLatin1String("{")) && token.endsWith(QLatin1String("}"))) {
 
         } else {
             ret = writeString(row, column, token, format);
@@ -366,7 +366,7 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
         return -1;
 
     //Remove the formula '=' sign if exists
-    if (formula.startsWith("="))
+    if (formula.startsWith(QLatin1String("=")))
         formula.remove(0,1);
 
     XlsxCellData *data = new XlsxCellData(result, XlsxCellData::Formula, format);
@@ -411,65 +411,65 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     Q_D(Worksheet);
     XmlStreamWriter writer(device);
 
-    writer.writeStartDocument("1.0", true);
-    writer.writeStartElement("worksheet");
-    writer.writeAttribute("xmlns", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-    writer.writeAttribute("xmlns:r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+    writer.writeStartDocument(QStringLiteral("1.0"), true);
+    writer.writeStartElement(QStringLiteral("worksheet"));
+    writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/spreadsheetml/2006/main"));
+    writer.writeAttribute(QStringLiteral("xmlns:r"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships"));
 
     //for Excel 2010
     //    writer.writeAttribute("xmlns:mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
     //    writer.writeAttribute("xmlns:x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
     //    writer.writeAttribute("mc:Ignorable", "x14ac");
 
-    writer.writeStartElement("dimension");
-    writer.writeAttribute("ref", d->generateDimensionString());
+    writer.writeStartElement(QStringLiteral("dimension"));
+    writer.writeAttribute(QStringLiteral("ref"), d->generateDimensionString());
     writer.writeEndElement();//dimension
 
-    writer.writeStartElement("sheetViews");
-    writer.writeStartElement("sheetView");
+    writer.writeStartElement(QStringLiteral("sheetViews"));
+    writer.writeStartElement(QStringLiteral("sheetView"));
     if (!d->show_zeros)
-        writer.writeAttribute("showZeros", "0");
+        writer.writeAttribute(QStringLiteral("showZeros"), QStringLiteral("0"));
     if (d->right_to_left)
-        writer.writeAttribute("rightToLeft", "1");
+        writer.writeAttribute(QStringLiteral("rightToLeft"), QStringLiteral("1"));
     if (d->selected)
-        writer.writeAttribute("tabSelected", "1");
-    writer.writeAttribute("workbookViewId", "0");
+        writer.writeAttribute(QStringLiteral("tabSelected"), QStringLiteral("1"));
+    writer.writeAttribute(QStringLiteral("workbookViewId"), QStringLiteral("0"));
     writer.writeEndElement();//sheetView
     writer.writeEndElement();//sheetViews
 
-    writer.writeStartElement("sheetFormatPr");
-    writer.writeAttribute("defaultRowHeight", QString::number(d->default_row_height));
+    writer.writeStartElement(QStringLiteral("sheetFormatPr"));
+    writer.writeAttribute(QStringLiteral("defaultRowHeight"), QString::number(d->default_row_height));
     if (d->default_row_height != 15)
-        writer.writeAttribute("customHeight", "1");
+        writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("1"));
     if (d->default_row_zeroed)
-        writer.writeAttribute("zeroHeight", "1");
+        writer.writeAttribute(QStringLiteral("zeroHeight"), QStringLiteral("1"));
     if (d->outline_row_level)
-        writer.writeAttribute("outlineLevelRow", QString::number(d->outline_row_level));
+        writer.writeAttribute(QStringLiteral("outlineLevelRow"), QString::number(d->outline_row_level));
     if (d->outline_col_level)
-        writer.writeAttribute("outlineLevelCol", QString::number(d->outline_col_level));
+        writer.writeAttribute(QStringLiteral("outlineLevelCol"), QString::number(d->outline_col_level));
     //for Excel 2010
     //    writer.writeAttribute("x14ac:dyDescent", "0.25");
     writer.writeEndElement();//sheetFormatPr
 
     if (!d->colsInfo.isEmpty()) {
-        writer.writeStartElement("cols");
+        writer.writeStartElement(QStringLiteral("cols"));
         foreach (XlsxColumnInfo *col_info, d->colsInfo) {
-            writer.writeStartElement("col");
-            writer.writeAttribute("min", QString::number(col_info->column_min));
-            writer.writeAttribute("max", QString::number(col_info->column_max));
-            writer.writeAttribute("width", QString::number(col_info->width, 'g', 15));
+            writer.writeStartElement(QStringLiteral("col"));
+            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->column_min));
+            writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->column_max));
+            writer.writeAttribute(QStringLiteral("width"), QString::number(col_info->width, 'g', 15));
             if (col_info->format)
-                writer.writeAttribute("style", QString::number(col_info->format->xfIndex()));
+                writer.writeAttribute(QStringLiteral("style"), QString::number(col_info->format->xfIndex()));
             if (col_info->hidden)
-                writer.writeAttribute("hidden", "1");
+                writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
             if (col_info->width)
-                writer.writeAttribute("customWidth", "1");
+                writer.writeAttribute(QStringLiteral("customWidth"), QStringLiteral("1"));
             writer.writeEndElement();//col
         }
         writer.writeEndElement();//cols
     }
 
-    writer.writeStartElement("sheetData");
+    writer.writeStartElement(QStringLiteral("sheetData"));
     if (d->dim_rowmax == INT32_MIN) {
         //If the max dimensions are equal to INT32_MIN, then there is no data to write
     } else {
@@ -496,24 +496,24 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
             span = row_spans[span_index];
 
         if (cellTable.contains(row_num)) {
-            writer.writeStartElement("row");
-            writer.writeAttribute("r", QString::number(row_num + 1));
+            writer.writeStartElement(QStringLiteral("row"));
+            writer.writeAttribute(QStringLiteral("r"), QString::number(row_num + 1));
 
             if (!span.isEmpty())
-                writer.writeAttribute("spans", span);
+                writer.writeAttribute(QStringLiteral("spans"), span);
 
             if (rowsInfo.contains(row_num)) {
                 XlsxRowInfo *rowInfo = rowsInfo[row_num];
                 if (rowInfo->format) {
-                    writer.writeAttribute("s", QString::number(rowInfo->format->xfIndex()));
-                    writer.writeAttribute("customFormat", "1");
+                    writer.writeAttribute(QStringLiteral("s"), QString::number(rowInfo->format->xfIndex()));
+                    writer.writeAttribute(QStringLiteral("customFormat"), QStringLiteral("1"));
                 }
                 if (rowInfo->height != 15) {
-                    writer.writeAttribute("ht", QString::number(rowInfo->height));
-                    writer.writeAttribute("customHeight", "1");
+                    writer.writeAttribute(QStringLiteral("ht"), QString::number(rowInfo->height));
+                    writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("1"));
                 }
                 if (rowInfo->hidden)
-                    writer.writeAttribute("hidden", "1");
+                    writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
             }
 
             for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
@@ -535,36 +535,36 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
     //This is the innermost loop so efficiency is important.
     QString cell_range = xl_rowcol_to_cell_fast(row, col);
 
-    writer.writeStartElement("c");
-    writer.writeAttribute("r", cell_range);
+    writer.writeStartElement(QStringLiteral("c"));
+    writer.writeAttribute(QStringLiteral("r"), cell_range);
 
     //Style used by the cell, row or col
     if (cell->format)
-        writer.writeAttribute("s", QString::number(cell->format->xfIndex()));
+        writer.writeAttribute(QStringLiteral("s"), QString::number(cell->format->xfIndex()));
     else if (rowsInfo.contains(row) && rowsInfo[row]->format)
-        writer.writeAttribute("s", QString::number(rowsInfo[row]->format->xfIndex()));
+        writer.writeAttribute(QStringLiteral("s"), QString::number(rowsInfo[row]->format->xfIndex()));
     else if (colsInfoHelper.contains(col) && colsInfoHelper[col]->format)
-        writer.writeAttribute("s", QString::number(colsInfoHelper[col]->format->xfIndex()));
+        writer.writeAttribute(QStringLiteral("s"), QString::number(colsInfoHelper[col]->format->xfIndex()));
 
     if (cell->dataType == XlsxCellData::String) {
         //cell->data: Index of the string in sharedStringTable
-        writer.writeAttribute("t", "s");
-        writer.writeTextElement("v", cell->value.toString());
+        writer.writeAttribute(QStringLiteral("t"), QStringLiteral("s"));
+        writer.writeTextElement(QStringLiteral("v"), cell->value.toString());
     } else if (cell->dataType == XlsxCellData::Number){
         double value = cell->value.toDouble();
-        writer.writeTextElement("v", QString::number(value, 'g', 15));
+        writer.writeTextElement(QStringLiteral("v"), QString::number(value, 'g', 15));
     } else if (cell->dataType == XlsxCellData::Formula) {
         bool ok = true;
         cell->formula.toDouble(&ok);
         if (!ok) //is string
-            writer.writeAttribute("t", "str");
-        writer.writeTextElement("f", cell->formula);
-        writer.writeTextElement("v", cell->value.toString());
+            writer.writeAttribute(QStringLiteral("t"), QStringLiteral("str"));
+        writer.writeTextElement(QStringLiteral("f"), cell->formula);
+        writer.writeTextElement(QStringLiteral("v"), cell->value.toString());
     } else if (cell->dataType == XlsxCellData::ArrayFormula) {
 
     } else if (cell->dataType == XlsxCellData::Boolean) {
-        writer.writeAttribute("t", "b");
-        writer.writeTextElement("v", cell->value.toBool() ? "1" : "0");
+        writer.writeAttribute(QStringLiteral("t"), QStringLiteral("b"));
+        writer.writeTextElement(QStringLiteral("v"), cell->value.toBool() ? QStringLiteral("1") : QStringLiteral("0"));
     } else if (cell->dataType == XlsxCellData::Blank) {
         //Ok, empty here.
     } else if (cell->dataType == XlsxCellData::DateTime) {
@@ -576,7 +576,7 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         //Account for Excel erroneously treating 1900 as a leap year.
         if (!workbook->isDate1904() && excel_time > 59)
             excel_time += 1;
-        writer.writeTextElement("v", QString::number(excel_time, 'g', 15));
+        writer.writeTextElement(QStringLiteral("v"), QString::number(excel_time, 'g', 15));
     }
     writer.writeEndElement(); //c
 }

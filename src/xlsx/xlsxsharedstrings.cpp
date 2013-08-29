@@ -74,21 +74,21 @@ void SharedStrings::saveToXmlFile(QIODevice *device) const
 {
     XmlStreamWriter writer(device);
 
-    writer.writeStartDocument("1.0", true);
-    writer.writeStartElement("sst");
-    writer.writeAttribute("xmlns", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-    writer.writeAttribute("count", QString::number(m_stringCount));
-    writer.writeAttribute("uniqueCount", QString::number(m_stringTable.size()));
+    writer.writeStartDocument(QStringLiteral("1.0"), true);
+    writer.writeStartElement(QStringLiteral("sst"));
+    writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/spreadsheetml/2006/main"));
+    writer.writeAttribute(QStringLiteral("count"), QString::number(m_stringCount));
+    writer.writeAttribute(QStringLiteral("uniqueCount"), QString::number(m_stringTable.size()));
 
     foreach (QString string, m_stringList) {
-        writer.writeStartElement("si");
-        if (string.contains(QRegularExpression("^<r>")) || string.contains(QRegularExpression("</r>$"))) {
+        writer.writeStartElement(QStringLiteral("si"));
+        if (string.contains(QRegularExpression(QStringLiteral("^<r>"))) || string.contains(QRegularExpression(QStringLiteral("</r>$")))) {
             //Rich text string,
 //            writer.writeCharacters(string);
         } else {
-            writer.writeStartElement("t");
-            if (string.contains(QRegularExpression("^\\s")) || string.contains(QRegularExpression("\\s$")))
-                writer.writeAttribute("xml:space", "preserve");
+            writer.writeStartElement(QStringLiteral("t"));
+            if (string.contains(QRegularExpression(QStringLiteral("^\\s"))) || string.contains(QRegularExpression(QStringLiteral("\\s$"))))
+                writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
             writer.writeCharacters(string);
             writer.writeEndElement();//t
         }

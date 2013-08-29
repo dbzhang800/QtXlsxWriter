@@ -371,25 +371,25 @@ QString Format::horizontalAlignmentString() const
     QString alignH;
     switch (d->alignmentData.alignH) {
     case Format::AlignLeft:
-        alignH = "left";
+        alignH = QStringLiteral("left");
         break;
     case Format::AlignHCenter:
-        alignH = "center";
+        alignH = QStringLiteral("center");
         break;
     case Format::AlignRight:
-        alignH = "right";
+        alignH = QStringLiteral("right");
         break;
     case Format::AlignHFill:
-        alignH = "fill";
+        alignH = QStringLiteral("fill");
         break;
     case Format::AlignHJustify:
-        alignH = "justify";
+        alignH = QStringLiteral("justify");
         break;
     case Format::AlignHMerge:
-        alignH = "centerContinuous";
+        alignH = QStringLiteral("centerContinuous");
         break;
     case Format::AlignHDistributed:
-        alignH = "distributed";
+        alignH = QStringLiteral("distributed");
         break;
     default:
         break;
@@ -403,16 +403,16 @@ QString Format::verticalAlignmentString() const
     QString align;
     switch (d->alignmentData.alignV) {
     case AlignTop:
-        align = "top";
+        align = QStringLiteral("top");
         break;
     case AlignVCenter:
-        align = "center";
+        align = QStringLiteral("center");
         break;
     case AlignVJustify:
-        align = "justify";
+        align = QStringLiteral("justify");
         break;
     case AlignVDistributed:
-        align = "distributed";
+        align = QStringLiteral("distributed");
         break;
     default:
         break;

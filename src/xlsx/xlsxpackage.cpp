@@ -126,7 +126,7 @@ void Package::writeWorksheetFiles(ZipWriter &zipWriter)
         QBuffer buffer(&data);
         buffer.open(QIODevice::WriteOnly);
         sheet->saveToXmlFile(&buffer);
-        zipWriter.addFile(QString("xl/worksheets/sheet%1.xml").arg(index), data);
+        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(index), data);
         index += 1;
     }
 }
@@ -137,7 +137,7 @@ void Package::writeWorkbookFile(ZipWriter &zipWriter)
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     m_workbook->saveToXmlFile(&buffer);
-    zipWriter.addFile("xl/workbook.xml", data);
+    zipWriter.addFile(QStringLiteral("xl/workbook.xml"), data);
 }
 
 void Package::writeContentTypesFiles(ZipWriter &zipWriter)
@@ -149,7 +149,7 @@ void Package::writeContentTypesFiles(ZipWriter &zipWriter)
         if (sheet->isChartsheet()) {
 
         } else {
-            content.addWorksheetName(QString("sheet%1").arg(worksheet_index));
+            content.addWorksheetName(QStringLiteral("sheet%1").arg(worksheet_index));
             worksheet_index += 1;
         }
     }
@@ -161,7 +161,7 @@ void Package::writeContentTypesFiles(ZipWriter &zipWriter)
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     content.saveToXmlFile(&buffer);
-    zipWriter.addFile("[Content_Types].xml", data);
+    zipWriter.addFile(QStringLiteral("[Content_Types].xml"), data);
 }
 
 void Package::writeDocPropsFiles(ZipWriter &zipWriter)
@@ -169,9 +169,9 @@ void Package::writeDocPropsFiles(ZipWriter &zipWriter)
     DocProps props;
 
     if (m_worksheet_count)
-        props.addHeadingPair("Worksheets", m_worksheet_count);
+        props.addHeadingPair(QStringLiteral("Worksheets"), m_worksheet_count);
     if (m_chartsheet_count)
-        props.addHeadingPair("Chartsheets", m_chartsheet_count);
+        props.addHeadingPair(QStringLiteral("Chartsheets"), m_chartsheet_count);
 
     //Add worksheet parts
     foreach (Worksheet *sheet, m_workbook->worksheets()){
@@ -189,13 +189,13 @@ void Package::writeDocPropsFiles(ZipWriter &zipWriter)
     QBuffer buffer1(&data1);
     buffer1.open(QIODevice::WriteOnly);
     props.saveToXmlFile_App(&buffer1);
-    zipWriter.addFile("docProps/app.xml", data1);
+    zipWriter.addFile(QStringLiteral("docProps/app.xml"), data1);
 
     QByteArray data2;
     QBuffer buffer2(&data2);
     buffer2.open(QIODevice::WriteOnly);
     props.saveToXmlFile_Core(&buffer2);
-    zipWriter.addFile("docProps/core.xml", data2);
+    zipWriter.addFile(QStringLiteral("docProps/core.xml"), data2);
 }
 
 void Package::writeSharedStringsFile(ZipWriter &zipWriter)
@@ -204,7 +204,7 @@ void Package::writeSharedStringsFile(ZipWriter &zipWriter)
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     m_workbook->sharedStrings()->saveToXmlFile(&buffer);
-    zipWriter.addFile("xl/sharedStrings.xml", data);
+    zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), data);
 }
 
 void Package::writeStylesFiles(ZipWriter &zipWriter)
@@ -213,7 +213,7 @@ void Package::writeStylesFiles(ZipWriter &zipWriter)
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     m_workbook->styles()->saveToXmlFile(&buffer);
-    zipWriter.addFile("xl/styles.xml", data);
+    zipWriter.addFile(QStringLiteral("xl/styles.xml"), data);
 }
 
 void Package::writeThemeFile(ZipWriter &zipWriter)
@@ -222,21 +222,21 @@ void Package::writeThemeFile(ZipWriter &zipWriter)
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     Theme().saveToXmlFile(&buffer);
-    zipWriter.addFile("xl/theme/theme1.xml", data);
+    zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), data);
 }
 
 void Package::writeRootRelsFile(ZipWriter &zipWriter)
 {
     Relationships rels;
-    rels.addDocumentRelationship("/officeDocument", "xl/workbook.xml");
-    rels.addPackageRelationship("/metadata/core-properties", "docProps/core.xml");
-    rels.addDocumentRelationship("/extended-properties", "docProps/app.xml");
+    rels.addDocumentRelationship(QStringLiteral("/officeDocument"), QStringLiteral("xl/workbook.xml"));
+    rels.addPackageRelationship(QStringLiteral("/metadata/core-properties"), QStringLiteral("docProps/core.xml"));
+    rels.addDocumentRelationship(QStringLiteral("/extended-properties"), QStringLiteral("docProps/app.xml"));
 
     QByteArray data;
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     rels.saveToXmlFile(&buffer);
-    zipWriter.addFile("_rels/.rels", data);
+    zipWriter.addFile(QStringLiteral("_rels/.rels"), data);
 }
 
 void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
@@ -247,25 +247,25 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
     int chartsheet_index = 1;
     foreach (Worksheet *sheet, m_workbook->worksheets()) {
         if (sheet->isChartsheet()) {
-            rels.addDocumentRelationship("/chartsheet", QString("chartsheets/sheet%1.xml").arg(chartsheet_index));
+            rels.addDocumentRelationship(QStringLiteral("/chartsheet"), QStringLiteral("chartsheets/sheet%1.xml").arg(chartsheet_index));
             chartsheet_index += 1;
         } else {
-            rels.addDocumentRelationship("/worksheet", QString("worksheets/sheet%1.xml").arg(worksheet_index));
+            rels.addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(worksheet_index));
             worksheet_index += 1;
         }
     }
 
-    rels.addDocumentRelationship("/theme", "theme/theme1.xml");
-    rels.addDocumentRelationship("/styles", "styles.xml");
+    rels.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
+    rels.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
 
     if (m_workbook->sharedStrings()->count())
-        rels.addDocumentRelationship("/sharedStrings", "sharedStrings.xml");
+        rels.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
 
     QByteArray data;
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
     rels.saveToXmlFile(&buffer);
-    zipWriter.addFile("xl/_rels/workbook.xml.rels", data);
+    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), data);
 }
 
 void Package::writeWorksheetRelsFile(ZipWriter &zipWriter)

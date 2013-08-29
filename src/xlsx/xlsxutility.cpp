@@ -45,7 +45,7 @@ QPoint xl_cell_to_rowcol(const QString &cell_str)
 {
     if (cell_str.isEmpty())
         return QPoint(0, 0);
-    QRegularExpression re("^([A-Z]{1,3})(\\d+)$");
+    QRegularExpression re(QStringLiteral("^([A-Z]{1,3})(\\d+)$"));
     QRegularExpressionMatch match = re.match(cell_str);
     if (match.hasMatch()) {
         QString col_str = match.captured(1);
@@ -87,10 +87,10 @@ QString xl_rowcol_to_cell(int row, int col, bool row_abs, bool col_abs)
     row += 1; //Change to 1-index
     QString cell_str;
     if (col_abs)
-        cell_str.append("$");
+        cell_str.append(QLatin1Char('$'));
     cell_str.append(xl_col_to_name(col));
     if (row_abs)
-        cell_str.append("$");
+        cell_str.append(QLatin1Char('$'));
     cell_str.append(QString::number(row));
     return cell_str;
 }

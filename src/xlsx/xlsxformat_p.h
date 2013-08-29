@@ -40,8 +40,8 @@ struct FontData
     FontData() :
         size(11), italic(false), strikeOut(false), color(QColor()), bold(false)
       , scirpt(Format::FontScriptNormal), underline(Format::FontUnderlineNone)
-      , outline(false), shadow(false), name("Calibri"), family(2), charset(0)
-      , scheme("minor"), condense(0), extend(0)
+      , outline(false), shadow(false), name(QStringLiteral("Calibri")), family(2), charset(0)
+      , scheme(QStringLiteral("minor")), condense(0), extend(0)
       , _dirty(true), _redundant(false), _index(-1)
 
     {}

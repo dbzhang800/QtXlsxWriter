@@ -36,32 +36,32 @@ Relationships::Relationships(QObject *parent) :
 
 void Relationships::addDocumentRelationship(const QString &relativeType, const QString &target)
 {
-    QString type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" + relativeType;
+    QString type = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships") + relativeType;
     addRelationship(type, target);
 }
 
 void Relationships::addMsPackageRelationship(const QString &relativeType, const QString &target)
 {
-    QString type = "http://schemas.microsoft.com/office/2006/relationships" + relativeType;
+    QString type = QStringLiteral("http://schemas.microsoft.com/office/2006/relationships") + relativeType;
     addRelationship(type, target);
 }
 
 void Relationships::addPackageRelationship(const QString &relativeType, const QString &target)
 {
-    QString type = "http://schemas.openxmlformats.org/package/2006/relationships" + relativeType;
+    QString type = QStringLiteral("http://schemas.openxmlformats.org/package/2006/relationships") + relativeType;
     addRelationship(type, target);
 }
 
 void Relationships::addWorksheetRelationship(const QString &relativeType, const QString &target, const QString &targetMode)
 {
-    QString type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" + relativeType;
+    QString type = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships") + relativeType;
     addRelationship(type, target, targetMode);
 }
 
 void Relationships::addRelationship(const QString &type, const QString &target, const QString &targetMode)
 {
     XlsxRelationship relation;
-    relation.id = QString("rId%1").arg(m_relationships.size()+1);
+    relation.id = QStringLiteral("rId%1").arg(m_relationships.size()+1);
     relation.type = type;
     relation.target = target;
     relation.targetMode = targetMode;
@@ -73,16 +73,16 @@ void Relationships::saveToXmlFile(QIODevice *device)
 {
     XmlStreamWriter writer(device);
 
-    writer.writeStartDocument("1.0", true);
-    writer.writeStartElement("Relationships");
-    writer.writeAttribute("xmlns", "http://schemas.openxmlformats.org/package/2006/relationships");
+    writer.writeStartDocument(QStringLiteral("1.0"), true);
+    writer.writeStartElement(QStringLiteral("Relationships"));
+    writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/package/2006/relationships"));
     foreach (XlsxRelationship relation, m_relationships) {
-        writer.writeStartElement("Relationship");
-        writer.writeAttribute("Id", relation.id);
-        writer.writeAttribute("Type", relation.type);
-        writer.writeAttribute("Target", relation.target);
+        writer.writeStartElement(QStringLiteral("Relationship"));
+        writer.writeAttribute(QStringLiteral("Id"), relation.id);
+        writer.writeAttribute(QStringLiteral("Type"), relation.type);
+        writer.writeAttribute(QStringLiteral("Target"), relation.target);
         if (!relation.targetMode.isNull())
-            writer.writeAttribute("TargetMode", relation.targetMode);
+            writer.writeAttribute(QStringLiteral("TargetMode"), relation.targetMode);
         writer.writeEndElement();
     }
     writer.writeEndElement();//Relationships

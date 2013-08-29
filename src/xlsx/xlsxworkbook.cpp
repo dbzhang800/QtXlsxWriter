@@ -137,7 +137,7 @@ Worksheet *Workbook::addWorksheet(const QString &name)
     QString worksheetName = name;
     int index = d->worksheets.size()+1;
     if (name.isEmpty())
-        worksheetName = QString("Sheet%1").arg(index);
+        worksheetName = QStringLiteral("Sheet%1").arg(index);
 
     Worksheet *sheet = new Worksheet(worksheetName, index, this);
     d->worksheets.append(sheet);
@@ -173,53 +173,53 @@ void Workbook::saveToXmlFile(QIODevice *device)
     Q_D(Workbook);
     XmlStreamWriter writer(device);
 
-    writer.writeStartDocument("1.0", true);
-    writer.writeStartElement("workbook");
-    writer.writeAttribute("xmlns", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-    writer.writeAttribute("xmlns:r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+    writer.writeStartDocument(QStringLiteral("1.0"), true);
+    writer.writeStartElement(QStringLiteral("workbook"));
+    writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/spreadsheetml/2006/main"));
+    writer.writeAttribute(QStringLiteral("xmlns:r"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships"));
 
-    writer.writeEmptyElement("fileVersion");
-    writer.writeAttribute("appName", "xl");
-    writer.writeAttribute("lastEdited", "4");
-    writer.writeAttribute("lowestEdited", "4");
-    writer.writeAttribute("rupBuild", "4505");
-//    writer.writeAttribute("codeName", "{37E998C4-C9E5-D4B9-71C8-EB1FF731991C}");
+    writer.writeEmptyElement(QStringLiteral("fileVersion"));
+    writer.writeAttribute(QStringLiteral("appName"), QStringLiteral("xl"));
+    writer.writeAttribute(QStringLiteral("lastEdited"), QStringLiteral("4"));
+    writer.writeAttribute(QStringLiteral("lowestEdited"), QStringLiteral("4"));
+    writer.writeAttribute(QStringLiteral("rupBuild"), QStringLiteral("4505"));
+//    writer.writeAttribute(QStringLiteral("codeName"), QStringLiteral("{37E998C4-C9E5-D4B9-71C8-EB1FF731991C}"));
 
-    writer.writeEmptyElement("workbookPr");
+    writer.writeEmptyElement(QStringLiteral("workbookPr"));
     if (d->date1904)
-        writer.writeAttribute("date1904", "1");
-    writer.writeAttribute("defaultThemeVersion", "124226");
+        writer.writeAttribute(QStringLiteral("date1904"), QStringLiteral("1"));
+    writer.writeAttribute(QStringLiteral("defaultThemeVersion"), QStringLiteral("124226"));
 
-    writer.writeStartElement("bookViews");
-    writer.writeEmptyElement("workbookView");
-    writer.writeAttribute("xWindow", QString::number(d->x_window));
-    writer.writeAttribute("yWindow", QString::number(d->y_window));
-    writer.writeAttribute("windowWidth", QString::number(d->window_width));
-    writer.writeAttribute("windowHeight", QString::number(d->window_height));
+    writer.writeStartElement(QStringLiteral("bookViews"));
+    writer.writeEmptyElement(QStringLiteral("workbookView"));
+    writer.writeAttribute(QStringLiteral("xWindow"), QString::number(d->x_window));
+    writer.writeAttribute(QStringLiteral("yWindow"), QString::number(d->y_window));
+    writer.writeAttribute(QStringLiteral("windowWidth"), QString::number(d->window_width));
+    writer.writeAttribute(QStringLiteral("windowHeight"), QString::number(d->window_height));
     //Store the firstSheet when it isn't the default
     if (d->firstsheet > 0)
-        writer.writeAttribute("firstSheet", QString::number(d->firstsheet + 1));
+        writer.writeAttribute(QStringLiteral("firstSheet"), QString::number(d->firstsheet + 1));
     //Store the activeTab when it isn't the first sheet
     if (d->activesheet > 0)
-        writer.writeAttribute("activeTab", QString::number(d->activesheet));
+        writer.writeAttribute(QStringLiteral("activeTab"), QString::number(d->activesheet));
     writer.writeEndElement();//bookviews
 
-    writer.writeStartElement("sheets");
+    writer.writeStartElement(QStringLiteral("sheets"));
     foreach (Worksheet *sheet, d->worksheets) {
-        writer.writeEmptyElement("sheet");
-        writer.writeAttribute("name", sheet->name());
-        writer.writeAttribute("sheetId", QString::number(sheet->index()));
+        writer.writeEmptyElement(QStringLiteral("sheet"));
+        writer.writeAttribute(QStringLiteral("name"), sheet->name());
+        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->index()));
         if (sheet->isHidden())
-            writer.writeAttribute("state", "hidden");
-        writer.writeAttribute("r:id", QString("rId%1").arg(sheet->index()));
+            writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
+        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(sheet->index()));
     }
     writer.writeEndElement();//sheets
 
-//    writer.writeStartElement("definedNames");
+//    writer.writeStartElement(QStringLiteral("definedNames"));
 //    writer.writeEndElement();//definedNames
 
-    writer.writeStartElement("calcPr");
-    writer.writeAttribute("calcId", "124519");
+    writer.writeStartElement(QStringLiteral("calcPr"));
+    writer.writeAttribute(QStringLiteral("calcId"), QStringLiteral("124519"));
     writer.writeEndElement(); //calcPr
 
     writer.writeEndElement();//workbook

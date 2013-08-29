@@ -50,44 +50,44 @@ void DocProps::saveToXmlFile_App(QIODevice *device)
 {
     XmlStreamWriter writer(device);
 
-    writer.writeStartDocument("1.0", true);
-    writer.writeStartElement("Properties");
-    writer.writeAttribute("xmlns", "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties");
-    writer.writeAttribute("xmlns:vt", "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes");
-    writer.writeTextElement("Application", "Microsoft Excel");
-    writer.writeTextElement("DocSecurity", "0");
-    writer.writeTextElement("ScaleCrop", "false");
+    writer.writeStartDocument(QStringLiteral("1.0"), true);
+    writer.writeStartElement(QStringLiteral("Properties"));
+    writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"));
+    writer.writeAttribute(QStringLiteral("xmlns:vt"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"));
+    writer.writeTextElement(QStringLiteral("Application"), QStringLiteral("Microsoft Excel"));
+    writer.writeTextElement(QStringLiteral("DocSecurity"), QStringLiteral("0"));
+    writer.writeTextElement(QStringLiteral("ScaleCrop"), QStringLiteral("false"));
 
-    writer.writeStartElement("HeadingPairs");
-    writer.writeStartElement("vt:vector");
-    writer.writeAttribute("size", QString::number(m_headingPairsList.size()*2));
-    writer.writeAttribute("baseType", "variant");
+    writer.writeStartElement(QStringLiteral("HeadingPairs"));
+    writer.writeStartElement(QStringLiteral("vt:vector"));
+    writer.writeAttribute(QStringLiteral("size"), QString::number(m_headingPairsList.size()*2));
+    writer.writeAttribute(QStringLiteral("baseType"), QStringLiteral("variant"));
     typedef QPair<QString,int> PairType; //Make foreach happy
     foreach (PairType pair, m_headingPairsList) {
-        writer.writeStartElement("vt:variant");
-        writer.writeTextElement("vt:lpstr", pair.first);
+        writer.writeStartElement(QStringLiteral("vt:variant"));
+        writer.writeTextElement(QStringLiteral("vt:lpstr"), pair.first);
         writer.writeEndElement(); //vt:variant
-        writer.writeStartElement("vt:variant");
-        writer.writeTextElement("vt:i4", QString::number(pair.second));
+        writer.writeStartElement(QStringLiteral("vt:variant"));
+        writer.writeTextElement(QStringLiteral("vt:i4"), QString::number(pair.second));
         writer.writeEndElement(); //vt:variant
     }
     writer.writeEndElement();//vt:vector
     writer.writeEndElement();//HeadingPairs
 
-    writer.writeStartElement("TitlesOfParts");
-    writer.writeStartElement("vt:vector");
-    writer.writeAttribute("size", QString::number(m_titlesOfPartsList.size()));
-    writer.writeAttribute("baseType", "lpstr");
+    writer.writeStartElement(QStringLiteral("TitlesOfParts"));
+    writer.writeStartElement(QStringLiteral("vt:vector"));
+    writer.writeAttribute(QStringLiteral("size"), QString::number(m_titlesOfPartsList.size()));
+    writer.writeAttribute(QStringLiteral("baseType"), QStringLiteral("lpstr"));
     foreach (QString title, m_titlesOfPartsList)
-        writer.writeTextElement("vt:lpstr", title);
+        writer.writeTextElement(QStringLiteral("vt:lpstr"), title);
     writer.writeEndElement();//vt:vector
     writer.writeEndElement();//TitlesOfParts
 
-    writer.writeTextElement("Company", "");
-    writer.writeTextElement("LinksUpToDate", "false");
-    writer.writeTextElement("SharedDoc", "false");
-    writer.writeTextElement("HyperlinksChanged", "false");
-    writer.writeTextElement("AppVersion", "12.0000");
+    writer.writeTextElement(QStringLiteral("Company"), QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("LinksUpToDate"), QStringLiteral("false"));
+    writer.writeTextElement(QStringLiteral("SharedDoc"), QStringLiteral("false"));
+    writer.writeTextElement(QStringLiteral("HyperlinksChanged"), QStringLiteral("false"));
+    writer.writeTextElement(QStringLiteral("AppVersion"), QStringLiteral("12.0000"));
     writer.writeEndElement(); //Properties
     writer.writeEndDocument();
 }
@@ -96,32 +96,32 @@ void DocProps::saveToXmlFile_Core(QIODevice *device)
 {
     XmlStreamWriter writer(device);
 
-    writer.writeStartDocument("1.0", true);
-    writer.writeStartElement("cp:coreProperties");
-    writer.writeAttribute("xmlns:cp", "http://schemas.openxmlformats.org/package/2006/metadata/core-properties");
-    writer.writeAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
-    writer.writeAttribute("xmlns:dcterms", "http://purl.org/dc/terms/");
-    writer.writeAttribute("xmlns:dcmitype", "http://purl.org/dc/dcmitype/");
-    writer.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    writer.writeTextElement("dc:title", "");
-    writer.writeTextElement("dc:subject", "");
-    writer.writeTextElement("dc:creator", "QXlsxWriter");
-    writer.writeTextElement("cp:keywords", "");
-    writer.writeTextElement("dc:description", "");
-    writer.writeTextElement("cp:lastModifiedBy", "");
+    writer.writeStartDocument(QStringLiteral("1.0"), true);
+    writer.writeStartElement(QStringLiteral("cp:coreProperties"));
+    writer.writeAttribute(QStringLiteral("xmlns:cp"), QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties"));
+    writer.writeAttribute(QStringLiteral("xmlns:dc"), QStringLiteral("http://purl.org/dc/elements/1.1/"));
+    writer.writeAttribute(QStringLiteral("xmlns:dcterms"), QStringLiteral("http://purl.org/dc/terms/"));
+    writer.writeAttribute(QStringLiteral("xmlns:dcmitype"), QStringLiteral("http://purl.org/dc/dcmitype/"));
+    writer.writeAttribute(QStringLiteral("xmlns:xsi"), QStringLiteral("http://www.w3.org/2001/XMLSchema-instance"));
+    writer.writeTextElement(QStringLiteral("dc:title"), QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("dc:subject"), QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("dc:creator"), QStringLiteral("QXlsxWriter"));
+    writer.writeTextElement(QStringLiteral("cp:keywords"), QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("dc:description"), QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("cp:lastModifiedBy"), QStringLiteral(""));
 
-    writer.writeStartElement("dcterms:created");
-    writer.writeAttribute("xsi:type", "dcterms:W3CDTF");
+    writer.writeStartElement(QStringLiteral("dcterms:created"));
+    writer.writeAttribute(QStringLiteral("xsi:type"), QStringLiteral("dcterms:W3CDTF"));
     writer.writeCharacters(QDateTime::currentDateTime().toString(Qt::ISODate));
     writer.writeEndElement();//dcterms:created
 
-    writer.writeStartElement("dcterms:modified");
-    writer.writeAttribute("xsi:type", "dcterms:W3CDTF");
+    writer.writeStartElement(QStringLiteral("dcterms:modified"));
+    writer.writeAttribute(QStringLiteral("xsi:type"), QStringLiteral("dcterms:W3CDTF"));
     writer.writeCharacters(QDateTime::currentDateTime().toString(Qt::ISODate));
     writer.writeEndElement();//dcterms:created
 
-    writer.writeTextElement("cp:category", "");
-    writer.writeTextElement("cp:contentStatus", "");
+    writer.writeTextElement(QStringLiteral("cp:category"), QStringLiteral(""));
+    writer.writeTextElement(QStringLiteral("cp:contentStatus"), QStringLiteral(""));
     writer.writeEndElement(); //cp:coreProperties
     writer.writeEndDocument();
 }
