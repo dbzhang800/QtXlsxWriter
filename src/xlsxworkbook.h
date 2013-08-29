@@ -48,6 +48,9 @@ public:
     Format *addFormat();
 //    void addChart();
     void defineName(const QString &name, const QString &formula);
+    bool isDate1904() const;
+    void setDate1904(bool date1904);
+    bool isStringsToNumbersEnabled() const;
     void setStringsToNumbersEnabled(bool enable=true);
 
     void save(const QString &name);
@@ -59,13 +62,13 @@ private:
     QList<Worksheet *> worksheets() const;
     SharedStrings *sharedStrings();
     Styles *styles();
-    bool isStringsToNumbersEnabled() const;
     void saveToXmlFile(QIODevice *device);
 
     SharedStrings *m_sharedStrings;
     QList<Worksheet *> m_worksheets;
     Styles *m_styles;
     bool m_strings_to_numbers_enabled;
+    bool m_date1904;
 
     int m_x_window;
     int m_y_window;

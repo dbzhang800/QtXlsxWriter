@@ -45,6 +45,7 @@ Workbook::Workbook(QObject *parent) :
     m_window_height = 9660;
 
     m_strings_to_numbers_enabled = false;
+    m_date1904 = false;
     m_activesheet = 0;
     m_firstsheet = 0;
     m_table_count = 0;
@@ -75,6 +76,23 @@ void Workbook::save(const QString &name)
     //Create the package based on current workbook
     Package package(this);
     package.createPackage(name);
+}
+
+bool Workbook::isDate1904() const
+{
+    return m_date1904;
+}
+
+/*
+ Excel for Windows uses a default epoch of 1900 and Excel
+ for Mac uses an epoch of 1904. However, Excel on either
+ platform will convert automatically between one system
+ and the other. QtXlsxWriter stores dates in the 1900 format
+ by default.
+*/
+void Workbook::setDate1904(bool date1904)
+{
+    m_date1904 = date1904;
 }
 
 /*
@@ -148,6 +166,8 @@ void Workbook::saveToXmlFile(QIODevice *device)
 //    writer.writeAttribute("codeName", "{37E998C4-C9E5-D4B9-71C8-EB1FF731991C}");
 
     writer.writeEmptyElement("workbookPr");
+    if (m_date1904)
+        writer.writeAttribute("date1904", "1");
     writer.writeAttribute("defaultThemeVersion", "124226");
 
     writer.writeStartElement("bookViews");
