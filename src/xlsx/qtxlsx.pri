@@ -2,6 +2,7 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 QT += core gui gui-private
+!build_xlsx_lib:DEFINES += XLSX_NO_LIB
 
 HEADERS += $$PWD/xlsxdocprops_p.h \
     $$PWD/xlsxrelationships_p.h \
@@ -18,7 +19,8 @@ HEADERS += $$PWD/xlsxdocprops_p.h \
     $$PWD/xlsxpackage_p.h \
     $$PWD/xlsxworkbook_p.h \
     $$PWD/xlsxworksheet_p.h \
-    $$PWD/xlsxformat_p.h
+    $$PWD/xlsxformat_p.h \
+    $$PWD/xlsxglobal.h
 
 SOURCES += $$PWD/xlsxdocprops.cpp \
     $$PWD/xlsxrelationships.cpp \

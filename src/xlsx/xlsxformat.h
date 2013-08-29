@@ -25,6 +25,7 @@
 #ifndef QXLSX_FORMAT_H
 #define QXLSX_FORMAT_H
 
+#include "xlsxglobal.h"
 #include <QFont>
 #include <QColor>
 #include <QByteArray>
@@ -37,7 +38,7 @@ class Worksheet;
 class WorksheetPrivate;
 
 class FormatPrivate;
-class Format
+class Q_XLSX_EXPORT Format
 {
     Q_DECLARE_PRIVATE(Format)
 public:

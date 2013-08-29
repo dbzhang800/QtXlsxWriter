@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = xlsx
 
+SUBDIRS = xlsx

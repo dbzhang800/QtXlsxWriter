@@ -25,6 +25,7 @@
 #ifndef XLSXWORKSHEET_H
 #define XLSXWORKSHEET_H
 
+#include "xlsxglobal.h"
 #include <QObject>
 #include <QStringList>
 #include <QMap>
@@ -39,7 +40,7 @@ class XmlStreamWriter;
 class Format;
 
 class WorksheetPrivate;
-class Worksheet : public QObject
+class Q_XLSX_EXPORT Worksheet : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Worksheet)

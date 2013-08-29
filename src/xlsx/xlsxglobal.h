@@ -22,53 +22,22 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXWORKBOOK_H
-#define XLSXWORKBOOK_H
-
-#include <QObject>
-#include <QList>
-class QIODevice;
+#ifndef XLSXGLOBAL_H
+#define XLSXGLOBAL_H
+#include <QtGlobal>
 
 namespace QXlsx {
 
-class Worksheet;
-class Format;
-class SharedStrings;
-class Styles;
-class Package;
+#if !defined(QT_STATIC) && !defined(XLSX_NO_LIB)
+#  if defined(QT_BUILD_XLSX_LIB)
+#    define Q_XLSX_EXPORT Q_DECL_EXPORT
+#  else
+#    define Q_XLSX_EXPORT Q_DECL_IMPORT
+#  endif
+#else
+#  define Q_XLSX_EXPORT
+#endif
 
-class WorkbookPrivate;
-class Workbook : public QObject
-{
-    Q_OBJECT
-    Q_DECLARE_PRIVATE(Workbook)
-public:
-    Workbook(QObject *parent=0);
-    ~Workbook();
+}
 
-    QList<Worksheet *> worksheets() const;
-    Worksheet *addWorksheet(const QString &name = QString());
-    Format *addFormat();
-//    void addChart();
-    void defineName(const QString &name, const QString &formula);
-    bool isDate1904() const;
-    void setDate1904(bool date1904);
-    bool isStringsToNumbersEnabled() const;
-    void setStringsToNumbersEnabled(bool enable=true);
-
-    void save(const QString &name);
-
-private:
-    friend class Package;
-    friend class Worksheet;
-
-    SharedStrings *sharedStrings();
-    Styles *styles();
-    void saveToXmlFile(QIODevice *device);
-
-    WorkbookPrivate * const d_ptr;
-};
-
-} //QXlsx
-
-#endif // XLSXWORKBOOK_H
+#endif // XLSXGLOBAL_H
