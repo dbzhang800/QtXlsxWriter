@@ -31,6 +31,8 @@ int main()
     sheet2->write(3, 1, 400);
     sheet2->write(4, 1, "=SUM(B1:B4)");
 
+    workbook.setActivedWorksheet(1);
+
     workbook.save(DATA_PATH"Test.xlsx");
     workbook.save(DATA_PATH"Test.zip");
     return 0;

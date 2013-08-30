@@ -71,16 +71,11 @@ void Workbook::save(const QString &name)
         addWorksheet();
 
     //Ensure that at least one worksheet has been selected.
-    if (d->activesheet == 0) {
-        d->worksheets[0]->setHidden(false);
-        d->worksheets[0]->setSelected(true);
-    }
-
-    //Set the active sheet
-    foreach (Worksheet *sheet, d->worksheets) {
-        if (sheet->index() == d->activesheet)
-            sheet->setActived(true);
-    }
+    int actIndex = d->activesheet;
+    if (actIndex < 0 || actIndex >= d->worksheets.size())
+        actIndex = 0;
+    d->worksheets[actIndex]->setHidden(false);
+    d->worksheets[actIndex]->setSelected(true);
 
     //Create the package based on current workbook
     Package package(this);
@@ -133,15 +128,48 @@ void Workbook::defineName(const QString &name, const QString &formula)
 Worksheet *Workbook::addWorksheet(const QString &name)
 {
     Q_D(Workbook);
+    return insertWorkSheet(d->worksheets.size(), name);
+}
 
+Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
+{
+    Q_D(Workbook);
+    static int lastIndex = -1;
     QString worksheetName = name;
-    int index = d->worksheets.size()+1;
-    if (name.isEmpty())
-        worksheetName = QStringLiteral("Sheet%1").arg(index);
+    if (!name.isEmpty()) {
+        //If user given an already in-use name, we should not continue any more!
+        foreach (Worksheet *sheet, d->worksheets) {
+            if (sheet->name() == name)
+                return 0;
+        }
+    } else {
+        bool exists;
+        do {
+            ++lastIndex;
+            exists = false;
+            worksheetName = QStringLiteral("Sheet%1").arg(lastIndex+1);
+            foreach (Worksheet *sheet, d->worksheets) {
+                if (sheet->name() == worksheetName)
+                    exists = true;
+            }
+        } while (exists);
+    }
 
-    Worksheet *sheet = new Worksheet(worksheetName, index, this);
-    d->worksheets.append(sheet);
+    Worksheet *sheet = new Worksheet(worksheetName, this);
+    d->worksheets.insert(index, sheet);
     return sheet;
+}
+
+int Workbook::activedWorksheet() const
+{
+    Q_D(const Workbook);
+    return d->activesheet;
+}
+
+void Workbook::setActivedWorksheet(int index)
+{
+    Q_D(Workbook);
+    d->activesheet = index;
 }
 
 Format *Workbook::addFormat()
@@ -205,13 +233,14 @@ void Workbook::saveToXmlFile(QIODevice *device)
     writer.writeEndElement();//bookviews
 
     writer.writeStartElement(QStringLiteral("sheets"));
-    foreach (Worksheet *sheet, d->worksheets) {
+    for (int i=0; i<d->worksheets.size(); ++i) {
+        Worksheet *sheet = d->worksheets[i];
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->name());
-        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->index()));
+        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(i+1));
         if (sheet->isHidden())
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
-        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(sheet->index()));
+        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(i+1));
     }
     writer.writeEndElement();//sheets
 

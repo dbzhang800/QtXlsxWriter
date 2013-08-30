@@ -115,10 +115,8 @@ public:
     bool default_row_zeroed;
 
     QString name;
-    int index;
     bool hidden;
     bool selected;
-    bool actived;
     bool right_to_left;
     bool show_zeros;
 

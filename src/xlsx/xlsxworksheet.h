@@ -63,18 +63,15 @@ public:
 private:
     friend class Package;
     friend class Workbook;
-    Worksheet(const QString &sheetName, int sheetIndex, Workbook *parent=0);
+    Worksheet(const QString &sheetName, Workbook *parent=0);
     ~Worksheet();
 
     virtual bool isChartsheet() const;
     QString name() const;
-    int index() const;
     bool isHidden() const;
     bool isSelected() const;
-    bool isActived() const;
     void setHidden(bool hidden);
     void setSelected(bool select);
-    void setActived(bool act);
     void saveToXmlFile(QIODevice *device);
 
     WorksheetPrivate * const d_ptr;

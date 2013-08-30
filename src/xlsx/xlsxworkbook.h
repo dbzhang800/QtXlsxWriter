@@ -49,6 +49,10 @@ public:
 
     QList<Worksheet *> worksheets() const;
     Worksheet *addWorksheet(const QString &name = QString());
+    Worksheet *insertWorkSheet(int index, const QString &name = QString());
+    int activedWorksheet() const;
+    void setActivedWorksheet(int index);
+
     Format *addFormat();
 //    void addChart();
     void defineName(const QString &name, const QString &formula);

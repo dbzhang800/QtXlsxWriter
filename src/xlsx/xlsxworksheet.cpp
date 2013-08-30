@@ -61,7 +61,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
 
     hidden = false;
     selected = false;
-    actived = false;
     right_to_left = false;
     show_zeros = true;
 }
@@ -198,11 +197,10 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
  * \param index Index of the worksheet in the workbook
  * \param parent
  */
-Worksheet::Worksheet(const QString &name, int index, Workbook *parent) :
+Worksheet::Worksheet(const QString &name, Workbook *parent) :
     QObject(parent), d_ptr(new WorksheetPrivate(this))
 {
     d_ptr->name = name;
-    d_ptr->index = index;
     d_ptr->workbook = parent;
 }
 
@@ -222,12 +220,6 @@ QString Worksheet::name() const
     return d->name;
 }
 
-int Worksheet::index() const
-{
-    Q_D(const Worksheet);
-    return d->index;
-}
-
 bool Worksheet::isHidden() const
 {
     Q_D(const Worksheet);
@@ -240,12 +232,6 @@ bool Worksheet::isSelected() const
     return d->selected;
 }
 
-bool Worksheet::isActived() const
-{
-    Q_D(const Worksheet);
-    return d->actived;
-}
-
 void Worksheet::setHidden(bool hidden)
 {
     Q_D(Worksheet);
@@ -256,12 +242,6 @@ void Worksheet::setSelected(bool select)
 {
     Q_D(Worksheet);
     d->selected = select;
-}
-
-void Worksheet::setActived(bool act)
-{
-    Q_D(Worksheet);
-    d->actived = act;
 }
 
 void Worksheet::setRightToLeft(bool enable)
