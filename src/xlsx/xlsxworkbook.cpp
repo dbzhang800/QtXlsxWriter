@@ -62,7 +62,7 @@ Workbook::~Workbook()
     delete d_ptr;
 }
 
-void Workbook::save(const QString &name)
+bool Workbook::save(const QString &name)
 {
     Q_D(Workbook);
 
@@ -79,7 +79,7 @@ void Workbook::save(const QString &name)
 
     //Create the package based on current workbook
     Package package(this);
-    package.createPackage(name);
+    return package.createPackage(name);
 }
 
 bool Workbook::isDate1904() const

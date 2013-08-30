@@ -61,7 +61,7 @@ public:
     bool isStringsToNumbersEnabled() const;
     void setStringsToNumbersEnabled(bool enable=true);
 
-    void save(const QString &name);
+    bool save(const QString &name);
 
 private:
     friend class Package;

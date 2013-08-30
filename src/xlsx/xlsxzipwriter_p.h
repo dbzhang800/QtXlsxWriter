@@ -40,6 +40,7 @@ public:
 
     void addFile(const QString &filePath, QIODevice *device);
     void addFile(const QString &filePath, const QByteArray &data);
+    bool error() const;
     void close();
 
 private:

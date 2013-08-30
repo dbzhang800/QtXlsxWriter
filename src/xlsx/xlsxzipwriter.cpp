@@ -40,6 +40,11 @@ ZipWriter::~ZipWriter()
     delete m_writer;
 }
 
+bool ZipWriter::error() const
+{
+    return m_writer->status() != QZipWriter::NoError;
+}
+
 void ZipWriter::addFile(const QString &filePath, QIODevice *device)
 {
     m_writer->addFile(filePath, device);

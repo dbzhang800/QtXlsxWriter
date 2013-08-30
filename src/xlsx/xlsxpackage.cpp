@@ -88,6 +88,8 @@ Package::Package(Workbook *workbook) :
 bool Package::createPackage(const QString &packageName)
 {
     ZipWriter zipWriter(packageName);
+    if (zipWriter.error())
+        return false;
 
     m_workbook->styles()->clearExtraFormatInfo(); //These info will be generated when write the worksheet data.
     writeWorksheetFiles(zipWriter);
