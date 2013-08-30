@@ -24,6 +24,12 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
     include(3rdparty/qtxlsx/src/xlsx/qtxlsx.pri)
 ```
 
+**Note**: If you like, you can copy all files from *src/xlsx* to your application's source path. Then add following line to your project file:
+
+```
+    include(qtxlsx.pri)
+```
+
 * Then, using Qt Xlsx in your code
 
 ```cpp
@@ -37,12 +43,6 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
         workbook.save("Test.xlsx");
         return 0;
     }
-```
-
-**Note**: If you like, you can copy all files from *src/xlsx* to your application's source path. Then add following line to your project file:
-
-```
-    include(qtxlsx.pri)
 ```
 
 ### Usage(2): Use Xlsx as Qt5's addon module
@@ -76,3 +76,7 @@ The library, the header files, and the feature file will be installed to your sy
 * http://www.libxl.com
 * http://closedxml.codeplex.com/
 * http://search.cpan.org/~jmcnamara/Excel-Writer-XLSX-0.71/
+* http://www.codeproject.com/Articles/208075/How-to-read-and-write-xlsx-Excel-2007-file-Part-I
+* http://www.codeproject.com/Articles/210014/How-to-read-and-write-xlsx-Excel-2007-file-Part-II
+* http://epplus.codeplex.com/
+* http://excelpackage.codeplex.com/
