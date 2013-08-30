@@ -22,8 +22,8 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXDOCPROPS_H
-#define XLSXDOCPROPS_H
+#ifndef XLSXDOCPROPSCORE_H
+#define XLSXDOCPROPSCORE_H
 
 #include "xlsxglobal.h"
 #include <QObject>
@@ -35,24 +35,14 @@ class QIODevice;
 
 namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT DocProps : public QObject
+class XLSX_AUTOTEST_EXPORT DocPropsCore : public QObject
 {
     Q_OBJECT
 public:
-    explicit DocProps(QObject *parent = 0);
-    
-signals:
-    
-public slots:
-    void addPartTitle(const QString &title);
-    void addHeadingPair(const QString &name, int value);
-    void saveToXmlFile_App(QIODevice *device);
-    void saveToXmlFile_Core(QIODevice *device);
-
-private:
-    QStringList m_titlesOfPartsList;
-    QList<QPair<QString, int> > m_headingPairsList;
+    explicit DocPropsCore(QObject *parent = 0);
+        
+    void saveToXmlFile(QIODevice *device);
 };
 
 }
-#endif // XLSXDOCPROPS_H
+#endif // XLSXDOCPROPSCORE_H

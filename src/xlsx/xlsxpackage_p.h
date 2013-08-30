@@ -49,7 +49,8 @@ private:
 //    void writeCommentFiles(ZipWriter &zipWriter);
 //    void writeTableFiles(ZipWriter &zipWriter);
     void writeSharedStringsFile(ZipWriter &zipWriter);
-    void writeDocPropsFiles(ZipWriter &zipWriter);
+    void writeDocPropsAppFile(ZipWriter &zipWriter);
+    void writeDocPropsCoreFile(ZipWriter &zipWriter);
     void writeContentTypesFiles(ZipWriter &zipWriter);
     void writeStylesFiles(ZipWriter &zipWriter);
     void writeThemeFile(ZipWriter &zipWriter);

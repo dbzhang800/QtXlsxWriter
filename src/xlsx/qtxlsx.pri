@@ -4,7 +4,8 @@ DEPENDPATH += $$PWD
 QT += core gui gui-private
 !build_xlsx_lib:DEFINES += XLSX_NO_LIB
 
-HEADERS += $$PWD/xlsxdocprops_p.h \
+HEADERS += $$PWD/xlsxdocpropscore_p.h \
+    $$PWD/xlsxdocpropsapp_p.h \
     $$PWD/xlsxrelationships_p.h \
     $$PWD/xlsxutility_p.h \
     $$PWD/xlsxsharedstrings_p.h \
@@ -22,7 +23,8 @@ HEADERS += $$PWD/xlsxdocprops_p.h \
     $$PWD/xlsxformat_p.h \
     $$PWD/xlsxglobal.h
 
-SOURCES += $$PWD/xlsxdocprops.cpp \
+SOURCES += $$PWD/xlsxdocpropscore.cpp \
+    $$PWD/xlsxdocpropsapp.cpp \
     $$PWD/xlsxrelationships.cpp \
     $$PWD/xlsxutility.cpp \
     $$PWD/xlsxsharedstrings.cpp \

@@ -22,7 +22,7 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#include "xlsxdocprops_p.h"
+#include "xlsxdocpropsapp_p.h"
 #include "xlsxxmlwriter_p.h"
 
 #include <QDir>
@@ -31,23 +31,23 @@
 #include <QVariant>
 namespace QXlsx {
 
-DocProps::DocProps(QObject *parent) :
+DocPropsApp::DocPropsApp(QObject *parent) :
     QObject(parent)
 {
 }
 
-void DocProps::addPartTitle(const QString &title)
+void DocPropsApp::addPartTitle(const QString &title)
 {
     m_titlesOfPartsList.append(title);
 }
 
-void DocProps::addHeadingPair(const QString &name, int value)
+void DocPropsApp::addHeadingPair(const QString &name, int value)
 {
     m_headingPairsList.append(qMakePair(name, value));
 }
 
 
-void DocProps::saveToXmlFile_App(QIODevice *device)
+void DocPropsApp::saveToXmlFile(QIODevice *device)
 {
     XmlStreamWriter writer(device);
 
@@ -94,47 +94,6 @@ void DocProps::saveToXmlFile_App(QIODevice *device)
     writer.writeTextElement(QStringLiteral("AppVersion"), QStringLiteral("12.0000"));
 
     writer.writeEndElement(); //Properties
-    writer.writeEndDocument();
-}
-
-void DocProps::saveToXmlFile_Core(QIODevice *device)
-{
-    XmlStreamWriter writer(device);
-
-    writer.writeStartDocument(QStringLiteral("1.0"), true);
-    writer.writeStartElement(QStringLiteral("cp:coreProperties"));
-    writer.writeAttribute(QStringLiteral("xmlns:cp"), QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties"));
-    writer.writeAttribute(QStringLiteral("xmlns:dc"), QStringLiteral("http://purl.org/dc/elements/1.1/"));
-    writer.writeAttribute(QStringLiteral("xmlns:dcterms"), QStringLiteral("http://purl.org/dc/terms/"));
-    writer.writeAttribute(QStringLiteral("xmlns:dcmitype"), QStringLiteral("http://purl.org/dc/dcmitype/"));
-    writer.writeAttribute(QStringLiteral("xmlns:xsi"), QStringLiteral("http://www.w3.org/2001/XMLSchema-instance"));
-    if (property("title").isValid())
-        writer.writeTextElement(QStringLiteral("dc:title"), property("title").toString());
-    if (property("subject").isValid())
-        writer.writeTextElement(QStringLiteral("dc:subject"), property("subject").toString());
-    writer.writeTextElement(QStringLiteral("dc:creator"), property("creator").isValid() ? property("creator").toString() : QStringLiteral("Qt Xlsx Library"));
-
-    if (property("keywords").isValid())
-        writer.writeTextElement(QStringLiteral("cp:keywords"), property("keywords").toString());
-    if (property("description").isValid())
-        writer.writeTextElement(QStringLiteral("dc:description"), property("description").toString());
-    writer.writeTextElement(QStringLiteral("cp:lastModifiedBy"), property("creator").isValid() ? property("creator").toString() : QStringLiteral("Qt Xlsx Library"));
-
-    writer.writeStartElement(QStringLiteral("dcterms:created"));
-    writer.writeAttribute(QStringLiteral("xsi:type"), QStringLiteral("dcterms:W3CDTF"));
-    writer.writeCharacters(QDateTime::currentDateTime().toString(Qt::ISODate));
-    writer.writeEndElement();//dcterms:created
-
-    writer.writeStartElement(QStringLiteral("dcterms:modified"));
-    writer.writeAttribute(QStringLiteral("xsi:type"), QStringLiteral("dcterms:W3CDTF"));
-    writer.writeCharacters(QDateTime::currentDateTime().toString(Qt::ISODate));
-    writer.writeEndElement();//dcterms:created
-
-    if (property("category").isValid())
-        writer.writeTextElement(QStringLiteral("cp:category"), property("category").toString());
-    if (property("status").isValid())
-        writer.writeTextElement(QStringLiteral("cp:contentStatus"), property("status").toString());
-    writer.writeEndElement(); //cp:coreProperties
     writer.writeEndDocument();
 }
 

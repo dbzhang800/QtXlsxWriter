@@ -27,7 +27,8 @@
 #include "xlsxworksheet.h"
 #include "xlsxcontenttypes_p.h"
 #include "xlsxsharedstrings_p.h"
-#include "xlsxdocprops_p.h"
+#include "xlsxdocpropscore_p.h"
+#include "xlsxdocpropsapp_p.h"
 #include "xlsxtheme_p.h"
 #include "xlsxstyles_p.h"
 #include "xlsxrelationships_p.h"
@@ -101,7 +102,8 @@ bool Package::createPackage(const QString &packageName)
 //    writeCommentFiles(zipWriter);
 //    writeTableFiles(zipWriter);
     writeSharedStringsFile(zipWriter);
-    writeDocPropsFiles(zipWriter);
+    writeDocPropsAppFile(zipWriter);
+    writeDocPropsCoreFile(zipWriter);
     writeContentTypesFiles(zipWriter);
     m_workbook->styles()->prepareStyles();
     writeStylesFiles(zipWriter);
@@ -166,9 +168,9 @@ void Package::writeContentTypesFiles(ZipWriter &zipWriter)
     zipWriter.addFile(QStringLiteral("[Content_Types].xml"), data);
 }
 
-void Package::writeDocPropsFiles(ZipWriter &zipWriter)
+void Package::writeDocPropsAppFile(ZipWriter &zipWriter)
 {
-    DocProps props;
+    DocPropsApp props;
 
     foreach (QByteArray name, m_workbook->dynamicPropertyNames())
         props.setProperty(name.data(), m_workbook->property(name.data()));
@@ -190,17 +192,25 @@ void Package::writeDocPropsFiles(ZipWriter &zipWriter)
             props.addPartTitle(sheet->name());
     }
 
-    QByteArray data1;
-    QBuffer buffer1(&data1);
-    buffer1.open(QIODevice::WriteOnly);
-    props.saveToXmlFile_App(&buffer1);
-    zipWriter.addFile(QStringLiteral("docProps/app.xml"), data1);
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    props.saveToXmlFile(&buffer);
+    zipWriter.addFile(QStringLiteral("docProps/app.xml"), data);
+}
 
-    QByteArray data2;
-    QBuffer buffer2(&data2);
-    buffer2.open(QIODevice::WriteOnly);
-    props.saveToXmlFile_Core(&buffer2);
-    zipWriter.addFile(QStringLiteral("docProps/core.xml"), data2);
+void Package::writeDocPropsCoreFile(ZipWriter &zipWriter)
+{
+    DocPropsCore props;
+
+    foreach (QByteArray name, m_workbook->dynamicPropertyNames())
+        props.setProperty(name.data(), m_workbook->property(name.data()));
+
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    props.saveToXmlFile(&buffer);
+    zipWriter.addFile(QStringLiteral("docProps/core.xml"), data);
 }
 
 void Package::writeSharedStringsFile(ZipWriter &zipWriter)
