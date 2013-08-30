@@ -23,7 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxrelationships_p.h"
-#include "xmlstreamwriter_p.h"
+#include "xlsxxmlwriter_p.h"
 #include <QDir>
 #include <QFile>
 

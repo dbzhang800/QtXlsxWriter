@@ -23,7 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxcontenttypes_p.h"
-#include "xmlstreamwriter_p.h"
+#include "xlsxxmlwriter_p.h"
 #include <QFile>
 #include <QMapIterator>
 

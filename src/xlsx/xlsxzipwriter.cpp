@@ -22,15 +22,37 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#include "xmlstreamwriter_p.h"
-#include <QIODevice>
+#include "xlsxzipwriter_p.h"
+#include <QDebug>
+#include <private/qzipwriter_p.h>
 
 namespace QXlsx {
 
-XmlStreamWriter::XmlStreamWriter(QIODevice *device) :
-    QXmlStreamWriter(device)
+ZipWriter::ZipWriter(const QString &filePath, QObject *parent) :
+    QObject(parent)
 {
-
+    m_writer = new QZipWriter(filePath, QIODevice::WriteOnly);
+    m_writer->setCompressionPolicy(QZipWriter::NeverCompress);
 }
 
+ZipWriter::~ZipWriter()
+{
+    delete m_writer;
 }
+
+void ZipWriter::addFile(const QString &filePath, QIODevice *device)
+{
+    m_writer->addFile(filePath, device);
+}
+
+void ZipWriter::addFile(const QString &filePath, const QByteArray &data)
+{
+    m_writer->addFile(filePath, data);
+}
+
+void ZipWriter::close()
+{
+    m_writer->close();
+}
+
+} // namespace QXlsx

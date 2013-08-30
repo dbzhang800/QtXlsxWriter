@@ -29,7 +29,7 @@
 #include "xlsxstyles_p.h"
 #include "xlsxformat.h"
 #include "xlsxpackage_p.h"
-#include "xmlstreamwriter_p.h"
+#include "xlsxxmlwriter_p.h"
 
 namespace QXlsx {
 

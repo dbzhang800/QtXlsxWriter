@@ -28,7 +28,7 @@
 #include "xlsxformat.h"
 #include "xlsxutility_p.h"
 #include "xlsxsharedstrings_p.h"
-#include "xmlstreamwriter_p.h"
+#include "xlsxxmlwriter_p.h"
 
 #include <QVariant>
 #include <QDateTime>

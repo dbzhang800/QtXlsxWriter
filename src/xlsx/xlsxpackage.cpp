@@ -31,7 +31,7 @@
 #include "xlsxtheme_p.h"
 #include "xlsxstyles_p.h"
 #include "xlsxrelationships_p.h"
-#include "zipwriter_p.h"
+#include "xlsxzipwriter_p.h"
 #include <QBuffer>
 #include <QDebug>
 

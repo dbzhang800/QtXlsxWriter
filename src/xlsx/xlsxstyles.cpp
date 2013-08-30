@@ -24,7 +24,7 @@
 ****************************************************************************/
 #include "xlsxstyles_p.h"
 #include "xlsxformat.h"
-#include "xmlstreamwriter_p.h"
+#include "xlsxxmlwriter_p.h"
 #include <QFile>
 #include <QMap>
 #include <QDataStream>
