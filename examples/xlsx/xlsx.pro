@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = hello style
+SUBDIRS = hello style \
+    documentproperty
 

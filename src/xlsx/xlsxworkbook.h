@@ -61,6 +61,10 @@ public:
     bool isStringsToNumbersEnabled() const;
     void setStringsToNumbersEnabled(bool enable=true);
 
+#ifdef Q_QDOC
+    bool setProperty(const char *key, const QString &value);
+#endif
+
     bool save(const QString &name);
 
 private:

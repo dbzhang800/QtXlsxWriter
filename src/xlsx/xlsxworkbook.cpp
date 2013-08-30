@@ -51,6 +51,31 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     table_count = 0;
 }
 
+/*!
+    \fn void Workbook::setProperty(const char *key, const QString &value)
+
+    Set the document properties such as Title, Author etc.
+
+    The method can be used to set the document properties of the Excel
+    file created by Qt Xlsx. These properties are visible when you use the
+    Office Button -> Prepare -> Properties option in Excel and are also
+    available to external applications that read or index windows files.
+
+    The properties \a key that can be set are:
+
+    \list
+    \li title
+    \li subject
+    \li creator
+    \li manager
+    \li company
+    \li category
+    \li keywords
+    \li description
+    \li status
+    \endlist
+*/
+
 Workbook::Workbook(QObject *parent) :
     QObject(parent), d_ptr(new WorkbookPrivate(this))
 {

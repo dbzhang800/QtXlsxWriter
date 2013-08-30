@@ -170,6 +170,9 @@ void Package::writeDocPropsFiles(ZipWriter &zipWriter)
 {
     DocProps props;
 
+    foreach (QByteArray name, m_workbook->dynamicPropertyNames())
+        props.setProperty(name.data(), m_workbook->property(name.data()));
+
     if (m_worksheet_count)
         props.addHeadingPair(QStringLiteral("Worksheets"), m_worksheet_count);
     if (m_chartsheet_count)
