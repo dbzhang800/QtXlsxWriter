@@ -25,15 +25,16 @@
 #ifndef XLSXUTILITY_H
 #define XLSXUTILITY_H
 
+#include "xlsxglobal.h"
 class QPoint;
 class QString;
 
 namespace QXlsx {
 
-int intPow(int x, int p);
-QPoint xl_cell_to_rowcol(const QString &cell_str);
-QString xl_col_to_name(int col_num);
-QString xl_rowcol_to_cell(int row, int col, bool row_abs=false, bool col_abs=false);
-QString xl_rowcol_to_cell_fast(int row, int col);
+XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
+XLSX_AUTOTEST_EXPORT QPoint xl_cell_to_rowcol(const QString &cell_str);
+XLSX_AUTOTEST_EXPORT QString xl_col_to_name(int col_num);
+XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell(int row, int col, bool row_abs=false, bool col_abs=false);
+XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell_fast(int row, int col);
 } //QXlsx
 #endif // XLSXUTILITY_H

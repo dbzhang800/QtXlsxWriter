@@ -38,6 +38,12 @@ namespace QXlsx {
 #  define Q_XLSX_EXPORT
 #endif
 
+#ifdef XLSX_TEST
+#  define XLSX_AUTOTEST_EXPORT Q_XLSX_EXPORT
+#else
+#  define XLSX_AUTOTEST_EXPORT
+#endif
+
 }
 
 #endif // XLSXGLOBAL_H

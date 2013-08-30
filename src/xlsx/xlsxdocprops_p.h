@@ -25,6 +25,7 @@
 #ifndef XLSXDOCPROPS_H
 #define XLSXDOCPROPS_H
 
+#include "xlsxglobal.h"
 #include <QObject>
 #include <QList>
 #include <QPair>
@@ -34,7 +35,7 @@ class QIODevice;
 
 namespace QXlsx {
 
-class DocProps : public QObject
+class XLSX_AUTOTEST_EXPORT DocProps : public QObject
 {
     Q_OBJECT
 public:
