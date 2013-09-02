@@ -32,6 +32,7 @@
 #include <QVariant>
 class QIODevice;
 class QDateTime;
+class QUrl;
 
 namespace QXlsx {
 class Package;
@@ -53,6 +54,7 @@ public:
     int writeBlank(int row, int column, Format *format=0);
     int writeBool(int row, int column, bool value, Format *format=0);
     int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
+    int writeUrl(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
 
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
@@ -73,6 +75,7 @@ private:
     void setHidden(bool hidden);
     void setSelected(bool select);
     void saveToXmlFile(QIODevice *device);
+    QStringList externUrlList() const;
 
     WorksheetPrivate * const d_ptr;
 };

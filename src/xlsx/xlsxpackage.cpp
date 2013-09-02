@@ -285,6 +285,21 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
 
 void Package::writeWorksheetRelsFile(ZipWriter &zipWriter)
 {
+    int index = 1;
+    foreach (Worksheet *sheet, m_workbook->worksheets()) {
+        if (sheet->isChartsheet())
+            continue;
+        Relationships rels;
 
+        foreach (QString link, sheet->externUrlList())
+            rels.addWorksheetRelationship(QStringLiteral("/hyperlink"), link, QStringLiteral("External"));
+
+        QByteArray data;
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::WriteOnly);
+        rels.saveToXmlFile(&buffer);
+        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(index), data);
+        index += 1;
+    }
 }
 } // namespace QXlsx

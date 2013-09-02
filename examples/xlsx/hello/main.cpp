@@ -16,6 +16,7 @@ int main()
     sheet->write("B3", 12345);
     sheet->write("C5", "=44+33");
     sheet->write("D7", true);
+    sheet->write("E1", "http://qt-project.org");
 
     QXlsx::Worksheet *sheet2 = workbook.addWorksheet();
     //Rows and columns are zero indexed.

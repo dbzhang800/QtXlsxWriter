@@ -34,6 +34,8 @@
 #include <QDateTime>
 #include <QPoint>
 #include <QFile>
+#include <QUrl>
+#include <QRegularExpression>
 #include <QDebug>
 
 #include <stdint.h>
@@ -256,6 +258,12 @@ void Worksheet::setZeroValuesHidden(bool enable)
     d->show_zeros = !enable;
 }
 
+QStringList Worksheet::externUrlList() const
+{
+    Q_D(const Worksheet);
+    return d->externUrlList;
+}
+
 int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 {
     Q_D(Worksheet);
@@ -279,13 +287,16 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
             ret = writeNumber(row, column, value.toDouble(), format);
         }
     } else if (value.type() == QMetaType::QUrl) { //url
-
+        ret = writeUrl(row, column, value.toUrl(), format);
     } else if (value.type() == QMetaType::QString) { //string
         QString token = value.toString();
+        QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|((in|ex)ternal:)"));
         if (token.startsWith(QLatin1String("="))) {
             ret = writeFormula(row, column, token, format);
         } else if (token.startsWith(QLatin1String("{")) && token.endsWith(QLatin1String("}"))) {
 
+        } else if (token.contains(urlPattern)) {
+            ret = writeUrl(row, column, QUrl(token));
         } else {
             ret = writeString(row, column, token, format);
         }
@@ -386,6 +397,70 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
     return 0;
 }
 
+int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, const QString &display, const QString &tip)
+{
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
+        return -1;
+
+    int link_type = 1;
+    QString urlString = url.toString();
+    QString displayString = display;
+    if (urlString.startsWith(QLatin1String("internal:"))) {
+        urlString.replace(QLatin1String("internal:"), QString());
+        link_type = 2;
+    } else if (urlString.startsWith(QLatin1String("external:"))) {
+        urlString.replace(QLatin1String("external:"), QString());
+        link_type = 3;
+    }
+
+    if (display.isEmpty())
+        displayString = urlString;
+
+    //For external links, chagne the directory separator from Unix to Dos
+    if (link_type == 3) {
+        urlString.replace(QLatin1Char('/'), QLatin1String("\\"));
+        displayString.replace(QLatin1Char('/'), QLatin1String("\\"));
+    }
+
+    displayString.replace(QLatin1String("mailto:"), QString());
+
+    int error = 0;
+    if (displayString.size() > d->xls_strmax) {
+        displayString = displayString.left(d->xls_strmax);
+        error = -2;
+    }
+
+    QString locationString = displayString;
+    if (link_type == 1) {
+        locationString = QString();
+    } else if (link_type == 3) {
+        // External Workbook links need to be modified into correct format.
+        // The URL will look something like 'c:\temp\file.xlsx#Sheet!A1'.
+        // We need the part to the left of the # as the URL and the part to
+        //the right as the "location" string (if it exists).
+        if (urlString.contains(QLatin1Char('#'))) {
+            QStringList list = urlString.split(QLatin1Char('#'));
+            urlString = list[0];
+            locationString = list[1];
+        } else {
+            locationString = QString();
+        }
+        link_type = 1;
+    }
+
+
+    //Write the hyperlink string as normal string.
+    SharedStrings *sharedStrings = d->workbook->sharedStrings();
+    int index = sharedStrings->addSharedString(urlString);
+    d->cellTable[row][column] = new XlsxCellData(index, XlsxCellData::String, format);
+
+    //Store the hyperlink data in sa separate table
+    d->urlTable[row][column] = new XlsxUrlData(link_type, urlString, locationString, tip);
+
+    return error;
+}
+
 void Worksheet::saveToXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
@@ -456,6 +531,8 @@ void Worksheet::saveToXmlFile(QIODevice *device)
         d->writeSheetData(writer);
     }
     writer.writeEndElement();//sheetData
+
+    d->writeHyperlinks(writer);
 
     writer.writeEndElement();//worksheet
     writer.writeEndDocument();
@@ -559,6 +636,49 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         writer.writeTextElement(QStringLiteral("v"), QString::number(excel_time, 'g', 15));
     }
     writer.writeEndElement(); //c
+}
+
+void WorksheetPrivate::writeHyperlinks(XmlStreamWriter &writer)
+{
+    if (urlTable.isEmpty())
+        return;
+
+    int rel_count = 0;
+    externUrlList.clear();
+
+    writer.writeStartElement(QStringLiteral("hyperlinks"));
+    QMapIterator<int, QMap<int, XlsxUrlData *> > it(urlTable);
+    while (it.hasNext()) {
+        it.next();
+        int row = it.key();
+        QMapIterator <int, XlsxUrlData *> it2(it.value());
+        while(it2.hasNext()) {
+            it2.next();
+            int col = it2.key();
+            XlsxUrlData *data = it2.value();
+            QString ref = xl_rowcol_to_cell(row, col);
+            writer.writeEmptyElement(QStringLiteral("hyperlink"));
+            writer.writeAttribute(QStringLiteral("ref"), ref);
+            if (data->linkType == 1) {
+                rel_count += 1;
+                externUrlList.append(data->url);
+                writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(rel_count));
+                if (!data->location.isEmpty())
+                    writer.writeAttribute(QStringLiteral("location"), data->location);
+//                if (!data->url.isEmpty())
+//                    writer.writeAttribute(QStringLiteral("display"), data->url);
+                if (!data->tip.isEmpty())
+                    writer.writeAttribute(QStringLiteral("tooltip"), data->tip);
+            } else {
+                writer.writeAttribute(QStringLiteral("location"), data->url);
+                if (!data->tip.isEmpty())
+                    writer.writeAttribute(QStringLiteral("tooltip"), data->tip);
+                writer.writeAttribute(QStringLiteral("display"), data->location);
+            }
+        }
+    }
+
+    writer.writeEndElement();//hyperlinks
 }
 
 /*
