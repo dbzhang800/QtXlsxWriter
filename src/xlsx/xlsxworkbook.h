@@ -28,6 +28,7 @@
 #include "xlsxglobal.h"
 #include <QObject>
 #include <QList>
+#include <QImage>
 class QIODevice;
 
 namespace QXlsx {
@@ -37,6 +38,7 @@ class Format;
 class SharedStrings;
 class Styles;
 class Package;
+class Drawing;
 
 class WorkbookPrivate;
 class Q_XLSX_EXPORT Workbook : public QObject
@@ -73,6 +75,9 @@ private:
 
     SharedStrings *sharedStrings();
     Styles *styles();
+    QList<QImage> images();
+    QList<Drawing *> drawings();
+    void prepareDrawings();
     void saveToXmlFile(QIODevice *device);
 
     WorkbookPrivate * const d_ptr;

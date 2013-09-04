@@ -39,6 +39,8 @@ public:
     SharedStrings *sharedStrings;
     QList<Worksheet *> worksheets;
     Styles *styles;
+    QList<QImage> images;
+    QList<Drawing *> drawings;
 
     bool strings_to_numbers_enabled;
     bool date1904;

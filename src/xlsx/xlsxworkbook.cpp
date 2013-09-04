@@ -30,6 +30,7 @@
 #include "xlsxformat.h"
 #include "xlsxpackage_p.h"
 #include "xlsxxmlwriter_p.h"
+#include "xlsxworksheet_p.h"
 
 namespace QXlsx {
 
@@ -219,6 +220,44 @@ Styles *Workbook::styles()
 {
     Q_D(Workbook);
     return d->styles;
+}
+
+QList<QImage> Workbook::images()
+{
+    Q_D(Workbook);
+    return d->images;
+}
+
+QList<Drawing *> Workbook::drawings()
+{
+    Q_D(Workbook);
+    return d->drawings;
+}
+
+void Workbook::prepareDrawings()
+{
+    Q_D(Workbook);
+    int drawing_id = 0;
+    int image_ref_id = 0;
+    d->images.clear();
+    d->drawings.clear();
+
+    foreach (Worksheet *sheet, d->worksheets) {
+        if (sheet->images().isEmpty()) //No drawing (such as Image, ...)
+            continue;
+
+        sheet->clearExtraDrawingInfo();
+
+        //At present, only picture type supported
+        drawing_id += 1;
+        for (int idx = 0; idx < sheet->images().size(); ++idx) {
+            image_ref_id += 1;
+            sheet->prepareImage(idx, image_ref_id, drawing_id);
+            d->images.append(sheet->images()[idx]->image);
+        }
+
+        d->drawings.append(sheet->drawing());
+    }
 }
 
 void Workbook::saveToXmlFile(QIODevice *device)

@@ -44,7 +44,7 @@ private:
 //    void writeChartsheetFiles(ZipWriter &zipWriter);
     void writeWorkbookFile(ZipWriter &zipWriter);
 //    void writeChartFiles(ZipWriter &zipWriter);
-//    void writeDrawingFiles(ZipWriter &zipWriter);
+    void writeDrawingFiles(ZipWriter &zipWriter);
 //    void writeVmlFiles(ZipWriter &zipWriter);
 //    void writeCommentFiles(ZipWriter &zipWriter);
 //    void writeTableFiles(ZipWriter &zipWriter);
@@ -56,9 +56,10 @@ private:
     void writeThemeFile(ZipWriter &zipWriter);
     void writeRootRelsFile(ZipWriter &zipWriter);
     void writeWorkbookRelsFile(ZipWriter &zipWriter);
-    void writeWorksheetRelsFile(ZipWriter &zipWriter);
+    void writeWorksheetRelsFiles(ZipWriter &zipWriter);
 //    void writeChartsheetRelsFile(ZipWriter &zipWriter);
-//    void writeImageFiles(ZipWriter &zipWriter);
+    void writeDrawingRelsFiles(ZipWriter &zipWriter);
+    void writeImageFiles(ZipWriter &zipWriter);
 //    void writeVbaProjectFiles(ZipWriter &zipWriter);
 
     Workbook * m_workbook;

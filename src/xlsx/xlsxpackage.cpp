@@ -33,6 +33,7 @@
 #include "xlsxstyles_p.h"
 #include "xlsxrelationships_p.h"
 #include "xlsxzipwriter_p.h"
+#include "xlsxdrawing_p.h"
 #include <QBuffer>
 #include <QDebug>
 
@@ -93,11 +94,13 @@ bool Package::createPackage(const QString &packageName)
         return false;
 
     m_workbook->styles()->clearExtraFormatInfo(); //These info will be generated when write the worksheet data.
+    m_workbook->prepareDrawings();
+
     writeWorksheetFiles(zipWriter);
 //    writeChartsheetFiles(zipWriter);
     writeWorkbookFile(zipWriter);
 //    writeChartFiles(zipWriter);
-//    writeDrawingFiles(zipWriter);
+    writeDrawingFiles(zipWriter);
 //    writeVmlFiles(zipWriter);
 //    writeCommentFiles(zipWriter);
 //    writeTableFiles(zipWriter);
@@ -110,9 +113,10 @@ bool Package::createPackage(const QString &packageName)
     writeThemeFile(zipWriter);
     writeRootRelsFile(zipWriter);
     writeWorkbookRelsFile(zipWriter);
-    writeWorksheetRelsFile(zipWriter);
+    writeWorksheetRelsFiles(zipWriter);
 //    writeChartsheetRelsFile(zipWriter);
-//    writeImageFiles(zipWriter);
+    writeDrawingRelsFiles(zipWriter);
+    writeImageFiles(zipWriter);
 //    writeVbaProjectFiles(zipWriter);
 
     zipWriter.close();
@@ -144,6 +148,19 @@ void Package::writeWorkbookFile(ZipWriter &zipWriter)
     zipWriter.addFile(QStringLiteral("xl/workbook.xml"), data);
 }
 
+void Package::writeDrawingFiles(ZipWriter &zipWriter)
+{
+    for (int i=0; i<m_workbook->drawings().size(); ++i) {
+        Drawing *drawing = m_workbook->drawings()[i];
+
+        QByteArray data;
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::WriteOnly);
+        drawing->saveToXmlFile(&buffer);
+        zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), data);
+    }
+}
+
 void Package::writeContentTypesFiles(ZipWriter &zipWriter)
 {
     ContentTypes content;
@@ -157,6 +174,15 @@ void Package::writeContentTypesFiles(ZipWriter &zipWriter)
             worksheet_index += 1;
         }
     }
+
+    int drawing_index = 1;
+    foreach (Drawing *drawing, m_workbook->drawings()) {
+        content.addDrawingName(QStringLiteral("drawing%1").arg(drawing_index));
+        drawing_index += 1;
+    }
+
+    if (!m_workbook->images().isEmpty())
+        content.addImageTypes(QStringList()<<QStringLiteral("png"));
 
     if (m_workbook->sharedStrings()->count())
         content.addSharedString();
@@ -283,7 +309,7 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
     zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), data);
 }
 
-void Package::writeWorksheetRelsFile(ZipWriter &zipWriter)
+void Package::writeWorksheetRelsFiles(ZipWriter &zipWriter)
 {
     int index = 1;
     foreach (Worksheet *sheet, m_workbook->worksheets()) {
@@ -293,7 +319,8 @@ void Package::writeWorksheetRelsFile(ZipWriter &zipWriter)
 
         foreach (QString link, sheet->externUrlList())
             rels.addWorksheetRelationship(QStringLiteral("/hyperlink"), link, QStringLiteral("External"));
-
+        foreach (QString link, sheet->externDrawingList())
+            rels.addWorksheetRelationship(QStringLiteral("/drawing"), link);
         QByteArray data;
         QBuffer buffer(&data);
         buffer.open(QIODevice::WriteOnly);
@@ -302,4 +329,39 @@ void Package::writeWorksheetRelsFile(ZipWriter &zipWriter)
         index += 1;
     }
 }
+
+void Package::writeDrawingRelsFiles(ZipWriter &zipWriter)
+{
+    int index = 1;
+    foreach (Worksheet *sheet, m_workbook->worksheets()) {
+        if (sheet->drawingLinks().size() == 0)
+            continue;
+        Relationships rels;
+
+        typedef QPair<QString, QString> PairType;
+        foreach (PairType pair, sheet->drawingLinks())
+            rels.addDocumentRelationship(pair.first, pair.second);
+
+        QByteArray data;
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::WriteOnly);
+        rels.saveToXmlFile(&buffer);
+        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(index), data);
+        index += 1;
+    }
+}
+
+void Package::writeImageFiles(ZipWriter &zipWriter)
+{
+    for (int i=0; i<m_workbook->images().size(); ++i) {
+        QImage image = m_workbook->images()[i];
+
+        QByteArray data;
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::WriteOnly);
+        image.save(&buffer, "png");
+        zipWriter.addFile(QStringLiteral("xl/media/image%1.png").arg(i+1), data);
+    }
+}
+
 } // namespace QXlsx

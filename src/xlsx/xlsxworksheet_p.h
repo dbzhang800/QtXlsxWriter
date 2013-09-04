@@ -26,6 +26,8 @@
 #define XLSXWORKSHEET_P_H
 #include "xlsxworksheet.h"
 
+#include <QImage>
+
 namespace QXlsx {
 
 struct XlsxCellData
@@ -63,6 +65,67 @@ struct XlsxUrlData
     QString url;
     QString location; //location string
     QString tip;
+};
+
+struct XlsxImageData
+{
+    XlsxImageData(int row, int col, const QImage &image, const QPointF &offset, double xScale, double yScale) :
+        row(row), col(col), image(image), offset(offset), xScale(xScale), yScale(yScale)
+    {
+    }
+
+    int row;
+    int col;
+    QImage image;
+    QPointF offset;
+    double xScale;
+    double yScale;
+};
+
+/*
+     The vertices that define the position of a graphical object
+     within the worksheet in pixels.
+
+             +------------+------------+
+             |     A      |      B     |
+       +-----+------------+------------+
+       |     |(x1,y1)     |            |
+       |  1  |(A1)._______|______      |
+       |     |    |              |     |
+       |     |    |              |     |
+       +-----+----|    OBJECT    |-----+
+       |     |    |              |     |
+       |  2  |    |______________.     |
+       |     |            |        (B2)|
+       |     |            |     (x2,y2)|
+       +---- +------------+------------+
+
+     Example of an object that covers some of the area from cell A1 to  B2.
+
+     Based on the width and height of the object we need to calculate 8 vars:
+
+         col_start, row_start, col_end, row_end, x1, y1, x2, y2.
+
+     We also calculate the absolute x and y position of the top left vertex of
+     the object. This is required for images.
+
+     The width and height of the cells that the object occupies can be
+     variable and have to be taken into account.
+*/
+struct XlsxObjectPositionData
+{
+    int col_start;
+    double x1;
+    int row_start;
+    double y1;
+    int col_end;
+    double x2;
+    int row_end;
+    double y2;
+    double width;
+    double height;
+    double x_abs;
+    double y_abs;
 };
 
 struct XlsxRowInfo
@@ -104,15 +167,24 @@ public:
     void writeSheetData(XmlStreamWriter &writer);
     void writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell);
     void writeHyperlinks(XmlStreamWriter &writer);
+    void writeDrawings(XmlStreamWriter &writer);
+    int rowPixelsSize(int row);
+    int colPixelsSize(int col);
+    XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
+    XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data);
 
     Workbook *workbook;
+    Drawing *drawing;
     QMap<int, QMap<int, XlsxCellData *> > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, XlsxUrlData *> > urlTable;
     QStringList externUrlList;
+    QStringList externDrawingList;
+    QList<XlsxImageData *> imageList;
     QMap<int, XlsxRowInfo *> rowsInfo;
     QList<XlsxColumnInfo *> colsInfo;
     QMap<int, XlsxColumnInfo *> colsInfoHelper;//Not owns the XlsxColumnInfo
+    QList<QPair<QString, QString> > drawingLinks;
 
     int xls_rowmax;
     int xls_colmax;
@@ -124,6 +196,8 @@ public:
     int previous_row;
 
     QMap<int, QString> row_spans;
+    QMap<int, double> row_sizes;
+    QMap<int, double> col_sizes;
 
     int outline_row_level;
     int outline_col_level;

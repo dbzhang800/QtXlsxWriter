@@ -30,15 +30,19 @@
 #include <QStringList>
 #include <QMap>
 #include <QVariant>
+#include <QPointF>
 class QIODevice;
 class QDateTime;
 class QUrl;
+class QImage;
 
 namespace QXlsx {
 class Package;
 class Workbook;
 class XmlStreamWriter;
 class Format;
+class Drawing;
+struct XlsxImageData;
 
 class WorksheetPrivate;
 class Q_XLSX_EXPORT Worksheet : public QObject
@@ -55,6 +59,8 @@ public:
     int writeBool(int row, int column, bool value, Format *format=0);
     int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
     int writeUrl(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
+
+    int insertImage(int row, int column, const QImage &image, const QPointF &offset=QPointF(), double xScale=1, double yScale=1);
 
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
@@ -76,6 +82,12 @@ private:
     void setSelected(bool select);
     void saveToXmlFile(QIODevice *device);
     QStringList externUrlList() const;
+    QStringList externDrawingList() const;
+    QList<QPair<QString, QString> > drawingLinks() const;
+    Drawing *drawing() const;
+    QList<XlsxImageData *> images() const;
+    void prepareImage(int index, int image_id, int drawing_id);
+    void clearExtraDrawingInfo();
 
     WorksheetPrivate * const d_ptr;
 };

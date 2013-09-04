@@ -29,6 +29,7 @@
 #include "xlsxutility_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"
+#include "xlsxdrawing_p.h"
 
 #include <QVariant>
 #include <QDateTime>
@@ -45,6 +46,8 @@ namespace QXlsx {
 WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
     q_ptr(p)
 {
+    drawing = 0;
+
     xls_rowmax = 1048576;
     xls_colmax = 16384;
     xls_strmax = 32767;
@@ -264,6 +267,18 @@ QStringList Worksheet::externUrlList() const
     return d->externUrlList;
 }
 
+QStringList Worksheet::externDrawingList() const
+{
+    Q_D(const Worksheet);
+    return d->externDrawingList;
+}
+
+QList<QPair<QString, QString> > Worksheet::drawingLinks() const
+{
+    Q_D(const Worksheet);
+    return d->drawingLinks;
+}
+
 int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 {
     Q_D(Worksheet);
@@ -461,6 +476,14 @@ int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, co
     return error;
 }
 
+int Worksheet::insertImage(int row, int column, const QImage &image, const QPointF &offset, double xScale, double yScale)
+{
+    Q_D(Worksheet);
+
+    d->imageList.append(new XlsxImageData(row, column, image, offset, xScale, yScale));
+    return 0;
+}
+
 void Worksheet::saveToXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
@@ -533,6 +556,7 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     writer.writeEndElement();//sheetData
 
     d->writeHyperlinks(writer);
+    d->writeDrawings(writer);
 
     writer.writeEndElement();//worksheet
     writer.writeEndDocument();
@@ -681,6 +705,13 @@ void WorksheetPrivate::writeHyperlinks(XmlStreamWriter &writer)
     writer.writeEndElement();//hyperlinks
 }
 
+void WorksheetPrivate::writeDrawings(XmlStreamWriter &writer)
+{
+    int index = externUrlList.size() + 1;
+    writer.writeEmptyElement(QStringLiteral("drawing"));
+    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(index));
+}
+
 /*
   Sets row height and format. Row height measured in point size. If format
   equals 0 then format is ignored.
@@ -727,6 +758,194 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
         d->colsInfoHelper[col] = info;
 
     return true;
+}
+
+Drawing *Worksheet::drawing() const
+{
+    Q_D(const Worksheet);
+    return d->drawing;
+}
+
+QList<XlsxImageData *> Worksheet::images() const
+{
+    Q_D(const Worksheet);
+    return d->imageList;
+}
+
+void Worksheet::clearExtraDrawingInfo()
+{
+    Q_D(Worksheet);
+    if (d->drawing) {
+        delete d->drawing;
+        d->drawing = 0;
+        d->externDrawingList.clear();
+        d->drawingLinks.clear();
+    }
+}
+
+void Worksheet::prepareImage(int index, int image_id, int drawing_id)
+{
+    Q_D(Worksheet);
+    if (!d->drawing) {
+        d->drawing = new Drawing(this);
+        d->drawing->embedded = true;
+        d->externDrawingList.append(QStringLiteral("../drawings/drawing%1.xml").arg(drawing_id));
+    }
+
+    XlsxImageData *imageData = d->imageList[index];
+
+    XlsxDrawingDimensionData *data = new XlsxDrawingDimensionData;
+    data->drawing_type = 2;
+
+    double width = imageData->image.width() * imageData->xScale;
+    double height = imageData->image.height() * imageData->yScale;
+
+    XlsxObjectPositionData posData = d->pixelsToEMUs(d->objectPixelsPosition(imageData->col, imageData->row, imageData->offset.x(), imageData->offset.y(), width, height));
+    data->col_from = posData.col_start;
+    data->col_from_offset = posData.x1;
+    data->row_from = posData.row_start;
+    data->row_from_offset = posData.y1;
+    data->col_to = posData.col_end;
+    data->col_to_offset = posData.x2;
+    data->row_to = posData.row_end;
+    data->row_to_offset = posData.y2;
+    data->width = posData.width;
+    data->height = posData.height;
+    data->col_absolute = posData.x_abs;
+    data->row_absolute = posData.y_abs;
+
+    d->drawing->dimensionList.append(data);
+
+    d->drawingLinks.append(QPair<QString, QString>(QStringLiteral("/image"), QStringLiteral("../media/image%1.png").arg(image_id)));
+}
+
+/*
+ Convert the height of a cell from user's units to pixels. If the
+ height hasn't been set by the user we use the default value. If
+ the row is hidden it has a value of zero.
+*/
+int WorksheetPrivate::rowPixelsSize(int row)
+{
+    double height;
+    if (row_sizes.contains(row))
+        height = row_sizes[row];
+    else
+        height = default_row_height;
+    return static_cast<int>(4.0 / 3.0 *height);
+}
+
+/*
+ Convert the width of a cell from user's units to pixels. Excel rounds
+ the column width to the nearest pixel. If the width hasn't been set
+ by the user we use the default value. If the column is hidden it
+ has a value of zero.
+*/
+int WorksheetPrivate::colPixelsSize(int col)
+{
+    double max_digit_width = 7.0; //For Calabri 11
+    double padding = 5.0;
+    int pixels = 0;
+
+    if (col_sizes.contains(col)) {
+        double width = col_sizes[col];
+        if (width < 1)
+            pixels = static_cast<int>(width * (max_digit_width + padding) + 0.5);
+        else
+            pixels = static_cast<int>(width * max_digit_width + 0.5) + padding;
+    } else {
+        pixels = 64;
+    }
+    return pixels;
+}
+
+/*
+        col_start     Col containing upper left corner of object.
+        x1            Distance to left side of object.
+        row_start     Row containing top left corner of object.
+        y1            Distance to top of object.
+        col_end       Col containing lower right corner of object.
+        x2            Distance to right side of object.
+        row_end       Row containing bottom right corner of object.
+        y2            Distance to bottom of object.
+        width         Width of object frame.
+        height        Height of object frame.
+        x_abs         Absolute distance to left side of object.
+        y_abs         Absolute distance to top side of object.
+*/
+XlsxObjectPositionData WorksheetPrivate::objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height)
+{
+    double x_abs = 0;
+    double y_abs = 0;
+    for (int col_id = 1; col_id < col_start; ++col_id)
+        x_abs += colPixelsSize(col_id);
+    x_abs += x1;
+    for (int row_id = 1; row_id < row_start; ++row_id)
+        y_abs += rowPixelsSize(row_id);
+    y_abs += y1;
+
+    // Adjust start column for offsets that are greater than the col width.
+    while (x1 > colPixelsSize(col_start)) {
+        x1 -= colPixelsSize(col_start);
+        col_start += 1;
+    }
+    while (y1 > rowPixelsSize(row_start)) {
+        y1 -= rowPixelsSize(row_start);
+        row_start += 1;
+    }
+
+    int col_end = col_start;
+    int row_end = row_start;
+    double x2 = width + x1;
+    double y2 = height + y1;
+
+    while (x2 > colPixelsSize(col_end)) {
+        x2 -= colPixelsSize(col_end);
+        col_end += 1;
+    }
+
+    while (y2 > rowPixelsSize(row_end)) {
+        y2 -= rowPixelsSize(row_end);
+        row_end += 1;
+    }
+
+    XlsxObjectPositionData data;
+    data.col_start = col_start;
+    data.x1 = x1;
+    data.row_start = row_start;
+    data.y1 = y1;
+    data.col_end = col_end;
+    data.x2 = x2;
+    data.row_end = row_end;
+    data.y2 = y2;
+    data.x_abs = x_abs;
+    data.y_abs = y_abs;
+    data.width = width;
+    data.height = height;
+
+    return data;
+}
+
+/*
+        Calculate the vertices that define the position of a graphical
+        object within the worksheet in EMUs.
+
+        The vertices are expressed as English Metric Units (EMUs). There are
+        12,700 EMUs per point. Therefore, 12,700 * 3 /4 = 9,525 EMUs per
+        pixel
+*/
+XlsxObjectPositionData WorksheetPrivate::pixelsToEMUs(const XlsxObjectPositionData &data)
+{
+    XlsxObjectPositionData result = data;
+    result.x1 = static_cast<int>(data.x1 * 9525 + 0.5);
+    result.y1 = static_cast<int>(data.y1 * 9525 + 0.5);
+    result.x2 = static_cast<int>(data.x2 * 9525 + 0.5);
+    result.y2 = static_cast<int>(data.y2 * 9525 + 0.5);
+    result.x_abs = static_cast<int>(data.x_abs * 9525 + 0.5);
+    result.y_abs = static_cast<int>(data.y_abs * 9525 + 0.5);
+    result.width = static_cast<int>(data.width * 9525 + 0.5);
+    result.height = static_cast<int>(data.height * 9525 + 0.5);
+
+    return result;
 }
 
 } //namespace

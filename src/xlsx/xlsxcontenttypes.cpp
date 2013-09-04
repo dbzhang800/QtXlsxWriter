@@ -64,6 +64,11 @@ void ContentTypes::addChartsheetName(const QString &name)
     addOverride(QStringLiteral("/xl/chartsheets/%1.xml").arg(name), m_document_prefix + QStringLiteral("spreadsheetml.chartsheet+xml"));
 }
 
+void ContentTypes::addDrawingName(const QString &name)
+{
+    addOverride(QStringLiteral("/xl/drawings/%1.xml").arg(name), m_document_prefix + QStringLiteral("drawing+xml"));
+}
+
 void ContentTypes::addChartName(const QString &name)
 {
     addOverride(QStringLiteral("/xl/charts/%1.xml").arg(name), m_document_prefix + QStringLiteral("drawingml.chart+xml"));
@@ -77,7 +82,7 @@ void ContentTypes::addCommentName(const QString &name)
 void ContentTypes::addImageTypes(const QStringList &imageTypes)
 {
     foreach (QString type, imageTypes)
-        addOverride(type, QStringLiteral("image/") + type);
+        addDefault(type, QStringLiteral("image/") + type);
 }
 
 void ContentTypes::addTableName(const QString &name)

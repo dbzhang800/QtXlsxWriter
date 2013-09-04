@@ -21,7 +21,8 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxworkbook_p.h \
     $$PWD/xlsxworksheet_p.h \
     $$PWD/xlsxformat_p.h \
-    $$PWD/xlsxglobal.h
+    $$PWD/xlsxglobal.h \
+    $$PWD/xlsxdrawing_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -36,4 +37,5 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxworkbook.cpp \
     $$PWD/xlsxworksheet.cpp \
     $$PWD/xlsxzipwriter.cpp \
-    $$PWD/xlsxpackage.cpp
+    $$PWD/xlsxpackage.cpp \
+    $$PWD/xlsxdrawing.cpp
