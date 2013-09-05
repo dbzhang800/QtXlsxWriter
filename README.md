@@ -80,3 +80,4 @@ The library, the header files, and the feature file will be installed to your sy
 * http://www.codeproject.com/Articles/210014/How-to-read-and-write-xlsx-Excel-2007-file-Part-II
 * http://epplus.codeplex.com/
 * http://excelpackage.codeplex.com/
+* http://spreadsheetlight.com/

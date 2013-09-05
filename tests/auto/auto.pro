@@ -1,4 +1,5 @@
 TEMPLATE=subdirs
 SUBDIRS=\
     utility \
-    mergecell
+    mergecell \
+    zipreader
