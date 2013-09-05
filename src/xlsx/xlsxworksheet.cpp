@@ -707,6 +707,9 @@ void WorksheetPrivate::writeHyperlinks(XmlStreamWriter &writer)
 
 void WorksheetPrivate::writeDrawings(XmlStreamWriter &writer)
 {
+    if (!drawing)
+        return;
+
     int index = externUrlList.size() + 1;
     writer.writeEmptyElement(QStringLiteral("drawing"));
     writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(index));
