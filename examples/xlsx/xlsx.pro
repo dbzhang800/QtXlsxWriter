@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = hello style \
     documentproperty \
-    image
+    image \
+    mergecells
 

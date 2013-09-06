@@ -62,17 +62,23 @@ public:
 
     int insertImage(int row, int column, const QImage &image, const QPointF &offset=QPointF(), double xScale=1, double yScale=1);
 
+    int mergeCells(int row_begin, int column_begin, int row_end, int column_end);
+    int mergeCells(const QString &range);
+    int unmergeCells(int row_begin, int column_begin, int row_end, int column_end);
+    int unmergeCells(const QString &range);
+
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
 
     void setRightToLeft(bool enable);
     void setZeroValuesHidden(bool enable);
 
+    void saveToXmlFile(QIODevice *device);
+    ~Worksheet();
 private:
     friend class Package;
     friend class Workbook;
     Worksheet(const QString &sheetName, Workbook *parent=0);
-    ~Worksheet();
 
     virtual bool isChartsheet() const;
     QString name() const;
@@ -80,7 +86,6 @@ private:
     bool isSelected() const;
     void setHidden(bool hidden);
     void setSelected(bool select);
-    void saveToXmlFile(QIODevice *device);
     QStringList externUrlList() const;
     QStringList externDrawingList() const;
     QList<QPair<QString, QString> > drawingLinks() const;

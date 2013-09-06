@@ -82,6 +82,23 @@ struct XlsxImageData
     double yScale;
 };
 
+struct XlsxCellRange
+{
+    int row_begin;
+    int row_end;
+    int column_begin;
+    int column_end;
+
+    bool operator ==(const XlsxCellRange &other) const {
+        return row_begin==other.row_begin && row_end==other.row_end
+                && column_begin == other.column_begin && column_end==other.column_end;
+    }
+    bool operator !=(const XlsxCellRange &other) const {
+        return row_begin!=other.row_begin || row_end!=other.row_end
+                || column_begin != other.column_begin || column_end!=other.column_end;
+    }
+};
+
 /*
      The vertices that define the position of a graphical object
      within the worksheet in pixels.
@@ -166,6 +183,7 @@ public:
     void calculateSpans();
     void writeSheetData(XmlStreamWriter &writer);
     void writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell);
+    void writeMergeCells(XmlStreamWriter &writer);
     void writeHyperlinks(XmlStreamWriter &writer);
     void writeDrawings(XmlStreamWriter &writer);
     int rowPixelsSize(int row);
@@ -178,6 +196,7 @@ public:
     QMap<int, QMap<int, XlsxCellData *> > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, XlsxUrlData *> > urlTable;
+    QList<XlsxCellRange> merges;
     QStringList externUrlList;
     QStringList externDrawingList;
     QList<XlsxImageData *> imageList;

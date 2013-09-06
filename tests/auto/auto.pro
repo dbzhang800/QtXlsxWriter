@@ -1,3 +1,4 @@
 TEMPLATE=subdirs
 SUBDIRS=\
-    utility
+    utility \
+    mergecell
