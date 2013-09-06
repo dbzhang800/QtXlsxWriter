@@ -34,6 +34,8 @@
 #include "xlsxrelationships_p.h"
 #include "xlsxzipwriter_p.h"
 #include "xlsxdrawing_p.h"
+#include "xlsxzipreader_p.h"
+#include "xlsxdocument.h"
 #include <QBuffer>
 #include <QDebug>
 
@@ -87,6 +89,14 @@ Package::Package(Workbook *workbook) :
     }
 }
 
+bool Package::parsePackage(QIODevice *packageDevice, Document *document)
+{
+    ZipReader zipReader(packageDevice);
+    QStringList filePaths = zipReader.filePaths();
+
+    return false;
+}
+
 bool Package::createPackage(const QString &packageName)
 {
     ZipWriter zipWriter(packageName);
@@ -107,7 +117,7 @@ bool Package::createPackage(const QString &packageName)
     writeSharedStringsFile(zipWriter);
     writeDocPropsAppFile(zipWriter);
     writeDocPropsCoreFile(zipWriter);
-    writeContentTypesFiles(zipWriter);
+    writeContentTypesFile(zipWriter);
     m_workbook->styles()->prepareStyles();
     writeStylesFiles(zipWriter);
     writeThemeFile(zipWriter);
@@ -161,7 +171,7 @@ void Package::writeDrawingFiles(ZipWriter &zipWriter)
     }
 }
 
-void Package::writeContentTypesFiles(ZipWriter &zipWriter)
+void Package::writeContentTypesFile(ZipWriter &zipWriter)
 {
     ContentTypes content;
 

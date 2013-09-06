@@ -24,7 +24,9 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxglobal.h \
     $$PWD/xlsxdrawing_p.h \
     $$PWD/xlsxxmlreader_p.h \
-    $$PWD/xlsxzipreader_p.h
+    $$PWD/xlsxzipreader_p.h \
+    $$PWD/xlsxdocument.h \
+    $$PWD/xlsxdocument_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -42,4 +44,5 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxpackage.cpp \
     $$PWD/xlsxdrawing.cpp \
     $$PWD/xlsxxmlreader.cpp \
-    $$PWD/xlsxzipreader.cpp
+    $$PWD/xlsxzipreader.cpp \
+    $$PWD/xlsxdocument.cpp

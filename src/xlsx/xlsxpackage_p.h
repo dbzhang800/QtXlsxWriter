@@ -25,18 +25,22 @@
 #ifndef QXLSX_PACKAGE_H
 #define QXLSX_PACKAGE_H
 
+#include "xlsxglobal.h"
 #include <QString>
+class QIODevice;
 
 namespace QXlsx {
 
 class Workbook;
 class ZipWriter;
+class Document;
 
-class Package
+class XLSX_AUTOTEST_EXPORT Package
 {
 public:
     Package(Workbook *workbook);
 
+    bool parsePackage(QIODevice *packageDevice, Document *document);
     bool createPackage(const QString &packageName);
 
 private:
@@ -51,7 +55,7 @@ private:
     void writeSharedStringsFile(ZipWriter &zipWriter);
     void writeDocPropsAppFile(ZipWriter &zipWriter);
     void writeDocPropsCoreFile(ZipWriter &zipWriter);
-    void writeContentTypesFiles(ZipWriter &zipWriter);
+    void writeContentTypesFile(ZipWriter &zipWriter);
     void writeStylesFiles(ZipWriter &zipWriter);
     void writeThemeFile(ZipWriter &zipWriter);
     void writeRootRelsFile(ZipWriter &zipWriter);
