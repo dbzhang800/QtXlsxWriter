@@ -41,3 +41,5 @@ lib/*
 *.ncb
 *.suo
 
+*.zip
+*.xlsx
