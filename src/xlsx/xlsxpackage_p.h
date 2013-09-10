@@ -33,17 +33,21 @@ namespace QXlsx {
 
 class Workbook;
 class ZipWriter;
+class ZipReader;
 class Document;
+class Relationships;
 
 class XLSX_AUTOTEST_EXPORT Package
 {
 public:
-    Package(Workbook *workbook);
+    Package(Document *document);
 
-    bool parsePackage(QIODevice *packageDevice, Document *document);
-    bool createPackage(const QString &packageName);
+    bool parsePackage(QIODevice *packageDevice);
+    bool createPackage(QIODevice *package);
 
 private:
+    Relationships readRelsFile(ZipReader &reader, const QString &filePath);
+
     void writeWorksheetFiles(ZipWriter &zipWriter);
 //    void writeChartsheetFiles(ZipWriter &zipWriter);
     void writeWorkbookFile(ZipWriter &zipWriter);
@@ -66,7 +70,8 @@ private:
     void writeImageFiles(ZipWriter &zipWriter);
 //    void writeVbaProjectFiles(ZipWriter &zipWriter);
 
-    Workbook * m_workbook;
+    Document *m_document;
+    Workbook *m_workbook;
     int m_worksheet_count;
     int m_chartsheet_count;
 };

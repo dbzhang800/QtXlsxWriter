@@ -35,6 +35,13 @@ ZipWriter::ZipWriter(const QString &filePath, QObject *parent) :
     m_writer->setCompressionPolicy(QZipWriter::NeverCompress);
 }
 
+ZipWriter::ZipWriter(QIODevice *device, QObject *parent) :
+    QObject(parent)
+{
+    m_writer = new QZipWriter(device);
+    m_writer->setCompressionPolicy(QZipWriter::NeverCompress);
+}
+
 ZipWriter::~ZipWriter()
 {
     delete m_writer;

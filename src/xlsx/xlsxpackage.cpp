@@ -76,9 +76,10 @@ namespace QXlsx {
     elements of the package and writes them into the XLSX file.
 */
 
-Package::Package(Workbook *workbook) :
-    m_workbook(workbook)
+Package::Package(Document *document) :
+    m_document(document)
 {
+    m_workbook = m_document->workbook();
     m_worksheet_count = 0;
     m_chartsheet_count = 0;
     foreach (Worksheet *sheet, m_workbook->worksheets()) {
@@ -89,17 +90,33 @@ Package::Package(Workbook *workbook) :
     }
 }
 
-bool Package::parsePackage(QIODevice *packageDevice, Document *document)
+bool Package::parsePackage(QIODevice *packageDevice)
 {
     ZipReader zipReader(packageDevice);
     QStringList filePaths = zipReader.filePaths();
 
+    if (!filePaths.contains(QLatin1String("_rels/.rel")))
+        return false;
+    Relationships rootRels = readRelsFile(zipReader, QStringLiteral("_rels/.rel"));
+
+
     return false;
 }
 
-bool Package::createPackage(const QString &packageName)
+Relationships Package::readRelsFile(ZipReader &zipReader, const QString &filePath)
 {
-    ZipWriter zipWriter(packageName);
+    QByteArray relsData = zipReader.fileData(filePath);
+    QBuffer buffer(&relsData);
+    buffer.open(QIODevice::ReadOnly);
+
+    Relationships rels;
+    rels.loadFromXmlFile(&buffer);
+    return rels;
+}
+
+bool Package::createPackage(QIODevice *package)
+{
+    ZipWriter zipWriter(package);
     if (zipWriter.error())
         return false;
 
@@ -208,8 +225,8 @@ void Package::writeDocPropsAppFile(ZipWriter &zipWriter)
 {
     DocPropsApp props;
 
-    foreach (QByteArray name, m_workbook->dynamicPropertyNames())
-        props.setProperty(name.data(), m_workbook->property(name.data()));
+    foreach (QString name, m_document->documentPropertyNames())
+        props.setProperty(name.toUtf8().data(), m_document->documentProperty(name));
 
     if (m_worksheet_count)
         props.addHeadingPair(QStringLiteral("Worksheets"), m_worksheet_count);
@@ -239,8 +256,8 @@ void Package::writeDocPropsCoreFile(ZipWriter &zipWriter)
 {
     DocPropsCore props;
 
-    foreach (QByteArray name, m_workbook->dynamicPropertyNames())
-        props.setProperty(name.data(), m_workbook->property(name.data()));
+    foreach (QString name, m_document->documentPropertyNames())
+        props.setProperty(name.toUtf8().data(), m_document->documentProperty(name));
 
     QByteArray data;
     QBuffer buffer(&data);

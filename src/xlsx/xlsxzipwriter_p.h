@@ -36,6 +36,7 @@ class ZipWriter : public QObject
     Q_OBJECT
 public:
     explicit ZipWriter(const QString &filePath, QObject *parent = 0);
+    explicit ZipWriter(QIODevice *device, QObject *parent = 0);
     ~ZipWriter();
 
     void addFile(const QString &filePath, QIODevice *device);

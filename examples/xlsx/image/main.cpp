@@ -1,6 +1,5 @@
 #include <QtGui>
-#include "xlsxworkbook.h"
-#include "xlsxworksheet.h"
+#include "xlsxdocument.h"
 
 #ifdef Q_OS_MAC
 #  define DATA_PATH "../../../"
@@ -12,14 +11,13 @@ int main(int argc, char** argv)
 {
     QGuiApplication(argc, argv);
 
-    QXlsx::Workbook workbook;
-    QXlsx::Worksheet *sheet = workbook.addWorksheet();
+    QXlsx::Document xlsx;
+
     QImage image(400, 300, QImage::Format_RGB32);
     image.fill(Qt::green);
-    sheet->insertImage(5, 5, image);
+    xlsx.insertImage(5, 5, image);
 
-    workbook.save(DATA_PATH"Test.xlsx");
-//    workbook.save(DATA_PATH"Test2.zip");
+    xlsx.saveAs(DATA_PATH"Test.xlsx");
 
     return 0;
 }

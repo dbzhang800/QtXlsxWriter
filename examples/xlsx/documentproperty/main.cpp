@@ -1,5 +1,5 @@
 #include <QtCore>
-#include "xlsxworkbook.h"
+#include "xlsxdocument.h"
 
 #ifdef Q_OS_MAC
 #  define DATA_PATH "../../../"
@@ -9,20 +9,20 @@
 
 int main()
 {
-    QXlsx::Workbook workbook;
+    QXlsx::Document xlsx;
 /*
     These properties are visible when you use the
     Office Button -> Prepare -> Properties option in Excel and are also
     available to external applications that read or index windows files
 */
-    workbook.setProperty("title", "This is an example spreadsheet");
-    workbook.setProperty("subject", "With document properties");
-    workbook.setProperty("creator", "Debao Zhang");
-    workbook.setProperty("company", "HMICN");
-    workbook.setProperty("category", "Example spreadsheets");
-    workbook.setProperty("keywords", "Sample, Example, Properties");
-    workbook.setProperty("description", "Created with Qt Xlsx");
+    xlsx.setDocumentProperty("title", "This is an example spreadsheet");
+    xlsx.setDocumentProperty("subject", "With document properties");
+    xlsx.setDocumentProperty("creator", "Debao Zhang");
+    xlsx.setDocumentProperty("company", "HMICN");
+    xlsx.setDocumentProperty("category", "Example spreadsheets");
+    xlsx.setDocumentProperty("keywords", "Sample, Example, Properties");
+    xlsx.setDocumentProperty("description", "Created with Qt Xlsx");
 
-    workbook.save(DATA_PATH"Test.xlsx");
+    xlsx.saveAs(DATA_PATH"Test.xlsx");
     return 0;
 }

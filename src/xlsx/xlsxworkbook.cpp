@@ -32,6 +32,8 @@
 #include "xlsxxmlwriter_p.h"
 #include "xlsxworksheet_p.h"
 
+#include <QFile>
+
 namespace QXlsx {
 
 WorkbookPrivate::WorkbookPrivate(Workbook *q) :
@@ -52,31 +54,6 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     table_count = 0;
 }
 
-/*!
-    \fn void Workbook::setProperty(const char *key, const QString &value)
-
-    Set the document properties such as Title, Author etc.
-
-    The method can be used to set the document properties of the Excel
-    file created by Qt Xlsx. These properties are visible when you use the
-    Office Button -> Prepare -> Properties option in Excel and are also
-    available to external applications that read or index windows files.
-
-    The properties \a key that can be set are:
-
-    \list
-    \li title
-    \li subject
-    \li creator
-    \li manager
-    \li company
-    \li category
-    \li keywords
-    \li description
-    \li status
-    \endlist
-*/
-
 Workbook::Workbook(QObject *parent) :
     QObject(parent), d_ptr(new WorkbookPrivate(this))
 {
@@ -86,26 +63,6 @@ Workbook::Workbook(QObject *parent) :
 Workbook::~Workbook()
 {
     delete d_ptr;
-}
-
-bool Workbook::save(const QString &name)
-{
-    Q_D(Workbook);
-
-    //Add a default worksheet if non have been added.
-    if (d->worksheets.size() == 0)
-        addWorksheet();
-
-    //Ensure that at least one worksheet has been selected.
-    int actIndex = d->activesheet;
-    if (actIndex < 0 || actIndex >= d->worksheets.size())
-        actIndex = 0;
-    d->worksheets[actIndex]->setHidden(false);
-    d->worksheets[actIndex]->setSelected(true);
-
-    //Create the package based on current workbook
-    Package package(this);
-    return package.createPackage(name);
 }
 
 bool Workbook::isDate1904() const
@@ -183,6 +140,7 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
 
     Worksheet *sheet = new Worksheet(worksheetName, this);
     d->worksheets.insert(index, sheet);
+    d->activesheet = index;
     return sheet;
 }
 
@@ -195,6 +153,10 @@ int Workbook::activedWorksheet() const
 void Workbook::setActivedWorksheet(int index)
 {
     Q_D(Workbook);
+    if (index < 0 || index >= d->worksheets.size()) {
+        //warning
+        return;
+    }
     d->activesheet = index;
 }
 
