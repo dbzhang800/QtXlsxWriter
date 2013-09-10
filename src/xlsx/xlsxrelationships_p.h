@@ -25,6 +25,7 @@
 #ifndef XLSXRELATIONSHIPS_H
 #define XLSXRELATIONSHIPS_H
 
+#include "xlsxglobal.h"
 #include <QObject>
 #include <QList>
 class QIODevice;
@@ -39,23 +40,28 @@ struct XlsxRelationship
     QString targetMode;
 };
 
-class Relationships : public QObject
+class XLSX_AUTOTEST_EXPORT Relationships
 {
-    Q_OBJECT
 public:
-    explicit Relationships(QObject *parent = 0);
-    
-signals:
-    
-public slots:
+    Relationships();
+
+    QList<XlsxRelationship> documentRelationships(const QString &relativeType) const;
+    QList<XlsxRelationship> packageRelationships(const QString &relativeType) const;
+    QList<XlsxRelationship> msPackageRelationships(const QString &relativeType) const;
+    QList<XlsxRelationship> worksheetRelationships(const QString &relativeType) const;
+
     void addDocumentRelationship(const QString &relativeType, const QString &target);
     void addPackageRelationship(const QString &relativeType, const QString &target);
     void addMsPackageRelationship(const QString &relativeType, const QString &target);
     void addWorksheetRelationship(const QString &relativeType, const QString &target, const QString &targetMode=QString());
 
     void saveToXmlFile(QIODevice *device);
+    void loadFromXmlFile(QIODevice *device);
+
 private:
+    QList<XlsxRelationship> relationships(const QString &type) const;
     void addRelationship(const QString &type, const QString &target, const QString &targetMode=QString());
+
     QList<XlsxRelationship> m_relationships;
 };
 

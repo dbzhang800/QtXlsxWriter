@@ -24,38 +24,68 @@
 ****************************************************************************/
 #include "xlsxrelationships_p.h"
 #include "xlsxxmlwriter_p.h"
+#include "xlsxxmlreader_p.h"
 #include <QDir>
 #include <QFile>
 
 namespace QXlsx {
 
-Relationships::Relationships(QObject *parent) :
-    QObject(parent)
+const QString schema_doc = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+const QString schema_msPackage = QStringLiteral("http://schemas.microsoft.com/office/2006/relationships");
+const QString schema_package = QStringLiteral("http://schemas.openxmlformats.org/package/2006/relationships");
+//const QString schema_worksheet = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+Relationships::Relationships()
 {
+}
+
+QList<XlsxRelationship> Relationships::documentRelationships(const QString &relativeType) const
+{
+    return relationships(schema_doc + relativeType);
 }
 
 void Relationships::addDocumentRelationship(const QString &relativeType, const QString &target)
 {
-    QString type = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships") + relativeType;
-    addRelationship(type, target);
+    addRelationship(schema_doc + relativeType, target);
+}
+
+QList<XlsxRelationship> Relationships::msPackageRelationships(const QString &relativeType) const
+{
+    return relationships(schema_msPackage + relativeType);
 }
 
 void Relationships::addMsPackageRelationship(const QString &relativeType, const QString &target)
 {
-    QString type = QStringLiteral("http://schemas.microsoft.com/office/2006/relationships") + relativeType;
-    addRelationship(type, target);
+    addRelationship(schema_msPackage + relativeType, target);
+}
+
+QList<XlsxRelationship> Relationships::packageRelationships(const QString &relativeType) const
+{
+    return relationships(schema_package + relativeType);
 }
 
 void Relationships::addPackageRelationship(const QString &relativeType, const QString &target)
 {
-    QString type = QStringLiteral("http://schemas.openxmlformats.org/package/2006/relationships") + relativeType;
-    addRelationship(type, target);
+    addRelationship(schema_package + relativeType, target);
+}
+
+QList<XlsxRelationship> Relationships::worksheetRelationships(const QString &relativeType) const
+{
+    return relationships(schema_doc + relativeType);
 }
 
 void Relationships::addWorksheetRelationship(const QString &relativeType, const QString &target, const QString &targetMode)
 {
-    QString type = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships") + relativeType;
-    addRelationship(type, target, targetMode);
+    addRelationship(schema_doc + relativeType, target, targetMode);
+}
+
+QList<XlsxRelationship> Relationships::relationships(const QString &type) const
+{
+    QList<XlsxRelationship> res;
+    foreach (XlsxRelationship ship, m_relationships) {
+        if (ship.type == type)
+            res.append(ship);
+    }
+    return res;
 }
 
 void Relationships::addRelationship(const QString &type, const QString &target, const QString &targetMode)
@@ -87,6 +117,30 @@ void Relationships::saveToXmlFile(QIODevice *device)
     }
     writer.writeEndElement();//Relationships
     writer.writeEndDocument();
+}
+
+void Relationships::loadFromXmlFile(QIODevice *device)
+{
+    m_relationships.clear();
+    XmlStreamReader reader(device);
+    while(!reader.atEnd()) {
+         QXmlStreamReader::TokenType token = reader.readNext();
+         if (token == QXmlStreamReader::StartElement) {
+             if (reader.name() == QStringLiteral("Relationship")) {
+                 QXmlStreamAttributes attributes = reader.attributes();
+                 XlsxRelationship relationship;
+                 relationship.id = attributes.value(QLatin1String("Id")).toString();
+                 relationship.type = attributes.value(QLatin1String("Type")).toString();
+                 relationship.target = attributes.value(QLatin1String("Target")).toString();
+                 relationship.targetMode = attributes.value(QLatin1String("TargetMode")).toString();
+                 m_relationships.append(relationship);
+             }
+         }
+
+         if (reader.hasError()) {
+
+         }
+    }
 }
 
 } //namespace

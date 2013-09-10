@@ -2,4 +2,5 @@ TEMPLATE=subdirs
 SUBDIRS=\
     utility \
     mergecell \
-    zipreader
+    zipreader \
+    relationships
