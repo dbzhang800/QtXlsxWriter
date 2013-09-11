@@ -29,6 +29,8 @@
 #include <QObject>
 #include <QList>
 #include <QImage>
+#include <QSharedPointer>
+
 class QIODevice;
 
 namespace QXlsx {
@@ -39,6 +41,8 @@ class SharedStrings;
 class Styles;
 class Package;
 class Drawing;
+class Document;
+class DocumentPrivate;
 
 class WorkbookPrivate;
 class Q_XLSX_EXPORT Workbook : public QObject
@@ -46,7 +50,6 @@ class Q_XLSX_EXPORT Workbook : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(Workbook)
 public:
-    Workbook(QObject *parent=0);
     ~Workbook();
 
     QList<Worksheet *> worksheets() const;
@@ -66,13 +69,21 @@ public:
 private:
     friend class Package;
     friend class Worksheet;
+    friend class Document;
+    friend class DocumentPrivate;
+
+    Workbook(QObject *parent=0);
+
+    void saveToXmlFile(QIODevice *device);
+    QByteArray saveToXmlData();
+    static QSharedPointer<Workbook> loadFromXmlFile(QIODevice *device);
+    static QSharedPointer<Workbook> loadFromXmlData(const QByteArray &data);
 
     SharedStrings *sharedStrings();
     Styles *styles();
     QList<QImage> images();
     QList<Drawing *> drawings();
     void prepareDrawings();
-    void saveToXmlFile(QIODevice *device);
 
     WorkbookPrivate * const d_ptr;
 };

@@ -24,10 +24,7 @@ void RelationshipsTest::testSaveXml()
     QXlsx::Relationships rels;
     rels.addDocumentRelationship("/officeDocument", "xl/workbook.xml");
 
-    QByteArray xmldata;
-    QBuffer buffer(&xmldata);
-    buffer.open(QIODevice::WriteOnly);
-    rels.saveToXmlFile(&buffer);
+    QByteArray xmldata = rels.saveToXmlData();
 
     QVERIFY2(xmldata.contains("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>"), "");
 }
@@ -38,11 +35,8 @@ void RelationshipsTest::testLoadXml()
                        "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
                        "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>"
                        "</Relationships>");
-    QBuffer buffer(&xmldata);
-    buffer.open(QIODevice::ReadOnly);
 
-    QXlsx::Relationships rels;
-    rels.loadFromXmlFile(&buffer);
+    QXlsx::Relationships rels = QXlsx::Relationships::loadFromXmlData(xmldata);
 
     QCOMPARE(rels.documentRelationships("/officeDocument").size(), 1);
 }

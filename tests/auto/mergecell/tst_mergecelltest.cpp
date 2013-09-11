@@ -2,7 +2,7 @@
 #include <QtTest>
 
 #include "xlsxworksheet.h"
-#include "xlsxworkbook.h"
+#include "xlsxdocument.h"
 
 class MergeCellTest : public QObject
 {
@@ -23,45 +23,42 @@ MergeCellTest::MergeCellTest()
 
 void MergeCellTest::testWithoutMerge()
 {
-    QXlsx::Workbook book;
-    QXlsx::Worksheet *sheet = book.addWorksheet("Sheet1");
-    sheet->write("B1", "Hello");
+    QXlsx::Document xlsx;
+    xlsx.write("B1", "Hello");
 
     QByteArray xmldata;
     QBuffer buffer(&xmldata);
     buffer.open(QIODevice::WriteOnly);
-    sheet->saveToXmlFile(&buffer);
+    xlsx.activedWorksheet()->saveToXmlFile(&buffer);
 
     QVERIFY2(!xmldata.contains("<mergeCell"), "");
 }
 
 void MergeCellTest::testMerge()
 {
-    QXlsx::Workbook book;
-    QXlsx::Worksheet *sheet = book.addWorksheet("Sheet1");
-    sheet->write("B1", "Test Merged Cell");
-    sheet->mergeCells("B1:B5");
+    QXlsx::Document xlsx;
+    xlsx.write("B1", "Test Merged Cell");
+    xlsx.mergeCells("B1:B5");
 
     QByteArray xmldata;
     QBuffer buffer(&xmldata);
     buffer.open(QIODevice::WriteOnly);
-    sheet->saveToXmlFile(&buffer);
+    xlsx.activedWorksheet()->saveToXmlFile(&buffer);
 
     QVERIFY2(xmldata.contains("<mergeCells count=\"1\"><mergeCell ref=\"B1:B5\"/></mergeCells>"), "");
 }
 
 void MergeCellTest::testUnMerge()
 {
-    QXlsx::Workbook book;
-    QXlsx::Worksheet *sheet = book.addWorksheet("Sheet1");
-    sheet->write("B1", "Test Merged Cell");
-    sheet->mergeCells("B1:B5");
-    sheet->unmergeCells("B1:B5");
+    QXlsx::Document xlsx;
+    xlsx.write("B1", "Test Merged Cell");
+    xlsx.mergeCells("B1:B5");
+    xlsx.unmergeCells("B1:B5");
 
     QByteArray xmldata;
     QBuffer buffer(&xmldata);
     buffer.open(QIODevice::WriteOnly);
-    sheet->saveToXmlFile(&buffer);
+    xlsx.activedWorksheet()->saveToXmlFile(&buffer);
 
     QVERIFY2(!xmldata.contains("<mergeCell"), "");
 }

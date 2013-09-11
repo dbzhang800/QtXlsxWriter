@@ -33,6 +33,7 @@
 #include "xlsxworksheet_p.h"
 
 #include <QFile>
+#include <QBuffer>
 
 namespace QXlsx {
 
@@ -279,6 +280,31 @@ void Workbook::saveToXmlFile(QIODevice *device)
 
     writer.writeEndElement();//workbook
     writer.writeEndDocument();
+}
+
+QByteArray Workbook::saveToXmlData()
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+
+    return data;
+}
+
+QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
+{
+
+    return QSharedPointer<Workbook>(new Workbook);
+}
+
+QSharedPointer<Workbook> Workbook::loadFromXmlData(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+
+    return loadFromXmlFile(&buffer);
 }
 
 } //namespace
