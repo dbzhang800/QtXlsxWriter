@@ -26,31 +26,36 @@
 #define XLSXDOCPROPSAPP_H
 
 #include "xlsxglobal.h"
-#include <QObject>
 #include <QList>
 #include <QPair>
 #include <QStringList>
+#include <QMap>
 
 class QIODevice;
 
 namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT DocPropsApp : public QObject
+class XLSX_AUTOTEST_EXPORT DocPropsApp
 {
-    Q_OBJECT
 public:
-    explicit DocPropsApp(QObject *parent = 0);
+    DocPropsApp();
     
-signals:
-    
-public slots:
     void addPartTitle(const QString &title);
     void addHeadingPair(const QString &name, int value);
+
+    bool setProperty(const QString &name, const QString &value);
+    QString property(const QString &name) const;
+    QStringList propertyNames() const;
+
+    QByteArray saveToXmlData();
     void saveToXmlFile(QIODevice *device);
+    static DocPropsApp loadFromXmlFile(QIODevice *device);
+    static DocPropsApp loadFromXmlData(const QByteArray &data);
 
 private:
     QStringList m_titlesOfPartsList;
     QList<QPair<QString, int> > m_headingPairsList;
+    QMap<QString, QString> m_properties;
 };
 
 }

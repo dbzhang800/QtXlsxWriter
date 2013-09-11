@@ -23,7 +23,9 @@ void DocumentPrivate::init()
 
 bool DocumentPrivate::loadPackage(QIODevice *device)
 {
-    return false;
+    Q_Q(Document);
+    Package package(q);
+    return package.parsePackage(device);
 }
 
 

@@ -10,11 +10,9 @@
 int main()
 {
     QXlsx::Document xlsx;
-/*
-    These properties are visible when you use the
-    Office Button -> Prepare -> Properties option in Excel and are also
-    available to external applications that read or index windows files
-*/
+    xlsx.write("A1", "View the properties through:");
+    xlsx.write("A2", "Office Button -> Prepare -> Properties option in Excel");
+
     xlsx.setDocumentProperty("title", "This is an example spreadsheet");
     xlsx.setDocumentProperty("subject", "With document properties");
     xlsx.setDocumentProperty("creator", "Debao Zhang");

@@ -3,4 +3,7 @@ SUBDIRS=\
     utility \
     mergecell \
     zipreader \
-    relationships
+    relationships \
+    propscore \
+    propsapp \
+    readdocument

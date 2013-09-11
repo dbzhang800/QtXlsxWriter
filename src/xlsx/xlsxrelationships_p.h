@@ -56,7 +56,9 @@ public:
     void addWorksheetRelationship(const QString &relativeType, const QString &target, const QString &targetMode=QString());
 
     void saveToXmlFile(QIODevice *device);
-    void loadFromXmlFile(QIODevice *device);
+    QByteArray saveToXmlData();
+    static Relationships loadFromXmlFile(QIODevice *device);
+    static Relationships loadFromXmlData(const QByteArray &data);
 
 private:
     QList<XlsxRelationship> relationships(const QString &type) const;

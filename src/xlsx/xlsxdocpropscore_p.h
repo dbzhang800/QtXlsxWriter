@@ -26,22 +26,29 @@
 #define XLSXDOCPROPSCORE_H
 
 #include "xlsxglobal.h"
-#include <QObject>
-#include <QList>
-#include <QPair>
+#include <QMap>
 #include <QStringList>
 
 class QIODevice;
 
 namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT DocPropsCore : public QObject
+class XLSX_AUTOTEST_EXPORT DocPropsCore
 {
-    Q_OBJECT
 public:
-    explicit DocPropsCore(QObject *parent = 0);
+    explicit DocPropsCore();
+
+    bool setProperty(const QString &name, const QString &value);
+    QString property(const QString &name) const;
+    QStringList propertyNames() const;
         
     void saveToXmlFile(QIODevice *device);
+    QByteArray saveToXmlData();
+    static DocPropsCore loadFromXmlFile(QIODevice *device);
+    static DocPropsCore loadFromXmlData(const QByteArray &data);
+
+private:
+    QMap<QString, QString> m_properties;
 };
 
 }

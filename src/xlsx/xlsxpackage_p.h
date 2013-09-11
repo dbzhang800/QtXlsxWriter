@@ -36,6 +36,8 @@ class ZipWriter;
 class ZipReader;
 class Document;
 class Relationships;
+class DocPropsCore;
+class DocPropsApp;
 
 class XLSX_AUTOTEST_EXPORT Package
 {
@@ -46,7 +48,6 @@ public:
     bool createPackage(QIODevice *package);
 
 private:
-    Relationships readRelsFile(ZipReader &reader, const QString &filePath);
 
     void writeWorksheetFiles(ZipWriter &zipWriter);
 //    void writeChartsheetFiles(ZipWriter &zipWriter);

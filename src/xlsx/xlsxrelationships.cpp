@@ -27,6 +27,7 @@
 #include "xlsxxmlreader_p.h"
 #include <QDir>
 #include <QFile>
+#include <QBuffer>
 
 namespace QXlsx {
 
@@ -119,9 +120,20 @@ void Relationships::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void Relationships::loadFromXmlFile(QIODevice *device)
+QByteArray Relationships::saveToXmlData()
 {
-    m_relationships.clear();
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+
+    return data;
+}
+
+Relationships Relationships::loadFromXmlFile(QIODevice *device)
+{
+    Relationships rels;
+
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
@@ -133,7 +145,7 @@ void Relationships::loadFromXmlFile(QIODevice *device)
                  relationship.type = attributes.value(QLatin1String("Type")).toString();
                  relationship.target = attributes.value(QLatin1String("Target")).toString();
                  relationship.targetMode = attributes.value(QLatin1String("TargetMode")).toString();
-                 m_relationships.append(relationship);
+                 rels.m_relationships.append(relationship);
              }
          }
 
@@ -141,6 +153,15 @@ void Relationships::loadFromXmlFile(QIODevice *device)
 
          }
     }
+    return rels;
+}
+
+Relationships Relationships::loadFromXmlData(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+    return loadFromXmlFile(&buffer);
 }
 
 } //namespace

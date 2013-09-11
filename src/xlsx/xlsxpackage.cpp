@@ -95,23 +95,46 @@ bool Package::parsePackage(QIODevice *packageDevice)
     ZipReader zipReader(packageDevice);
     QStringList filePaths = zipReader.filePaths();
 
-    if (!filePaths.contains(QLatin1String("_rels/.rel")))
+    if (!filePaths.contains(QLatin1String("_rels/.rels")))
         return false;
-    Relationships rootRels = readRelsFile(zipReader, QStringLiteral("_rels/.rel"));
 
+    Relationships rootRels = Relationships::loadFromXmlData(zipReader.fileData(QStringLiteral("_rels/.rels")));
+
+    //load core property
+    QList<XlsxRelationship> rels_core = rootRels.packageRelationships(QStringLiteral("/metadata/core-properties"));
+    if (!rels_core.isEmpty()) {
+        //Get the core property file name if it exists.
+        //In normal case, this should be "docProps/core.xml"
+        QString docPropsCore_Name = rels_core[0].target;
+
+        DocPropsCore props = DocPropsCore::loadFromXmlData(zipReader.fileData(docPropsCore_Name));
+        foreach (QString name, props.propertyNames())
+            m_document->setDocumentProperty(name, props.property(name));
+    }
+
+    //load app property
+    QList<XlsxRelationship> rels_app = rootRels.documentRelationships(QStringLiteral("/extended-properties"));
+    if (!rels_app.isEmpty()) {
+        //Get the app property file name if it exists.
+        //In normal case, this should be "docProps/app.xml"
+        QString docPropsApp_Name = rels_app[0].target;
+
+        DocPropsApp props = DocPropsApp::loadFromXmlData(zipReader.fileData(docPropsApp_Name));
+        foreach (QString name, props.propertyNames())
+            m_document->setDocumentProperty(name, props.property(name));
+    }
+
+    //load workbook now
+    QList<XlsxRelationship> rels_xl = rootRels.documentRelationships(QStringLiteral("/officeDocument"));
+    if (!rels_xl.isEmpty()) {
+        //Get the app property file name if it exists.
+        //In normal case, this should be "xl/workbook.xml"
+        QString xlworkbook_Name = rels_xl[0].target;
+
+        //ToDo: Read the workbook here!
+    }
 
     return false;
-}
-
-Relationships Package::readRelsFile(ZipReader &zipReader, const QString &filePath)
-{
-    QByteArray relsData = zipReader.fileData(filePath);
-    QBuffer buffer(&relsData);
-    buffer.open(QIODevice::ReadOnly);
-
-    Relationships rels;
-    rels.loadFromXmlFile(&buffer);
-    return rels;
 }
 
 bool Package::createPackage(QIODevice *package)
@@ -226,7 +249,7 @@ void Package::writeDocPropsAppFile(ZipWriter &zipWriter)
     DocPropsApp props;
 
     foreach (QString name, m_document->documentPropertyNames())
-        props.setProperty(name.toUtf8().data(), m_document->documentProperty(name));
+        props.setProperty(name, m_document->documentProperty(name));
 
     if (m_worksheet_count)
         props.addHeadingPair(QStringLiteral("Worksheets"), m_worksheet_count);
@@ -245,11 +268,7 @@ void Package::writeDocPropsAppFile(ZipWriter &zipWriter)
             props.addPartTitle(sheet->name());
     }
 
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    props.saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("docProps/app.xml"), data);
+    zipWriter.addFile(QStringLiteral("docProps/app.xml"), props.saveToXmlData());
 }
 
 void Package::writeDocPropsCoreFile(ZipWriter &zipWriter)
@@ -257,13 +276,9 @@ void Package::writeDocPropsCoreFile(ZipWriter &zipWriter)
     DocPropsCore props;
 
     foreach (QString name, m_document->documentPropertyNames())
-        props.setProperty(name.toUtf8().data(), m_document->documentProperty(name));
+        props.setProperty(name, m_document->documentProperty(name));
 
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    props.saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("docProps/core.xml"), data);
+    zipWriter.addFile(QStringLiteral("docProps/core.xml"), props.saveToXmlData());
 }
 
 void Package::writeSharedStringsFile(ZipWriter &zipWriter)
@@ -300,11 +315,7 @@ void Package::writeRootRelsFile(ZipWriter &zipWriter)
     rels.addPackageRelationship(QStringLiteral("/metadata/core-properties"), QStringLiteral("docProps/core.xml"));
     rels.addDocumentRelationship(QStringLiteral("/extended-properties"), QStringLiteral("docProps/app.xml"));
 
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    rels.saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("_rels/.rels"), data);
+    zipWriter.addFile(QStringLiteral("_rels/.rels"), rels.saveToXmlData());
 }
 
 void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
@@ -329,11 +340,7 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
     if (m_workbook->sharedStrings()->count())
         rels.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
 
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    rels.saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), data);
+    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), rels.saveToXmlData());
 }
 
 void Package::writeWorksheetRelsFiles(ZipWriter &zipWriter)
@@ -348,11 +355,8 @@ void Package::writeWorksheetRelsFiles(ZipWriter &zipWriter)
             rels.addWorksheetRelationship(QStringLiteral("/hyperlink"), link, QStringLiteral("External"));
         foreach (QString link, sheet->externDrawingList())
             rels.addWorksheetRelationship(QStringLiteral("/drawing"), link);
-        QByteArray data;
-        QBuffer buffer(&data);
-        buffer.open(QIODevice::WriteOnly);
-        rels.saveToXmlFile(&buffer);
-        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(index), data);
+
+        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(index), rels.saveToXmlData());
         index += 1;
     }
 }
@@ -369,11 +373,7 @@ void Package::writeDrawingRelsFiles(ZipWriter &zipWriter)
         foreach (PairType pair, sheet->drawingLinks())
             rels.addDocumentRelationship(pair.first, pair.second);
 
-        QByteArray data;
-        QBuffer buffer(&data);
-        buffer.open(QIODevice::WriteOnly);
-        rels.saveToXmlFile(&buffer);
-        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(index), data);
+        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(index), rels.saveToXmlData());
         index += 1;
     }
 }
