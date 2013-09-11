@@ -33,14 +33,12 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 * Then, using Qt Xlsx in your code
 
 ```cpp
-    #include "xlsxworkbook.h"
-    #include "xlsxworksheet.h"
+    #include "xlsxdocument.h"
     int main()
     {
-        QXlsx::Workbook workbook;
-        QXlsx::Worksheet *sheet = workbook.addWorksheet();
-        sheet->write("A1", "Hello Qt!");
-        workbook.save("Test.xlsx");
+        QXlsx::Document xlsx;
+        xlsx.write("A1", "Hello Qt!");
+        xlsx.saveAs("Test.xlsx");
         return 0;
     }
 ```
