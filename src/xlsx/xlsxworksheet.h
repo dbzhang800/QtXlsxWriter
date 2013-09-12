@@ -31,6 +31,7 @@
 #include <QMap>
 #include <QVariant>
 #include <QPointF>
+#include <QSharedPointer>
 class QIODevice;
 class QDateTime;
 class QUrl;
@@ -45,9 +46,8 @@ class Drawing;
 struct XlsxImageData;
 
 class WorksheetPrivate;
-class Q_XLSX_EXPORT Worksheet : public QObject
+class Q_XLSX_EXPORT Worksheet
 {
-    Q_OBJECT
     Q_DECLARE_PRIVATE(Worksheet)
 public:
     int write(const QString row_column, const QVariant &value, Format *format=0);
@@ -74,11 +74,15 @@ public:
     void setZeroValuesHidden(bool enable);
 
     void saveToXmlFile(QIODevice *device);
+    QByteArray saveToXmlData();
+    static QSharedPointer<Worksheet> loadFromXmlFile(QIODevice *device);
+    static QSharedPointer<Worksheet> loadFromXmlData(const QByteArray &data);
+
     ~Worksheet();
 private:
     friend class Package;
     friend class Workbook;
-    Worksheet(const QString &sheetName, Workbook *parent=0);
+    Worksheet(const QString &sheetName, Workbook *book=0);
 
     virtual bool isChartsheet() const;
     QString name() const;

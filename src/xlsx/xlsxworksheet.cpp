@@ -38,6 +38,7 @@
 #include <QUrl>
 #include <QRegularExpression>
 #include <QDebug>
+#include <QBuffer>
 
 #include <stdint.h>
 
@@ -83,6 +84,9 @@ WorksheetPrivate::~WorksheetPrivate()
 
     foreach (XlsxColumnInfo *col, colsInfo)
         delete col;
+
+    if (drawing)
+        delete drawing;
 }
 
 /*
@@ -202,11 +206,11 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
  * \param index Index of the worksheet in the workbook
  * \param parent
  */
-Worksheet::Worksheet(const QString &name, Workbook *parent) :
-    QObject(parent), d_ptr(new WorksheetPrivate(this))
+Worksheet::Worksheet(const QString &name, Workbook *workbook) :
+    d_ptr(new WorksheetPrivate(this))
 {
     d_ptr->name = name;
-    d_ptr->workbook = parent;
+    d_ptr->workbook = workbook;
 }
 
 Worksheet::~Worksheet()
@@ -877,7 +881,7 @@ void Worksheet::prepareImage(int index, int image_id, int drawing_id)
 {
     Q_D(Worksheet);
     if (!d->drawing) {
-        d->drawing = new Drawing(this);
+        d->drawing = new Drawing;
         d->drawing->embedded = true;
         d->externDrawingList.append(QStringLiteral("../drawings/drawing%1.xml").arg(drawing_id));
     }
@@ -1036,6 +1040,30 @@ XlsxObjectPositionData WorksheetPrivate::pixelsToEMUs(const XlsxObjectPositionDa
     result.height = static_cast<int>(data.height * 9525 + 0.5);
 
     return result;
+}
+
+QByteArray Worksheet::saveToXmlData()
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+
+    return data;
+}
+
+QSharedPointer<Worksheet> Worksheet::loadFromXmlFile(QIODevice *device)
+{
+    return QSharedPointer<Worksheet>(new Worksheet(QString()));
+}
+
+QSharedPointer<Worksheet> Worksheet::loadFromXmlData(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+
+    return loadFromXmlFile(&buffer);
 }
 
 } //namespace

@@ -180,22 +180,14 @@ void Package::writeWorksheetFiles(ZipWriter &zipWriter)
         if (sheet->isChartsheet())
             continue;
 
-        QByteArray data;
-        QBuffer buffer(&data);
-        buffer.open(QIODevice::WriteOnly);
-        sheet->saveToXmlFile(&buffer);
-        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(index), data);
+        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(index), sheet->saveToXmlData());
         index += 1;
     }
 }
 
 void Package::writeWorkbookFile(ZipWriter &zipWriter)
 {
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    m_workbook->saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("xl/workbook.xml"), data);
+    zipWriter.addFile(QStringLiteral("xl/workbook.xml"), m_workbook->saveToXmlData());
 }
 
 void Package::writeDrawingFiles(ZipWriter &zipWriter)
