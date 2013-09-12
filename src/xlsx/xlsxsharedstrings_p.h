@@ -25,31 +25,47 @@
 #ifndef XLSXSHAREDSTRINGS_H
 #define XLSXSHAREDSTRINGS_H
 
-#include <QObject>
+#include "xlsxglobal.h"
 #include <QHash>
 #include <QStringList>
+#include <QSharedPointer>
 
 class QIODevice;
 
 namespace QXlsx {
 
-class SharedStrings : public QObject
+class XlsxSharedStringInfo
 {
-    Q_OBJECT
 public:
-    explicit SharedStrings(QObject *parent = 0);
+    XlsxSharedStringInfo(int index=0, int count = 1) :
+        index(index), count(count)
+    {
+    }
+
+    int index;
+    int count;
+};
+
+class XLSX_AUTOTEST_EXPORT SharedStrings
+{
+public:
+    SharedStrings();
     int count() const;
     
-public slots:
     int addSharedString(const QString &string);
+    void removeSharedString(const QString &string);
+
     int getSharedStringIndex(const QString &string) const;
     QString getSharedString(int index) const;
     QStringList getSharedStrings() const;
 
     void saveToXmlFile(QIODevice *device) const;
+    QByteArray saveToXmlData() const;
+    static QSharedPointer<SharedStrings> loadFromXmlFile(QIODevice *device);
+    static QSharedPointer<SharedStrings> loadFromXmlData(const QByteArray &data);
 
 private:
-    QHash<QString, int> m_stringTable; //for fast lookup
+    QHash<QString, XlsxSharedStringInfo> m_stringTable; //for fast lookup
     QStringList m_stringList;
     int m_stringCount;
 };

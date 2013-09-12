@@ -40,7 +40,7 @@ namespace QXlsx {
 WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     q_ptr(q)
 {
-    sharedStrings = new SharedStrings(q);
+    sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings);
     styles = new Styles(q);
 
     x_window = 240;
@@ -176,7 +176,7 @@ QList<Worksheet *> Workbook::worksheets() const
 SharedStrings *Workbook::sharedStrings()
 {
     Q_D(Workbook);
-    return d->sharedStrings;
+    return d->sharedStrings.data();
 }
 
 Styles *Workbook::styles()

@@ -31,7 +31,7 @@ int main()
     xlsx.write(1, 1, 200);
     xlsx.write(2, 1, 300);
     xlsx.write(3, 1, 400);
-    xlsx.write(4, 1, "=SUM(B1:B4)");
+//    xlsx.write(4, 1, "=SUM(B1:B4)");
 
     xlsx.saveAs(DATA_PATH"Test.xlsx");
     return 0;

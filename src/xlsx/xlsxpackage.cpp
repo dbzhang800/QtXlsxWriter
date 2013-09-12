@@ -283,11 +283,7 @@ void Package::writeDocPropsCoreFile(ZipWriter &zipWriter)
 
 void Package::writeSharedStringsFile(ZipWriter &zipWriter)
 {
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    m_workbook->sharedStrings()->saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), data);
+    zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), m_workbook->sharedStrings()->saveToXmlData());
 }
 
 void Package::writeStylesFiles(ZipWriter &zipWriter)

@@ -24,15 +24,16 @@
 ****************************************************************************/
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"
+#include "xlsxxmlreader_p.h"
 #include <QDir>
 #include <QFile>
 #include <QRegularExpression>
 #include <QDebug>
+#include <QBuffer>
 
 namespace QXlsx {
 
-SharedStrings::SharedStrings(QObject *parent) :
-    QObject(parent)
+SharedStrings::SharedStrings()
 {
     m_stringCount = 0;
 }
@@ -46,23 +47,49 @@ int SharedStrings::addSharedString(const QString &string)
 {
     m_stringCount += 1;
 
-    if (m_stringTable.contains(string))
-        return m_stringTable[string];
+    if (m_stringTable.contains(string)) {
+        XlsxSharedStringInfo &item = m_stringTable[string];
+        item.count += 1;
+        return item.index;
+    }
 
     int index = m_stringTable.size();
-    m_stringTable[string] = index;
+    m_stringTable[string] = XlsxSharedStringInfo(index);
     m_stringList.append(string);
     return index;
 }
 
+void SharedStrings::removeSharedString(const QString &string)
+{
+    if (!m_stringTable.contains(string))
+        return;
+
+    m_stringCount -= 1;
+
+    XlsxSharedStringInfo &item = m_stringTable[string];
+    item.count -= 1;
+
+    if (item.count <= 0) {
+        for (int i=item.index+1; i<m_stringList.size(); ++i)
+            m_stringTable[m_stringList[i]].index -= 1;
+
+        m_stringList.removeAt(item.index);
+        m_stringTable.remove(string);
+    }
+}
+
 int SharedStrings::getSharedStringIndex(const QString &string) const
 {
-    return m_stringTable[string];
+    if (m_stringTable.contains(string))
+        return m_stringTable[string].index;
+    return -1;
 }
 
 QString SharedStrings::getSharedString(int index) const
 {
-    return m_stringList[index];
+    if (index < m_stringList.count() && index >= 0)
+        return m_stringList[index];
+    return QString();
 }
 
 QStringList SharedStrings::getSharedStrings() const
@@ -97,6 +124,58 @@ void SharedStrings::saveToXmlFile(QIODevice *device) const
 
     writer.writeEndElement(); //sst
     writer.writeEndDocument();
+}
+
+QByteArray SharedStrings::saveToXmlData() const
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+
+    return data;
+}
+
+QSharedPointer<SharedStrings> SharedStrings::loadFromXmlFile(QIODevice *device)
+{
+    QSharedPointer<SharedStrings> sst(new SharedStrings);
+
+    XmlStreamReader reader(device);
+    int count = 0;
+    while(!reader.atEnd()) {
+         QXmlStreamReader::TokenType token = reader.readNext();
+         if (token == QXmlStreamReader::StartElement) {
+             if (reader.name() == QLatin1String("sst")) {
+                 QXmlStreamAttributes attributes = reader.attributes();
+                 count = attributes.value(QLatin1String("uniqueCount")).toInt();
+             } else if (reader.name() == QLatin1String("si")) {
+                 if (reader.readNextStartElement()) {
+                     if (reader.name() == QLatin1String("t")) {
+                         QXmlStreamAttributes attributes = reader.attributes();
+                         QString string = reader.readElementText();
+
+                         sst->m_stringTable[string] = XlsxSharedStringInfo(sst->m_stringTable.size(), 0);
+                         sst->m_stringList.append(string);
+                     }
+                 }
+             }
+         }
+    }
+
+    if (sst->m_stringTable.size() != count) {
+        qDebug("Error: Shared string count");
+    }
+
+    return sst;
+}
+
+QSharedPointer<SharedStrings> SharedStrings::loadFromXmlData(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+
+    return loadFromXmlFile(&buffer);
 }
 
 } //namespace
