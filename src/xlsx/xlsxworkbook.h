@@ -26,7 +26,6 @@
 #define XLSXWORKBOOK_H
 
 #include "xlsxglobal.h"
-#include <QObject>
 #include <QList>
 #include <QImage>
 #include <QSharedPointer>
@@ -45,9 +44,8 @@ class Document;
 class DocumentPrivate;
 
 class WorkbookPrivate;
-class Q_XLSX_EXPORT Workbook : public QObject
+class Q_XLSX_EXPORT Workbook
 {
-    Q_OBJECT
     Q_DECLARE_PRIVATE(Workbook)
 public:
     ~Workbook();
@@ -72,7 +70,7 @@ private:
     friend class Document;
     friend class DocumentPrivate;
 
-    Workbook(QObject *parent=0);
+    Workbook();
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();

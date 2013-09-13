@@ -26,7 +26,6 @@
 #define XLSXWORKSHEET_H
 
 #include "xlsxglobal.h"
-#include <QObject>
 #include <QStringList>
 #include <QMap>
 #include <QVariant>

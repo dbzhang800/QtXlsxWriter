@@ -3,8 +3,7 @@
 
 namespace QXlsx {
 
-Drawing::Drawing(QObject *parent) :
-    QObject(parent)
+Drawing::Drawing()
 {
     embedded = false;
     orientation = 0;

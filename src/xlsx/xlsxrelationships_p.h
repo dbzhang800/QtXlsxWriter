@@ -26,8 +26,8 @@
 #define XLSXRELATIONSHIPS_H
 
 #include "xlsxglobal.h"
-#include <QObject>
 #include <QList>
+#include <QString>
 class QIODevice;
 
 namespace QXlsx {

@@ -55,14 +55,15 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     table_count = 0;
 }
 
-Workbook::Workbook(QObject *parent) :
-    QObject(parent), d_ptr(new WorkbookPrivate(this))
+Workbook::Workbook() :
+    d_ptr(new WorkbookPrivate(this))
 {
 
 }
 
 Workbook::~Workbook()
 {
+    qDeleteAll(d_ptr->worksheets);
     delete d_ptr;
 }
 

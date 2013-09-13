@@ -25,18 +25,17 @@
 #ifndef QXLSX_ZIPWRITER_H
 #define QXLSX_ZIPWRITER_H
 
-#include <QObject>
+#include <QString>
 class QIODevice;
 class QZipWriter;
 
 namespace QXlsx {
 
-class ZipWriter : public QObject
+class ZipWriter
 {
-    Q_OBJECT
 public:
-    explicit ZipWriter(const QString &filePath, QObject *parent = 0);
-    explicit ZipWriter(QIODevice *device, QObject *parent = 0);
+    explicit ZipWriter(const QString &filePath);
+    explicit ZipWriter(QIODevice *device);
     ~ZipWriter();
 
     void addFile(const QString &filePath, QIODevice *device);

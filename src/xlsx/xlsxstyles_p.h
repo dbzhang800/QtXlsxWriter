@@ -40,7 +40,7 @@ struct FillData;
 struct BorderData;
 class XmlStreamWriter;
 
-class XLSX_AUTOTEST_EXPORT Styles : public QObject
+class XLSX_AUTOTEST_EXPORT Styles
 {
 public:
     Styles();

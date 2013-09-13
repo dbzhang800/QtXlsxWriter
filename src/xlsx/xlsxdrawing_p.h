@@ -1,8 +1,8 @@
 #ifndef QXLSX_DRAWING_H
 #define QXLSX_DRAWING_H
 
-#include <QObject>
 #include <QList>
+#include <QString>
 
 class QIODevice;
 
@@ -28,11 +28,10 @@ struct XlsxDrawingDimensionData
     int shape;
 };
 
-class Drawing : public QObject
+class Drawing
 {
-    Q_OBJECT
 public:
-    explicit Drawing(QObject *parent = 0);
+    Drawing();
     void saveToXmlFile(QIODevice *device);
 
     bool embedded;

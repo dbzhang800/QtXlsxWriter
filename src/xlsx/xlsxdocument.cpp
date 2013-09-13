@@ -12,7 +12,7 @@ namespace QXlsx {
 DocumentPrivate::DocumentPrivate(Document *p) :
     q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx"))
 {
-    workbook = new Workbook(p);
+    workbook = QSharedPointer<Workbook>(new Workbook);
 }
 
 void DocumentPrivate::init()
@@ -147,7 +147,7 @@ QStringList Document::documentPropertyNames() const
 Workbook *Document::workbook() const
 {
     Q_D(const Document);
-    return d->workbook;
+    return d->workbook.data();
 }
 
 bool Document::addWorksheet(const QString &name)

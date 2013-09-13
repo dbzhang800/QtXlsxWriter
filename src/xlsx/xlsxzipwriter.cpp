@@ -28,15 +28,13 @@
 
 namespace QXlsx {
 
-ZipWriter::ZipWriter(const QString &filePath, QObject *parent) :
-    QObject(parent)
+ZipWriter::ZipWriter(const QString &filePath)
 {
     m_writer = new QZipWriter(filePath, QIODevice::WriteOnly);
     m_writer->setCompressionPolicy(QZipWriter::NeverCompress);
 }
 
-ZipWriter::ZipWriter(QIODevice *device, QObject *parent) :
-    QObject(parent)
+ZipWriter::ZipWriter(QIODevice *device)
 {
     m_writer = new QZipWriter(device);
     m_writer->setCompressionPolicy(QZipWriter::NeverCompress);
