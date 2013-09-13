@@ -29,6 +29,7 @@
 #include "xlsxutility_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"
+#include "xlsxxmlreader_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxstyles_p.h"
 
@@ -74,12 +75,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
 
 WorksheetPrivate::~WorksheetPrivate()
 {
-    typedef QMap<int, XlsxCellData *> RowMap;
-    foreach (RowMap row, cellTable) {
-        foreach (XlsxCellData *item, row)
-            delete item;
-    }
-
     foreach (XlsxRowInfo *row, rowsInfo)
         delete row;
 
@@ -224,10 +219,16 @@ bool Worksheet::isChartsheet() const
     return false;
 }
 
-QString Worksheet::name() const
+QString Worksheet::sheetName() const
 {
     Q_D(const Worksheet);
     return d->name;
+}
+
+void Worksheet::setSheetName(const QString &sheetName)
+{
+    Q_D(Worksheet);
+    d->name = sheetName;
 }
 
 bool Worksheet::isHidden() const
@@ -354,7 +355,7 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     SharedStrings *sharedStrings = d->workbook->sharedStrings();
     int index = sharedStrings->addSharedString(content);
 
-    d->cellTable[row][column] = new XlsxCellData(index, XlsxCellData::String, format);
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(index, XlsxCellData::String, format));
     d->workbook->styles()->addFormat(format);
     return error;
 }
@@ -365,7 +366,7 @@ int Worksheet::writeNumber(int row, int column, double value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Number, format);
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(value, XlsxCellData::Number, format));
     d->workbook->styles()->addFormat(format);
     return 0;
 }
@@ -384,7 +385,7 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
 
     XlsxCellData *data = new XlsxCellData(result, XlsxCellData::Formula, format);
     data->formula = formula;
-    d->cellTable[row][column] = data;
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(data);
     d->workbook->styles()->addFormat(format);
 
     return error;
@@ -396,7 +397,7 @@ int Worksheet::writeBlank(int row, int column, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = new XlsxCellData(QVariant(), XlsxCellData::Blank, format);
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(QVariant(), XlsxCellData::Blank, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -408,7 +409,7 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Boolean, format);
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(value, XlsxCellData::Boolean, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -420,7 +421,7 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = new XlsxCellData(dt, XlsxCellData::DateTime, format);
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(dt, XlsxCellData::DateTime, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -482,7 +483,7 @@ int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, co
     //Write the hyperlink string as normal string.
     SharedStrings *sharedStrings = d->workbook->sharedStrings();
     int index = sharedStrings->addSharedString(urlString);
-    d->cellTable[row][column] = new XlsxCellData(index, XlsxCellData::String, format);
+    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(index, XlsxCellData::String, format));
 
     //Store the hyperlink data in sa separate table
     d->urlTable[row][column] = new XlsxUrlData(link_type, urlString, locationString, tip);
@@ -695,7 +696,7 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
     }
 }
 
-void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell)
+void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<XlsxCellData> cell)
 {
     //This is the innermost loop so efficiency is important.
     QString cell_range = xl_rowcol_to_cell_fast(row, col);
@@ -1068,7 +1069,59 @@ QByteArray Worksheet::saveToXmlData()
 
 QSharedPointer<Worksheet> Worksheet::loadFromXmlFile(QIODevice *device)
 {
-    return QSharedPointer<Worksheet>(new Worksheet(QString()));
+    Worksheet *sheet = new Worksheet(QStringLiteral("Sheet9999"));
+
+    XmlStreamReader reader(device);
+    while(!reader.atEnd()) {
+         QXmlStreamReader::TokenType token = reader.readNext();
+         if (token == QXmlStreamReader::StartElement) {
+             if (reader.name() == QLatin1String("dimension")) {
+                 QXmlStreamAttributes attributes = reader.attributes();
+                 QStringList range = attributes.value(QLatin1String("ref")).toString().split(QLatin1Char(':'));
+                 if (range.size() == 2) {
+                     QPoint start = xl_cell_to_rowcol(range[0]);
+                     QPoint end = xl_cell_to_rowcol(range[1]);
+                     sheet->d_func()->dim_rowmin = start.x();
+                     sheet->d_func()->dim_colmin = start.y();
+                     sheet->d_func()->dim_rowmax = end.x();
+                     sheet->d_func()->dim_colmax = end.y();
+                 } else {
+                     QPoint p = xl_cell_to_rowcol(range[0]);
+                     sheet->d_func()->dim_rowmin = p.x();
+                     sheet->d_func()->dim_colmin = p.y();
+                     sheet->d_func()->dim_rowmax = p.x();
+                     sheet->d_func()->dim_colmax = p.y();
+                 }
+             } else if (reader.name() == QLatin1String("c")) {
+                 QXmlStreamAttributes attributes = reader.attributes();
+                 QString r = attributes.value(QLatin1String("r")).toString();
+                 QPoint pos = xl_cell_to_rowcol(r);
+
+                 if (attributes.hasAttribute(QLatin1String("t"))) {
+                     QString type = attributes.value(QLatin1String("t")).toString();
+                     if (type == QLatin1String("s")) {
+                         //string type
+                         reader.readNextStartElement();
+                         if (reader.name() == QLatin1String("v")) {
+                             QString value = reader.readElementText();
+                             XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String);
+                             sheet->d_func()->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                         }
+                     }
+                 } else {
+                     //number type
+                     reader.readNextStartElement();
+                     if (reader.name() == QLatin1String("v")) {
+                         QString value = reader.readElementText();
+                         XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number);
+                         sheet->d_func()->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                     }
+                 }
+             }
+         }
+    }
+
+    return QSharedPointer<Worksheet> (sheet);
 }
 
 QSharedPointer<Worksheet> Worksheet::loadFromXmlData(const QByteArray &data)

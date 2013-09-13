@@ -168,7 +168,7 @@ Worksheet *Document::activedWorksheet() const
     if (d->workbook->worksheets().size() == 0)
         return 0;
 
-    return d->workbook->worksheets().at(d->workbook->activedWorksheet());
+    return d->workbook->worksheets().at(d->workbook->activedWorksheet()).data();
 }
 
 int Document::activedWorksheetIndex() const

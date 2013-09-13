@@ -84,7 +84,8 @@ private:
     Worksheet(const QString &sheetName, Workbook *book=0);
 
     virtual bool isChartsheet() const;
-    QString name() const;
+    QString sheetName() const;
+    void setSheetName(const QString &sheetName);
     bool isHidden() const;
     bool isSelected() const;
     void setHidden(bool hidden);

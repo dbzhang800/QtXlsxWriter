@@ -59,6 +59,7 @@ public:
     QByteArray saveToXmlData();
     static Relationships loadFromXmlFile(QIODevice *device);
     static Relationships loadFromXmlData(const QByteArray &data);
+    XlsxRelationship getRelationshipById(const QString &id) const;
 
 private:
     QList<XlsxRelationship> relationships(const QString &type) const;

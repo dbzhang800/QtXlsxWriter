@@ -164,4 +164,13 @@ Relationships Relationships::loadFromXmlData(const QByteArray &data)
     return loadFromXmlFile(&buffer);
 }
 
+XlsxRelationship Relationships::getRelationshipById(const QString &id) const
+{
+    foreach (XlsxRelationship ship, m_relationships) {
+        if (ship.id == id)
+            return ship;
+    }
+    return XlsxRelationship();
+}
+
 } //namespace

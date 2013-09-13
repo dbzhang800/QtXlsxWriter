@@ -27,6 +27,7 @@
 #include "xlsxworksheet.h"
 
 #include <QImage>
+#include <QSharedPointer>
 
 namespace QXlsx {
 
@@ -182,7 +183,7 @@ public:
     QString generateDimensionString();
     void calculateSpans();
     void writeSheetData(XmlStreamWriter &writer);
-    void writeCellData(XmlStreamWriter &writer, int row, int col, XlsxCellData *cell);
+    void writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<XlsxCellData> cell);
     void writeMergeCells(XmlStreamWriter &writer);
     void writeHyperlinks(XmlStreamWriter &writer);
     void writeDrawings(XmlStreamWriter &writer);
@@ -193,7 +194,7 @@ public:
 
     Workbook *workbook;
     Drawing *drawing;
-    QMap<int, QMap<int, XlsxCellData *> > cellTable;
+    QMap<int, QMap<int, QSharedPointer<XlsxCellData> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, XlsxUrlData *> > urlTable;
     QList<XlsxCellRange> merges;

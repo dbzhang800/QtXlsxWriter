@@ -30,6 +30,7 @@
 #include "xlsxformat.h"
 #include "xlsxpackage_p.h"
 #include "xlsxxmlwriter_p.h"
+#include "xlsxxmlreader_p.h"
 #include "xlsxworksheet_p.h"
 
 #include <QFile>
@@ -63,7 +64,6 @@ Workbook::Workbook() :
 
 Workbook::~Workbook()
 {
-    qDeleteAll(d_ptr->worksheets);
     delete d_ptr;
 }
 
@@ -123,9 +123,10 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
     QString worksheetName = name;
     if (!name.isEmpty()) {
         //If user given an already in-use name, we should not continue any more!
-        foreach (Worksheet *sheet, d->worksheets) {
-            if (sheet->name() == name)
+        for (int i=0; i<d->worksheets.size(); ++i) {
+            if (d->worksheets[i]->sheetName() == name) {
                 return 0;
+            }
         }
     } else {
         bool exists;
@@ -133,15 +134,15 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
             ++lastIndex;
             exists = false;
             worksheetName = QStringLiteral("Sheet%1").arg(lastIndex+1);
-            foreach (Worksheet *sheet, d->worksheets) {
-                if (sheet->name() == worksheetName)
+            for (int i=0; i<d->worksheets.size(); ++i) {
+                if (d->worksheets[i]->sheetName() == worksheetName)
                     exists = true;
             }
         } while (exists);
     }
 
     Worksheet *sheet = new Worksheet(worksheetName, this);
-    d->worksheets.insert(index, sheet);
+    d->worksheets.insert(index, QSharedPointer<Worksheet>(sheet));
     d->activesheet = index;
     return sheet;
 }
@@ -168,7 +169,7 @@ Format *Workbook::createFormat()
     return d->styles->createFormat();
 }
 
-QList<Worksheet *> Workbook::worksheets() const
+QList<QSharedPointer<Worksheet> > Workbook::worksheets() const
 {
     Q_D(const Workbook);
     return d->worksheets;
@@ -206,7 +207,8 @@ void Workbook::prepareDrawings()
     d->images.clear();
     d->drawings.clear();
 
-    foreach (Worksheet *sheet, d->worksheets) {
+    for (int i=0; i<d->worksheets.size(); ++i) {
+        QSharedPointer<Worksheet> sheet = d->worksheets[i];
         if (sheet->images().isEmpty()) //No drawing (such as Image, ...)
             continue;
 
@@ -262,9 +264,9 @@ void Workbook::saveToXmlFile(QIODevice *device)
 
     writer.writeStartElement(QStringLiteral("sheets"));
     for (int i=0; i<d->worksheets.size(); ++i) {
-        Worksheet *sheet = d->worksheets[i];
+        QSharedPointer<Worksheet> sheet = d->worksheets[i];
         writer.writeEmptyElement(QStringLiteral("sheet"));
-        writer.writeAttribute(QStringLiteral("name"), sheet->name());
+        writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(i+1));
         if (sheet->isHidden())
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
@@ -295,8 +297,21 @@ QByteArray Workbook::saveToXmlData()
 
 QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
 {
+    Workbook *book = new Workbook;
 
-    return QSharedPointer<Workbook>(new Workbook);
+    XmlStreamReader reader(device);
+    while(!reader.atEnd()) {
+         QXmlStreamReader::TokenType token = reader.readNext();
+         if (token == QXmlStreamReader::StartElement) {
+             if (reader.name() == QLatin1String("sheet")) {
+                 QXmlStreamAttributes attributes = reader.attributes();
+                 QString sheetName = attributes.value(QLatin1String("name")).toString();
+                 QString rId = attributes.value(QLatin1String("r:id")).toString();
+                 book->d_func()->sheetNameIdPairList.append(QPair<QString, QString>(sheetName, rId));
+             }
+         }
+    }
+    return QSharedPointer<Workbook>(book);
 }
 
 QSharedPointer<Workbook> Workbook::loadFromXmlData(const QByteArray &data)
@@ -306,6 +321,14 @@ QSharedPointer<Workbook> Workbook::loadFromXmlData(const QByteArray &data)
     buffer.open(QIODevice::ReadOnly);
 
     return loadFromXmlFile(&buffer);
+}
+
+void Workbook::addWorksheet(const QString &name, QSharedPointer<Worksheet> sheet)
+{
+    Q_D(Workbook);
+
+    sheet->setSheetName(name);
+    d->worksheets.append(sheet);
 }
 
 } //namespace

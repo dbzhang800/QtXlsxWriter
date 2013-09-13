@@ -50,7 +50,7 @@ class Q_XLSX_EXPORT Workbook
 public:
     ~Workbook();
 
-    QList<Worksheet *> worksheets() const;
+    QList<QSharedPointer<Worksheet> > worksheets() const;
     Worksheet *addWorksheet(const QString &name = QString());
     Worksheet *insertWorkSheet(int index, const QString &name = QString());
     int activedWorksheet() const;
@@ -76,6 +76,7 @@ private:
     QByteArray saveToXmlData();
     static QSharedPointer<Workbook> loadFromXmlFile(QIODevice *device);
     static QSharedPointer<Workbook> loadFromXmlData(const QByteArray &data);
+    void addWorksheet(const QString &name, QSharedPointer<Worksheet> sheet);
 
     SharedStrings *sharedStrings();
     Styles *styles();

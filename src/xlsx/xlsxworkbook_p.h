@@ -26,6 +26,7 @@
 #define XLSXWORKBOOK_P_H
 #include "xlsxworkbook.h"
 #include <QSharedPointer>
+#include <QPair>
 
 namespace QXlsx {
 
@@ -38,10 +39,12 @@ public:
     Workbook *q_ptr;
 
     QSharedPointer<SharedStrings> sharedStrings;
-    QList<Worksheet *> worksheets;
+    QList<QSharedPointer<Worksheet> > worksheets;
     QSharedPointer<Styles> styles;
     QList<QImage> images;
     QList<Drawing *> drawings;
+
+    QList<QPair<QString, QString> > sheetNameIdPairList;//Data from xml file
 
     bool strings_to_numbers_enabled;
     bool date1904;
