@@ -25,42 +25,59 @@
 #ifndef XLSXSTYLES_H
 #define XLSXSTYLES_H
 
-#include <QObject>
+#include "xlsxglobal.h"
+#include <QSharedPointer>
+#include <QHash>
+#include <QList>
 
 class QIODevice;
 
 namespace QXlsx {
 
 class Format;
+struct FontData;
+struct FillData;
+struct BorderData;
 class XmlStreamWriter;
 
-class Styles : public QObject
+class XLSX_AUTOTEST_EXPORT Styles : public QObject
 {
 public:
-    explicit Styles(QObject *parent=0);
+    Styles();
     ~Styles();
-    Format *addFormat();
+    Format *createFormat();
+    void addFormat(Format *format);
 
-    void prepareStyles();
-    void clearExtraFormatInfo();
+    QByteArray saveToXmlData();
     void saveToXmlFile(QIODevice *device);
+    static QSharedPointer<Styles> loadFromXmlFile(QIODevice *device);
+    static QSharedPointer<Styles> loadFromXmlData(const QByteArray &data);
 
 private:
+    friend class Format;
+
     void writeFonts(XmlStreamWriter &writer);
     void writeFills(XmlStreamWriter &writer);
-    void writeFill(XmlStreamWriter &writer, Format *format);
+    void writeFill(XmlStreamWriter &writer, FillData *fill);
     void writeBorders(XmlStreamWriter &writer);
     void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color);
     void writeCellXfs(XmlStreamWriter &writer);
     void writeDxfs(XmlStreamWriter &writer);
 
-    QList<Format *> m_formats;
-    QList<Format *> m_xf_formats;
-    QList<Format *> m_dxf_formats;
+    QList<QSharedPointer<FontData> > m_fontsList; //Keep a copy of unique fonts
+    QList<QSharedPointer<FillData> > m_fillsList; //Keep a copy of unique fills
+    QList<QSharedPointer<BorderData> > m_bordersList; //Keep a copy of unique borders
+    QHash<QByteArray, QSharedPointer<FontData> > m_fontsHash;
+    QHash<QByteArray, QSharedPointer<FillData> > m_fillsHash;
+    QHash<QByteArray, QSharedPointer<BorderData> > m_bordersHash;
 
-    int m_font_count;
-    int m_fill_count;
-    int m_borders_count;
+    QList<QSharedPointer<Format> > m_createdFormatsList; //All created formats
+
+    QList<Format *> m_xf_formatsList;
+    QHash<QByteArray, Format *> m_xf_formatsHash;
+
+    QList<Format *> m_dxf_formatsList;
+    QHash<QByteArray, Format *> m_dxf_formatsHash;
 };
 
 }

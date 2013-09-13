@@ -39,7 +39,7 @@ public:
 
     QSharedPointer<SharedStrings> sharedStrings;
     QList<Worksheet *> worksheets;
-    Styles *styles;
+    QSharedPointer<Styles> styles;
     QList<QImage> images;
     QList<Drawing *> drawings;
 

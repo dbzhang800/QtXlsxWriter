@@ -210,8 +210,7 @@ private:
     friend class WorksheetPrivate;
     Format();
 
-    bool hasFont() const;
-    void setFontRedundant(bool redundant);
+    bool fontIndexValid() const;
     int fontIndex() const;
     void setFontIndex(int index);
     QByteArray fontKey() const;
@@ -223,26 +222,24 @@ private:
     QString horizontalAlignmentString() const;
     QString verticalAlignmentString() const;
 
+    bool borderIndexValid() const;
     QByteArray borderKey() const;
-    bool hasBorders() const;
-    void setBorderRedundant(bool redundant);
     int borderIndex() const;
     void setBorderIndex(int index);
 
+    bool fillIndexValid() const;
     QByteArray fillKey() const;
-    bool hasFill() const;
-    void setFillRedundant(bool redundant);
     int fillIndex() const;
     void setFillIndex(int index);
 
     QByteArray formatKey() const;
-
-    static QList<Format *> xfFormats();
-    static QList<Format *> dxfFormats();
-    int xfIndex(bool generateIfNotValid=true); //Generate index when first called.
-    void clearExtraInfos();
-
+    bool xfIndexValid() const;
+    int xfIndex() const;
+    void setXfIndex(int index);
     bool isDxfFormat() const;
+    bool dxfIndexValid() const;
+    int dxfIndex() const;
+    void setDxfIndex(int index);
 
     int theme() const;
     int colorIndexed() const;

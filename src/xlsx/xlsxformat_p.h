@@ -42,7 +42,7 @@ struct FontData
       , scirpt(Format::FontScriptNormal), underline(Format::FontUnderlineNone)
       , outline(false), shadow(false), name(QStringLiteral("Calibri")), family(2), charset(0)
       , scheme(QStringLiteral("minor")), condense(0), extend(0)
-      , _dirty(true), _redundant(false), _index(-1)
+      , _dirty(true), _indexValid(false), _index(-1)
 
     {}
 
@@ -65,7 +65,7 @@ struct FontData
     //helper member
     bool _dirty; //key re-generated is need.
     QByteArray _key;
-    bool _redundant;  //same font already used by some other Formats
+    bool _indexValid;  //has a valid index, so no need to assign a new one
     int _index; //index in the Font list
 };
 
@@ -90,7 +90,7 @@ struct BorderData
         left(Format::BorderNone), right(Format::BorderNone), top(Format::BorderNone)
       ,bottom(Format::BorderNone), diagonal(Format::BorderNone)
       ,diagonalType(Format::DiagonalBorderNone)
-      ,_dirty(true), _redundant(false), _index(-1)
+      ,_dirty(true), _indexValid(false), _index(-1)
     {}
 
     Format::BorderStyle left;
@@ -108,14 +108,14 @@ struct BorderData
     //helper member
     bool _dirty; //key re-generated is need.
     QByteArray _key;
-    bool _redundant;  //same border already used by some other Formats
+    bool _indexValid;  //has a valid index, so no need to assign a new one
     int _index; //index in the border list
 };
 
 struct FillData {
     FillData() :
         pattern(Format::PatternNone)
-      ,_dirty(true), _redundant(false), _index(-1)
+      ,_dirty(true), _indexValid(false), _index(-1)
     {}
 
     Format::FillPattern pattern;
@@ -125,7 +125,7 @@ struct FillData {
     //helper member
     bool _dirty; //key re-generated is need.
     QByteArray _key;
-    bool _redundant;  //same border already used by some other Formats
+    bool _indexValid;  //has a valid index, so no need to assign a new one
     int _index; //index in the border list
 };
 
@@ -156,10 +156,12 @@ public:
 
     static QList<Format *> s_xfFormats;
     int xf_index;
+    bool xf_indexValid;
 
     static QList<Format *> s_dxfFormats;
     bool is_dxf_fomat;
     int dxf_index;
+    bool dxf_indexValid;
 
     int theme;
     int color_indexed;

@@ -7,4 +7,5 @@ SUBDIRS=\
     propscore \
     propsapp \
     readdocument \
-    sharedstrings
+    sharedstrings \
+    styles

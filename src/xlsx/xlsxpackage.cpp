@@ -143,7 +143,6 @@ bool Package::createPackage(QIODevice *package)
     if (zipWriter.error())
         return false;
 
-    m_workbook->styles()->clearExtraFormatInfo(); //These info will be generated when write the worksheet data.
     m_workbook->prepareDrawings();
 
     writeWorksheetFiles(zipWriter);
@@ -158,7 +157,6 @@ bool Package::createPackage(QIODevice *package)
     writeDocPropsAppFile(zipWriter);
     writeDocPropsCoreFile(zipWriter);
     writeContentTypesFile(zipWriter);
-    m_workbook->styles()->prepareStyles();
     writeStylesFiles(zipWriter);
     writeThemeFile(zipWriter);
     writeRootRelsFile(zipWriter);
@@ -280,11 +278,7 @@ void Package::writeSharedStringsFile(ZipWriter &zipWriter)
 
 void Package::writeStylesFiles(ZipWriter &zipWriter)
 {
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    m_workbook->styles()->saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("xl/styles.xml"), data);
+    zipWriter.addFile(QStringLiteral("xl/styles.xml"), m_workbook->styles()->saveToXmlData());
 }
 
 void Package::writeThemeFile(ZipWriter &zipWriter)

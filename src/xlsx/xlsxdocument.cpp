@@ -63,7 +63,7 @@ Document::Document(QIODevice *device, QObject *parent) :
 Format *Document::createFormat()
 {
     Q_D(Document);
-    return d->workbook->addFormat();
+    return d->workbook->createFormat();
 }
 
 int Document::write(const QString row_column, const QVariant &value, Format *format)

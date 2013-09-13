@@ -58,7 +58,7 @@ public:
     int activedWorksheet() const;
     void setActivedWorksheet(int index);
 
-    Format *addFormat();
+    Format *createFormat();
 //    void addChart();
     void defineName(const QString &name, const QString &formula);
     bool isDate1904() const;

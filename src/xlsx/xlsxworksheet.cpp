@@ -30,6 +30,7 @@
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"
 #include "xlsxdrawing_p.h"
+#include "xlsxstyles_p.h"
 
 #include <QVariant>
 #include <QDateTime>
@@ -354,6 +355,7 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     int index = sharedStrings->addSharedString(content);
 
     d->cellTable[row][column] = new XlsxCellData(index, XlsxCellData::String, format);
+    d->workbook->styles()->addFormat(format);
     return error;
 }
 
@@ -364,6 +366,7 @@ int Worksheet::writeNumber(int row, int column, double value, Format *format)
         return -1;
 
     d->cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Number, format);
+    d->workbook->styles()->addFormat(format);
     return 0;
 }
 
@@ -382,6 +385,7 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
     XlsxCellData *data = new XlsxCellData(result, XlsxCellData::Formula, format);
     data->formula = formula;
     d->cellTable[row][column] = data;
+    d->workbook->styles()->addFormat(format);
 
     return error;
 }
@@ -393,6 +397,8 @@ int Worksheet::writeBlank(int row, int column, Format *format)
         return -1;
 
     d->cellTable[row][column] = new XlsxCellData(QVariant(), XlsxCellData::Blank, format);
+    d->workbook->styles()->addFormat(format);
+
     return 0;
 }
 
@@ -403,6 +409,8 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
         return -1;
 
     d->cellTable[row][column] = new XlsxCellData(value, XlsxCellData::Boolean, format);
+    d->workbook->styles()->addFormat(format);
+
     return 0;
 }
 
@@ -413,6 +421,8 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
         return -1;
 
     d->cellTable[row][column] = new XlsxCellData(dt, XlsxCellData::DateTime, format);
+    d->workbook->styles()->addFormat(format);
+
     return 0;
 }
 
@@ -476,6 +486,7 @@ int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, co
 
     //Store the hyperlink data in sa separate table
     d->urlTable[row][column] = new XlsxUrlData(link_type, urlString, locationString, tip);
+    d->workbook->styles()->addFormat(format);
 
     return error;
 }
@@ -825,6 +836,7 @@ bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
     } else {
         d->rowsInfo[row] = new XlsxRowInfo(height, format, hidden);
     }
+    d->workbook->styles()->addFormat(format);
     return true;
 }
 
@@ -850,6 +862,8 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
 
     for (int col=colFirst; col<=colLast; ++col)
         d->colsInfoHelper[col] = info;
+
+    d->workbook->styles()->addFormat(format);
 
     return true;
 }

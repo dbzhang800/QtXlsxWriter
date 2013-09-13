@@ -41,7 +41,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     q_ptr(q)
 {
     sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings);
-    styles = new Styles(q);
+    styles = QSharedPointer<Styles>(new Styles);
 
     x_window = 240;
     y_window = 15;
@@ -161,10 +161,10 @@ void Workbook::setActivedWorksheet(int index)
     d->activesheet = index;
 }
 
-Format *Workbook::addFormat()
+Format *Workbook::createFormat()
 {
     Q_D(Workbook);
-    return d->styles->addFormat();
+    return d->styles->createFormat();
 }
 
 QList<Worksheet *> Workbook::worksheets() const
@@ -182,7 +182,7 @@ SharedStrings *Workbook::sharedStrings()
 Styles *Workbook::styles()
 {
     Q_D(Workbook);
-    return d->styles;
+    return d->styles.data();
 }
 
 QList<QImage> Workbook::images()

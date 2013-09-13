@@ -29,9 +29,6 @@
 
 namespace QXlsx {
 
-QList<Format *> FormatPrivate::s_xfFormats;
-QList<Format *> FormatPrivate::s_dxfFormats;
-
 FormatPrivate::FormatPrivate(Format *p) :
     q_ptr(p)
 {
@@ -40,6 +37,8 @@ FormatPrivate::FormatPrivate(Format *p) :
     is_dxf_fomat = false;
     xf_index = -1;
     dxf_index = -1;
+    xf_indexValid = false;
+    dxf_indexValid = false;
 
     theme = 0;
     color_indexed = 0;
@@ -186,16 +185,10 @@ void Format::setFontName(const QString &name)
     d->fontData._dirty = true;
 }
 
-bool Format::hasFont() const
+bool Format::fontIndexValid() const
 {
     Q_D(const Format);
-    return !d->fontData._redundant;
-}
-
-void Format::setFontRedundant(bool redundant)
-{
-    Q_D(Format);
-    d->fontData._redundant = redundant;
+    return !d->fontData._dirty && d->fontData._indexValid;
 }
 
 int Format::fontIndex() const
@@ -208,6 +201,7 @@ void Format::setFontIndex(int index)
 {
     Q_D(Format);
     d->fontData._index = index;
+    d->fontData._indexValid = true;
 }
 
 int Format::fontFamily() const
@@ -243,6 +237,7 @@ QByteArray Format::fontKey() const
 
         const_cast<FormatPrivate*>(d)->fontData._key = key;
         const_cast<FormatPrivate*>(d)->fontData._dirty = false;
+        const_cast<FormatPrivate*>(d)->fontData._indexValid = false; //must re-assign a new index
         const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
     }
 
@@ -579,16 +574,10 @@ void Format::setDiagonalBorderColor(const QColor &color)
     d->borderData._dirty = true;
 }
 
-bool Format::hasBorders() const
+bool Format::borderIndexValid() const
 {
     Q_D(const Format);
-    return !d->borderData._redundant;
-}
-
-void Format::setBorderRedundant(bool redundant)
-{
-    Q_D(Format);
-    d->borderData._redundant = redundant;
+    return !d->borderData._dirty && d->borderData._indexValid;
 }
 
 int Format::borderIndex() const
@@ -601,6 +590,7 @@ void Format::setBorderIndex(int index)
 {
     Q_D(Format);
     d->borderData._index = index;
+    d->borderData._indexValid = true;
 }
 
 /* Internal
@@ -618,6 +608,7 @@ QByteArray Format::borderKey() const
           <<d->borderData.top<<d->borderData.topColor;
         const_cast<FormatPrivate*>(d)->borderData._key = key;
         const_cast<FormatPrivate*>(d)->borderData._dirty = false;
+        const_cast<FormatPrivate*>(d)->borderData._indexValid = false;
         const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
     }
 
@@ -667,16 +658,10 @@ void Format::setPatternBackgroundColor(const QColor &color)
     d->fillData._dirty = true;
 }
 
-bool Format::hasFill() const
+bool Format::fillIndexValid() const
 {
     Q_D(const Format);
-    return !d->fillData._redundant;
-}
-
-void Format::setFillRedundant(bool redundant)
-{
-    Q_D(Format);
-    d->fillData._redundant = redundant;
+    return !d->fillData._dirty && d->fillData._indexValid;
 }
 
 int Format::fillIndex() const
@@ -689,6 +674,7 @@ void Format::setFillIndex(int index)
 {
     Q_D(Format);
     d->fillData._index = index;
+    d->fillData._indexValid = true;
 }
 
 /* Internal
@@ -702,6 +688,7 @@ QByteArray Format::fillKey() const
         stream<<d->fillData.bgColor<<d->fillData.fgColor<<d->fillData.pattern;
         const_cast<FormatPrivate*>(d)->fillData._key = key;
         const_cast<FormatPrivate*>(d)->fillData._dirty = false;
+        const_cast<FormatPrivate*>(d)->fillData._indexValid = false;
         const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
     }
 
@@ -747,9 +734,49 @@ QByteArray Format::formatKey() const
           <<d->protectionData.hidden<<d->protectionData.locked;
         const_cast<FormatPrivate*>(d)->formatKey = key;
         const_cast<FormatPrivate*>(d)->dirty = false;
+        const_cast<FormatPrivate*>(d)->xf_indexValid = false;
+        const_cast<FormatPrivate*>(d)->dxf_indexValid = false;
     }
 
     return d->formatKey;
+}
+
+void Format::setXfIndex(int index)
+{
+    Q_D(Format);
+    d->xf_index = index;
+    d->xf_indexValid = true;
+}
+
+int Format::xfIndex() const
+{
+    Q_D(const Format);
+    return d->xf_index;
+}
+
+bool Format::xfIndexValid() const
+{
+    Q_D(const Format);
+    return !d->dirty && d->xf_indexValid;
+}
+
+void Format::setDxfIndex(int index)
+{
+    Q_D(Format);
+    d->dxf_index = index;
+    d->dxf_indexValid = true;
+}
+
+int Format::dxfIndex() const
+{
+    Q_D(const Format);
+    return d->dxf_index;
+}
+
+bool Format::dxfIndexValid() const
+{
+    Q_D(const Format);
+    return !d->dirty && d->dxf_indexValid;
 }
 
 bool Format::operator ==(const Format &format) const
@@ -760,42 +787,6 @@ bool Format::operator ==(const Format &format) const
 bool Format::operator !=(const Format &format) const
 {
     return this->formatKey() != format.formatKey();
-}
-
-/* Internal
- *
- * This function will be called when wirte the cell contents of worksheet to xml files.
- * Depending on the order of the Format used instead of the Format created, we assign a
- * index to it.
- */
-int Format::xfIndex(bool generateIfNotValid)
-{
-    Q_D(Format);
-    if (d->xf_index == -1 && generateIfNotValid) { //Generate a valid xf_index for this format
-        int index = -1;
-        for (int i=0; i<d->s_xfFormats.size(); ++i) {
-            if (*d->s_xfFormats[i] == *this) {
-                index = i;
-                break;
-            }
-        }
-        if (index != -1) {
-            d->xf_index = index;
-        } else {
-            d->xf_index = d->s_xfFormats.size();
-            d->s_xfFormats.append(this);
-        }
-    }
-    return d->xf_index;
-}
-
-void Format::clearExtraInfos()
-{
-    Q_D(Format);
-    d->xf_index = -1;
-    d->dxf_index = -1;
-    d->s_xfFormats.clear();
-    d->s_dxfFormats.clear();
 }
 
 bool Format::isDxfFormat() const
@@ -814,16 +805,6 @@ int Format::colorIndexed() const
 {
     Q_D(const Format);
     return d->color_indexed;
-}
-
-QList<Format *> Format::xfFormats()
-{
-    return FormatPrivate::s_xfFormats;
-}
-
-QList<Format *> Format::dxfFormats()
-{
-    return FormatPrivate::s_dxfFormats;
 }
 
 } // namespace QXlsx
