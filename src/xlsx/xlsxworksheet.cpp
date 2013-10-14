@@ -617,7 +617,7 @@ void Worksheet::saveToXmlFile(QIODevice *device)
         writer.writeStartElement(QStringLiteral("cols"));
         foreach (XlsxColumnInfo *col_info, d->colsInfo) {
             writer.writeStartElement(QStringLiteral("col"));
-            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->column_min));
+            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->column_min + 1));
             writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->column_max));
             writer.writeAttribute(QStringLiteral("width"), QString::number(col_info->width, 'g', 15));
             if (col_info->format)
@@ -852,6 +852,9 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
     Q_D(Worksheet);
     bool ignore_row = true;
     bool ignore_col = (format || (width && hidden)) ? false : true;
+
+    if (colFirst >= colLast)
+        return false;
 
     if (d->checkDimensions(0, colLast, ignore_row, ignore_col))
         return false;
