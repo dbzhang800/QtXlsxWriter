@@ -13,6 +13,7 @@ public:
 private Q_SLOTS:
     void testEmptyStyle();
     void testAddFormat();
+    void testSolidFillBackgroundColor();
 };
 
 StylesTest::StylesTest()
@@ -39,6 +40,19 @@ void StylesTest::testAddFormat()
 
     QByteArray xmlData = styles.saveToXmlData();
     QVERIFY2(xmlData.contains("<cellXfs count=\"2\">"), ""); //Note we have a default one
+}
+
+// For a solid fill, Excel reverses the role of foreground and background colours
+void StylesTest::testSolidFillBackgroundColor()
+{
+    QXlsx::Styles styles;
+    QXlsx::Format *format = styles.createFormat();
+    format->setPatternBackgroundColor(QColor(Qt::red));
+    styles.addFormat(format);
+
+    QByteArray xmlData = styles.saveToXmlData();
+
+    QVERIFY(xmlData.contains("<patternFill patternType=\"solid\"><fgColor rgb=\"FFff0000\"/>"));
 }
 
 QTEST_APPLESS_MAIN(StylesTest)

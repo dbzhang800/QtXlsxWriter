@@ -46,6 +46,10 @@ int main()
     format5->setNumberFormat(22);
     xlsx.write("A5", QDate(2013, 8, 29), format5);
 
+    QXlsx::Format *format6 = xlsx.createFormat();
+    format6->setPatternBackgroundColor(QColor(Qt::gray));
+    xlsx.write("A6", "Background color: green", format6);
+
     xlsx.saveAs(DATA_PATH"TestStyle.xlsx");
     return 0;
 }

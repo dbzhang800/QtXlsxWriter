@@ -311,12 +311,13 @@ void Styles::writeFill(XmlStreamWriter &writer, FillData *fill)
     writer.writeStartElement(QStringLiteral("fill"));
     writer.writeStartElement(QStringLiteral("patternFill"));
     writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill->pattern]);
+    // For a solid fill, Excel reverses the role of foreground and background colours
     if (fill->fgColor.isValid()) {
-        writer.writeEmptyElement(QStringLiteral("fgColor"));
+        writer.writeEmptyElement(fill->pattern == Format::PatternSolid ? QStringLiteral("bgColor") : QStringLiteral("fgColor"));
         writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->fgColor.name().mid(1));
     }
     if (fill->bgColor.isValid()) {
-        writer.writeEmptyElement(QStringLiteral("bgColor"));
+        writer.writeEmptyElement(fill->pattern == Format::PatternSolid ? QStringLiteral("fgColor") : QStringLiteral("bgColor"));
         writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->bgColor.name().mid(1));
     }
 
