@@ -23,51 +23,36 @@
 **
 ****************************************************************************/
 
-#include "xlsxzipreader_p.h"
+/*!
+    \title Qt Xlsx
+    \page qtxlsx-index.html
+    \brief Qt Xlsx provides functionality for handling .xlsx files.
 
-#include <private/qzipreader_p.h>
+    .xlsx is a zipped, XML-based file format developed by Microsoft for
+    representing spreadsheets.
 
-namespace QXlsx {
+    \section1 Getting Started
 
-ZipReader::ZipReader(const QString &filePath) :
-    m_reader(new QZipReader(filePath))
-{
-    init();
-}
+    Qt Xlsx provides classes for writing .xlsx files. To include the definitions
+    of the module's classes, use the following directive:
 
-ZipReader::ZipReader(QIODevice *device) :
-    m_reader(new QZipReader(device))
-{
-    init();
-}
+    \snippet doc_src_qtxlsx.cpp 0
 
-ZipReader::~ZipReader()
-{
+    To link against the module, add this line to your qmake \c
+    .pro file:
 
-}
+    \snippet doc_src_qtxlsx.pro 1
 
-void ZipReader::init()
-{
-    QList<QZipReader::FileInfo> allFiles = m_reader->fileInfoList();
-    foreach (const QZipReader::FileInfo &fi, allFiles) {
-        if (fi.isFile)
-            m_filePaths.append(fi.filePath);
-    }
-}
+    \section1 References
+    \list
+        \li \l{Qt Xlsx C++ Classes}
+    \endlist
 
-bool ZipReader::exists() const
-{
-    return m_reader->exists();
-}
+    Qt Xlsx comes with the following examples:
 
-QStringList ZipReader::filePaths() const
-{
-    return m_filePaths;
-}
-
-QByteArray ZipReader::fileData(const QString &fileName) const
-{
-    return m_reader->fileData(fileName);
-}
-
-} // namespace QXlsx
+    \list
+        \li \l{Xlsx Hello Example}
+        \li \l{Xlsx Style Example}
+        \li \l{Xlsx DocProperties Example}
+    \endlist
+*/

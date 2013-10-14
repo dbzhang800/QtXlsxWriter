@@ -1,0 +1,11 @@
+/*!
+    \title Qt Xlsx Examples - Document Properties
+    \example documentproperty
+    \title Xlsx DocProperties Example
+    \brief This is a simplest xlsx examples.
+
+    \ingroup qtxlsx
+
+    This example demonstrates how to generate a
+    .xlsx file with Qt Xlsx Library.
+*/

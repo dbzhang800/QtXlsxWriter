@@ -1,6 +1,6 @@
 TARGET = QtXlsx
 
-#QMAKE_DOCS = $$PWD/doc/qtxlsx.qdocconf
+QMAKE_DOCS = $$PWD/doc/qtxlsx.qdocconf
 
 load(qt_module)
 

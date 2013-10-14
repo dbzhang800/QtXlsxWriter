@@ -1,0 +1,46 @@
+include($QT_INSTALL_DOCS/global/qt-html-templates-offline.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = QtXlsx
+description             = Qt Xlsx Reference Documentation
+url                     = http://qtxlsx.debao.me
+version                 = $QT_VERSION
+
+qhp.projects            = QtXlsx
+
+qhp.QtXlsx.file                = qtxlsx.qhp
+qhp.QtXlsx.namespace           = me.debao.qtxlsx.$QT_VERSION_TAG
+qhp.QtXlsx.virtualFolder       = qtxlsx
+qhp.QtXlsx.indexTitle          = Qt Xlsx
+qhp.QtXlsx.indexRoot           =
+
+qhp.QtXlsx.filterAttributes    = qtxlsx $QT_VERSION qtrefdoc
+qhp.QtXlsx.customFilters.Qt.name = QtXlsx $QT_VERSION
+qhp.QtXlsx.customFilters.Qt.filterAttributes = qtxlsx $QT_VERSION
+qhp.QtXlsx.subprojects         = overviews classes qmltypes examples
+qhp.QtXlsx.subprojects.overviews.title = Overview
+qhp.QtXlsx.subprojects.overviews.indexTitle = Qt Xlsx
+qhp.QtXlsx.subprojects.overviews.selectors = fake:page,group,module
+qhp.QtXlsx.subprojects.classes.title = C++ Classes
+qhp.QtXlsx.subprojects.classes.indexTitle = Qt Xlsx C++ Classes
+qhp.QtXlsx.subprojects.classes.selectors = class fake:headerfile
+qhp.QtXlsx.subprojects.classes.sortPages = true
+qhp.QtXlsx.subprojects.examples.title = Examples
+qhp.QtXlsx.subprojects.examples.indexTitle = Qt Xlsx Examples
+qhp.QtXlsx.subprojects.examples.selectors = fake:example
+
+tagfile                 = ../../../doc/qtxlsx/qtxlsx.tags
+
+headerdirs  += .. 
+
+sourcedirs  += .. 
+
+exampledirs += ../../../examples/xlsx \
+               snippets/
+
+# Specify the install path under QT_INSTALL_EXAMPLES
+examplesinstallpath = xlsx
+
+imagedirs   += images
+
+depends += qtcore qtdoc qtgui
