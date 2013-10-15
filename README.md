@@ -1,3 +1,5 @@
+Documentation: http://qtxlsx.debao.me
+
 QtXlsx is a library that can write Excel files. It doesn't require Microsoft Excel and can be used in any platform that Qt5 supported.
 
 ## Getting Started
