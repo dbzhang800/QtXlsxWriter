@@ -235,7 +235,11 @@ void Styles::saveToXmlFile(QIODevice *device)
 
 void Styles::writeNumFmts(XmlStreamWriter &writer)
 {
+    if (m_customNumFmts.size() == 0)
+        return;
+
     writer.writeStartElement(QStringLiteral("numFmts"));
+    writer.writeAttribute(QStringLiteral("count"), QString::number(m_customNumFmts.count()));
     for (int i=0; i<m_customNumFmts.size(); ++i) {
         writer.writeEmptyElement(QStringLiteral("numFmt"));
         writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(164 + i));
