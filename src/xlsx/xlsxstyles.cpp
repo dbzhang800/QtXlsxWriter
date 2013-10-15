@@ -65,6 +65,61 @@ void Styles::addFormat(Format *format)
     if (!format)
         return;
 
+    //numFmt
+    if (!format->numFmtIndexValid()) {
+        if (m_builtinNumFmtsHash.isEmpty()) {
+            m_builtinNumFmtsHash.insert(QStringLiteral("General"), 0);
+            m_builtinNumFmtsHash.insert(QStringLiteral("0"), 1);
+            m_builtinNumFmtsHash.insert(QStringLiteral("0.00"), 2);
+            m_builtinNumFmtsHash.insert(QStringLiteral("#,##0"), 3);
+            m_builtinNumFmtsHash.insert(QStringLiteral("#,##0.00"), 4);
+            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0_);($#,##0)"), 5);
+            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0_);[Red]($#,##0)"), 6);
+            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0.00_);($#,##0.00)"), 7);
+            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0.00_);[Red]($#,##0.00)"), 8);
+            m_builtinNumFmtsHash.insert(QStringLiteral("0%"), 9);
+            m_builtinNumFmtsHash.insert(QStringLiteral("0.00%"), 10);
+            m_builtinNumFmtsHash.insert(QStringLiteral("0.00E+00"), 11);
+            m_builtinNumFmtsHash.insert(QStringLiteral("# ?/?"), 12);
+            m_builtinNumFmtsHash.insert(QStringLiteral("# ??/??"), 13);
+            m_builtinNumFmtsHash.insert(QStringLiteral("m/d/yy"), 14);
+            m_builtinNumFmtsHash.insert(QStringLiteral("d-mmm-yy"), 15);
+            m_builtinNumFmtsHash.insert(QStringLiteral("d-mmm"), 16);
+            m_builtinNumFmtsHash.insert(QStringLiteral("mmm-yy"), 17);
+            m_builtinNumFmtsHash.insert(QStringLiteral("h:mm AM/PM"), 18);
+            m_builtinNumFmtsHash.insert(QStringLiteral("h:mm:ss AM/PM"), 19);
+            m_builtinNumFmtsHash.insert(QStringLiteral("h:mm"), 20);
+            m_builtinNumFmtsHash.insert(QStringLiteral("h:mm:ss"), 21);
+            m_builtinNumFmtsHash.insert(QStringLiteral("m/d/yy h:mm"), 22);
+
+            m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0_);(#,##0)"), 37);
+            m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0_);[Red](#,##0)"), 38);
+            m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0.00_);(#,##0.00)"), 39);
+            m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0.00_);[Red](#,##0.00)"), 40);
+            m_builtinNumFmtsHash.insert(QStringLiteral("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(_)"), 41);
+            m_builtinNumFmtsHash.insert(QStringLiteral("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(_)"), 42);
+            m_builtinNumFmtsHash.insert(QStringLiteral("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(_)"), 43);
+            m_builtinNumFmtsHash.insert(QStringLiteral("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(_)"), 44);
+            m_builtinNumFmtsHash.insert(QStringLiteral("mm:ss"), 45);
+            m_builtinNumFmtsHash.insert(QStringLiteral("[h]:mm:ss"), 46);
+            m_builtinNumFmtsHash.insert(QStringLiteral("mm:ss.0"), 47);
+            m_builtinNumFmtsHash.insert(QStringLiteral("##0.0E+0"), 48);
+            m_builtinNumFmtsHash.insert(QStringLiteral("@"), 49);
+        }
+        const QString str = format->numberFormat();
+        //Assign proper number format index
+        if (m_builtinNumFmtsHash.contains(str)) {
+            format->setNumFmt(m_builtinNumFmtsHash[str], str);
+        } else if (m_customNumFmtsHash.contains(str)) {
+            format->setNumFmt(m_customNumFmtsHash[str], str);
+        } else {
+            int idx = 164 + m_customNumFmts.size();
+            m_customNumFmts.append(str);
+            m_customNumFmtsHash.insert(str, idx);
+            format->setNumFmt(idx, str);
+        }
+    }
+
     //Font
     if (!format->fontIndexValid()) {
         if (!m_fontsHash.contains(format->fontKey())) {
@@ -140,9 +195,7 @@ void Styles::saveToXmlFile(QIODevice *device)
     writer.writeStartElement(QStringLiteral("styleSheet"));
     writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/spreadsheetml/2006/main"));
 
-//    writer.writeStartElement(QStringLiteral("numFmts"));
-//    writer.writeEndElement();//numFmts
-
+    writeNumFmts(writer);
     writeFonts(writer);
     writeFills(writer);
     writeBorders(writer);
@@ -178,6 +231,17 @@ void Styles::saveToXmlFile(QIODevice *device)
 
     writer.writeEndElement();//styleSheet
     writer.writeEndDocument();
+}
+
+void Styles::writeNumFmts(XmlStreamWriter &writer)
+{
+    writer.writeStartElement(QStringLiteral("numFmts"));
+    for (int i=0; i<m_customNumFmts.size(); ++i) {
+        writer.writeEmptyElement(QStringLiteral("numFmt"));
+        writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(164 + i));
+        writer.writeAttribute(QStringLiteral("formatCode"), m_customNumFmts[i]);
+    }
+    writer.writeEndElement();//numFmts
 }
 
 /*
@@ -394,7 +458,7 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("cellXfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_xf_formatsList.size()));
     foreach (Format *format, m_xf_formatsList) {
-        int num_fmt_id = format->numberFormat();
+        int num_fmt_id = format->numberFormatIndex();
         int font_id = format->fontIndex();
         int fill_id = format->fillIndex();
         int border_id = format->borderIndex();
@@ -405,7 +469,7 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
         writer.writeAttribute(QStringLiteral("fillId"), QString::number(fill_id));
         writer.writeAttribute(QStringLiteral("borderId"), QString::number(border_id));
         writer.writeAttribute(QStringLiteral("xfId"), QString::number(xf_id));
-        if (format->numberFormat() > 0)
+        if (format->numberFormatIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyNumberFormat"), QStringLiteral("1"));
         if (format->fontIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyFont"), QStringLiteral("1"));

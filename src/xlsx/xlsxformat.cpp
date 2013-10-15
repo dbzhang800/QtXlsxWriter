@@ -68,17 +68,48 @@ Format::~Format()
     delete d_ptr;
 }
 
-int Format::numberFormat() const
+int Format::numberFormatIndex() const
 {
     Q_D(const Format);
     return d->numberData.formatIndex;
 }
 
-void Format::setNumberFormat(int format)
+void Format::setNumberFormatIndex(int format)
 {
     Q_D(Format);
     d->dirty = true;
     d->numberData.formatIndex = format;
+}
+
+QString Format::numberFormat() const
+{
+    Q_D(const Format);
+    return d->numberData.formatString;
+}
+
+void Format::setNumberFormat(const QString &format)
+{
+    Q_D(Format);
+    d->dirty = true;
+    d->numberData.formatString = format;
+    d->numberData._valid = false; //formatIndex must be re-generated
+}
+
+bool Format::numFmtIndexValid() const
+{
+    Q_D(const Format);
+    return d->numberData._valid;
+}
+
+/*!
+ * \internal
+ */
+void Format::setNumFmt(int index, const QString &string)
+{
+    Q_D(Format);
+    d->numberData.formatIndex = index;
+    d->numberData.formatString = string;
+    d->numberData._valid = true;
 }
 
 int Format::fontSize() const

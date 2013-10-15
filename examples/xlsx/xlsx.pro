@@ -3,5 +3,6 @@ SUBDIRS = hello style \
     documentproperty \
     image \
     mergecells \
-    rowcolumn
+    rowcolumn \
+    numberformat
 

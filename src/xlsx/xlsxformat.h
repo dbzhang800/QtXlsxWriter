@@ -129,8 +129,10 @@ public:
 
     ~Format();
 
-    int numberFormat() const;
-    void setNumberFormat(int format);
+    int numberFormatIndex() const;
+    void setNumberFormatIndex(int format);
+    QString numberFormat() const;
+    void setNumberFormat(const QString &format);
 
     int fontSize() const;
     void setFontSize(int size);
@@ -209,6 +211,9 @@ private:
     friend class Worksheet;
     friend class WorksheetPrivate;
     Format();
+
+    bool numFmtIndexValid() const;
+    void setNumFmt(int index, const QString &string);
 
     bool fontIndexValid() const;
     int fontIndex() const;

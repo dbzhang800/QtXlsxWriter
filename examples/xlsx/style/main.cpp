@@ -43,7 +43,7 @@ int main()
     xlsx.setColumn(8, 15, 5.0, format4);
 
     QXlsx::Format *format5 = xlsx.createFormat();
-    format5->setNumberFormat(22);
+    format5->setNumberFormatIndex(22);
     xlsx.write("A5", QDate(2013, 8, 29), format5);
 
     QXlsx::Format *format6 = xlsx.createFormat();

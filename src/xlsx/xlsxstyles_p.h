@@ -29,6 +29,7 @@
 #include <QSharedPointer>
 #include <QHash>
 #include <QList>
+#include <QStringList>
 
 class QIODevice;
 
@@ -56,6 +57,7 @@ public:
 private:
     friend class Format;
 
+    void writeNumFmts(XmlStreamWriter &writer);
     void writeFonts(XmlStreamWriter &writer);
     void writeFills(XmlStreamWriter &writer);
     void writeFill(XmlStreamWriter &writer, FillData *fill);
@@ -64,6 +66,9 @@ private:
     void writeCellXfs(XmlStreamWriter &writer);
     void writeDxfs(XmlStreamWriter &writer);
 
+    QHash<QString, int> m_builtinNumFmtsHash;
+    QStringList m_customNumFmts;
+    QHash<QString, int> m_customNumFmtsHash;
     QList<QSharedPointer<FontData> > m_fontsList; //Keep a copy of unique fonts
     QList<QSharedPointer<FillData> > m_fillsList; //Keep a copy of unique fills
     QList<QSharedPointer<BorderData> > m_bordersList; //Keep a copy of unique borders

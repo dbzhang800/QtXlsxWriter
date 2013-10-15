@@ -13,6 +13,7 @@ public:
 private Q_SLOTS:
     void testEmptyStyle();
     void testAddFormat();
+    void testAddFormat2();
     void testSolidFillBackgroundColor();
 };
 
@@ -40,6 +41,23 @@ void StylesTest::testAddFormat()
 
     QByteArray xmlData = styles.saveToXmlData();
     QVERIFY2(xmlData.contains("<cellXfs count=\"2\">"), ""); //Note we have a default one
+}
+
+void StylesTest::testAddFormat2()
+{
+    QXlsx::Styles styles;
+
+    QXlsx::Format *format = styles.createFormat();
+    format->setNumberFormat("h:mm:ss AM/PM"); //builtin 19
+    styles.addFormat(format);
+
+    QCOMPARE(format->numberFormatIndex(), 19);
+
+    QXlsx::Format *format2 = styles.createFormat();
+    format2->setNumberFormat("aaaaa h:mm:ss AM/PM"); //custom
+    styles.addFormat(format2);
+
+    QCOMPARE(format2->numberFormatIndex(), 164);
 }
 
 // For a solid fill, Excel reverses the role of foreground and background colours

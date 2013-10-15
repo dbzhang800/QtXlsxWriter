@@ -30,9 +30,12 @@ namespace QXlsx {
 
 struct NumberData
 {
-    NumberData() : formatIndex(0) {}
+    NumberData() : formatIndex(0), _valid(true) {}
 
     int formatIndex;
+    QString formatString;
+
+    bool _valid;
 };
 
 struct FontData
