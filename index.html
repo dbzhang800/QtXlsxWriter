@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- qtxlsx-index.qdoc -->
+  <title>Qt Xlsx | QtXlsx 0.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader"></div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Xlsx</h1>
+<span class="subtitle"></span>
+<!-- $$$index.html-description -->
+<div class="descr"> <a name="details"></a>
+<p><a href="qtxlsx-module.html">QtXlsx</a> is a library that can write Excel files. It doesn't require Microsoft Excel and can be used in any platform that Qt5 supported.</p>
+<a name="getting-started"></a>
+<h2>Getting Started</h2>
+<a name="usage-1-use-source-code-directly"></a>
+<h3>Usage(1): Use source code directly</h3>
+<p>The package contains a qtxlsx.pri file that allows you to integrate the component into applications that use qmake for the build step.</p>
+<p>1. Download the source code.</p>
+<p>2. Put the source code in any directory you like. For example, 3rdparty:</p>
+<pre class="cpp"><span class="operator">|</span><span class="operator">-</span><span class="operator">-</span> project<span class="operator">.</span>pro
+<span class="operator">|</span><span class="operator">-</span><span class="operator">-</span> <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+<span class="operator">|</span><span class="operator">-</span><span class="operator">-</span> <span class="number">3rdparty</span>\
+<span class="operator">|</span>     <span class="operator">|</span><span class="operator">-</span><span class="operator">-</span> qtxlsx\
+<span class="operator">|</span>     <span class="operator">|</span></pre>
+<p>3. Add following line to your qmake project file:</p>
+<pre class="cpp"><span class="keyword">include</span>(<span class="number">3rdparty</span><span class="operator">/</span>qtxlsx<span class="operator">/</span>src<span class="operator">/</span>xlsx<span class="operator">/</span>qtxlsx<span class="operator">.</span>pri)</pre>
+<p><b>Note: </b>If you like, you can copy all files from *src/xlsx* to your application's source path. Then add following line to your project file:</p><pre class="cpp"><span class="keyword">include</span>(qtxlsx<span class="operator">.</span>pri)</pre>
+<p>4. Then, using Qt Xlsx in your code</p>
+<pre class="cpp"><span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
+<span class="type">int</span> main()
+{
+    <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
+    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Test.xlsx&quot;</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+<a name="usage-2-use-xlsx-as-qt5-s-addon-module"></a>
+<h3>Usage(2): Use Xlsx as Qt5's addon module</h3>
+<p><b>Note: </b>Perl is needed.</p><p>1. Download the source code.</p>
+<p>2. Put the source code in any directory you like. At the toplevel directory run</p>
+<pre class="cpp">qmake
+make
+make install</pre>
+<p>The library, the header files, and the feature file will be installed to your system.</p>
+<p>3. Add following line to your qmake's project file:</p>
+<pre class="cpp">QT <span class="operator">+</span><span class="operator">=</span> xlsx</pre>
+<p>4. Then, using Qt Xlsx in your code</p>
+<a name="references"></a>
+<h2>References</h2>
+<ul>
+<li><a href="qtxlsx-module.html">Qt Xlsx C++ Classes</a></li>
+</ul>
+<p>Qt Xlsx comes with the following examples:</p>
+<ul>
+<li><a href="hello.html">Xlsx Hello Example</a></li>
+<li><a href="style.html">Xlsx Style Example</a></li>
+<li><a href="documentproperty.html">Xlsx DocProperties Example</a></li>
+</ul>
+</div>
+<!-- @@@index.html -->
+</div>
+</div>
+</div>
+<div class="footer">
+    <p>
+      <acronym title="Copyright">&copy;</acronym> 2013 Digia Plc and/or its
+      subsidiaries. Documentation contributions included herein are the copyrights of
+      their respective owners.</p>
+    <br />
+    <p>
+      The documentation provided herein is licensed under the terms of the
+      <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+      License version 1.3</a> as published by the Free Software Foundation.</p>
+    <p>
+      Documentation sources may be obtained from <a href="http://www.qt-project.org">
+      www.qt-project.org</a>.</p>
+    <br />
+    <p>
+      Digia, Qt and their respective logos are trademarks of Digia Plc 
+      in Finland and/or other countries worldwide. All other trademarks are property
+      of their respective owners. <a title="Privacy Policy"
+      href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+</div>
+</body>
+</html>
