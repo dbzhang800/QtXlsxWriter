@@ -32,7 +32,7 @@
 
 class QIODevice;
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
 class Worksheet;
 class Format;
@@ -87,6 +87,6 @@ private:
     WorkbookPrivate * const d_ptr;
 };
 
-} //QXlsx
+QT_END_NAMESPACE_XLSX
 
 #endif // XLSXWORKBOOK_H

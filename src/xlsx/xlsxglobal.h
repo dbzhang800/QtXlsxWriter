@@ -26,7 +26,9 @@
 #define XLSXGLOBAL_H
 #include <QtGlobal>
 
-namespace QXlsx {
+#define QT_BEGIN_NAMESPACE_XLSX namespace QXlsx {
+#define QT_END_NAMESPACE_XLSX }
+#define QTXLSX_USE_NAMESPACE using namespace QXlsx;
 
 #if !defined(QT_STATIC) && !defined(XLSX_NO_LIB)
 #  if defined(QT_BUILD_XLSX_LIB)
@@ -43,7 +45,5 @@ namespace QXlsx {
 #else
 #  define XLSX_AUTOTEST_EXPORT
 #endif
-
-}
 
 #endif // XLSXGLOBAL_H

@@ -36,7 +36,7 @@
 #include <QFile>
 #include <QBuffer>
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
 WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     q_ptr(q)
@@ -331,4 +331,4 @@ void Workbook::addWorksheet(const QString &name, QSharedPointer<Worksheet> sheet
     d->worksheets.append(sheet);
 }
 
-} //namespace
+QT_END_NAMESPACE_XLSX

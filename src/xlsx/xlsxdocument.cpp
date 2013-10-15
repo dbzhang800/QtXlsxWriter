@@ -32,8 +32,7 @@
 #include <QFile>
 #include <QPointF>
 
-namespace QXlsx {
-
+QT_BEGIN_NAMESPACE_XLSX
 
 DocumentPrivate::DocumentPrivate(Document *p) :
     q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx"))
@@ -56,8 +55,9 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
 
 
 /*!
-  \class QXlsx::Document
+  \class Document
   \inmodule QtXlsx
+  \brief The Document class provides a API that is used to handle the contents of .xlsx files.
 
 */
 
@@ -243,4 +243,4 @@ Document::~Document()
     delete d_ptr;
 }
 
-} // namespace QXlsx
+QT_END_NAMESPACE_XLSX

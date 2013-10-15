@@ -44,7 +44,7 @@
 
 #include <stdint.h>
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
 WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
     q_ptr(p)
@@ -1136,4 +1136,4 @@ QSharedPointer<Worksheet> Worksheet::loadFromXmlData(const QByteArray &data)
     return loadFromXmlFile(&buffer);
 }
 
-} //namespace
+QT_END_NAMESPACE_XLSX

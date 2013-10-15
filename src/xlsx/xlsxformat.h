@@ -31,7 +31,7 @@
 #include <QByteArray>
 #include <QList>
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
 class Styles;
 class Worksheet;
@@ -247,6 +247,6 @@ private:
     FormatPrivate * const d_ptr;
 };
 
-} // namespace QXlsx
+QT_END_NAMESPACE_XLSX
 
 #endif // QXLSX_FORMAT_H

@@ -36,7 +36,7 @@ class QDateTime;
 class QUrl;
 class QImage;
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 class Package;
 class Workbook;
 class XmlStreamWriter;
@@ -101,6 +101,5 @@ private:
     WorksheetPrivate * const d_ptr;
 };
 
-} //QXlsx
-
+QT_END_NAMESPACE_XLSX
 #endif // XLSXWORKSHEET_H

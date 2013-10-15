@@ -27,7 +27,7 @@
 #include <QDataStream>
 #include <QDebug>
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
 FormatPrivate::FormatPrivate(Format *p) :
     q_ptr(p)
@@ -44,12 +44,25 @@ FormatPrivate::FormatPrivate(Format *p) :
     color_indexed = 0;
 }
 
+/*!
+ * \class Format
+ * \inmodule QtXlsx
+ * \brief Providing the methods and properties that are available for formatting cells in Excel.
+ */
+
+
+/*!
+ * \internal
+ */
 Format::Format() :
     d_ptr(new FormatPrivate(this))
 {
 
 }
 
+/*!
+ * \internal
+ */
 Format::~Format()
 {
     delete d_ptr;
@@ -807,4 +820,4 @@ int Format::colorIndexed() const
     return d->color_indexed;
 }
 
-} // namespace QXlsx
+QT_END_NAMESPACE_XLSX

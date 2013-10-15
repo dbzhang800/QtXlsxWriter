@@ -31,7 +31,7 @@
 class QIODevice;
 class QImage;
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
 class Workbook;
 class Worksheet;
@@ -80,6 +80,6 @@ private:
     DocumentPrivate * const d_ptr;
 };
 
-} // namespace QXlsx
+QT_END_NAMESPACE_XLSX
 
 #endif // QXLSX_XLSXDOCUMENT_H
