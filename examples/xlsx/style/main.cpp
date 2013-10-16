@@ -42,9 +42,7 @@ int main()
             xlsx.write(row, col, row+col);
     xlsx.setColumn(8, 15, 5.0, format4);
 
-    QXlsx::Format *format5 = xlsx.createFormat();
-    format5->setNumberFormatIndex(22);
-    xlsx.write("A5", QDate(2013, 8, 29), format5);
+    xlsx.write("A5", QDate(2013, 8, 29));
 
     QXlsx::Format *format6 = xlsx.createFormat();
     format6->setPatternBackgroundColor(QColor(Qt::gray));

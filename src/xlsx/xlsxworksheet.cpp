@@ -421,6 +421,10 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
     if (d->checkDimensions(row, column))
         return -1;
 
+    if (!format) {
+        format = d->workbook->createFormat();
+        format->setNumberFormat(d->workbook->defaultDateFormat());
+    }
     d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(dt, XlsxCellData::DateTime, format));
     d->workbook->styles()->addFormat(format);
 

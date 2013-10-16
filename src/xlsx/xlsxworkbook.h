@@ -63,6 +63,8 @@ public:
     void setDate1904(bool date1904);
     bool isStringsToNumbersEnabled() const;
     void setStringsToNumbersEnabled(bool enable=true);
+    QString defaultDateFormat() const;
+    void setDefaultDateFormat(const QString &format);
 
 private:
     friend class Package;

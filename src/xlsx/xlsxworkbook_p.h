@@ -48,6 +48,7 @@ public:
 
     bool strings_to_numbers_enabled;
     bool date1904;
+    QString defaultDateFormat;
 
     int x_window;
     int y_window;

@@ -51,6 +51,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
 
     strings_to_numbers_enabled = false;
     date1904 = false;
+    defaultDateFormat = QStringLiteral("dd/mm/yyyy hh:mm");
     activesheet = 0;
     firstsheet = 0;
     table_count = 0;
@@ -103,6 +104,19 @@ bool Workbook::isStringsToNumbersEnabled() const
 {
     Q_D(const Workbook);
     return d->strings_to_numbers_enabled;
+}
+
+QString Workbook::defaultDateFormat() const
+{
+    Q_D(const Workbook);
+    return d->defaultDateFormat;
+
+}
+
+void Workbook::setDefaultDateFormat(const QString &format)
+{
+    Q_D(Workbook);
+    d->defaultDateFormat = format;
 }
 
 void Workbook::defineName(const QString &name, const QString &formula)
