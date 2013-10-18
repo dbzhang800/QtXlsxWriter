@@ -161,13 +161,13 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
     return sheet;
 }
 
-int Workbook::activedWorksheet() const
+int Workbook::activeWorksheet() const
 {
     Q_D(const Workbook);
     return d->activesheet;
 }
 
-void Workbook::setActivedWorksheet(int index)
+void Workbook::setActiveWorksheet(int index)
 {
     Q_D(Workbook);
     if (index < 0 || index >= d->worksheets.size()) {

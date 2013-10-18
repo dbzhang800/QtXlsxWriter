@@ -53,8 +53,8 @@ public:
     QList<QSharedPointer<Worksheet> > worksheets() const;
     Worksheet *addWorksheet(const QString &name = QString());
     Worksheet *insertWorkSheet(int index, const QString &name = QString());
-    int activedWorksheet() const;
-    void setActivedWorksheet(int index);
+    int activeWorksheet() const;
+    void setActiveWorksheet(int index);
 
     Format *createFormat();
 //    void addChart();

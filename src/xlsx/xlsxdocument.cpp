@@ -195,19 +195,19 @@ Worksheet *Document::activedWorksheet() const
     if (d->workbook->worksheets().size() == 0)
         return 0;
 
-    return d->workbook->worksheets().at(d->workbook->activedWorksheet()).data();
+    return d->workbook->worksheets().at(d->workbook->activeWorksheet()).data();
 }
 
 int Document::activedWorksheetIndex() const
 {
     Q_D(const Document);
-    return d->workbook->activedWorksheet();
+    return d->workbook->activeWorksheet();
 }
 
 void Document::setActivedWorksheetIndex(int index)
 {
     Q_D(Document);
-    d->workbook->setActivedWorksheet(index);
+    d->workbook->setActiveWorksheet(index);
 }
 
 bool Document::save()
