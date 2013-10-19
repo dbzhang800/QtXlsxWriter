@@ -2,9 +2,17 @@
     \title Xlsx Readwrite Example
     \example readwrite
     \brief Open an existing xlsx file, modify and save it.
-
     \ingroup qtxlsx
 
     This example demonstrates how to modify an existing
     .xlsx file with Qt Xlsx Library.
+
+    \image readwrite.png
+
+    At first, we create an empty xlsx file, set the properties of the document,
+    write some content to the worksheet, then save it.    
+    \snippet readwrite/main.cpp 0
+
+    Then we open the exists xlsx file, add some data to it.
+    \snippet readwrite/main.cpp 1
 */

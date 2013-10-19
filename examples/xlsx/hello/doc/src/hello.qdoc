@@ -1,11 +1,20 @@
 /*!
-    \title Qt Xlsx Examples - Hello World
     \example hello
     \title Xlsx Hello Example
     \brief This is a simplest xlsx examples.
-
     \ingroup qtxlsx
 
     This example demonstrates how to generate a
     simplest .xlsx file with Qt Xlsx Library.
+    \image hello.png
+
+    Create an object of the class QXlsx::Document.
+    \snippet hello/main.cpp 0
+
+    Set the cells of worksheet.
+    \snippet hello/main.cpp 1
+
+    Save it.
+    \snippet hello/main.cpp 2
+
 */
