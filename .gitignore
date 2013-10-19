@@ -1,0 +1,78 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+# common
+*~
+*.a
+*.core
+*.moc
+*.o
+*.obj
+*.orig
+*.rej
+*.so
+*_pch.h.cpp
+*_resource.rc
+*.qm
+.#*
+*.*#
+tags
+.DS_Store
+*.debug
+Makefile*
+*.prl
+*.app
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+Thumbs.db
+# KDE
+.directory
+
+# python temporary files
+*.pyc
+
+# nsis files...
+nsis/dlls/*
+nsis/*.exe
+
+# qtcreator generated files
+*.pro.user*
+*.qmlproject.user*
+*.pluginspec
+
+# xemacs temporary files
+*.flc
+
+# Vim temporary files
+.*.swp
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.pdb
+*.sln
+*.suo
+*.vcproj
+*.vcxproj*
+*vcproj.*.*.user
+*vcxproj.*.*.user
+*.ncb
+*.opensdf
+*.sdf
+
+# MinGW generated files
+*.Debug
+*.Release
+
+# Directories to ignore
+# ---------------------
+
+temp
+debug
+lib/*
+lib64/*
+release
+doc/html/*
+ipch/*

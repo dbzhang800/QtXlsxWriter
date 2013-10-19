@@ -8,7 +8,18 @@
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
-<div class="header" id="qtdocheader"></div>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li>Qt 0.0</li>
+<li>Format</li>
+<li id="buildversion">
+Qt 0.0.1 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
@@ -24,7 +35,9 @@
 <!-- $$$Format-brief -->
 <p>Providing the methods and properties that are available for formatting cells in Excel. <a href="#details">More...</a></p>
 <!-- @@@Format -->
-<pre class="cpp"><span class="preprocessor">#include &lt;Format&gt;</span></pre><ul>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;Format&gt;</span>
+</tt></td></tr></table><ul>
 <li><a href="format-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-types"></a>
@@ -62,7 +75,8 @@
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#leftBorderColor">leftBorderColor</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> BorderStyle </td><td class="memItemRight bottomAlign"><b><a href="format.html#leftBorderStyle">leftBorderStyle</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#locked">locked</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="format.html#numberFormat">numberFormat</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="format.html#numberFormat">numberFormat</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="format.html#numberFormatIndex">numberFormatIndex</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#patternBackgroundColor">patternBackgroundColor</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#patternForegroundColor">patternForegroundColor</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#rightBorderColor">rightBorderColor</a></b>() const</td></tr>
@@ -91,7 +105,8 @@
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setLeftBorderColor">setLeftBorderColor</a></b>(const QColor &amp;<i> color</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setLeftBorderStyle">setLeftBorderStyle</a></b>(BorderStyle<i> style</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setLocked">setLocked</a></b>(bool<i> locked</i>)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setNumberFormat">setNumberFormat</a></b>(int<i> format</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setNumberFormat">setNumberFormat</a></b>(const QString &amp;<i> format</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setNumberFormatIndex">setNumberFormatIndex</a></b>(int<i> format</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setPatternBackgroundColor">setPatternBackgroundColor</a></b>(const QColor &amp;<i> color</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setPatternForegroundColor">setPatternForegroundColor</a></b>(const QColor &amp;<i> color</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#setRightBorderColor">setRightBorderColor</a></b>(const QColor &amp;<i> color</i>)</td></tr>
@@ -228,9 +243,13 @@
 <p><b>See also </b><a href="format.html#setLocked">setLocked</a>().</p>
 <!-- @@@locked -->
 <!-- $$$numberFormat[overload1]$$$numberFormat -->
-<h3 class="fn"><a name="numberFormat"></a><span class="type">int</span> Format::<span class="name">numberFormat</span>() const</h3>
+<h3 class="fn"><a name="numberFormat"></a><span class="type">QString</span> Format::<span class="name">numberFormat</span>() const</h3>
 <p><b>See also </b><a href="format.html#setNumberFormat">setNumberFormat</a>().</p>
 <!-- @@@numberFormat -->
+<!-- $$$numberFormatIndex[overload1]$$$numberFormatIndex -->
+<h3 class="fn"><a name="numberFormatIndex"></a><span class="type">int</span> Format::<span class="name">numberFormatIndex</span>() const</h3>
+<p><b>See also </b><a href="format.html#setNumberFormatIndex">setNumberFormatIndex</a>().</p>
+<!-- @@@numberFormatIndex -->
 <!-- $$$patternBackgroundColor[overload1]$$$patternBackgroundColor -->
 <h3 class="fn"><a name="patternBackgroundColor"></a><span class="type">QColor</span> Format::<span class="name">patternBackgroundColor</span>() const</h3>
 <p><b>See also </b><a href="format.html#setPatternBackgroundColor">setPatternBackgroundColor</a>().</p>
@@ -341,10 +360,14 @@
 <h3 class="fn"><a name="setLocked"></a><span class="type">void</span> Format::<span class="name">setLocked</span>(<span class="type">bool</span><i> locked</i>)</h3>
 <p><b>See also </b><a href="format.html#locked">locked</a>().</p>
 <!-- @@@setLocked -->
-<!-- $$$setNumberFormat[overload1]$$$setNumberFormatint -->
-<h3 class="fn"><a name="setNumberFormat"></a><span class="type">void</span> Format::<span class="name">setNumberFormat</span>(<span class="type">int</span><i> format</i>)</h3>
+<!-- $$$setNumberFormat[overload1]$$$setNumberFormatconstQString& -->
+<h3 class="fn"><a name="setNumberFormat"></a><span class="type">void</span> Format::<span class="name">setNumberFormat</span>(const <span class="type">QString</span> &amp;<i> format</i>)</h3>
 <p><b>See also </b><a href="format.html#numberFormat">numberFormat</a>().</p>
 <!-- @@@setNumberFormat -->
+<!-- $$$setNumberFormatIndex[overload1]$$$setNumberFormatIndexint -->
+<h3 class="fn"><a name="setNumberFormatIndex"></a><span class="type">void</span> Format::<span class="name">setNumberFormatIndex</span>(<span class="type">int</span><i> format</i>)</h3>
+<p><b>See also </b><a href="format.html#numberFormatIndex">numberFormatIndex</a>().</p>
+<!-- @@@setNumberFormatIndex -->
 <!-- $$$setPatternBackgroundColor[overload1]$$$setPatternBackgroundColorconstQColor& -->
 <h3 class="fn"><a name="setPatternBackgroundColor"></a><span class="type">void</span> Format::<span class="name">setPatternBackgroundColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
 <p><b>See also </b><a href="format.html#patternBackgroundColor">patternBackgroundColor</a>().</p>
@@ -410,28 +433,32 @@
 <h3 class="fn"><a name="operator-eq-eq"></a><span class="type">bool</span> Format::<span class="name">operator==</span>(const <span class="type">Format</span> &amp;<i> format</i>) const</h3>
 <!-- @@@operator== -->
 </div>
-</div>
-</div>
+        </div>
+       </div>
+   </div>
+   </div>
 </div>
 <div class="footer">
-    <p>
-      <acronym title="Copyright">&copy;</acronym> 2013 Digia Plc and/or its
-      subsidiaries. Documentation contributions included herein are the copyrights of
-      their respective owners.</p>
-    <br />
-    <p>
-      The documentation provided herein is licensed under the terms of the
-      <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
-      License version 1.3</a> as published by the Free Software Foundation.</p>
-    <p>
-      Documentation sources may be obtained from <a href="http://www.qt-project.org">
-      www.qt-project.org</a>.</p>
-    <br />
-    <p>
-      Digia, Qt and their respective logos are trademarks of Digia Plc 
-      in Finland and/or other countries worldwide. All other trademarks are property
-      of their respective owners. <a title="Privacy Policy"
-      href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+        <div class="qt13a-copyright" id="copyright">
+            <div class="qt13a-container">
+            <p>
+              <acronym title="Copyright">&copy;</acronym> 2013 Digia Plc and/or its
+              subsidiaries. Documentation contributions included herein are the copyrights of
+              their respective owners.</p>
+            <p>
+              The documentation provided herein is licensed under the terms of the
+              <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+              License version 1.3</a> as published by the Free Software Foundation.</p>
+            <p>
+              Documentation sources may be obtained from <a href="http://www.qt-project.org">
+              www.qt-project.org</a>.</p>
+            <p>
+              Digia, Qt and their respective logos are trademarks of Digia Plc 
+              in Finland and/or other countries worldwide. All other trademarks are property
+              of their respective owners. <a title="Privacy Policy"
+              href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+            </div>
+        </div>
 </div>
 </body>
 </html>

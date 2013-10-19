@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- qtxlsx.qdoc -->
-  <title>Qt Xlsx C++ Classes | QtXlsx 0.0</title>
+  <title>main.cpp Example File (hello/main.cpp) | QtXlsx 0.0</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -14,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.0</li>
-<li>Qt Xlsx C++ Classes</li>
+<li>main.cpp Example File (hello/main.cpp)</li>
 <li id="buildversion">
 Qt 0.0.1 Reference Documentation</li>
     </ul>
@@ -23,31 +22,29 @@ Qt 0.0.1 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<div class="toc">
-<h3><a name="toc">Contents</a></h3>
-<ul>
-<li class="level1"><a href="#classes">Classes</a></li>
-<li class="level1"><a href="#details">Detailed Description</a></li>
-</ul>
+<h1 class="title">main.cpp Example File</h1>
+<span class="small-subtitle">hello/main.cpp</span>
+<!-- $$$hello/main.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
+<span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
+
+<span class="type">int</span> main()
+{
+    <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="number">12345</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A3&quot;</span><span class="operator">,</span> <span class="string">&quot;=44+33&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A4&quot;</span><span class="operator">,</span> <span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="string">&quot;http://qt-project.org&quot;</span>);
+
+    xlsx<span class="operator">.</span>save();
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
 </div>
-<h1 class="title">Qt Xlsx C++ Classes</h1>
-<span class="subtitle"></span>
-<!-- $$$QtXlsx-brief -->
-<p>The Qt Xlsx module provides functionality for handling .xlsx files. <a href="#details">More...</a></p>
-<!-- @@@QtXlsx -->
-<a name="classes"></a>
-<h2>Classes</h2>
-<table class="annotated">
-<tr class="odd topAlign"><td class="tblName"><p><a href="document.html">Document</a></p></td><td class="tblDescr"><p>API that is used to handle the contents of .xlsx files</p></td></tr>
-<tr class="even topAlign"><td class="tblName"><p><a href="format.html">Format</a></p></td><td class="tblDescr"><p>Providing the methods and properties that are available for formatting cells in Excel</p></td></tr>
-</table>
-<!-- $$$QtXlsx-description -->
-<a name="details"></a>
-<div class="descr">
-<h2>Detailed Description</h2>
-<p>.xlsx is a zipped, XML-based file format developed by Microsoft for representing spreadsheets.</p>
-</div>
-<!-- @@@QtXlsx -->
+<!-- @@@hello/main.cpp -->
         </div>
        </div>
    </div>
