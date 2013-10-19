@@ -64,12 +64,14 @@ public:
     void setDocumentProperty(const QString &name, const QString &property);
     QStringList documentPropertyNames() const;
 
-    Workbook *workbook() const;
     bool addWorksheet(const QString &name = QString());
     bool insertWorkSheet(int index, const QString &name = QString());
-    Worksheet *activedWorksheet() const;
-    int activedWorksheetIndex() const;
-    void setActivedWorksheetIndex(int index);
+    bool setSheetName(const QString &name);
+
+    Workbook *workbook() const;
+    Worksheet *currentWorksheet() const;
+    void setCurrentWorksheet(int index);
+    void setCurrentWorksheet(const QString &name);
 
     bool save();
     bool saveAs(const QString &xlsXname);

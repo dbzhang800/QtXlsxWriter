@@ -29,7 +29,7 @@ void MergeCellTest::testWithoutMerge()
     QByteArray xmldata;
     QBuffer buffer(&xmldata);
     buffer.open(QIODevice::WriteOnly);
-    xlsx.activedWorksheet()->saveToXmlFile(&buffer);
+    xlsx.currentWorksheet()->saveToXmlFile(&buffer);
 
     QVERIFY2(!xmldata.contains("<mergeCell"), "");
 }
@@ -43,7 +43,7 @@ void MergeCellTest::testMerge()
     QByteArray xmldata;
     QBuffer buffer(&xmldata);
     buffer.open(QIODevice::WriteOnly);
-    xlsx.activedWorksheet()->saveToXmlFile(&buffer);
+    xlsx.currentWorksheet()->saveToXmlFile(&buffer);
 
     QVERIFY2(xmldata.contains("<mergeCells count=\"1\"><mergeCell ref=\"B1:B5\"/></mergeCells>"), "");
 }
@@ -58,7 +58,7 @@ void MergeCellTest::testUnMerge()
     QByteArray xmldata;
     QBuffer buffer(&xmldata);
     buffer.open(QIODevice::WriteOnly);
-    xlsx.activedWorksheet()->saveToXmlFile(&buffer);
+    xlsx.currentWorksheet()->saveToXmlFile(&buffer);
 
     QVERIFY2(!xmldata.contains("<mergeCell"), "");
 }
