@@ -54,6 +54,7 @@ public:
     
     int addSharedString(const QString &string);
     void removeSharedString(const QString &string);
+    void incRefByStringIndex(int idx);
 
     int getSharedStringIndex(const QString &string) const;
     QString getSharedString(int index) const;

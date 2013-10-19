@@ -1,0 +1,10 @@
+/*!
+    \title Xlsx Readwrite Example
+    \example readwrite
+    \brief Open an existing xlsx file, modify and save it.
+
+    \ingroup qtxlsx
+
+    This example demonstrates how to modify an existing
+    .xlsx file with Qt Xlsx Library.
+*/

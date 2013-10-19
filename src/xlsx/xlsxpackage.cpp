@@ -25,6 +25,8 @@
 #include "xlsxpackage_p.h"
 #include "xlsxworkbook.h"
 #include "xlsxworksheet.h"
+#include "xlsxworkbook_p.h"
+#include "xlsxutility_p.h"
 #include "xlsxcontenttypes_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxdocpropscore_p.h"
@@ -38,6 +40,8 @@
 #include "xlsxdocument.h"
 #include <QBuffer>
 #include <QDebug>
+#include <QDir>
+#include <QFileInfo>
 
 namespace QXlsx {
 
@@ -125,17 +129,59 @@ bool Package::parsePackage(QIODevice *packageDevice)
             m_document->setDocumentProperty(name, props.property(name));
     }
 
-    //load workbook now
+    //load workbook now, Get the workbook file path from the root rels file
+    //In normal case, this should be "xl/workbook.xml"
     QList<XlsxRelationship> rels_xl = rootRels.documentRelationships(QStringLiteral("/officeDocument"));
-    if (!rels_xl.isEmpty()) {
-        //Get the app property file name if it exists.
-        //In normal case, this should be "xl/workbook.xml"
-        QString xlworkbook_Name = rels_xl[0].target;
+    if (rels_xl.isEmpty())
+        return false;
+    QString xlworkbook_Path = rels_xl[0].target;
+    QStringList xlworkbook_PathList = splitPath(xlworkbook_Path);
+    QString xlworkbook_Dir = xlworkbook_PathList[0];
+    QString xlworkbook_Name = xlworkbook_PathList[1];
+    QSharedPointer<Workbook> book = Workbook::loadFromXmlData(zipReader.fileData(xlworkbook_Path));
+    QList<QPair<QString, QString> > sheetNameIdPairList = book->d_func()->sheetNameIdPairList;
+    Relationships xlworkbook_Rels = Relationships::loadFromXmlData(
+                zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
 
-        //ToDo: Read the workbook here!
+    //load styles
+    QList<XlsxRelationship> rels_styles = xlworkbook_Rels.documentRelationships(QStringLiteral("/styles"));
+    if (!rels_styles.isEmpty()) {
+        //In normal case this should be styles.xml which in xl
+        //:Todo
     }
 
-    return false;
+    //load sharedStrings
+    QList<XlsxRelationship> rels_sharedStrings = xlworkbook_Rels.documentRelationships(QStringLiteral("/sharedStrings"));
+    if (!rels_sharedStrings.isEmpty()) {
+        //In normal case this should be sharedStrings.xml which in xl
+        QString name = rels_sharedStrings[0].target;
+        QString path = xlworkbook_Dir + QLatin1String("/") + name;
+        QSharedPointer<SharedStrings> sst= SharedStrings::loadFromXmlData(zipReader.fileData(path));
+        m_document->workbook()->d_ptr->sharedStrings = sst;
+    }
+
+    //load theme
+    QList<XlsxRelationship> rels_theme = xlworkbook_Rels.documentRelationships(QStringLiteral("/theme"));
+    if (!rels_theme.isEmpty()) {
+        //In normal case this should be theme/theme1.xml which in xl
+        //:Todo
+    }
+
+    //load worksheets
+    QList<XlsxRelationship> rels_worksheets = xlworkbook_Rels.documentRelationships(QStringLiteral("/worksheet"));
+    if (rels_worksheets.isEmpty())
+        return false;
+
+    for (int i=0; i<sheetNameIdPairList.size(); ++i) {
+        QPair<QString, QString> pair = sheetNameIdPairList[i];
+        QString worksheet_rId = pair.second;
+        QString name = xlworkbook_Rels.getRelationshipById(worksheet_rId).target;
+        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + name;
+        Worksheet *sheet = m_document->workbook()->addWorksheet(pair.first);
+        sheet->loadFromXmlData(zipReader.fileData(worksheet_path));
+    }
+
+    return true;
 }
 
 bool Package::createPackage(QIODevice *package)

@@ -28,6 +28,7 @@
 
 #include "xlsxglobal.h"
 #include <QObject>
+#include <QVariant>
 class QIODevice;
 class QImage;
 

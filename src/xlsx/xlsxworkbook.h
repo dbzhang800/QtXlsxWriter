@@ -78,7 +78,6 @@ private:
     QByteArray saveToXmlData();
     static QSharedPointer<Workbook> loadFromXmlFile(QIODevice *device);
     static QSharedPointer<Workbook> loadFromXmlData(const QByteArray &data);
-    void addWorksheet(const QString &name, QSharedPointer<Worksheet> sheet);
 
     SharedStrings *sharedStrings();
     Styles *styles();

@@ -59,6 +59,11 @@ int SharedStrings::addSharedString(const QString &string)
     return index;
 }
 
+void SharedStrings::incRefByStringIndex(int idx)
+{
+    addSharedString(m_stringList[idx]);
+}
+
 void SharedStrings::removeSharedString(const QString &string)
 {
     if (!m_stringTable.contains(string))

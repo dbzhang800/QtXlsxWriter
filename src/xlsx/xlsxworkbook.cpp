@@ -337,12 +337,4 @@ QSharedPointer<Workbook> Workbook::loadFromXmlData(const QByteArray &data)
     return loadFromXmlFile(&buffer);
 }
 
-void Workbook::addWorksheet(const QString &name, QSharedPointer<Worksheet> sheet)
-{
-    Q_D(Workbook);
-
-    sheet->setSheetName(name);
-    d->worksheets.append(sheet);
-}
-
 QT_END_NAMESPACE_XLSX

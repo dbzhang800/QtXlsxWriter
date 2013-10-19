@@ -28,6 +28,7 @@
 #include <QPoint>
 #include <QRegularExpression>
 #include <QMap>
+#include <QStringList>
 
 namespace QXlsx {
 
@@ -39,6 +40,15 @@ int intPow(int x, int p)
   int tmp = intPow(x, p/2);
   if (p%2 == 0) return tmp * tmp;
   else return x * tmp * tmp;
+}
+
+QStringList splitPath(const QString &path)
+{
+    int idx = path.lastIndexOf(QLatin1Char('/'));
+    if (idx == -1)
+        return QStringList()<<QStringLiteral(".")<<path;
+
+    return QStringList()<<path.left(idx)<<path.mid(idx+1);
 }
 
 QPoint xl_cell_to_rowcol(const QString &cell_str)

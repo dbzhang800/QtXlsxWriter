@@ -72,6 +72,7 @@ The library, the header files, and the feature file will be installed to your sy
 ## References
 
 * https://github.com/jmcnamara/XlsxWriter
+* http://openpyxl.readthedocs.org
 * http://officeopenxml.com/anatomyofOOXML-xlsx.php
 * http://www.libxl.com
 * http://closedxml.codeplex.com/

@@ -4,5 +4,6 @@ SUBDIRS = hello style \
     image \
     mergecells \
     rowcolumn \
-    numberformat
+    numberformat \
+    readwrite
 

@@ -110,5 +110,6 @@
         \li \l{Xlsx Hello Example}
         \li \l{Xlsx Style Example}
         \li \l{Xlsx DocProperties Example}
+        \li \l{Xlsx Readwrite Example}
     \endlist
 */

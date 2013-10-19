@@ -28,13 +28,17 @@
 #include "xlsxglobal.h"
 class QPoint;
 class QString;
+class QStringList;
 
 namespace QXlsx {
 
 XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
+XLSX_AUTOTEST_EXPORT QStringList splitPath(const QString &path);
+
 XLSX_AUTOTEST_EXPORT QPoint xl_cell_to_rowcol(const QString &cell_str);
 XLSX_AUTOTEST_EXPORT QString xl_col_to_name(int col_num);
 XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell(int row, int col, bool row_abs=false, bool col_abs=false);
 XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell_fast(int row, int col);
+
 } //QXlsx
 #endif // XLSXUTILITY_H

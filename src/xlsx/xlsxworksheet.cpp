@@ -1074,9 +1074,9 @@ QByteArray Worksheet::saveToXmlData()
     return data;
 }
 
-QSharedPointer<Worksheet> Worksheet::loadFromXmlFile(QIODevice *device)
+bool Worksheet::loadFromXmlFile(QIODevice *device)
 {
-    Worksheet *sheet = new Worksheet(QStringLiteral("Sheet9999"));
+    Q_D(Worksheet);
 
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
@@ -1088,16 +1088,16 @@ QSharedPointer<Worksheet> Worksheet::loadFromXmlFile(QIODevice *device)
                  if (range.size() == 2) {
                      QPoint start = xl_cell_to_rowcol(range[0]);
                      QPoint end = xl_cell_to_rowcol(range[1]);
-                     sheet->d_func()->dim_rowmin = start.x();
-                     sheet->d_func()->dim_colmin = start.y();
-                     sheet->d_func()->dim_rowmax = end.x();
-                     sheet->d_func()->dim_colmax = end.y();
+                     d->dim_rowmin = start.x();
+                     d->dim_colmin = start.y();
+                     d->dim_rowmax = end.x();
+                     d->dim_colmax = end.y();
                  } else {
                      QPoint p = xl_cell_to_rowcol(range[0]);
-                     sheet->d_func()->dim_rowmin = p.x();
-                     sheet->d_func()->dim_colmin = p.y();
-                     sheet->d_func()->dim_rowmax = p.x();
-                     sheet->d_func()->dim_colmax = p.y();
+                     d->dim_rowmin = p.x();
+                     d->dim_colmin = p.y();
+                     d->dim_rowmax = p.x();
+                     d->dim_colmax = p.y();
                  }
              } else if (reader.name() == QLatin1String("c")) {
                  QXmlStreamAttributes attributes = reader.attributes();
@@ -1111,8 +1111,9 @@ QSharedPointer<Worksheet> Worksheet::loadFromXmlFile(QIODevice *device)
                          reader.readNextStartElement();
                          if (reader.name() == QLatin1String("v")) {
                              QString value = reader.readElementText();
+                             d->workbook->sharedStrings()->incRefByStringIndex(value.toInt());
                              XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String);
-                             sheet->d_func()->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                             d->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
                          }
                      }
                  } else {
@@ -1121,17 +1122,17 @@ QSharedPointer<Worksheet> Worksheet::loadFromXmlFile(QIODevice *device)
                      if (reader.name() == QLatin1String("v")) {
                          QString value = reader.readElementText();
                          XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number);
-                         sheet->d_func()->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                         d->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
                      }
                  }
              }
          }
     }
 
-    return QSharedPointer<Worksheet> (sheet);
+    return true;
 }
 
-QSharedPointer<Worksheet> Worksheet::loadFromXmlData(const QByteArray &data)
+bool Worksheet::loadFromXmlData(const QByteArray &data)
 {
     QBuffer buffer;
     buffer.setData(data);
