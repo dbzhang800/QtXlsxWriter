@@ -1,4 +1,5 @@
 #include "xlsxdocument.h"
+#include "xlsxformat.h"
 
 int main()
 {
@@ -8,7 +9,10 @@ int main()
     xlsx.setDocumentProperty("title", "This is an example spreadsheet");
     xlsx.setDocumentProperty("creator", "Qt Xlsx Library");
     xlsx.setSheetName("First Sheet");
-    xlsx.write("A1", "Hello Qt!");
+    QXlsx::Format *format = xlsx.createFormat();
+    format->setFontColor(QColor(Qt::blue));
+    format->setFontSize(15);
+    xlsx.write("A1", "Hello Qt!", format);
     xlsx.write("A2", 500);
     xlsx.saveAs("first.xlsx");
     //![0]

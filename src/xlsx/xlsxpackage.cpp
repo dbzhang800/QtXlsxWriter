@@ -147,7 +147,11 @@ bool Package::parsePackage(QIODevice *packageDevice)
     QList<XlsxRelationship> rels_styles = xlworkbook_Rels.documentRelationships(QStringLiteral("/styles"));
     if (!rels_styles.isEmpty()) {
         //In normal case this should be styles.xml which in xl
-        //:Todo
+        QString name = rels_styles[0].target;
+        QString path = xlworkbook_Dir + QLatin1String("/") + name;
+        QSharedPointer<Styles> styles (new Styles(true));
+        styles->loadFromXmlData(zipReader.fileData(path));
+        m_document->workbook()->d_ptr->styles = styles;
     }
 
     //load sharedStrings

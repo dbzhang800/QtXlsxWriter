@@ -36,23 +36,26 @@ class QIODevice;
 namespace QXlsx {
 
 class Format;
+struct NumberData;
 struct FontData;
 struct FillData;
 struct BorderData;
 class XmlStreamWriter;
+class XmlStreamReader;
 
 class XLSX_AUTOTEST_EXPORT Styles
 {
 public:
-    Styles();
+    Styles(bool createEmpty=false);
     ~Styles();
     Format *createFormat();
     void addFormat(Format *format);
+    Format *xfFormat(int idx) const;
 
     QByteArray saveToXmlData();
     void saveToXmlFile(QIODevice *device);
-    static QSharedPointer<Styles> loadFromXmlFile(QIODevice *device);
-    static QSharedPointer<Styles> loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlFile(QIODevice *device);
+    bool loadFromXmlData(const QByteArray &data);
 
 private:
     friend class Format;
@@ -66,9 +69,15 @@ private:
     void writeCellXfs(XmlStreamWriter &writer);
     void writeDxfs(XmlStreamWriter &writer);
 
+    bool readNumFmts(XmlStreamReader &reader);
+    bool readFonts(XmlStreamReader &reader);
+    bool readFills(XmlStreamReader &reader);
+    bool readBorders(XmlStreamReader &reader);
+    bool readCellXfs(XmlStreamReader &reader);
+
     QHash<QString, int> m_builtinNumFmtsHash;
-    QStringList m_customNumFmts;
-    QHash<QString, int> m_customNumFmtsHash;
+    QList<QSharedPointer<NumberData> > m_customNumFmts;
+    QHash<QString, QSharedPointer<NumberData> > m_customNumFmtsHash;
     QList<QSharedPointer<FontData> > m_fontsList; //Keep a copy of unique fonts
     QList<QSharedPointer<FillData> > m_fillsList; //Keep a copy of unique fills
     QList<QSharedPointer<BorderData> > m_bordersList; //Keep a copy of unique borders

@@ -1104,6 +1104,12 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                  QString r = attributes.value(QLatin1String("r")).toString();
                  QPoint pos = xl_cell_to_rowcol(r);
 
+                 Format *format = 0;
+                 if (attributes.hasAttribute(QLatin1String("s"))) {
+                     int idx = attributes.value(QLatin1String("s")).toInt();
+                     format = d->workbook->styles()->xfFormat(idx);
+                 }
+
                  if (attributes.hasAttribute(QLatin1String("t"))) {
                      QString type = attributes.value(QLatin1String("t")).toString();
                      if (type == QLatin1String("s")) {
@@ -1112,7 +1118,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                          if (reader.name() == QLatin1String("v")) {
                              QString value = reader.readElementText();
                              d->workbook->sharedStrings()->incRefByStringIndex(value.toInt());
-                             XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String);
+                             XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String, format);
                              d->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
                          }
                      }
@@ -1121,7 +1127,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                      reader.readNextStartElement();
                      if (reader.name() == QLatin1String("v")) {
                          QString value = reader.readElementText();
-                         XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number);
+                         XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number, format);
                          d->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
                      }
                  }
