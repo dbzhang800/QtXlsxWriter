@@ -42,7 +42,7 @@ Styles::Styles()
     QSharedPointer<FillData> fill = QSharedPointer<FillData>(new FillData);
     fill->pattern = Format::PatternGray125;
     m_fillsList.append(fill);
-    m_fillsHash[fill->_key] = fill;
+    m_fillsHash[fill->key()] = fill;
 }
 
 Styles::~Styles()
@@ -124,33 +124,33 @@ void Styles::addFormat(Format *format)
     if (!format->fontIndexValid()) {
         if (!m_fontsHash.contains(format->fontKey())) {
             QSharedPointer<FontData> font = QSharedPointer<FontData>(new FontData(format->d_func()->fontData));
-            font->_index = m_fontsList.size(); //Assign proper index
+            font->setIndex(m_fontsList.size()); //Assign proper index
             m_fontsList.append(font);
-            m_fontsHash[font->_key] = font;
+            m_fontsHash[font->key()] = font;
         }
-        format->setFontIndex(m_fontsHash[format->fontKey()]->_index);
+        format->setFontIndex(m_fontsHash[format->fontKey()]->index());
     }
 
     //Fill
     if (!format->fillIndexValid()) {
         if (!m_fillsHash.contains(format->fillKey())) {
             QSharedPointer<FillData> fill = QSharedPointer<FillData>(new FillData(format->d_func()->fillData));
-            fill->_index = m_fillsList.size(); //Assign proper index
+            fill->setIndex(m_fillsList.size()); //Assign proper index
             m_fillsList.append(fill);
-            m_fillsHash[fill->_key] = fill;
+            m_fillsHash[fill->key()] = fill;
         }
-        format->setFillIndex(m_fillsHash[format->fillKey()]->_index);
+        format->setFillIndex(m_fillsHash[format->fillKey()]->index());
     }
 
     //Border
     if (!format->borderIndexValid()) {
         if (!m_bordersHash.contains(format->borderKey())) {
             QSharedPointer<BorderData> border = QSharedPointer<BorderData>(new BorderData(format->d_func()->borderData));
-            border->_index = m_bordersList.size(); //Assign proper index
+            border->setIndex(m_bordersList.size()); //Assign proper index
             m_bordersList.append(border);
-            m_bordersHash[border->_key] = border;
+            m_bordersHash[border->key()] = border;
         }
-        format->setBorderIndex(m_bordersHash[format->borderKey()]->_index);
+        format->setBorderIndex(m_bordersHash[format->borderKey()]->index());
     }
 
     //Format

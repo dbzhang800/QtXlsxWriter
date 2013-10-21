@@ -65,8 +65,43 @@ struct FontData
     int condense;
     int extend;
 
+    QByteArray key() const
+    {
+        if (_dirty) {
+            QByteArray key;
+            QDataStream stream(&key, QIODevice::WriteOnly);
+            stream<<bold<<charset<<color<<condense
+                 <<extend<<family<<italic<<name
+                <<outline<<scheme<<scirpt<<shadow
+               <<size<<strikeOut<<underline;
+
+            const_cast<FontData*>(this)->_key = key;
+            const_cast<FontData*>(this)->_dirty = false;
+            const_cast<FontData*>(this)->_indexValid = false;//dirty flag can not be simply cleared.
+        }
+        return _key;
+    }
+
+    bool indexValid() const
+    {
+        return !_dirty && _indexValid;
+    }
+
+    int index() const
+    {
+        return _index;
+    }
+
+    void setIndex(int index)
+    {
+        _index = index;
+        _indexValid = true;
+    }
+
     //helper member
-    bool _dirty; //key re-generated is need.
+    bool _dirty; //key re-generated and proper index assign is need.
+
+private:
     QByteArray _key;
     bool _indexValid;  //has a valid index, so no need to assign a new one
     int _index; //index in the Font list
@@ -108,8 +143,41 @@ struct BorderData
     QColor diagonalColor;
     Format::DiagonalBorderType diagonalType;
 
+    QByteArray key() const
+    {
+        if (_dirty) {
+            QByteArray key;
+            QDataStream stream(&key, QIODevice::WriteOnly);
+            stream << bottom << bottomColor << top << topColor
+                 << diagonal << diagonalColor << diagonalType
+                << left << leftColor << right << rightColor;
+            const_cast<BorderData*>(this)->_key = key;
+            const_cast<BorderData*>(this)->_dirty = false;
+            const_cast<BorderData*>(this)->_indexValid = false;
+        }
+        return _key;
+    }
+
+    bool indexValid() const
+    {
+        return !_dirty && _indexValid;
+    }
+
+    int index() const
+    {
+        return _index;
+    }
+
+    void setIndex(int index)
+    {
+        _index = index;
+        _indexValid = true;
+    }
+
     //helper member
-    bool _dirty; //key re-generated is need.
+    bool _dirty; //key re-generated and proper index assign is need.
+
+private:
     QByteArray _key;
     bool _indexValid;  //has a valid index, so no need to assign a new one
     int _index; //index in the border list
@@ -125,8 +193,39 @@ struct FillData {
     QColor bgColor;
     QColor fgColor;
 
+    QByteArray key() const
+    {
+        if (_dirty) {
+            QByteArray key;
+            QDataStream stream(&key, QIODevice::WriteOnly);
+            stream<<bgColor<<fgColor<<pattern;
+            const_cast<FillData*>(this)->_key = key;
+            const_cast<FillData*>(this)->_dirty = false;
+            const_cast<FillData*>(this)->_indexValid = false;
+        }
+        return _key;
+    }
+
+    bool indexValid() const
+    {
+        return !_dirty && _indexValid;
+    }
+
+    int index() const
+    {
+        return _index;
+    }
+
+    void setIndex(int index)
+    {
+        _index = index;
+        _indexValid = true;
+    }
+
     //helper member
-    bool _dirty; //key re-generated is need.
+    bool _dirty; //key re-generated and proper index assign is need.
+
+private:
     QByteArray _key;
     bool _indexValid;  //has a valid index, so no need to assign a new one
     int _index; //index in the border list

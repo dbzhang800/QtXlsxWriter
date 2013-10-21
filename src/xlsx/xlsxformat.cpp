@@ -232,20 +232,19 @@ void Format::setFontName(const QString &name)
 bool Format::fontIndexValid() const
 {
     Q_D(const Format);
-    return !d->fontData._dirty && d->fontData._indexValid;
+    return d->fontData.indexValid();
 }
 
 int Format::fontIndex() const
 {
     Q_D(const Format);
-    return d->fontData._index;
+    return d->fontData.index();
 }
 
 void Format::setFontIndex(int index)
 {
     Q_D(Format);
-    d->fontData._index = index;
-    d->fontData._indexValid = true;
+    d->fontData.setIndex(index);
 }
 
 int Format::fontFamily() const
@@ -271,21 +270,9 @@ QString Format::fontScheme() const
 QByteArray Format::fontKey() const
 {
     Q_D(const Format);
-    if (d->fontData._dirty) {
-        QByteArray key;
-        QDataStream stream(&key, QIODevice::WriteOnly);
-        stream<<d->fontData.bold<<d->fontData.charset<<d->fontData.color<<d->fontData.condense
-             <<d->fontData.extend<<d->fontData.family<<d->fontData.italic<<d->fontData.name
-            <<d->fontData.outline<<d->fontData.scheme<<d->fontData.scirpt<<d->fontData.shadow
-           <<d->fontData.size<<d->fontData.strikeOut<<d->fontData.underline;
-
-        const_cast<FormatPrivate*>(d)->fontData._key = key;
-        const_cast<FormatPrivate*>(d)->fontData._dirty = false;
-        const_cast<FormatPrivate*>(d)->fontData._indexValid = false; //must re-assign a new index
+    if (d->fontData._dirty)
         const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
-    }
-
-    return d->fontData._key;
+    return d->fontData.key();
 }
 
 Format::HorizontalAlignment Format::horizontalAlignment() const
@@ -621,20 +608,19 @@ void Format::setDiagonalBorderColor(const QColor &color)
 bool Format::borderIndexValid() const
 {
     Q_D(const Format);
-    return !d->borderData._dirty && d->borderData._indexValid;
+    return d->borderData.indexValid();
 }
 
 int Format::borderIndex() const
 {
     Q_D(const Format);
-    return d->borderData._index;
+    return d->borderData.index();
 }
 
 void Format::setBorderIndex(int index)
 {
     Q_D(Format);
-    d->borderData._index = index;
-    d->borderData._indexValid = true;
+    d->borderData.setIndex(index);
 }
 
 /* Internal
@@ -642,21 +628,10 @@ void Format::setBorderIndex(int index)
 QByteArray Format::borderKey() const
 {
     Q_D(const Format);
-    if (d->borderData._dirty) {
-        QByteArray key;
-        QDataStream stream(&key, QIODevice::WriteOnly);
-        stream<<d->borderData.bottom<<d->borderData.bottomColor
-             <<d->borderData.diagonal<<d->borderData.diagonalColor<<d->borderData.diagonalType
-            <<d->borderData.left<<d->borderData.leftColor
-           <<d->borderData.right<<d->borderData.rightColor
-          <<d->borderData.top<<d->borderData.topColor;
-        const_cast<FormatPrivate*>(d)->borderData._key = key;
-        const_cast<FormatPrivate*>(d)->borderData._dirty = false;
-        const_cast<FormatPrivate*>(d)->borderData._indexValid = false;
+    if (d->borderData._dirty)
         const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
-    }
 
-    return d->borderData._key;
+    return d->borderData.key();
 }
 
 Format::FillPattern Format::fillPattern() const
@@ -705,20 +680,19 @@ void Format::setPatternBackgroundColor(const QColor &color)
 bool Format::fillIndexValid() const
 {
     Q_D(const Format);
-    return !d->fillData._dirty && d->fillData._indexValid;
+    return d->fillData.indexValid();
 }
 
 int Format::fillIndex() const
 {
     Q_D(const Format);
-    return d->fillData._index;
+    return d->fillData.index();
 }
 
 void Format::setFillIndex(int index)
 {
     Q_D(Format);
-    d->fillData._index = index;
-    d->fillData._indexValid = true;
+    d->fillData.setIndex(index);
 }
 
 /* Internal
@@ -726,17 +700,10 @@ void Format::setFillIndex(int index)
 QByteArray Format::fillKey() const
 {
     Q_D(const Format);
-    if (d->fillData._dirty) {
-        QByteArray key;
-        QDataStream stream(&key, QIODevice::WriteOnly);
-        stream<<d->fillData.bgColor<<d->fillData.fgColor<<d->fillData.pattern;
-        const_cast<FormatPrivate*>(d)->fillData._key = key;
-        const_cast<FormatPrivate*>(d)->fillData._dirty = false;
-        const_cast<FormatPrivate*>(d)->fillData._indexValid = false;
+    if (d->fillData._dirty)
         const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
-    }
 
-    return d->fillData._key;
+    return d->fillData.key();
 }
 
 bool Format::hidden() const
