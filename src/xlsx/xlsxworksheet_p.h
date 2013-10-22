@@ -152,7 +152,7 @@ struct XlsxObjectPositionData
 
 struct XlsxRowInfo
 {
-    XlsxRowInfo(double height, Format *format, bool hidden) :
+    XlsxRowInfo(double height=0, Format *format=0, bool hidden=false) :
         height(height), format(format), hidden(hidden)
     {
 
@@ -165,7 +165,7 @@ struct XlsxRowInfo
 
 struct XlsxColumnInfo
 {
-    XlsxColumnInfo(int column_min, int column_max, double width, Format *format, bool hidden) :
+    XlsxColumnInfo(int column_min=0, int column_max=1, double width=0, Format *format=0, bool hidden=false) :
         column_min(column_min), column_max(column_max), width(width), format(format), hidden(hidden)
     {
 
@@ -197,6 +197,7 @@ public:
     XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data);
 
     void readSheetData(XmlStreamReader &reader);
+    void readColumnsInfo(XmlStreamReader &reader);
 
     Workbook *workbook;
     Drawing *drawing;
@@ -207,9 +208,9 @@ public:
     QStringList externUrlList;
     QStringList externDrawingList;
     QList<XlsxImageData *> imageList;
-    QMap<int, XlsxRowInfo *> rowsInfo;
-    QList<XlsxColumnInfo *> colsInfo;
-    QMap<int, XlsxColumnInfo *> colsInfoHelper;//Not owns the XlsxColumnInfo
+    QMap<int, QSharedPointer<XlsxRowInfo> > rowsInfo;
+    QList<QSharedPointer<XlsxColumnInfo> > colsInfo;
+    QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfoHelper;
     QList<QPair<QString, QString> > drawingLinks;
 
     int xls_rowmax;

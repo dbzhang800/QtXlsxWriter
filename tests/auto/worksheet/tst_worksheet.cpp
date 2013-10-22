@@ -18,6 +18,8 @@ private Q_SLOTS:
     void testUnMerge();
 
     void testReadSheetData();
+    void testReadColsInfo();
+    void testReadRowsInfo();
 };
 
 WorksheetTest::WorksheetTest()
@@ -72,6 +74,41 @@ void WorksheetTest::testReadSheetData()
     sheet.d_ptr->readSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->cellTable.size(), 2);
+}
+
+void WorksheetTest::testReadColsInfo()
+{
+    const QByteArray xmlData = "<cols>"
+            "<col min=\"9\" max=\"15\" width=\"5\" style=\"4\" customWidth=\"1\"/>"
+            "</cols>";
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//current node is cols
+
+    QXlsx::Worksheet sheet("", 0);
+    sheet.d_ptr->readColumnsInfo(reader);
+
+    QCOMPARE(sheet.d_ptr->colsInfo.size(), 1);
+    QCOMPARE(sheet.d_ptr->colsInfo[0]->width, 5.0);
+}
+
+void WorksheetTest::testReadRowsInfo()
+{
+    const QByteArray xmlData = "<sheetData>"
+            "<row r=\"1\" spans=\"1:6\">"
+            "<c r=\"A1\" s=\"1\" t=\"s\"><v>0</v></c>"
+            "</row>"
+            "<row r=\"3\" spans=\"1:6\" s=\"3\" customFormat=\"1\" ht=\"40\" customHeight=\"1\">"
+            "<c r=\"B3\" s=\"3\"><v>12345</v></c>"
+            "</row>"
+            "</sheetData>";
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//current node is sheetData
+
+    QXlsx::Worksheet sheet("", 0);
+    sheet.d_ptr->readSheetData(reader);
+
+    QCOMPARE(sheet.d_ptr->rowsInfo.size(), 1);
+    QCOMPARE(sheet.d_ptr->rowsInfo[3]->height, 40.0);
 }
 
 QTEST_APPLESS_MAIN(WorksheetTest)
