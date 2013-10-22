@@ -12,6 +12,7 @@ int main()
     QXlsx::Format *format = xlsx.createFormat();
     format->setFontColor(QColor(Qt::blue));
     format->setFontSize(15);
+    format->setPatternBackgroundColor(QColor(Qt::gray));
     xlsx.write("A1", "Hello Qt!", format);
     xlsx.write("A2", 500);
     xlsx.saveAs("first.xlsx");

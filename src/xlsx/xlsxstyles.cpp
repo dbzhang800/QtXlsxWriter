@@ -26,6 +26,7 @@
 #include "xlsxxmlwriter_p.h"
 #include "xlsxxmlreader_p.h"
 #include "xlsxformat_p.h"
+#include "xlsxutility_p.h"
 #include <QFile>
 #include <QMap>
 #include <QDataStream>
@@ -560,7 +561,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
         if (reader.name() != QLatin1String("font"))
             return false;
         QSharedPointer<FontData> font(new FontData);
-        while(reader.readNextStartElement()) {
+        while((reader.readNextStartElement(),true)) { //read until font endelement.
             if (reader.tokenType() == QXmlStreamReader::StartElement) {
                 if (reader.name() == QLatin1String("b")) {
                     font->bold = true;
@@ -596,11 +597,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
                     QXmlStreamAttributes attributes = reader.attributes();
                     if (attributes.hasAttribute(QLatin1String("rgb"))) {
                         QString colorString = attributes.value(QLatin1String("rgb")).toString();
-                        if (colorString.length() == 8) {
-                            font->color.setRed(colorString.mid(2,2).toInt(0, 16));
-                            font->color.setGreen(colorString.mid(4,2).toInt(0, 16));
-                            font->color.setBlue(colorString.mid(6,2).toInt(0, 16));
-                        }
+                        font->color = fromARGBString(colorString);
                     } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
 
                     } else if (attributes.hasAttribute(QLatin1String("theme"))) {
@@ -627,8 +624,82 @@ bool Styles::readFonts(XmlStreamReader &reader)
 
 bool Styles::readFills(XmlStreamReader &reader)
 {
+    Q_ASSERT(reader.name() == QLatin1String("fills"));
 
-    return false;
+    QXmlStreamAttributes attributes = reader.attributes();
+    int count = attributes.value(QLatin1String("count")).toInt();
+    for (int i=0; i<count; ++i) {
+        reader.readNextStartElement();
+        if (reader.name() != QLatin1String("fill") || reader.tokenType() != QXmlStreamReader::StartElement)
+            return false;
+        readFill(reader);
+    }
+    return true;
+}
+
+bool Styles::readFill(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("fill"));
+
+    static QMap<QString, Format::FillPattern> patternValues;
+    if (patternValues.isEmpty()) {
+        patternValues[QStringLiteral("none")] = Format::PatternNone;
+        patternValues[QStringLiteral("solid")] = Format::PatternSolid;
+        patternValues[QStringLiteral("mediumGray")] = Format::PatternMediumGray;
+        patternValues[QStringLiteral("darkGray")] = Format::PatternDarkGray;
+        patternValues[QStringLiteral("lightGray")] = Format::PatternLightGray;
+        patternValues[QStringLiteral("darkHorizontal")] = Format::PatternDarkHorizontal;
+        patternValues[QStringLiteral("darkVertical")] = Format::PatternDarkVertical;
+        patternValues[QStringLiteral("darkDown")] = Format::PatternDarkDown;
+        patternValues[QStringLiteral("darkUp")] = Format::PatternDarkUp;
+        patternValues[QStringLiteral("darkGrid")] = Format::PatternDarkGrid;
+        patternValues[QStringLiteral("darkTrellis")] = Format::PatternDarkTrellis;
+        patternValues[QStringLiteral("lightHorizontal")] = Format::PatternLightHorizontal;
+        patternValues[QStringLiteral("lightVertical")] = Format::PatternLightVertical;
+        patternValues[QStringLiteral("lightDown")] = Format::PatternLightDown;
+        patternValues[QStringLiteral("lightUp")] = Format::PatternLightUp;
+        patternValues[QStringLiteral("lightTrellis")] = Format::PatternLightTrellis;
+        patternValues[QStringLiteral("gray125")] = Format::PatternGray125;
+        patternValues[QStringLiteral("gray0625")] = Format::PatternGray0625;
+    }
+
+    QSharedPointer<FillData> fill(new FillData);
+    while((reader.readNextStartElement(), true)) { //read until fill endelement
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("patternFill")) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                QString pattern = attributes.value(QLatin1String("patternType")).toString();
+                fill->pattern = patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone;
+            } else if (reader.name() == QLatin1String("fgColor")) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                if (attributes.hasAttribute(QLatin1String("rgb"))) {
+                    QColor c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
+                    if (fill->pattern == Format::PatternSolid)
+                        fill->bgColor = c;
+                    else
+                        fill->fgColor = c;
+                }
+            } else if (reader.name() == QLatin1String("bgColor")) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                if (attributes.hasAttribute(QLatin1String("rgb"))) {
+                    QColor c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
+                    if (fill->pattern == Format::PatternSolid)
+                        fill->fgColor = c;
+                    else
+                        fill->bgColor = c;
+                }
+            }
+        }
+
+        if (reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QLatin1String("fill"))
+            break;
+    }
+
+    m_fillsList.append(fill);
+    m_fillsHash.insert(fill->key(), fill);
+    fill->setIndex(m_fillsList.size()-1);//first call key(), then setIndex()
+
+    return true;
 }
 
 bool Styles::readBorders(XmlStreamReader &reader)
@@ -663,7 +734,20 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFont"))) {
             int fontIndex = xfAttrs.value(QLatin1String("fontId")).toInt();
-            format->d_func()->fontData = *m_fontsList[fontIndex];
+            if (fontIndex >= m_fontsList.size()) {
+                qDebug("Error read styles.xml, cellXfs fontId");
+            } else {
+                format->d_func()->fontData = *m_fontsList[fontIndex];
+            }
+        }
+
+        if (xfAttrs.hasAttribute(QLatin1String("applyFill"))) {
+            int id = xfAttrs.value(QLatin1String("fillId")).toInt();
+            if (id >= m_fillsList.size()) {
+                qDebug("Error read styles.xml, cellXfs fillId");
+            } else {
+                format->d_func()->fillData = *m_fillsList[id];
+            }
         }
 
         addFormat(format);

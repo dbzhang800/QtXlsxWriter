@@ -25,15 +25,16 @@
 
 #ifndef QXLSX_XLSXXMLREADER_H
 #define QXLSX_XLSXXMLREADER_H
-
+#include "xlsxglobal.h"
 #include <QXmlStreamReader>
 
 namespace QXlsx {
 
-class XmlStreamReader : public QXmlStreamReader
+class XLSX_AUTOTEST_EXPORT XmlStreamReader : public QXmlStreamReader
 {
 public:
-    XmlStreamReader(QIODevice *device);
+    explicit XmlStreamReader(QIODevice *device);
+    explicit XmlStreamReader(const QByteArray &data);
 };
 
 } // namespace QXlsx

@@ -1,5 +1,7 @@
 #include "private/xlsxstyles_p.h"
+#include "private/xlsxxmlreader_p.h"
 #include "xlsxformat.h"
+#include "private/xlsxformat_p.h"
 #include <QString>
 #include <QtTest>
 
@@ -15,6 +17,10 @@ private Q_SLOTS:
     void testAddFormat();
     void testAddFormat2();
     void testSolidFillBackgroundColor();
+
+    void testReadFonts();
+    void testReadFills();
+    void testReaderBorders();
 };
 
 StylesTest::StylesTest()
@@ -71,6 +77,45 @@ void StylesTest::testSolidFillBackgroundColor()
     QByteArray xmlData = styles.saveToXmlData();
 
     QVERIFY(xmlData.contains("<patternFill patternType=\"solid\"><fgColor rgb=\"FFff0000\"/>"));
+}
+
+void StylesTest::testReadFonts()
+{
+    QByteArray xmlData = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            "<fonts count=\"3\">"
+            "<font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/><scheme val=\"minor\"/></font>"
+            "<font><sz val=\"15\"/><color rgb=\"FFff0000\"/><name val=\"Calibri\"/><family val=\"2\"/><scheme val=\"minor\"/></font>"
+            "<font><b/><u val=\"double\"/><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/><scheme val=\"minor\"/></font>"
+            "</fonts>";
+    QXlsx::Styles styles(true);
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//So current node is fonts
+    styles.readFonts(reader);
+
+    QCOMPARE(styles.m_fontsList.size(), 3);
+}
+
+void StylesTest::testReadFills()
+{
+    QByteArray xmlData = "<fills count=\"4\">"
+            "<fill><patternFill patternType=\"none\"/></fill>"
+            "<fill><patternFill patternType=\"gray125\"/></fill>"
+            "<fill><patternFill patternType=\"lightUp\"/></fill>"
+            "<fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFa0a0a4\"/></patternFill></fill>"
+            "</fills>";
+    QXlsx::Styles styles(true);
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//So current node is fonts
+    styles.readFills(reader);
+
+    QCOMPARE(styles.m_fillsList.size(), 4);
+    QCOMPARE(styles.m_fillsList[3]->pattern, QXlsx::Format::PatternSolid);
+    QCOMPARE(styles.m_fillsList[3]->bgColor, QColor(Qt::gray));//for solid pattern, bg vs. fg color!
+}
+
+void StylesTest::testReaderBorders()
+{
+
 }
 
 QTEST_APPLESS_MAIN(StylesTest)

@@ -32,4 +32,9 @@ XmlStreamReader::XmlStreamReader(QIODevice *device) :
 {
 }
 
+XmlStreamReader::XmlStreamReader(const QByteArray &data) :
+    QXmlStreamReader(data)
+{
+}
+
 } // namespace QXlsx

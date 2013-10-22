@@ -32,6 +32,7 @@
 #include <QStringList>
 
 class QIODevice;
+class StylesTest;
 
 namespace QXlsx {
 
@@ -59,6 +60,7 @@ public:
 
 private:
     friend class Format;
+    friend class StylesTest;
 
     void writeNumFmts(XmlStreamWriter &writer);
     void writeFonts(XmlStreamWriter &writer);
@@ -72,6 +74,7 @@ private:
     bool readNumFmts(XmlStreamReader &reader);
     bool readFonts(XmlStreamReader &reader);
     bool readFills(XmlStreamReader &reader);
+    bool readFill(XmlStreamReader &reader);
     bool readBorders(XmlStreamReader &reader);
     bool readCellXfs(XmlStreamReader &reader);
 

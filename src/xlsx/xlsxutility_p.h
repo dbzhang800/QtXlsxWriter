@@ -29,11 +29,13 @@
 class QPoint;
 class QString;
 class QStringList;
+class QColor;
 
 namespace QXlsx {
 
 XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
 XLSX_AUTOTEST_EXPORT QStringList splitPath(const QString &path);
+XLSX_AUTOTEST_EXPORT QColor fromARGBString(const QString &c);
 
 XLSX_AUTOTEST_EXPORT QPoint xl_cell_to_rowcol(const QString &cell_str);
 XLSX_AUTOTEST_EXPORT QString xl_col_to_name(int col_num);

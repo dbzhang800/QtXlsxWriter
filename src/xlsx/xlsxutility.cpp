@@ -29,6 +29,7 @@
 #include <QRegularExpression>
 #include <QMap>
 #include <QStringList>
+#include <QColor>
 
 namespace QXlsx {
 
@@ -49,6 +50,16 @@ QStringList splitPath(const QString &path)
         return QStringList()<<QStringLiteral(".")<<path;
 
     return QStringList()<<path.left(idx)<<path.mid(idx+1);
+}
+
+QColor fromARGBString(const QString &c)
+{
+    Q_ASSERT(c.length() == 8);
+    QColor color;
+    color.setRed(c.mid(2, 2).toInt(0, 16));
+    color.setGreen(c.mid(4, 2).toInt(0, 16));
+    color.setBlue(c.mid(6, 2).toInt(0, 16));
+    return color;
 }
 
 QPoint xl_cell_to_rowcol(const QString &cell_str)
