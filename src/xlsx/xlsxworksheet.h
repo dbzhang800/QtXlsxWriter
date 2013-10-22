@@ -35,6 +35,7 @@ class QIODevice;
 class QDateTime;
 class QUrl;
 class QImage;
+class WorksheetTest;
 
 QT_BEGIN_NAMESPACE_XLSX
 class Package;
@@ -72,11 +73,6 @@ public:
     void setRightToLeft(bool enable);
     void setZeroValuesHidden(bool enable);
 
-    void saveToXmlFile(QIODevice *device);
-    QByteArray saveToXmlData();
-    bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
-
     QString sheetName() const;
     void setSheetName(const QString &sheetName);
 
@@ -84,7 +80,13 @@ public:
 private:
     friend class Package;
     friend class Workbook;
-    Worksheet(const QString &sheetName, Workbook *book=0);
+    friend class WorksheetTest;
+    Worksheet(const QString &sheetName, Workbook *book);
+
+    void saveToXmlFile(QIODevice *device);
+    QByteArray saveToXmlData();
+    bool loadFromXmlFile(QIODevice *device);
+    bool loadFromXmlData(const QByteArray &data);
 
     virtual bool isChartsheet() const;
     bool isHidden() const;

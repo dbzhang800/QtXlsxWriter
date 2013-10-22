@@ -1,7 +1,7 @@
 TEMPLATE=subdirs
 SUBDIRS=\
     utility \
-    mergecell \
+    worksheet \
     zipreader \
     relationships \
     propscore \

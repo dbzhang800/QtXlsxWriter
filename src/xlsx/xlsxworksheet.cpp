@@ -206,6 +206,8 @@ Worksheet::Worksheet(const QString &name, Workbook *workbook) :
     d_ptr(new WorksheetPrivate(this))
 {
     d_ptr->name = name;
+    if (!workbook) //For unit test propose only. Ignore the memery leak.
+        workbook = new Workbook;
     d_ptr->workbook = workbook;
 }
 

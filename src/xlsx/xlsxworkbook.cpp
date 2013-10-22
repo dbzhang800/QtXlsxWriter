@@ -110,7 +110,6 @@ QString Workbook::defaultDateFormat() const
 {
     Q_D(const Workbook);
     return d->defaultDateFormat;
-
 }
 
 void Workbook::setDefaultDateFormat(const QString &format)
