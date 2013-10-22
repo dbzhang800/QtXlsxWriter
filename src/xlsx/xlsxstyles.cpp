@@ -512,8 +512,8 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
                 writer.writeAttribute(QStringLiteral("wrapText"), QStringLiteral("1"));
             if (format->shrinkToFit())
                 writer.writeAttribute(QStringLiteral("shrinkToFit"), QStringLiteral("1"));
-            if (format->shrinkToFit())
-                writer.writeAttribute(QStringLiteral("shrinkToFit"), QStringLiteral("1"));
+            if (format->rotation())
+                writer.writeAttribute(QStringLiteral("textRotation"), QString::number(format->rotation()));
         }
 
         writer.writeEndElement();//xf
