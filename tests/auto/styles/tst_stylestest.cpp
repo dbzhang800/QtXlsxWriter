@@ -20,7 +20,7 @@ private Q_SLOTS:
 
     void testReadFonts();
     void testReadFills();
-    void testReaderBorders();
+    void testReadBorders();
 };
 
 StylesTest::StylesTest()
@@ -105,7 +105,7 @@ void StylesTest::testReadFills()
             "</fills>";
     QXlsx::Styles styles(true);
     QXlsx::XmlStreamReader reader(xmlData);
-    reader.readNextStartElement();//So current node is fonts
+    reader.readNextStartElement();//So current node is fills
     styles.readFills(reader);
 
     QCOMPARE(styles.m_fillsList.size(), 4);
@@ -113,9 +113,19 @@ void StylesTest::testReadFills()
     QCOMPARE(styles.m_fillsList[3]->bgColor, QColor(Qt::gray));//for solid pattern, bg vs. fg color!
 }
 
-void StylesTest::testReaderBorders()
+void StylesTest::testReadBorders()
 {
+    QByteArray xmlData ="<borders count=\"2\">"
+            "<border><left/><right/><top/><bottom/><diagonal/></border>"
+            "<border><left style=\"dashDotDot\"><color auto=\"1\"/></left><right style=\"dashDotDot\"><color auto=\"1\"/></right><top style=\"dashDotDot\"><color auto=\"1\"/></top><bottom style=\"dashDotDot\"><color auto=\"1\"/></bottom><diagonal/></border>"
+            "</borders>";
 
+    QXlsx::Styles styles(true);
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//So current node is borders
+    styles.readBorders(reader);
+
+    QCOMPARE(styles.m_bordersList.size(), 2);
 }
 
 QTEST_APPLESS_MAIN(StylesTest)

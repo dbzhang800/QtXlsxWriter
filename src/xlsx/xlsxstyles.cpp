@@ -704,7 +704,107 @@ bool Styles::readFill(XmlStreamReader &reader)
 
 bool Styles::readBorders(XmlStreamReader &reader)
 {
-    return false;
+    Q_ASSERT(reader.name() == QLatin1String("borders"));
+
+    QXmlStreamAttributes attributes = reader.attributes();
+    int count = attributes.value(QLatin1String("count")).toInt();
+    for (int i=0; i<count; ++i) {
+        reader.readNextStartElement();
+        if (reader.name() != QLatin1String("border") || reader.tokenType() != QXmlStreamReader::StartElement)
+            return false;
+        readBorder(reader);
+    }
+    return true;
+}
+
+bool Styles::readBorder(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("border"));
+    QSharedPointer<BorderData> border(new BorderData);
+
+    QXmlStreamAttributes attributes = reader.attributes();
+    bool isUp = attributes.hasAttribute(QLatin1String("diagonalUp"));
+    bool isDown = attributes.hasAttribute(QLatin1String("diagonalUp"));
+    if (isUp && isDown)
+        border->diagonalType = Format::DiagnoalBorderBoth;
+    else if (isUp)
+        border->diagonalType = Format::DiagonalBorderUp;
+    else if (isDown)
+        border->diagonalType = Format::DiagonalBorderDown;
+
+    while((reader.readNextStartElement(), true)) { //read until border endelement
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("left"))
+                readSubBorder(reader, reader.name().toString(), border->left, border->leftColor);
+            else if (reader.name() == QLatin1String("right"))
+                readSubBorder(reader, reader.name().toString(), border->right, border->rightColor);
+            else if (reader.name() == QLatin1String("top"))
+                readSubBorder(reader, reader.name().toString(), border->top, border->topColor);
+            else if (reader.name() == QLatin1String("bottom"))
+                readSubBorder(reader, reader.name().toString(), border->bottom, border->bottomColor);
+            else if (reader.name() == QLatin1String("diagonal"))
+                readSubBorder(reader, reader.name().toString(), border->diagonal, border->diagonalColor);
+        }
+
+        if (reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QLatin1String("border"))
+            break;
+    }
+
+    m_bordersList.append(border);
+    m_bordersHash.insert(border->key(), border);
+    border->setIndex(m_bordersList.size()-1);//first call key(), then setIndex()
+
+    return true;
+}
+
+bool Styles::readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color)
+{
+    Q_ASSERT(reader.name() == name);
+
+    static QMap<QString, Format::BorderStyle> stylesStringsMap;
+    if (stylesStringsMap.isEmpty()) {
+        stylesStringsMap[QStringLiteral("none")] = Format::BorderNone;
+        stylesStringsMap[QStringLiteral("thin")] = Format::BorderThin;
+        stylesStringsMap[QStringLiteral("medium")] = Format::BorderMedium;
+        stylesStringsMap[QStringLiteral("dashed")] = Format::BorderDashed;
+        stylesStringsMap[QStringLiteral("dotted")] = Format::BorderDotted;
+        stylesStringsMap[QStringLiteral("thick")] = Format::BorderThick;
+        stylesStringsMap[QStringLiteral("double")] = Format::BorderDouble;
+        stylesStringsMap[QStringLiteral("hair")] = Format::BorderHair;
+        stylesStringsMap[QStringLiteral("mediumDashed")] = Format::BorderMediumDashed;
+        stylesStringsMap[QStringLiteral("dashDot")] = Format::BorderDashDot;
+        stylesStringsMap[QStringLiteral("mediumDashDot")] = Format::BorderMediumDashDot;
+        stylesStringsMap[QStringLiteral("dashDotDot")] = Format::BorderDashDotDot;
+        stylesStringsMap[QStringLiteral("mediumDashDotDot")] = Format::BorderMediumDashDotDot;
+        stylesStringsMap[QStringLiteral("slantDashDot")] = Format::BorderSlantDashDot;
+    }
+
+    QXmlStreamAttributes attributes = reader.attributes();
+    if (attributes.hasAttribute(QLatin1String("style"))) {
+        QString styleString = attributes.value(QLatin1String("style")).toString();
+        if (stylesStringsMap.contains(styleString)) {
+            //get style
+            style = stylesStringsMap[styleString];
+            while((reader.readNextStartElement(),true)) {
+                if (reader.tokenType() == QXmlStreamReader::StartElement) {
+                    if (reader.name() == QLatin1String("color")) {
+                        QXmlStreamAttributes colorAttrs = reader.attributes();
+                        if (colorAttrs.hasAttribute(QLatin1String("rgb"))) {
+                            QString colorString = colorAttrs.value(QLatin1String("rgb")).toString();
+                            //get color
+                            color = fromARGBString(colorString);
+                        }
+                    }
+
+                } else if (reader.tokenType() == QXmlStreamReader::EndElement) {
+                    if (reader.name() == name)
+                        break;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 bool Styles::readCellXfs(XmlStreamReader &reader)
@@ -747,6 +847,15 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
                 qDebug("Error read styles.xml, cellXfs fillId");
             } else {
                 format->d_func()->fillData = *m_fillsList[id];
+            }
+        }
+
+        if (xfAttrs.hasAttribute(QLatin1String("applyBorder"))) {
+            int id = xfAttrs.value(QLatin1String("borderId")).toInt();
+            if (id >= m_bordersList.size()) {
+                qDebug("Error read styles.xml, cellXfs borderId");
+            } else {
+                format->d_func()->borderData = *m_bordersList[id];
             }
         }
 

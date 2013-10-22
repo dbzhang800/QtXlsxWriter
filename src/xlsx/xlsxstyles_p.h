@@ -26,6 +26,7 @@
 #define XLSXSTYLES_H
 
 #include "xlsxglobal.h"
+#include "xlsxformat.h"
 #include <QSharedPointer>
 #include <QHash>
 #include <QList>
@@ -76,6 +77,8 @@ private:
     bool readFills(XmlStreamReader &reader);
     bool readFill(XmlStreamReader &reader);
     bool readBorders(XmlStreamReader &reader);
+    bool readBorder(XmlStreamReader &reader);
+    bool readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color);
     bool readCellXfs(XmlStreamReader &reader);
 
     QHash<QString, int> m_builtinNumFmtsHash;
