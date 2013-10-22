@@ -61,7 +61,7 @@ public:
 
 private:
     friend class Format;
-    friend class StylesTest;
+    friend class ::StylesTest;
 
     void writeNumFmts(XmlStreamWriter &writer);
     void writeFonts(XmlStreamWriter &writer);

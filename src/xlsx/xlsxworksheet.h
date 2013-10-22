@@ -79,7 +79,7 @@ public:
 private:
     friend class Package;
     friend class Workbook;
-    friend class WorksheetTest;
+    friend class ::WorksheetTest;
     Worksheet(const QString &sheetName, Workbook *book);
 
     void saveToXmlFile(QIODevice *device);
