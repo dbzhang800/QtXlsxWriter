@@ -14,6 +14,7 @@ int main()
     format->setFontSize(15);
     format->setBorderStyle(QXlsx::Format::BorderDashDotDot);
     format->setPatternBackgroundColor(QColor(Qt::gray));
+    format->setHorizontalAlignment(QXlsx::Format::AlignHCenter);
     xlsx.write("A1", "Hello Qt!", format);
     xlsx.write("A2", 500);
     xlsx.saveAs("first.xlsx");

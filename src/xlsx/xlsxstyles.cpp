@@ -859,6 +859,57 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             }
         }
 
+        if (xfAttrs.hasAttribute(QLatin1String("applyAlignment"))) {
+            reader.readNextStartElement();
+            if (reader.name() == QLatin1String("alignment")) {
+                QXmlStreamAttributes alignAttrs = reader.attributes();
+
+                if (alignAttrs.hasAttribute(QLatin1String("horizontal"))) {
+                    static QMap<QString, Format::HorizontalAlignment> alignStringMap;
+                    if (alignStringMap.isEmpty()) {
+                        alignStringMap.insert(QStringLiteral("left"), Format::AlignLeft);
+                        alignStringMap.insert(QStringLiteral("center"), Format::AlignHCenter);
+                        alignStringMap.insert(QStringLiteral("right"), Format::AlignRight);
+                        alignStringMap.insert(QStringLiteral("justify"), Format::AlignHJustify);
+                        alignStringMap.insert(QStringLiteral("centerContinuous"), Format::AlignHMerge);
+                        alignStringMap.insert(QStringLiteral("distributed"), Format::AlignHDistributed);
+                    }
+                    QString str = alignAttrs.value(QLatin1String("horizontal")).toString();
+                    if (alignStringMap.contains(str))
+                        format->setHorizontalAlignment(alignStringMap[str]);
+                }
+
+                if (alignAttrs.hasAttribute(QLatin1String("vertical"))) {
+                    static QMap<QString, Format::VerticalAlignment> alignStringMap;
+                    if (alignStringMap.isEmpty()) {
+                        alignStringMap.insert(QStringLiteral("top"), Format::AlignTop);
+                        alignStringMap.insert(QStringLiteral("center"), Format::AlignVCenter);
+                        alignStringMap.insert(QStringLiteral("justify"), Format::AlignVJustify);
+                        alignStringMap.insert(QStringLiteral("distributed"), Format::AlignVDistributed);
+                    }
+                    QString str = alignAttrs.value(QLatin1String("vertical")).toString();
+                    if (alignStringMap.contains(str))
+                        format->setVerticalAlignment(alignStringMap[str]);
+                }
+
+                if (alignAttrs.hasAttribute(QLatin1String("indent"))) {
+                    int indent = alignAttrs.value(QLatin1String("indent")).toInt();
+                    format->setIndent(indent);
+                }
+
+                if (alignAttrs.hasAttribute(QLatin1String("textRotation"))) {
+                    int rotation = alignAttrs.value(QLatin1String("textRotation")).toInt();
+                    format->setRotation(rotation);
+                }
+
+                if (alignAttrs.hasAttribute(QLatin1String("wrapText")))
+                    format->setTextWarp(true);
+
+                if (alignAttrs.hasAttribute(QLatin1String("shrinkToFit")))
+                    format->setShrinkToFit(true);
+            }
+        }
+
         addFormat(format);
 
         //Find the endElement of xf
