@@ -63,7 +63,7 @@ Format *Styles::createFormat()
 
 Format *Styles::xfFormat(int idx) const
 {
-    if (idx <0 || idx > m_xf_formatsList.size())
+    if (idx <0 || idx >= m_xf_formatsList.size())
         return 0;
 
     return m_xf_formatsList[idx];

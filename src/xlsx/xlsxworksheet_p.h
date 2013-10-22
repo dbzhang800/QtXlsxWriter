@@ -24,12 +24,16 @@
 ****************************************************************************/
 #ifndef XLSXWORKSHEET_P_H
 #define XLSXWORKSHEET_P_H
+#include "xlsxglobal.h"
 #include "xlsxworksheet.h"
 
 #include <QImage>
 #include <QSharedPointer>
 
 namespace QXlsx {
+
+class XmlStreamWriter;
+class XmlStreamReader;
 
 struct XlsxCellData
 {
@@ -173,7 +177,7 @@ struct XlsxColumnInfo
     bool hidden;
 };
 
-class WorksheetPrivate
+class XLSX_AUTOTEST_EXPORT WorksheetPrivate
 {
     Q_DECLARE_PUBLIC(Worksheet)
 public:
@@ -191,6 +195,8 @@ public:
     int colPixelsSize(int col);
     XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
     XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data);
+
+    void readSheetData(XmlStreamReader &reader);
 
     Workbook *workbook;
     Drawing *drawing;

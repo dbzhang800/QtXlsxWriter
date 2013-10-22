@@ -61,6 +61,11 @@ int SharedStrings::addSharedString(const QString &string)
 
 void SharedStrings::incRefByStringIndex(int idx)
 {
+    if (idx <0 || idx >= m_stringList.size()) {
+        qDebug("SharedStrings: invlid index");
+        return;
+    }
+
     addSharedString(m_stringList[idx]);
 }
 

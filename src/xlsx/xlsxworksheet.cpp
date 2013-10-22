@@ -1076,65 +1076,89 @@ QByteArray Worksheet::saveToXmlData()
     return data;
 }
 
+void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("sheetData"));
+
+    while(!(reader.name() == QLatin1String("sheetData") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("c")) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                QString r = attributes.value(QLatin1String("r")).toString();
+                QPoint pos = xl_cell_to_rowcol(r);
+
+                //get format
+                Format *format = 0;
+                if (attributes.hasAttribute(QLatin1String("s"))) {
+                    int idx = attributes.value(QLatin1String("s")).toInt();
+                    format = workbook->styles()->xfFormat(idx);
+                }
+
+                if (attributes.hasAttribute(QLatin1String("t"))) {
+                    QString type = attributes.value(QLatin1String("t")).toString();
+                    if (type == QLatin1String("s")) {
+                        //string type
+                        reader.readNextStartElement();
+                        if (reader.name() == QLatin1String("v")) {
+                            QString value = reader.readElementText();
+                            workbook->sharedStrings()->incRefByStringIndex(value.toInt());
+                            XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String, format);
+                            cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                        }
+                    } else if (type == QLatin1String("b")) {
+                        //bool type
+                    }
+                } else {
+                    //number type
+                    reader.readNextStartElement();
+                    if (reader.name() == QLatin1String("v")) {
+                        QString value = reader.readElementText();
+                        XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number, format);
+                        cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                    }
+                }
+            }
+        }
+    }
+}
+
 bool Worksheet::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
 
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
-         QXmlStreamReader::TokenType token = reader.readNext();
-         if (token == QXmlStreamReader::StartElement) {
-             if (reader.name() == QLatin1String("dimension")) {
-                 QXmlStreamAttributes attributes = reader.attributes();
-                 QStringList range = attributes.value(QLatin1String("ref")).toString().split(QLatin1Char(':'));
-                 if (range.size() == 2) {
-                     QPoint start = xl_cell_to_rowcol(range[0]);
-                     QPoint end = xl_cell_to_rowcol(range[1]);
-                     d->dim_rowmin = start.x();
-                     d->dim_colmin = start.y();
-                     d->dim_rowmax = end.x();
-                     d->dim_colmax = end.y();
-                 } else {
-                     QPoint p = xl_cell_to_rowcol(range[0]);
-                     d->dim_rowmin = p.x();
-                     d->dim_colmin = p.y();
-                     d->dim_rowmax = p.x();
-                     d->dim_colmax = p.y();
-                 }
-             } else if (reader.name() == QLatin1String("c")) {
-                 QXmlStreamAttributes attributes = reader.attributes();
-                 QString r = attributes.value(QLatin1String("r")).toString();
-                 QPoint pos = xl_cell_to_rowcol(r);
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("dimension")) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                QStringList range = attributes.value(QLatin1String("ref")).toString().split(QLatin1Char(':'));
+                if (range.size() == 2) {
+                    QPoint start = xl_cell_to_rowcol(range[0]);
+                    QPoint end = xl_cell_to_rowcol(range[1]);
+                    d->dim_rowmin = start.x();
+                    d->dim_colmin = start.y();
+                    d->dim_rowmax = end.x();
+                    d->dim_colmax = end.y();
+                } else {
+                    QPoint p = xl_cell_to_rowcol(range[0]);
+                    d->dim_rowmin = p.x();
+                    d->dim_colmin = p.y();
+                    d->dim_rowmax = p.x();
+                    d->dim_colmax = p.y();
+                }
+            } else if (reader.name() == QLatin1String("sheetViews")) {
 
-                 Format *format = 0;
-                 if (attributes.hasAttribute(QLatin1String("s"))) {
-                     int idx = attributes.value(QLatin1String("s")).toInt();
-                     format = d->workbook->styles()->xfFormat(idx);
-                 }
+            } else if (reader.name() == QLatin1String("sheetFormatPr")) {
 
-                 if (attributes.hasAttribute(QLatin1String("t"))) {
-                     QString type = attributes.value(QLatin1String("t")).toString();
-                     if (type == QLatin1String("s")) {
-                         //string type
-                         reader.readNextStartElement();
-                         if (reader.name() == QLatin1String("v")) {
-                             QString value = reader.readElementText();
-                             d->workbook->sharedStrings()->incRefByStringIndex(value.toInt());
-                             XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String, format);
-                             d->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
-                         }
-                     }
-                 } else {
-                     //number type
-                     reader.readNextStartElement();
-                     if (reader.name() == QLatin1String("v")) {
-                         QString value = reader.readElementText();
-                         XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number, format);
-                         d->cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
-                     }
-                 }
-             }
-         }
+            } else if (reader.name() == QLatin1String("cols")) {
+
+            } else if (reader.name() == QLatin1String("sheetData")) {
+                d->readSheetData(reader);
+            }
+        }
     }
 
     return true;

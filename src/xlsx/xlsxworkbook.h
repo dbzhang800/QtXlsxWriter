@@ -69,6 +69,7 @@ public:
 private:
     friend class Package;
     friend class Worksheet;
+    friend class WorksheetPrivate;
     friend class Document;
     friend class DocumentPrivate;
 

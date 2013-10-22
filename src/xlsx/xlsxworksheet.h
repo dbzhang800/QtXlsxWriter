@@ -40,7 +40,6 @@ class WorksheetTest;
 QT_BEGIN_NAMESPACE_XLSX
 class Package;
 class Workbook;
-class XmlStreamWriter;
 class Format;
 class Drawing;
 struct XlsxImageData;
