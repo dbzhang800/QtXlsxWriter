@@ -51,7 +51,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
 
     strings_to_numbers_enabled = false;
     date1904 = false;
-    defaultDateFormat = QStringLiteral("dd/mm/yyyy hh:mm");
+    defaultDateFormat = QStringLiteral("yyyy-mm-ddThh:mm:ss");
     activesheet = 0;
     firstsheet = 0;
     table_count = 0;
@@ -74,12 +74,15 @@ bool Workbook::isDate1904() const
     return d->date1904;
 }
 
-/*
- Excel for Windows uses a default epoch of 1900 and Excel
- for Mac uses an epoch of 1904. However, Excel on either
- platform will convert automatically between one system
- and the other. QtXlsxWriter stores dates in the 1900 format
- by default.
+/*!
+  Excel for Windows uses a default epoch of 1900 and Excel
+  for Mac uses an epoch of 1904. However, Excel on either
+  platform will convert automatically between one system
+  and the other. Qt Xlsx stores dates in the 1900 format
+  by default.
+
+  \note This function should be called before any date/time
+  has been written.
 */
 void Workbook::setDate1904(bool date1904)
 {
@@ -310,7 +313,7 @@ QByteArray Workbook::saveToXmlData()
 
 QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
 {
-    Workbook *book = new Workbook;
+    QSharedPointer<Workbook> book(new Workbook);
 
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
@@ -321,10 +324,14 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
                  QString sheetName = attributes.value(QLatin1String("name")).toString();
                  QString rId = attributes.value(QLatin1String("r:id")).toString();
                  book->d_func()->sheetNameIdPairList.append(QPair<QString, QString>(sheetName, rId));
+             } else if (reader.name() == QLatin1String("workbookPr")) {
+                QXmlStreamAttributes attrs = reader.attributes();
+                if (attrs.hasAttribute(QLatin1String("date1904")))
+                    book->d_ptr->date1904 = true;
              }
          }
     }
-    return QSharedPointer<Workbook>(book);
+    return book;
 }
 
 QSharedPointer<Workbook> Workbook::loadFromXmlData(const QByteArray &data)

@@ -25,6 +25,7 @@
 #include "private/xlsxutility_p.h"
 #include <QString>
 #include <QtTest>
+#include <QDateTime>
 
 class UtilityTest : public QObject
 {
@@ -39,6 +40,12 @@ private Q_SLOTS:
 
     void test_rowcol_to_cell();
     void test_rowcol_to_cell_data();
+
+    void test_datetimeToNumber_data();
+    void test_datetimeToNumber();
+
+    void test_datetimeFromNumber_data();
+    void test_datetimeFromNumber();
 };
 
 UtilityTest::UtilityTest()
@@ -99,6 +106,55 @@ void UtilityTest::test_rowcol_to_cell_data()
     QTest::newRow("colabs") << 0 << 0 << false << true << "$A1";
     QTest::newRow("bothabs") << 0 << 0 << true << true << "$A$1";
     QTest::newRow("...") << 1048576 << 16384 << false << false << "XFE1048577";
+}
+
+void UtilityTest::test_datetimeToNumber_data()
+{
+    QTest::addColumn<QDateTime>("dt");
+    QTest::addColumn<bool>("is1904");
+    QTest::addColumn<double>("num");
+
+    //Note, for number 0, Excel2007 shown as 1900-1-0, which should be 1899-12-31
+    QTest::newRow("0") << QDateTime(QDate(1899, 12, 31), QTime(0,0), Qt::UTC) << false << 0.0;
+    QTest::newRow("1.25") << QDateTime(QDate(1900, 1, 1), QTime(6, 0), Qt::UTC) << false << 1.25;
+    QTest::newRow("59") << QDateTime(QDate(1900, 2, 28), QTime(0, 0), Qt::UTC) << false << 59.0;
+    QTest::newRow("61") << QDateTime(QDate(1900, 3, 1), QTime(0, 0), Qt::UTC) << false << 61.0;
+
+    QTest::newRow("1904: 0") << QDateTime(QDate(1904, 1, 1), QTime(0,0), Qt::UTC) << true << 0.0;
+    QTest::newRow("1904: 1.25") << QDateTime(QDate(1904, 1, 2), QTime(6, 0), Qt::UTC) << true << 1.25;
+}
+
+void UtilityTest::test_datetimeToNumber()
+{
+    QFETCH(QDateTime, dt);
+    QFETCH(bool, is1904);
+    QFETCH(double, num);
+
+    QCOMPARE(QXlsx::datetimeToNumber(dt, is1904), num);
+}
+
+void UtilityTest::test_datetimeFromNumber_data()
+{
+    QTest::addColumn<QDateTime>("dt");
+    QTest::addColumn<bool>("is1904");
+    QTest::addColumn<double>("num");
+
+    QTest::newRow("0") << QDateTime(QDate(1899, 12, 31), QTime(0,0), Qt::UTC) << false << 0.0;
+    QTest::newRow("1.25") << QDateTime(QDate(1900, 1, 1), QTime(6, 0), Qt::UTC) << false << 1.25;
+    QTest::newRow("59") << QDateTime(QDate(1900, 2, 28), QTime(0,0), Qt::UTC) << false << 59.0;
+    QTest::newRow("61") << QDateTime(QDate(1900, 3, 1), QTime(0,0), Qt::UTC) << false << 61.0;
+
+    QTest::newRow("1904: 0") << QDateTime(QDate(1904, 1, 1), QTime(0,0), Qt::UTC) << true << 0.0;
+    QTest::newRow("1904: 1.25") << QDateTime(QDate(1904, 1, 2), QTime(6, 0), Qt::UTC) << true << 1.25;
+}
+
+void UtilityTest::test_datetimeFromNumber()
+{
+    QFETCH(QDateTime, dt);
+    QFETCH(bool, is1904);
+    QFETCH(double, num);
+
+    QCOMPARE(QXlsx::datetimeFromNumber(num, is1904), dt);
 }
 
 QTEST_APPLESS_MAIN(UtilityTest)

@@ -44,9 +44,8 @@ public:
         String,
         Number,
         Formula,
-        ArrayFormula,
         Boolean,
-        DateTime
+        Error
     };
 
     DataType dataType() const;

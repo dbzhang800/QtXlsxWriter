@@ -423,7 +423,10 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
         format = d->workbook->createFormat();
         format->setNumberFormat(d->workbook->defaultDateFormat());
     }
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(dt, Cell::DateTime, format));
+
+    double value = datetimeToNumber(dt, d->workbook->isDate1904());
+
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Number, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -729,23 +732,11 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
             writer.writeAttribute(QStringLiteral("t"), QStringLiteral("str"));
         writer.writeTextElement(QStringLiteral("f"), cell->formula());
         writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
-    } else if (cell->dataType() == Cell::ArrayFormula) {
-
     } else if (cell->dataType() == Cell::Boolean) {
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("b"));
         writer.writeTextElement(QStringLiteral("v"), cell->value().toBool() ? QStringLiteral("1") : QStringLiteral("0"));
     } else if (cell->dataType() == Cell::Blank) {
         //Ok, empty here.
-    } else if (cell->dataType() == Cell::DateTime) {
-        QDateTime epoch(QDate(1899, 12, 31));
-        if (workbook->isDate1904())
-            epoch = QDateTime(QDate(1904, 1, 1));
-        qint64 delta = epoch.msecsTo(cell->value().toDateTime());
-        double excel_time = delta / (1000*60*60*24);
-        //Account for Excel erroneously treating 1900 as a leap year.
-        if (!workbook->isDate1904() && excel_time > 59)
-            excel_time += 1;
-        writer.writeTextElement(QStringLiteral("v"), QString::number(excel_time, 'g', 15));
     }
     writer.writeEndElement(); //c
 }

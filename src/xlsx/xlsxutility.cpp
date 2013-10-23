@@ -30,6 +30,8 @@
 #include <QMap>
 #include <QStringList>
 #include <QColor>
+#include <QDateTime>
+#include <QDebug>
 
 namespace QXlsx {
 
@@ -60,6 +62,30 @@ QColor fromARGBString(const QString &c)
     color.setGreen(c.mid(4, 2).toInt(0, 16));
     color.setBlue(c.mid(6, 2).toInt(0, 16));
     return color;
+}
+
+double datetimeToNumber(const QDateTime &dt, bool is1904)
+{
+    //Note, for number 0, Excel2007 shown as 1900-1-0, which should be 1899-12-31
+    QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0), Qt::UTC);
+
+    double excel_time = epoch.msecsTo(dt) / (1000*60*60*24.0);
+    if (!is1904 && excel_time > 59) {//31+28
+        //Account for Excel erroneously treating 1900 as a leap year.
+        excel_time += 1;
+    }
+    return excel_time;
+}
+
+QDateTime datetimeFromNumber(double num, bool is1904)
+{
+    if (!is1904 && num > 60)
+        num = num - 1;
+
+    qint64 msecs = static_cast<qint64>(num * 1000*60*60*24.0);
+    QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0), Qt::UTC);
+
+    return epoch.addMSecs(msecs);
 }
 
 QPoint xl_cell_to_rowcol(const QString &cell_str)
