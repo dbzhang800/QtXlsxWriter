@@ -38,6 +38,7 @@ class Workbook;
 class Worksheet;
 class Package;
 class Format;
+class Cell;
 
 class DocumentPrivate;
 class Q_XLSX_EXPORT Document : public QObject
@@ -59,6 +60,9 @@ public:
     int unmergeCells(const QString &range);
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
+
+    Cell *cellAt(const QString &cell) const;
+    Cell *cellAt(int row, int col) const;
 
     QString documentProperty(const QString &name) const;
     void setDocumentProperty(const QString &name, const QString &property);

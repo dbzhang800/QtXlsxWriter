@@ -183,6 +183,22 @@ bool Document::setColumn(int colFirst, int colLast, double width, Format *format
 }
 
 /*!
+ * Returns a Cell object based on the given \a pos.
+ */
+Cell *Document::cellAt(const QString &pos) const
+{
+    return currentWorksheet()->cellAt(pos);
+}
+
+/*!
+ * Returns a Cell object based on the given \a row and \a col.
+ */
+Cell *Document::cellAt(int row, int col) const
+{
+    return currentWorksheet()->cellAt(row, col);
+}
+
+/*!
  * Returns the value of the document's \a key property.
  */
 QString Document::documentProperty(const QString &key) const

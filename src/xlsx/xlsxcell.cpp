@@ -52,24 +52,36 @@ Cell::Cell(const QVariant &data, DataType type, Format *format) :
     d_ptr->format = format;
 }
 
+/*!
+ * Return the dataType of this Cell
+ */
 Cell::DataType Cell::dataType() const
 {
     Q_D(const Cell);
     return d->dataType;
 }
 
+/*!
+ * Return the data content of this Cell
+ */
 QVariant Cell::value() const
 {
     Q_D(const Cell);
     return d->value;
 }
 
+/*!
+ * Return the style used by this Cell. If no style used, 0 will be returned.
+ */
 Format *Cell::format() const
 {
     Q_D(const Cell);
     return d->format;
 }
 
+/*!
+ * Return the formula contents if the dataType is Formula
+ */
 QString Cell::formula() const
 {
     Q_D(const Cell);

@@ -26,6 +26,7 @@
 #define XLSXWORKSHEET_H
 
 #include "xlsxglobal.h"
+#include "xlsxcell.h"
 #include <QStringList>
 #include <QMap>
 #include <QVariant>
@@ -58,6 +59,9 @@ public:
     int writeBool(int row, int column, bool value, Format *format=0);
     int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
     int writeUrl(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
+
+    Cell *cellAt(const QString &row_column) const;
+    Cell *cellAt(int row, int column) const;
 
     int insertImage(int row, int column, const QImage &image, const QPointF &offset=QPointF(), double xScale=1, double yScale=1);
 

@@ -337,6 +337,26 @@ int Worksheet::write(const QString row_column, const QVariant &value, Format *fo
     return write(pos.x(), pos.y(), value, format);
 }
 
+Cell *Worksheet::cellAt(const QString &row_column) const
+{
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return 0;
+
+    return cellAt(pos.x(), pos.y());
+}
+
+Cell *Worksheet::cellAt(int row, int column) const
+{
+    Q_D(const Worksheet);
+    if (!d->cellTable.contains(row))
+        return 0;
+    if (!d->cellTable[row].contains(column))
+        return 0;
+
+    return d->cellTable[row][column].data();
+}
+
 int Worksheet::writeString(int row, int column, const QString &value, Format *format)
 {
     Q_D(Worksheet);
