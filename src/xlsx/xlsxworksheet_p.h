@@ -26,6 +26,7 @@
 #define XLSXWORKSHEET_P_H
 #include "xlsxglobal.h"
 #include "xlsxworksheet.h"
+#include "xlsxcell.h"
 
 #include <QImage>
 #include <QSharedPointer>
@@ -34,29 +35,6 @@ namespace QXlsx {
 
 class XmlStreamWriter;
 class XmlStreamReader;
-
-struct XlsxCellData
-{
-    enum CellDataType {
-        Blank,
-        String,
-        Number,
-        Formula,
-        ArrayFormula,
-        Boolean,
-        DateTime
-    };
-    XlsxCellData(const QVariant &data=QVariant(), CellDataType type=Blank, Format *format=0) :
-        value(data), dataType(type), format(format)
-    {
-
-    }
-
-    QVariant value;
-    QString formula;
-    CellDataType dataType;
-    Format *format;
-};
 
 struct XlsxUrlData
 {
@@ -187,7 +165,7 @@ public:
     QString generateDimensionString();
     void calculateSpans();
     void writeSheetData(XmlStreamWriter &writer);
-    void writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<XlsxCellData> cell);
+    void writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell);
     void writeMergeCells(XmlStreamWriter &writer);
     void writeHyperlinks(XmlStreamWriter &writer);
     void writeDrawings(XmlStreamWriter &writer);
@@ -202,7 +180,7 @@ public:
 
     Workbook *workbook;
     Drawing *drawing;
-    QMap<int, QMap<int, QSharedPointer<XlsxCellData> > > cellTable;
+    QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, XlsxUrlData *> > urlTable;
     QList<XlsxCellRange> merges;

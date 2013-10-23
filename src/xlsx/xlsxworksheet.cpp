@@ -32,6 +32,8 @@
 #include "xlsxxmlreader_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxstyles_p.h"
+#include "xlsxcell.h"
+#include "xlsxcell_p.h"
 
 #include <QVariant>
 #include <QDateTime>
@@ -351,7 +353,7 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     SharedStrings *sharedStrings = d->workbook->sharedStrings();
     int index = sharedStrings->addSharedString(content);
 
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(index, XlsxCellData::String, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(index, Cell::String, format));
     d->workbook->styles()->addFormat(format);
     return error;
 }
@@ -362,7 +364,7 @@ int Worksheet::writeNumber(int row, int column, double value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(value, XlsxCellData::Number, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Number, format));
     d->workbook->styles()->addFormat(format);
     return 0;
 }
@@ -379,9 +381,9 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
     if (formula.startsWith(QLatin1String("=")))
         formula.remove(0,1);
 
-    XlsxCellData *data = new XlsxCellData(result, XlsxCellData::Formula, format);
-    data->formula = formula;
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(data);
+    Cell *data = new Cell(result, Cell::Formula, format);
+    data->d_ptr->formula = formula;
+    d->cellTable[row][column] = QSharedPointer<Cell>(data);
     d->workbook->styles()->addFormat(format);
 
     return error;
@@ -393,7 +395,7 @@ int Worksheet::writeBlank(int row, int column, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(QVariant(), XlsxCellData::Blank, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(QVariant(), Cell::Blank, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -405,7 +407,7 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(value, XlsxCellData::Boolean, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Boolean, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -421,7 +423,7 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
         format = d->workbook->createFormat();
         format->setNumberFormat(d->workbook->defaultDateFormat());
     }
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(dt, XlsxCellData::DateTime, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(dt, Cell::DateTime, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -483,7 +485,7 @@ int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, co
     //Write the hyperlink string as normal string.
     SharedStrings *sharedStrings = d->workbook->sharedStrings();
     int index = sharedStrings->addSharedString(urlString);
-    d->cellTable[row][column] = QSharedPointer<XlsxCellData>(new XlsxCellData(index, XlsxCellData::String, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(index, Cell::String, format));
 
     //Store the hyperlink data in sa separate table
     d->urlTable[row][column] = new XlsxUrlData(link_type, urlString, locationString, tip);
@@ -697,7 +699,7 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
     }
 }
 
-void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<XlsxCellData> cell)
+void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell)
 {
     //This is the innermost loop so efficiency is important.
     QString cell_range = xl_rowcol_to_cell_fast(row, col);
@@ -706,39 +708,39 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
     writer.writeAttribute(QStringLiteral("r"), cell_range);
 
     //Style used by the cell, row or col
-    if (cell->format)
-        writer.writeAttribute(QStringLiteral("s"), QString::number(cell->format->xfIndex()));
+    if (cell->format())
+        writer.writeAttribute(QStringLiteral("s"), QString::number(cell->format()->xfIndex()));
     else if (rowsInfo.contains(row) && rowsInfo[row]->format)
         writer.writeAttribute(QStringLiteral("s"), QString::number(rowsInfo[row]->format->xfIndex()));
     else if (colsInfoHelper.contains(col) && colsInfoHelper[col]->format)
         writer.writeAttribute(QStringLiteral("s"), QString::number(colsInfoHelper[col]->format->xfIndex()));
 
-    if (cell->dataType == XlsxCellData::String) {
+    if (cell->dataType() == Cell::String) {
         //cell->data: Index of the string in sharedStringTable
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("s"));
-        writer.writeTextElement(QStringLiteral("v"), cell->value.toString());
-    } else if (cell->dataType == XlsxCellData::Number){
-        double value = cell->value.toDouble();
+        writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
+    } else if (cell->dataType() == Cell::Number){
+        double value = cell->value().toDouble();
         writer.writeTextElement(QStringLiteral("v"), QString::number(value, 'g', 15));
-    } else if (cell->dataType == XlsxCellData::Formula) {
+    } else if (cell->dataType() == Cell::Formula) {
         bool ok = true;
-        cell->formula.toDouble(&ok);
+        cell->formula().toDouble(&ok);
         if (!ok) //is string
             writer.writeAttribute(QStringLiteral("t"), QStringLiteral("str"));
-        writer.writeTextElement(QStringLiteral("f"), cell->formula);
-        writer.writeTextElement(QStringLiteral("v"), cell->value.toString());
-    } else if (cell->dataType == XlsxCellData::ArrayFormula) {
+        writer.writeTextElement(QStringLiteral("f"), cell->formula());
+        writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
+    } else if (cell->dataType() == Cell::ArrayFormula) {
 
-    } else if (cell->dataType == XlsxCellData::Boolean) {
+    } else if (cell->dataType() == Cell::Boolean) {
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("b"));
-        writer.writeTextElement(QStringLiteral("v"), cell->value.toBool() ? QStringLiteral("1") : QStringLiteral("0"));
-    } else if (cell->dataType == XlsxCellData::Blank) {
+        writer.writeTextElement(QStringLiteral("v"), cell->value().toBool() ? QStringLiteral("1") : QStringLiteral("0"));
+    } else if (cell->dataType() == Cell::Blank) {
         //Ok, empty here.
-    } else if (cell->dataType == XlsxCellData::DateTime) {
+    } else if (cell->dataType() == Cell::DateTime) {
         QDateTime epoch(QDate(1899, 12, 31));
         if (workbook->isDate1904())
             epoch = QDateTime(QDate(1904, 1, 1));
-        qint64 delta = epoch.msecsTo(cell->value.toDateTime());
+        qint64 delta = epoch.msecsTo(cell->value().toDateTime());
         double excel_time = delta / (1000*60*60*24);
         //Account for Excel erroneously treating 1900 as a leap year.
         if (!workbook->isDate1904() && excel_time > 59)
@@ -1115,15 +1117,15 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                         if (reader.name() == QLatin1String("v")) {
                             QString value = reader.readElementText();
                             workbook->sharedStrings()->incRefByStringIndex(value.toInt());
-                            XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::String, format);
-                            cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                            Cell *data = new Cell(value ,Cell::String, format);
+                            cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
                         }
                     } else if (type == QLatin1String("b")) {
                         //bool type
                         reader.readNextStartElement();
                         if (reader.name() == QLatin1String("v")) {
                             QString value = reader.readElementText();
-                            QSharedPointer<XlsxCellData> data(new XlsxCellData(value.toInt() ? true : false, XlsxCellData::Boolean, format));
+                            QSharedPointer<Cell> data(new Cell(value.toInt() ? true : false, Cell::Boolean, format));
                             cellTable[pos.x()][pos.y()] = data;
                         }
                     }
@@ -1132,8 +1134,8 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                     reader.readNextStartElement();
                     if (reader.name() == QLatin1String("v")) {
                         QString value = reader.readElementText();
-                        XlsxCellData *data = new XlsxCellData(value ,XlsxCellData::Number, format);
-                        cellTable[pos.x()][pos.y()] = QSharedPointer<XlsxCellData>(data);
+                        Cell *data = new Cell(value ,Cell::Number, format);
+                        cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
                     }
                 }
             }
