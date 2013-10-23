@@ -1120,6 +1120,12 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                         }
                     } else if (type == QLatin1String("b")) {
                         //bool type
+                        reader.readNextStartElement();
+                        if (reader.name() == QLatin1String("v")) {
+                            QString value = reader.readElementText();
+                            QSharedPointer<XlsxCellData> data(new XlsxCellData(value.toInt() ? true : false, XlsxCellData::Boolean, format));
+                            cellTable[pos.x()][pos.y()] = data;
+                        }
                     }
                 } else {
                     //number type
