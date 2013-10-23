@@ -2,12 +2,6 @@
 #include "xlsxdocument.h"
 #include "xlsxformat.h"
 
-#ifdef Q_OS_MAC
-#  define DATA_PATH "../../../"
-#else
-#  define DATA_PATH "./"
-#endif
-
 int main()
 {
     QXlsx::Document xlsx;
@@ -45,9 +39,10 @@ int main()
     xlsx.write("A5", QDate(2013, 8, 29));
 
     QXlsx::Format *format6 = xlsx.createFormat();
-    format6->setPatternBackgroundColor(QColor(Qt::gray));
+    format6->setPatternBackgroundColor(QColor(Qt::green));
     xlsx.write("A6", "Background color: green", format6);
 
-    xlsx.saveAs(DATA_PATH"TestStyle.xlsx");
+    xlsx.saveAs("book1.xlsx");
+
     return 0;
 }

@@ -2,12 +2,6 @@
 #include "xlsxdocument.h"
 #include "xlsxformat.h"
 
-#ifdef Q_OS_MAC
-#  define DATA_PATH "../../../"
-#else
-#  define DATA_PATH "./"
-#endif
-
 int main()
 {
     QXlsx::Document xlsx;
@@ -37,6 +31,6 @@ int main()
             xlsx.write(row, col, row+col);
     xlsx.setColumn(8, 15, 5.0, format2);
 
-    xlsx.saveAs(DATA_PATH"Test.xlsx");
+    xlsx.save();
     return 0;
 }

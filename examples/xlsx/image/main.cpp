@@ -1,12 +1,6 @@
 #include <QtGui>
 #include "xlsxdocument.h"
 
-#ifdef Q_OS_MAC
-#  define DATA_PATH "../../../"
-#else
-#  define DATA_PATH "./"
-#endif
-
 int main(int argc, char** argv)
 {
     QGuiApplication(argc, argv);
@@ -17,7 +11,7 @@ int main(int argc, char** argv)
     image.fill(Qt::green);
     xlsx.insertImage(5, 5, image);
 
-    xlsx.saveAs(DATA_PATH"Test.xlsx");
+    xlsx.save();
 
     return 0;
 }

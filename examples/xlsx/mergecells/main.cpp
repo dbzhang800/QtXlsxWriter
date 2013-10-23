@@ -1,16 +1,7 @@
-#include <QtGui>
 #include "xlsxdocument.h"
 
-#ifdef Q_OS_MAC
-#  define DATA_PATH "../../../"
-#else
-#  define DATA_PATH "./"
-#endif
-
-int main(int argc, char** argv)
+int main()
 {
-    QGuiApplication(argc, argv);
-
     QXlsx::Document xlsx;
 
     xlsx.write("B1", "Merge Cells");
@@ -19,7 +10,7 @@ int main(int argc, char** argv)
     xlsx.write("E2", "Merge Cells 2");
     xlsx.mergeCells("E2:G4");
 
-    xlsx.saveAs(DATA_PATH"Test.xlsx");
+    xlsx.save();
 
     return 0;
 }

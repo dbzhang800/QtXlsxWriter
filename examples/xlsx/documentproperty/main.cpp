@@ -1,12 +1,6 @@
 #include <QtCore>
 #include "xlsxdocument.h"
 
-#ifdef Q_OS_MAC
-#  define DATA_PATH "../../../"
-#else
-#  define DATA_PATH "./"
-#endif
-
 int main()
 {
     QXlsx::Document xlsx;
@@ -21,6 +15,6 @@ int main()
     xlsx.setDocumentProperty("keywords", "Sample, Example, Properties");
     xlsx.setDocumentProperty("description", "Created with Qt Xlsx");
 
-    xlsx.saveAs(DATA_PATH"Test.xlsx");
+    xlsx.saveAs("Test.xlsx");
     return 0;
 }
