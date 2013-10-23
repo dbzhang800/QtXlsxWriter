@@ -32,6 +32,8 @@ Qt 0.0.1 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="document.html#Document-3">Document</a></b></span>(QIODevice *, QObject *)</li>
 <li class="fn"><span class="name"><b><a href="document.html#dtor.Document">~Document</a></b></span>()</li>
 <li class="fn"><span class="name"><b><a href="document.html#addWorksheet">addWorksheet</a></b></span>(const QString &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="document.html#cellAt">cellAt</a></b></span>(const QString &amp;) const : Cell *</li>
+<li class="fn"><span class="name"><b><a href="document.html#cellAt-2">cellAt</a></b></span>(int, int) const : Cell *</li>
 <li class="fn"><span class="name"><b><a href="document.html#createFormat">createFormat</a></b></span>() : Format *</li>
 <li class="fn"><span class="name"><b><a href="document.html#currentWorksheet">currentWorksheet</a></b></span>() const : Worksheet *</li>
 <li class="fn"><span class="name"><b><a href="document.html#documentProperty">documentProperty</a></b></span>(const QString &amp;) const : QString</li>
@@ -39,8 +41,8 @@ Qt 0.0.1 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="document.html#insertImage">insertImage</a></b></span>(int, int, const QImage &amp;, double, double, double, double) : int</li>
 <li class="fn"><span class="name"><b><a href="document.html#insertWorkSheet">insertWorkSheet</a></b></span>(int, const QString &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#mergeCells">mergeCells</a></b></span>(const QString &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="document.html#save">save</a></b></span>() : bool</li>
 </ul></td><td class="topAlign"><ul>
+<li class="fn"><span class="name"><b><a href="document.html#save">save</a></b></span>() : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#saveAs">saveAs</a></b></span>(const QString &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#saveAs-2">saveAs</a></b></span>(QIODevice *) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#setColumn">setColumn</a></b></span>(int, int, double, Format *, bool) : bool</li>

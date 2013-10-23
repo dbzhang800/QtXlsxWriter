@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- xlsxcell.cpp -->
+  <title>Cell Class | QtXlsx 0.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li>Qt 0.0</li>
+<li>Cell</li>
+<li id="buildversion">
+Qt 0.0.1 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#public-types">Public Types</a></li>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<h1 class="title">Cell Class</h1>
+<!-- $$$Cell-brief -->
+<p>The Cell class provides a API that is used to handle the worksheet cell. <a href="#details">More...</a></p>
+<!-- @@@Cell -->
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;Cell&gt;</span>
+</tt></td></tr></table><ul>
+<li><a href="cell-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h2>Public Types</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="cell.html#DataType-enum">DataType</a></b> { Blank, String, Number, Formula, Boolean, Error }</td></tr>
+</table>
+<a name="public-functions"></a>
+<h2>Public Functions</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> DataType </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dataType">dataType</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Format * </td><td class="memItemRight bottomAlign"><b><a href="cell.html#format">format</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="cell.html#formula">formula</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QVariant </td><td class="memItemRight bottomAlign"><b><a href="cell.html#value">value</a></b>() const</td></tr>
+</table>
+<a name="details"></a>
+<!-- $$$Cell-description -->
+<div class="descr">
+<h2>Detailed Description</h2>
+<p>The Cell class provides a API that is used to handle the worksheet cell.</p>
+</div>
+<!-- @@@Cell -->
+<div class="types">
+<h2>Member Type Documentation</h2>
+<!-- $$$DataType$$$Blank$$$String$$$Number$$$Formula$$$Boolean$$$Error -->
+<h3 class="fn"><a name="DataType-enum"></a>enum Cell::<span class="name">DataType</span></h3>
+<!-- @@@DataType -->
+</div>
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$dataType[overload1]$$$dataType -->
+<h3 class="fn"><a name="dataType"></a><span class="type"><a href="cell.html#DataType-enum">DataType</a></span> Cell::<span class="name">dataType</span>() const</h3>
+<p>Return the dataType of this Cell</p>
+<!-- @@@dataType -->
+<!-- $$$format[overload1]$$$format -->
+<h3 class="fn"><a name="format"></a><span class="type"><a href="format.html">Format</a></span> * Cell::<span class="name">format</span>() const</h3>
+<p>Return the style used by this Cell. If no style used, 0 will be returned.</p>
+<!-- @@@format -->
+<!-- $$$formula[overload1]$$$formula -->
+<h3 class="fn"><a name="formula"></a><span class="type">QString</span> Cell::<span class="name">formula</span>() const</h3>
+<p>Return the formula contents if the dataType is Formula</p>
+<!-- @@@formula -->
+<!-- $$$value[overload1]$$$value -->
+<h3 class="fn"><a name="value"></a><span class="type">QVariant</span> Cell::<span class="name">value</span>() const</h3>
+<p>Return the data content of this Cell</p>
+<!-- @@@value -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+        <div class="qt13a-copyright" id="copyright">
+            <div class="qt13a-container">
+            <p>
+              <acronym title="Copyright">&copy;</acronym> 2013 Digia Plc and/or its
+              subsidiaries. Documentation contributions included herein are the copyrights of
+              their respective owners.</p>
+            <p>
+              The documentation provided herein is licensed under the terms of the
+              <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+              License version 1.3</a> as published by the Free Software Foundation.</p>
+            <p>
+              Documentation sources may be obtained from <a href="http://www.qt-project.org">
+              www.qt-project.org</a>.</p>
+            <p>
+              Digia, Qt and their respective logos are trademarks of Digia Plc 
+              in Finland and/or other countries worldwide. All other trademarks are property
+              of their respective owners. <a title="Privacy Policy"
+              href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+            </div>
+        </div>
+</div>
+</body>
+</html>

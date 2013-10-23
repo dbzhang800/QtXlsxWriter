@@ -30,12 +30,6 @@ Qt 0.0.1 Reference Documentation</li>
 <span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
 <span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
 
-<span class="preprocessor">#ifdef Q_OS_MAC</span>
-<span class="preprocessor">#  define DATA_PATH &quot;../../../&quot;</span>
-<span class="preprocessor">#else</span>
-<span class="preprocessor">#  define DATA_PATH &quot;./&quot;</span>
-<span class="preprocessor">#endif</span>
-
 <span class="type">int</span> main()
 {
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
@@ -73,10 +67,11 @@ Qt 0.0.1 Reference Documentation</li>
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="type">QDate</span>(<span class="number">2013</span><span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="number">29</span>));
 
     <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format6 <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-    format6<span class="operator">-</span><span class="operator">&gt;</span>setPatternBackgroundColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>gray));
+    format6<span class="operator">-</span><span class="operator">&gt;</span>setPatternBackgroundColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>green));
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A6&quot;</span><span class="operator">,</span> <span class="string">&quot;Background color: green&quot;</span><span class="operator">,</span> format6);
 
-    xlsx<span class="operator">.</span>saveAs(DATA_PATH<span class="string">&quot;TestStyle.xlsx&quot;</span>);
+    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;book1.xlsx&quot;</span>);
+
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>
 </div>

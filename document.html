@@ -47,6 +47,8 @@ Qt 0.0.1 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#Document-3">Document</a></b>(QIODevice *<i> device</i>, QObject *<i> parent</i> = 0)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#dtor.Document">~Document</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#addWorksheet">addWorksheet</a></b>(const QString &amp;<i> name</i> = QString())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="document.html#cellAt">cellAt</a></b>(const QString &amp;<i> pos</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="document.html#cellAt-2">cellAt</a></b>(int<i> row</i>, int<i> col</i>) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Format * </td><td class="memItemRight bottomAlign"><b><a href="document.html#createFormat">createFormat</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Worksheet * </td><td class="memItemRight bottomAlign"><b><a href="document.html#currentWorksheet">currentWorksheet</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="document.html#documentProperty">documentProperty</a></b>(const QString &amp;<i> key</i>) const</td></tr>
@@ -99,6 +101,14 @@ Qt 0.0.1 Reference Documentation</li>
 <h3 class="fn"><a name="addWorksheet"></a><span class="type">bool</span> Document::<span class="name">addWorksheet</span>(const <span class="type">QString</span> &amp;<i> name</i> = QString())</h3>
 <p>Creates and append an document with name <i>name</i>.</p>
 <!-- @@@addWorksheet -->
+<!-- $$$cellAt[overload1]$$$cellAtconstQString& -->
+<h3 class="fn"><a name="cellAt"></a><span class="type"><a href="cell.html">Cell</a></span> * Document::<span class="name">cellAt</span>(const <span class="type">QString</span> &amp;<i> pos</i>) const</h3>
+<p>Returns a Cell object based on the given <i>pos</i>.</p>
+<!-- @@@cellAt -->
+<!-- $$$cellAt$$$cellAtintint -->
+<h3 class="fn"><a name="cellAt-2"></a><span class="type"><a href="cell.html">Cell</a></span> * Document::<span class="name">cellAt</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>) const</h3>
+<p>Returns a Cell object based on the given <i>row</i> and <i>col</i>.</p>
+<!-- @@@cellAt -->
 <!-- $$$createFormat[overload1]$$$createFormat -->
 <h3 class="fn"><a name="createFormat"></a><span class="type"><a href="format.html">Format</a></span> * Document::<span class="name">createFormat</span>()</h3>
 <p>Create a new format used by sheet cells.</p>

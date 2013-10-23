@@ -27,6 +27,7 @@ Qt 0.0.1 Reference Documentation</li>
 <!-- $$$readwrite/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
 
 <span class="type">int</span> main()
 {
@@ -35,7 +36,13 @@ Qt 0.0.1 Reference Documentation</li>
     xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;title&quot;</span><span class="operator">,</span> <span class="string">&quot;This is an example spreadsheet&quot;</span>);
     xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;creator&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt Xlsx Library&quot;</span>);
     xlsx<span class="operator">.</span>setSheetName(<span class="string">&quot;First Sheet&quot;</span>);
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    format<span class="operator">-</span><span class="operator">&gt;</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>blue));
+    format<span class="operator">-</span><span class="operator">&gt;</span>setFontSize(<span class="number">15</span>);
+    format<span class="operator">-</span><span class="operator">&gt;</span>setBorderStyle(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>BorderDashDotDot);
+    format<span class="operator">-</span><span class="operator">&gt;</span>setPatternBackgroundColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>gray));
+    format<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>AlignHCenter);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span><span class="operator">,</span> format);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="number">500</span>);
     xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;first.xlsx&quot;</span>);
 
