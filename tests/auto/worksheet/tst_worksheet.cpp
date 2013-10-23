@@ -20,6 +20,7 @@ private Q_SLOTS:
     void testReadSheetData();
     void testReadColsInfo();
     void testReadRowsInfo();
+    void testReadMergeCells();
 };
 
 WorksheetTest::WorksheetTest()
@@ -109,6 +110,20 @@ void WorksheetTest::testReadRowsInfo()
 
     QCOMPARE(sheet.d_ptr->rowsInfo.size(), 1);
     QCOMPARE(sheet.d_ptr->rowsInfo[3]->height, 40.0);
+}
+
+void WorksheetTest::testReadMergeCells()
+{
+    const QByteArray xmlData = "<mergeCells count=\"2\"><mergeCell ref=\"B1:B5\"/><mergeCell ref=\"E2:G4\"/></mergeCells>";
+
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//current node is mergeCells
+
+    QXlsx::Worksheet sheet("", 0);
+    sheet.d_ptr->readMergeCells(reader);
+
+    QCOMPARE(sheet.d_ptr->merges.size(), 2);
+    QCOMPARE(sheet.d_ptr->merges[0].row_end, 4);
 }
 
 QTEST_APPLESS_MAIN(WorksheetTest)

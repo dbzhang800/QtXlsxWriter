@@ -1172,6 +1172,39 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
     }
 }
 
+void WorksheetPrivate::readMergeCells(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("mergeCells"));
+
+    QXmlStreamAttributes attributes = reader.attributes();
+    int count = attributes.value(QLatin1String("count")).toInt();
+
+    while(!(reader.name() == QLatin1String("mergeCells") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("mergeCell")) {
+                QXmlStreamAttributes attrs = reader.attributes();
+                QString rangeStr = attrs.value(QLatin1String("ref")).toString();
+                QStringList items = rangeStr.split(QLatin1Char(':'));
+                if (items.size() != 2) {
+                    //Error
+                } else {
+                    QPoint p0 = xl_cell_to_rowcol(items[0]);
+                    QPoint p1 = xl_cell_to_rowcol(items[1]);
+
+                    XlsxCellRange range;
+                    range.row_begin = p0.x();
+                    range.column_begin = p0.y();
+                    range.row_end = p1.x();
+                    range.column_end = p1.y();
+
+                    merges.append(range);
+                }
+            }
+        }
+    }
+}
+
 bool Worksheet::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
@@ -1205,6 +1238,8 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 d->readColumnsInfo(reader);
             } else if (reader.name() == QLatin1String("sheetData")) {
                 d->readSheetData(reader);
+            } else if (reader.name() == QLatin1String("mergeCells")) {
+                d->readMergeCells(reader);
             }
         }
     }

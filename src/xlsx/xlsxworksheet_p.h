@@ -198,6 +198,7 @@ public:
 
     void readSheetData(XmlStreamReader &reader);
     void readColumnsInfo(XmlStreamReader &reader);
+    void readMergeCells(XmlStreamReader &reader);
 
     Workbook *workbook;
     Drawing *drawing;
