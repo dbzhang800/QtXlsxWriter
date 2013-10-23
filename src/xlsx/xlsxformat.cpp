@@ -68,12 +68,20 @@ Format::~Format()
     delete d_ptr;
 }
 
+/*!
+ * Returns the number format identifier.
+ */
 int Format::numberFormatIndex() const
 {
     Q_D(const Format);
     return d->numberData.formatIndex;
 }
 
+/*!
+ * Set the number format identifier. The \a format
+ * must be a valid built-in number format identifier
+ * or the identifier of a custom number format.
+ */
 void Format::setNumberFormatIndex(int format)
 {
     Q_D(Format);
@@ -81,12 +89,20 @@ void Format::setNumberFormatIndex(int format)
     d->numberData.formatIndex = format;
 }
 
+/*!
+ * Returns the number format string.
+ * \note for built-in number formats, this may
+ * return an empty string.
+ */
 QString Format::numberFormat() const
 {
     Q_D(const Format);
     return d->numberData.formatString;
 }
 
+/*!
+ * Set number \a format.
+ */
 void Format::setNumberFormat(const QString &format)
 {
     Q_D(Format);
@@ -95,6 +111,9 @@ void Format::setNumberFormat(const QString &format)
     d->numberData._valid = false; //formatIndex must be re-generated
 }
 
+/*!
+ * \internal
+ */
 bool Format::numFmtIndexValid() const
 {
     Q_D(const Format);
@@ -112,12 +131,18 @@ void Format::setNumFmt(int index, const QString &string)
     d->numberData._valid = true;
 }
 
+/*!
+ * Return the size of the font in points.
+ */
 int Format::fontSize() const
 {
     Q_D(const Format);
     return d->fontData.size;
 }
 
+/*!
+ * Set the \a size of the font in points.
+ */
 void Format::setFontSize(int size)
 {
     Q_D(Format);
@@ -125,12 +150,18 @@ void Format::setFontSize(int size)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return whether the font is italic.
+ */
 bool Format::fontItalic() const
 {
     Q_D(const Format);
     return d->fontData.italic;
 }
 
+/*!
+ * Turn on/off the italic font.
+ */
 void Format::setFontItalic(bool italic)
 {
     Q_D(Format);
@@ -138,12 +169,18 @@ void Format::setFontItalic(bool italic)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return whether the font is strikeout.
+ */
 bool Format::fontStrikeOut() const
 {
     Q_D(const Format);
     return d->fontData.strikeOut;
 }
 
+/*!
+ * Turn on/off the strikeOut font.
+ */
 void Format::setFontStrikeOut(bool strikeOut)
 {
     Q_D(Format);
@@ -151,12 +188,18 @@ void Format::setFontStrikeOut(bool strikeOut)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return the color of the font.
+ */
 QColor Format::fontColor() const
 {
     Q_D(const Format);
     return d->fontData.color;
 }
 
+/*!
+ * Set the \a color of the font.
+ */
 void Format::setFontColor(const QColor &color)
 {
     Q_D(Format);
@@ -164,12 +207,18 @@ void Format::setFontColor(const QColor &color)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return whether the font is bold.
+ */
 bool Format::fontBold() const
 {
     Q_D(const Format);
     return d->fontData.bold;
 }
 
+/*!
+ * Turn on/off the bold font.
+ */
 void Format::setFontBold(bool bold)
 {
     Q_D(Format);
@@ -177,12 +226,18 @@ void Format::setFontBold(bool bold)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return the script style of the font.
+ */
 Format::FontScript Format::fontScript() const
 {
     Q_D(const Format);
     return d->fontData.scirpt;
 }
 
+/*!
+ * Set the script style of the font.
+ */
 void Format::setFontScript(FontScript script)
 {
     Q_D(Format);
@@ -190,12 +245,18 @@ void Format::setFontScript(FontScript script)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return the underline style of the font.
+ */
 Format::FontUnderline Format::fontUnderline() const
 {
     Q_D(const Format);
     return d->fontData.underline;
 }
 
+/*!
+ * Set the underline style of the font.
+ */
 void Format::setFontUnderline(FontUnderline underline)
 {
     Q_D(Format);
@@ -203,12 +264,18 @@ void Format::setFontUnderline(FontUnderline underline)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return whether the font is outline.
+ */
 bool Format::fontOutline() const
 {
     Q_D(const Format);
     return d->fontData.outline;
 }
 
+/*!
+ * Turn on/off the outline font.
+ */
 void Format::setFontOutline(bool outline)
 {
     Q_D(Format);
@@ -216,12 +283,18 @@ void Format::setFontOutline(bool outline)
     d->fontData._dirty = true;
 }
 
+/*!
+ * Return the name of the font.
+ */
 QString Format::fontName() const
 {
     Q_D(const Format);
     return d->fontData.name;
 }
 
+/*!
+ * Set the name of the font.
+ */
 void Format::setFontName(const QString &name)
 {
     Q_D(Format);
@@ -229,36 +302,54 @@ void Format::setFontName(const QString &name)
     d->fontData._dirty = true;
 }
 
+/*!
+ * \internal
+ */
 bool Format::fontIndexValid() const
 {
     Q_D(const Format);
     return d->fontData.indexValid();
 }
 
+/*!
+ * \internal
+ */
 int Format::fontIndex() const
 {
     Q_D(const Format);
     return d->fontData.index();
 }
 
+/*!
+ * \internal
+ */
 void Format::setFontIndex(int index)
 {
     Q_D(Format);
     d->fontData.setIndex(index);
 }
 
+/*!
+ * \internal
+ */
 int Format::fontFamily() const
 {
     Q_D(const Format);
     return d->fontData.family;
 }
 
+/*!
+ * \internal
+ */
 bool Format::fontShadow() const
 {
     Q_D(const Format);
     return d->fontData.shadow;
 }
 
+/*!
+ * \internal
+ */
 QString Format::fontScheme() const
 {
     Q_D(const Format);
@@ -275,12 +366,18 @@ QByteArray Format::fontKey() const
     return d->fontData.key();
 }
 
+/*!
+ * Return the horizontal alignment.
+ */
 Format::HorizontalAlignment Format::horizontalAlignment() const
 {
     Q_D(const Format);
     return d->alignmentData.alignH;
 }
 
+/*!
+ * Set the horizontal alignment.
+ */
 void Format::setHorizontalAlignment(HorizontalAlignment align)
 {
     Q_D(Format);
@@ -298,12 +395,18 @@ void Format::setHorizontalAlignment(HorizontalAlignment align)
     d->dirty = true;
 }
 
+/*!
+ * Return the vertical alignment.
+ */
 Format::VerticalAlignment Format::verticalAlignment() const
 {
     Q_D(const Format);
     return d->alignmentData.alignV;
 }
 
+/*!
+ * Set the vertical alignment.
+ */
 void Format::setVerticalAlignment(VerticalAlignment align)
 {
     Q_D(Format);
@@ -311,12 +414,18 @@ void Format::setVerticalAlignment(VerticalAlignment align)
     d->dirty = true;
 }
 
+/*!
+ * Return whether the cell text is wrapped.
+ */
 bool Format::textWrap() const
 {
     Q_D(const Format);
     return d->alignmentData.wrap;
 }
 
+/*!
+ * Enable the text wrap
+ */
 void Format::setTextWarp(bool wrap)
 {
     Q_D(Format);
@@ -327,12 +436,18 @@ void Format::setTextWarp(bool wrap)
     d->dirty = true;
 }
 
+/*!
+ * Return the text rotation.
+ */
 int Format::rotation() const
 {
     Q_D(const Format);
     return d->alignmentData.rotation;
 }
 
+/*!
+ * Set the text roation. Must be in the range [0, 180] or 255.
+ */
 void Format::setRotation(int rotation)
 {
     Q_D(Format);
@@ -340,12 +455,18 @@ void Format::setRotation(int rotation)
     d->dirty = true;
 }
 
+/*!
+ * Return the text indentation level.
+ */
 int Format::indent() const
 {
     Q_D(const Format);
     return d->alignmentData.indent;
 }
 
+/*!
+ * Set the text indentation level. Must be less than or equal to 15.
+ */
 void Format::setIndent(int indent)
 {
     Q_D(Format);
@@ -359,12 +480,18 @@ void Format::setIndent(int indent)
     d->dirty = true;
 }
 
+/*!
+ * Return whether the cell is shrink to fit.
+ */
 bool Format::shrinkToFit() const
 {
     Q_D(const Format);
     return d->alignmentData.shinkToFit;
 }
 
+/*!
+ * Turn on/off shrink to fit.
+ */
 void Format::setShrinkToFit(bool shink)
 {
     Q_D(Format);
@@ -380,6 +507,9 @@ void Format::setShrinkToFit(bool shink)
     d->dirty = true;
 }
 
+/*!
+ * \internal
+ */
 bool Format::alignmentChanged() const
 {
     Q_D(const Format);
@@ -446,6 +576,9 @@ QString Format::verticalAlignmentString() const
     return align;
 }
 
+/*!
+ * Set the border style.
+ */
 void Format::setBorderStyle(BorderStyle style)
 {
     setLeftBorderStyle(style);
@@ -454,6 +587,9 @@ void Format::setBorderStyle(BorderStyle style)
     setTopBorderStyle(style);
 }
 
+/*!
+ * Set the border color.
+ */
 void Format::setBorderColor(const QColor &color)
 {
     setLeftBorderColor(color);
@@ -462,12 +598,18 @@ void Format::setBorderColor(const QColor &color)
     setBottomBorderColor(color);
 }
 
+/*!
+ * Return the left border style
+ */
 Format::BorderStyle Format::leftBorderStyle() const
 {
     Q_D(const Format);
     return d->borderData.left;
 }
 
+/*!
+ * Set the left border style
+ */
 void Format::setLeftBorderStyle(BorderStyle style)
 {
     Q_D(Format);
@@ -475,6 +617,9 @@ void Format::setLeftBorderStyle(BorderStyle style)
     d->borderData._dirty = true;
 }
 
+/*!
+ * Return the left border color
+ */
 QColor Format::leftBorderColor() const
 {
     Q_D(const Format);

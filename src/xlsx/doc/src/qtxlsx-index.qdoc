@@ -28,7 +28,7 @@
     \page index.html
     \brief Qt Xlsx provides functionality for handling .xlsx files.
 
-    QtXlsx is a library that can write Excel files. It doesn't require
+    QtXlsx is a library that can read and write Excel files. It doesn't require
     Microsoft Excel and can be used in any platform that Qt5 supported.
 
     \section1 Getting Started
@@ -38,7 +38,7 @@
     The package contains a qtxlsx.pri file that allows you to integrate
     the component into applications that use qmake for the build step.
 
-    1. Download the source code.
+    1. Download the source code from \l {https://github.com/dbzhang800/QtXlsxWriter/archive/master.zip} {github.com}
 
     2. Put the source code in any directory you like. For example, 3rdparty:
 

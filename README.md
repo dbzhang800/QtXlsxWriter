@@ -1,6 +1,6 @@
 Documentation: http://qtxlsx.debao.me
 
-QtXlsx is a library that can write Excel files. It doesn't require Microsoft Excel and can be used in any platform that Qt5 supported.
+QtXlsx is a library that can read and write Excel files. It doesn't require Microsoft Excel and can be used in any platform that Qt5 supported.
 
 ## Getting Started
 
@@ -82,3 +82,4 @@ The library, the header files, and the feature file will be installed to your sy
 * http://epplus.codeplex.com/
 * http://excelpackage.codeplex.com/
 * http://spreadsheetlight.com/
+* http://www.schemacentral.com/sc/ooxml/
