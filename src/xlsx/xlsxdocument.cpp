@@ -113,7 +113,7 @@ Format *Document::createFormat()
 /*!
  * Write \a value to cell \a row_column with the \a format.
  */
-int Document::write(const QString row_column, const QVariant &value, Format *format)
+int Document::write(const QString &row_column, const QVariant &value, Format *format)
 {
     return currentWorksheet()->write(row_column, value, format);
 }

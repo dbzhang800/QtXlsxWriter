@@ -326,7 +326,7 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 }
 
 //convert the "A1" notation to row/column notation
-int Worksheet::write(const QString row_column, const QVariant &value, Format *format)
+int Worksheet::write(const QString &row_column, const QVariant &value, Format *format)
 {
     QPoint pos = xl_cell_to_rowcol(row_column);
     if (pos == QPoint(-1, -1)) {

@@ -50,7 +50,7 @@ class Q_XLSX_EXPORT Worksheet
 {
     Q_DECLARE_PRIVATE(Worksheet)
 public:
-    int write(const QString row_column, const QVariant &value, Format *format=0);
+    int write(const QString &row_column, const QVariant &value, Format *format=0);
     int write(int row, int column, const QVariant &value, Format *format=0);
     int writeString(int row, int column, const QString &value, Format *format=0);
     int writeInlineString(int row, int column, const QString &value, Format *format=0);

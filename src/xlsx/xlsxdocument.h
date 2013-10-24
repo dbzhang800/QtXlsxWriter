@@ -53,7 +53,7 @@ public:
     ~Document();
 
     Format *createFormat();
-    int write(const QString cell, const QVariant &value, Format *format=0);
+    int write(const QString &cell, const QVariant &value, Format *format=0);
     int write(int row, int col, const QVariant &value, Format *format=0);
     int insertImage(int row, int column, const QImage &image, double xOffset=0, double yOffset=0, double xScale=1, double yScale=1);
     int mergeCells(const QString &range);
