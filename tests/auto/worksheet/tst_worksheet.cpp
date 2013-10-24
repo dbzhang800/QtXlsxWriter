@@ -120,6 +120,7 @@ void WorksheetTest::testReadSheetData()
             "<row r=\"3\" spans=\"1:6\">"
             "<c r=\"B3\" s=\"1\"><v>12345</v></c>"
             "<c r=\"C3\" s=\"1\" t=\"inlineStr\"><is><t>inline test string</t></is></c>"
+            "<c r=\"E3\" t=\"e\"><f>1/0</f><v>#DIV/0!</v></c>"
             "</row>"
             "</sheetData>";
     QXlsx::XmlStreamReader reader(xmlData);
@@ -152,6 +153,10 @@ void WorksheetTest::testReadSheetData()
     //C3
     QCOMPARE(sheet.d_ptr->cellTable[2][2]->dataType(), QXlsx::Cell::InlineString);
     QCOMPARE(sheet.d_ptr->cellTable[2][2]->value().toString(), QStringLiteral("inline test string"));
+
+    //E3
+    QCOMPARE(sheet.d_ptr->cellTable[2][4]->dataType(), QXlsx::Cell::Error);
+    QCOMPARE(sheet.d_ptr->cellTable[2][4]->value().toString(), QStringLiteral("#DIV/0!"));
 }
 
 void WorksheetTest::testReadColsInfo()

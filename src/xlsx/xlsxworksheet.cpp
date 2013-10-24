@@ -1203,6 +1203,22 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                         QSharedPointer<Cell> data = readNumericCellData(reader);
                         data->d_ptr->format = format;
                         cellTable[pos.x()][pos.y()] = data;
+                    } else if (type == QLatin1String("e")) {
+                        //error type, such as #DIV/0! #NULL! #REF! etc
+                        QString v_str, f_str;
+                        while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                            reader.readNextStartElement();
+                            if (reader.tokenType() == QXmlStreamReader::StartElement) {
+                                if (reader.name() == QLatin1String("v"))
+                                    v_str = reader.readElementText();
+                                else if (reader.name() == QLatin1String("f"))
+                                    f_str = reader.readElementText();
+                            }
+                        }
+                        QSharedPointer<Cell> data(new Cell(v_str, Cell::Error, format));
+                        if (!f_str.isEmpty())
+                            data->d_ptr->formula = f_str;
+                        cellTable[pos.x()][pos.y()] = data;
                     } else if (type == QLatin1String("n")) {
                         QSharedPointer<Cell> data = readNumericCellData(reader);
                         data->d_ptr->format = format;
