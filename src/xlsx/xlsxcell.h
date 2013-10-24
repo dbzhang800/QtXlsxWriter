@@ -42,7 +42,7 @@ public:
     enum DataType {
         Blank,
         String,
-        Number,
+        Numeric,
         Formula,
         Boolean,
         Error

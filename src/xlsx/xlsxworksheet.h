@@ -53,7 +53,7 @@ public:
     int write(const QString row_column, const QVariant &value, Format *format=0);
     int write(int row, int column, const QVariant &value, Format *format=0);
     int writeString(int row, int column, const QString &value, Format *format=0);
-    int writeNumber(int row, int column, double value, Format *format=0);
+    int writeNumeric(int row, int column, double value, Format *format=0);
     int writeFormula(int row, int column, const QString &formula, Format *format=0, double result=0);
     int writeBlank(int row, int column, Format *format=0);
     int writeBool(int row, int column, bool value, Format *format=0);

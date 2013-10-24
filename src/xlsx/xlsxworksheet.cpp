@@ -303,7 +303,7 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
             //Don't convert string to number if the flag not enabled.
             ret = writeString(row, column, value.toString(), format);
         } else {
-            ret = writeNumber(row, column, value.toDouble(), format);
+            ret = writeNumeric(row, column, value.toDouble(), format);
         }
     } else if (value.type() == QMetaType::QUrl) { //url
         ret = writeUrl(row, column, value.toUrl(), format);
@@ -378,13 +378,13 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     return error;
 }
 
-int Worksheet::writeNumber(int row, int column, double value, Format *format)
+int Worksheet::writeNumeric(int row, int column, double value, Format *format)
 {
     Q_D(Worksheet);
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Number, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format));
     d->workbook->styles()->addFormat(format);
     return 0;
 }
@@ -446,7 +446,7 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
 
     double value = datetimeToNumber(dt, d->workbook->isDate1904());
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Number, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -742,7 +742,7 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         //cell->data: Index of the string in sharedStringTable
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("s"));
         writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
-    } else if (cell->dataType() == Cell::Number){
+    } else if (cell->dataType() == Cell::Numeric){
         double value = cell->value().toDouble();
         writer.writeTextElement(QStringLiteral("v"), QString::number(value, 'g', 15));
     } else if (cell->dataType() == Cell::Formula) {
@@ -1145,7 +1145,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                     reader.readNextStartElement();
                     if (reader.name() == QLatin1String("v")) {
                         QString value = reader.readElementText();
-                        Cell *data = new Cell(value ,Cell::Number, format);
+                        Cell *data = new Cell(value ,Cell::Numeric, format);
                         cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
                     }
                 }
