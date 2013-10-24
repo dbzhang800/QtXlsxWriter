@@ -378,6 +378,24 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     return error;
 }
 
+int Worksheet::writeInlineString(int row, int column, const QString &value, Format *format)
+{
+    Q_D(Worksheet);
+    int error = 0;
+    QString content = value;
+    if (d->checkDimensions(row, column))
+        return -1;
+
+    if (value.size() > d->xls_strmax) {
+        content = value.left(d->xls_strmax);
+        error = -2;
+    }
+
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::InlineString, format));
+    d->workbook->styles()->addFormat(format);
+    return error;
+}
+
 int Worksheet::writeNumeric(int row, int column, double value, Format *format)
 {
     Q_D(Worksheet);
@@ -742,6 +760,11 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         //cell->data: Index of the string in sharedStringTable
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("s"));
         writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
+    } else if (cell->dataType() == Cell::InlineString) {
+        writer.writeAttribute(QStringLiteral("t"), QStringLiteral("inlineStr"));
+        writer.writeStartElement(QStringLiteral("is"));
+        writer.writeTextElement(QStringLiteral("t"), cell->value().toString());
+        writer.writeEndElement();//is
     } else if (cell->dataType() == Cell::Numeric){
         double value = cell->value().toDouble();
         writer.writeTextElement(QStringLiteral("v"), QString::number(value, 'g', 15));
@@ -1130,6 +1153,18 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                             workbook->sharedStrings()->incRefByStringIndex(value.toInt());
                             Cell *data = new Cell(value ,Cell::String, format);
                             cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
+                        }
+                    } else if (type == QLatin1String("inlineStr")) {
+                        //inline string type
+                        while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                            reader.readNextStartElement();
+                            if (reader.tokenType() == QXmlStreamReader::StartElement) {
+                                if (reader.name() == QLatin1String("t")) {
+                                    QString value = reader.readElementText();
+                                    QSharedPointer<Cell> data(new Cell(value, Cell::InlineString, format));
+                                    cellTable[pos.x()][pos.y()] = data;
+                                }
+                            }
                         }
                     } else if (type == QLatin1String("b")) {
                         //bool type

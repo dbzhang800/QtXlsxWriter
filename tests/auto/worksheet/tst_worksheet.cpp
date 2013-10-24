@@ -2,6 +2,7 @@
 #include <QtTest>
 
 #include "xlsxworksheet.h"
+#include "xlsxcell.h"
 #include "private/xlsxworksheet_p.h"
 #include "private/xlsxxmlreader_p.h"
 
@@ -14,6 +15,8 @@ public:
 
 private Q_SLOTS:
     void testEmptySheet();
+
+    void testWriteCells();
     void testMerge();
     void testUnMerge();
 
@@ -34,6 +37,23 @@ void WorksheetTest::testEmptySheet()
     QByteArray xmldata = sheet.saveToXmlData();
 
     QVERIFY2(!xmldata.contains("<mergeCell"), "");
+}
+
+void WorksheetTest::testWriteCells()
+{
+    QXlsx::Worksheet sheet("", 0);
+    sheet.write("A1", 123);
+    sheet.write("A2", "Hello");
+    sheet.writeInlineString(2, 0, "Hello inline"); //A3
+    sheet.write("A4", true);
+
+    QByteArray xmldata = sheet.saveToXmlData();
+
+    QVERIFY2(xmldata.contains("<c r=\"A1\"><v>123</v></c>"), "numeric");
+    QVERIFY2(xmldata.contains("<c r=\"A2\" t=\"s\"><v>0</v></c>"), "string");
+    QVERIFY2(xmldata.contains("<c r=\"A3\" t=\"inlineStr\"><is><t>Hello inline</t></is></c>"), "inline string");
+    QVERIFY2(xmldata.contains("<c r=\"A4\" t=\"b\"><v>1</v></c>"), "boolean");
+
 }
 
 void WorksheetTest::testMerge()
@@ -66,6 +86,7 @@ void WorksheetTest::testReadSheetData()
             "</row>"
             "<row r=\"3\" spans=\"1:6\">"
             "<c r=\"B3\" s=\"1\"><v>12345</v></c>"
+            "<c r=\"C3\" s=\"1\" t=\"inlineStr\"><is><t>inline test string</t></is></c>"
             "</row>"
             "</sheetData>";
     QXlsx::XmlStreamReader reader(xmlData);
@@ -75,6 +96,18 @@ void WorksheetTest::testReadSheetData()
     sheet.d_ptr->readSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->cellTable.size(), 2);
+
+    //A1
+    QCOMPARE(sheet.d_ptr->cellTable[0][0]->dataType(), QXlsx::Cell::String);
+    QCOMPARE(sheet.d_ptr->cellTable[0][0]->value().toInt(), 0);
+
+    //B3
+    QCOMPARE(sheet.d_ptr->cellTable[2][1]->dataType(), QXlsx::Cell::Numeric);
+    QCOMPARE(sheet.d_ptr->cellTable[2][1]->value().toInt(), 12345);
+
+    //C3
+    QCOMPARE(sheet.d_ptr->cellTable[2][2]->dataType(), QXlsx::Cell::InlineString);
+    QCOMPARE(sheet.d_ptr->cellTable[2][2]->value().toString(), QStringLiteral("inline test string"));
 }
 
 void WorksheetTest::testReadColsInfo()
