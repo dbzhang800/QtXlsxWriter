@@ -271,12 +271,13 @@ void Workbook::saveToXmlFile(QIODevice *device)
     writer.writeAttribute(QStringLiteral("windowWidth"), QString::number(d->window_width));
     writer.writeAttribute(QStringLiteral("windowHeight"), QString::number(d->window_height));
     //Store the firstSheet when it isn't the default
+    //For example, when "the first sheet 0 is hidden", the first sheet will be 1
     if (d->firstsheet > 0)
         writer.writeAttribute(QStringLiteral("firstSheet"), QString::number(d->firstsheet + 1));
     //Store the activeTab when it isn't the first sheet
     if (d->activesheet > 0)
         writer.writeAttribute(QStringLiteral("activeTab"), QString::number(d->activesheet));
-    writer.writeEndElement();//bookviews
+    writer.writeEndElement();//bookViews
 
     writer.writeStartElement(QStringLiteral("sheets"));
     for (int i=0; i<d->worksheets.size(); ++i) {
@@ -328,6 +329,28 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
                 QXmlStreamAttributes attrs = reader.attributes();
                 if (attrs.hasAttribute(QLatin1String("date1904")))
                     book->d_ptr->date1904 = true;
+             } else if (reader.name() == QLatin1String("bookviews")) {
+                while(!(reader.name() == QLatin1String("bookviews") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                    reader.readNextStartElement();
+                    if (reader.tokenType() == QXmlStreamReader::StartElement) {
+                        if (reader.name() == QLatin1String("workbookView")) {
+                            QXmlStreamAttributes attrs = reader.attributes();
+                            if (attrs.hasAttribute(QLatin1String("xWindow")))
+                                book->d_func()->x_window = attrs.value(QLatin1String("xWindow")).toInt();
+                            if (attrs.hasAttribute(QLatin1String("yWindow")))
+                                book->d_func()->y_window = attrs.value(QLatin1String("yWindow")).toInt();
+                            if (attrs.hasAttribute(QLatin1String("windowWidth")))
+                                book->d_func()->window_width = attrs.value(QLatin1String("windowWidth")).toInt();
+                            if (attrs.hasAttribute(QLatin1String("windowHeight")))
+                                book->d_func()->window_height = attrs.value(QLatin1String("windowHeight")).toInt();
+                            if (attrs.hasAttribute(QLatin1String("firstSheet")))
+                                book->d_func()->firstsheet = attrs.value(QLatin1String("firstSheet")).toInt();
+                            if (attrs.hasAttribute(QLatin1String("activeTab")))
+                                book->d_func()->activesheet = attrs.value(QLatin1String("activeTab")).toInt();
+
+                        }
+                    }
+                }
              }
          }
     }
