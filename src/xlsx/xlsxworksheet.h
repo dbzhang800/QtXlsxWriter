@@ -59,7 +59,7 @@ public:
     int writeBlank(int row, int column, Format *format=0);
     int writeBool(int row, int column, bool value, Format *format=0);
     int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
-    int writeUrl(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
+    int writeHyperlink(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
 
     Cell *cellAt(const QString &row_column) const;
     Cell *cellAt(int row, int column) const;

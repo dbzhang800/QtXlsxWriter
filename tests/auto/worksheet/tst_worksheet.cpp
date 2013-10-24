@@ -18,6 +18,7 @@ private Q_SLOTS:
     void testEmptySheet();
 
     void testWriteCells();
+    void testWriteHyperlinks();
     void testMerge();
     void testUnMerge();
 
@@ -60,6 +61,30 @@ void WorksheetTest::testWriteCells()
     QVERIFY2(xmldata.contains("<c r=\"B5\" t=\"str\"><f>44+33</f><v>77</v></c>"), "formula");
 
     QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0), QStringLiteral("Hello"));
+}
+
+void WorksheetTest::testWriteHyperlinks()
+{
+    QXlsx::Worksheet sheet("", 0);
+    sheet.write("A1", QUrl::fromUserInput("http://qt-project.org"));
+    sheet.write("B1", QUrl::fromUserInput("http://qt-project.org/abc"));
+    sheet.write("C1", QUrl::fromUserInput("http://qt-project.org/abc.html#test"));
+    sheet.write("D1", QUrl::fromUserInput("mailto:xyz@debao.me"));
+    sheet.write("E1", QUrl::fromUserInput("mailto:xyz@debao.me?subject=Test"));
+
+    QByteArray xmldata = sheet.saveToXmlData();
+
+    QVERIFY2(xmldata.contains("<hyperlink ref=\"A1\" r:id=\"rId1\"/>"), "simple");
+    QVERIFY2(xmldata.contains("<hyperlink ref=\"B1\" r:id=\"rId2\"/>"), "url with path");
+    QVERIFY2(xmldata.contains("<hyperlink ref=\"C1\" r:id=\"rId3\" location=\"test\"/>"), "url with location");
+    QVERIFY2(xmldata.contains("<hyperlink ref=\"D1\" r:id=\"rId4\"/>"), "mail");
+    QVERIFY2(xmldata.contains("<hyperlink ref=\"E1\" r:id=\"rId5\"/>"), "mail with subject");
+
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0), QStringLiteral("http://qt-project.org"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(1), QStringLiteral("http://qt-project.org/abc"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(2), QStringLiteral("http://qt-project.org/abc.html#test"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(3), QStringLiteral("xyz@debao.me"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(4), QStringLiteral("xyz@debao.me?subject=Test"));
 }
 
 void WorksheetTest::testMerge()

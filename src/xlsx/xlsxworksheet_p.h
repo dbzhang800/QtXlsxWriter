@@ -39,15 +39,22 @@ class SharedStrings;
 
 struct XlsxUrlData
 {
-    XlsxUrlData(int linkType=1, const QString &url=QString(), const QString &location=QString(), const QString &tip=QString()) :
+    enum LinkType
+    {
+        External,
+        Internal
+    };
+
+    XlsxUrlData(LinkType linkType=External, const QString &url=QString(), const QString &location=QString(), const QString &tip=QString()) :
         linkType(linkType), url(url), location(location), tip(tip)
     {
 
     }
 
-    int linkType;
+    LinkType linkType;
     QString url;
     QString location; //location string
+    QString display;
     QString tip;
 };
 

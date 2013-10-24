@@ -306,16 +306,14 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
             ret = writeNumeric(row, column, value.toDouble(), format);
         }
     } else if (value.type() == QMetaType::QUrl) { //url
-        ret = writeUrl(row, column, value.toUrl(), format);
+        ret = writeHyperlink(row, column, value.toUrl(), format);
     } else if (value.type() == QMetaType::QString) { //string
         QString token = value.toString();
-        QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|((in|ex)ternal:)"));
+        QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"));
         if (token.startsWith(QLatin1String("="))) {
             ret = writeFormula(row, column, token, format);
-        } else if (token.startsWith(QLatin1String("{")) && token.endsWith(QLatin1String("}"))) {
-
         } else if (token.contains(urlPattern)) {
-            ret = writeUrl(row, column, QUrl(token));
+            ret = writeHyperlink(row, column, QUrl(token));
         } else {
             ret = writeString(row, column, token, format);
         }
@@ -469,66 +467,53 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
     return 0;
 }
 
-int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, const QString &display, const QString &tip)
+int Worksheet::writeHyperlink(int row, int column, const QUrl &url, Format *format, const QString &display, const QString &tip)
 {
     Q_D(Worksheet);
     if (d->checkDimensions(row, column))
         return -1;
 
-    int link_type = 1;
-    QString urlString = url.toString();
-    QString displayString = display;
-    if (urlString.startsWith(QLatin1String("internal:"))) {
-        urlString.replace(QLatin1String("internal:"), QString());
-        link_type = 2;
-    } else if (urlString.startsWith(QLatin1String("external:"))) {
-        urlString.replace(QLatin1String("external:"), QString());
-        link_type = 3;
-    }
-
-    if (display.isEmpty())
-        displayString = urlString;
-
-    //For external links, chagne the directory separator from Unix to Dos
-    if (link_type == 3) {
-        urlString.replace(QLatin1Char('/'), QLatin1String("\\"));
-        displayString.replace(QLatin1Char('/'), QLatin1String("\\"));
-    }
-
-    displayString.replace(QLatin1String("mailto:"), QString());
-
     int error = 0;
+
+    QString urlString = url.toString();
+
+    //Generate proper display string
+    QString displayString = display.isEmpty() ? urlString : display;
+    if (displayString.startsWith(QLatin1String("mailto:")))
+        displayString.replace(QLatin1String("mailto:"), QString());
     if (displayString.size() > d->xls_strmax) {
         displayString = displayString.left(d->xls_strmax);
         error = -2;
     }
 
-    QString locationString = displayString;
-    if (link_type == 1) {
-        locationString = QString();
-    } else if (link_type == 3) {
-        // External Workbook links need to be modified into correct format.
-        // The URL will look something like 'c:\temp\file.xlsx#Sheet!A1'.
-        // We need the part to the left of the # as the URL and the part to
-        //the right as the "location" string (if it exists).
-        if (urlString.contains(QLatin1Char('#'))) {
-            QStringList list = urlString.split(QLatin1Char('#'));
-            urlString = list[0];
-            locationString = list[1];
-        } else {
-            locationString = QString();
-        }
-        link_type = 1;
+    /*
+      Location within target. If target is a workbook (or this workbook)
+      this shall refer to a sheet and cell or a defined name. Can also
+      be an HTML anchor if target is HTML file.
+
+      c:\temp\file.xlsx#Sheet!A1
+      http://a.com/aaa.html#aaaaa
+    */
+    QString locationString;
+    if (url.hasFragment()) {
+        locationString = url.fragment();
+        urlString = url.toString(QUrl::RemoveFragment);
     }
 
+    //Given a default style for hyperlink
+    if (!format) {
+        format = d->workbook->createFormat();
+        format->setFontColor(Qt::blue);
+        format->setFontUnderline(Format::FontUnderlineSingle);
+    }
 
     //Write the hyperlink string as normal string.
-    d->sharedStrings()->addSharedString(urlString);
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(urlString, Cell::String, format));
-
-    //Store the hyperlink data in sa separate table
-    d->urlTable[row][column] = new XlsxUrlData(link_type, urlString, locationString, tip);
+    d->sharedStrings()->addSharedString(displayString);
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(displayString, Cell::String, format));
     d->workbook->styles()->addFormat(format);
+
+    //Store the hyperlink data in a separate table
+    d->urlTable[row][column] = new XlsxUrlData(XlsxUrlData::External, urlString, locationString, tip);
 
     return error;
 }
@@ -821,14 +806,14 @@ void WorksheetPrivate::writeHyperlinks(XmlStreamWriter &writer)
             QString ref = xl_rowcol_to_cell(row, col);
             writer.writeEmptyElement(QStringLiteral("hyperlink"));
             writer.writeAttribute(QStringLiteral("ref"), ref);
-            if (data->linkType == 1) {
+            if (data->linkType == XlsxUrlData::External) {
                 rel_count += 1;
                 externUrlList.append(data->url);
                 writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(rel_count));
                 if (!data->location.isEmpty())
                     writer.writeAttribute(QStringLiteral("location"), data->location);
-//                if (!data->url.isEmpty())
-//                    writer.writeAttribute(QStringLiteral("display"), data->url);
+                if (!data->display.isEmpty())
+                    writer.writeAttribute(QStringLiteral("display"), data->url);
                 if (!data->tip.isEmpty())
                     writer.writeAttribute(QStringLiteral("tooltip"), data->tip);
             } else {
