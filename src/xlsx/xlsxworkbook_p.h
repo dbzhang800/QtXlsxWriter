@@ -58,6 +58,10 @@ public:
     int activesheet;
     int firstsheet;
     int table_count;
+
+    //Used to generate new sheet name and id
+    int last_sheet_index;
+    int last_sheet_id;
 };
 
 }

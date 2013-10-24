@@ -85,7 +85,7 @@ private:
     friend class Package;
     friend class Workbook;
     friend class ::WorksheetTest;
-    Worksheet(const QString &sheetName, Workbook *book);
+    Worksheet(const QString &sheetName, int sheetId, Workbook *book);
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();
@@ -97,6 +97,7 @@ private:
     bool isSelected() const;
     void setHidden(bool hidden);
     void setSelected(bool select);
+    int sheetId() const;
     QStringList externUrlList() const;
     QStringList externDrawingList() const;
     QList<QPair<QString, QString> > drawingLinks() const;

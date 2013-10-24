@@ -55,6 +55,9 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     activesheet = 0;
     firstsheet = 0;
     table_count = 0;
+
+    last_sheet_index = 0;
+    last_sheet_id = 0;
 }
 
 Workbook::Workbook() :
@@ -135,10 +138,9 @@ Worksheet *Workbook::addWorksheet(const QString &name)
 Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
 {
     Q_D(Workbook);
-    static int lastIndex = -1;
     QString worksheetName = name;
     if (!name.isEmpty()) {
-        //If user given an already in-use name, we should not continue any more!
+        //If user given an already in-used name, we should not continue any more!
         for (int i=0; i<d->worksheets.size(); ++i) {
             if (d->worksheets[i]->sheetName() == name) {
                 return 0;
@@ -147,9 +149,9 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
     } else {
         bool exists;
         do {
-            ++lastIndex;
+            ++d->last_sheet_index;
             exists = false;
-            worksheetName = QStringLiteral("Sheet%1").arg(lastIndex+1);
+            worksheetName = QStringLiteral("Sheet%1").arg(d->last_sheet_index);
             for (int i=0; i<d->worksheets.size(); ++i) {
                 if (d->worksheets[i]->sheetName() == worksheetName)
                     exists = true;
@@ -157,7 +159,8 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
         } while (exists);
     }
 
-    Worksheet *sheet = new Worksheet(worksheetName, this);
+    ++d->last_sheet_id;
+    Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this);
     d->worksheets.insert(index, QSharedPointer<Worksheet>(sheet));
     d->activesheet = index;
     return sheet;
@@ -284,7 +287,7 @@ void Workbook::saveToXmlFile(QIODevice *device)
         QSharedPointer<Worksheet> sheet = d->worksheets[i];
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
-        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(i+1));
+        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
         if (sheet->isHidden())
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
         writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(i+1));

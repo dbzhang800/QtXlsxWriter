@@ -195,13 +195,15 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
 /*!
  * \brief Worksheet::Worksheet
  * \param name Name of the worksheet
- * \param index Index of the worksheet in the workbook
- * \param parent
+ * \param id : An integer representing the internal id of the
+ *             sheet which is used by .xlsx revision part.
+ *             (Note: id is not the index of the sheet in workbook)
  */
-Worksheet::Worksheet(const QString &name, Workbook *workbook) :
+Worksheet::Worksheet(const QString &name, int id, Workbook *workbook) :
     d_ptr(new WorksheetPrivate(this))
 {
     d_ptr->name = name;
+    d_ptr->id = id;
     if (!workbook) //For unit test propose only. Ignore the memery leak.
         workbook = new Workbook;
     d_ptr->workbook = workbook;
@@ -251,6 +253,12 @@ void Worksheet::setSelected(bool select)
 {
     Q_D(Worksheet);
     d->selected = select;
+}
+
+int Worksheet::sheetId() const
+{
+    Q_D(const Worksheet);
+    return d->id;
 }
 
 void Worksheet::setRightToLeft(bool enable)

@@ -223,6 +223,7 @@ public:
     bool default_row_zeroed;
 
     QString name;
+    int id;
     bool hidden;
     bool selected;
     bool right_to_left;

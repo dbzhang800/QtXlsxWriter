@@ -34,7 +34,7 @@ WorksheetTest::WorksheetTest()
 
 void WorksheetTest::testEmptySheet()
 {
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.write("B1", 123);
     QByteArray xmldata = sheet.saveToXmlData();
 
@@ -43,7 +43,7 @@ void WorksheetTest::testEmptySheet()
 
 void WorksheetTest::testWriteCells()
 {
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.write("A1", 123);
     sheet.write("A2", "Hello");
     sheet.writeInlineString(2, 0, "Hello inline"); //A3
@@ -65,7 +65,7 @@ void WorksheetTest::testWriteCells()
 
 void WorksheetTest::testWriteHyperlinks()
 {
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.write("A1", QUrl::fromUserInput("http://qt-project.org"));
     sheet.write("B1", QUrl::fromUserInput("http://qt-project.org/abc"));
     sheet.write("C1", QUrl::fromUserInput("http://qt-project.org/abc.html#test"));
@@ -89,7 +89,7 @@ void WorksheetTest::testWriteHyperlinks()
 
 void WorksheetTest::testMerge()
 {
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.write("B1", 123);
     sheet.mergeCells("B1:B5");
     QByteArray xmldata = sheet.saveToXmlData();
@@ -99,7 +99,7 @@ void WorksheetTest::testMerge()
 
 void WorksheetTest::testUnMerge()
 {
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.write("B1", 123);
     sheet.mergeCells("B1:B5");
     sheet.unmergeCells("B1:B5");
@@ -125,7 +125,7 @@ void WorksheetTest::testReadSheetData()
     QXlsx::XmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is sheetData
 
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.d_ptr->sharedStrings()->addSharedString("Hello");
     sheet.d_ptr->readSheetData(reader);
 
@@ -162,7 +162,7 @@ void WorksheetTest::testReadColsInfo()
     QXlsx::XmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is cols
 
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.d_ptr->readColumnsInfo(reader);
 
     QCOMPARE(sheet.d_ptr->colsInfo.size(), 1);
@@ -182,7 +182,7 @@ void WorksheetTest::testReadRowsInfo()
     QXlsx::XmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is sheetData
 
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.d_ptr->readSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->rowsInfo.size(), 1);
@@ -196,7 +196,7 @@ void WorksheetTest::testReadMergeCells()
     QXlsx::XmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is mergeCells
 
-    QXlsx::Worksheet sheet("", 0);
+    QXlsx::Worksheet sheet("", 1, 0);
     sheet.d_ptr->readMergeCells(reader);
 
     QCOMPARE(sheet.d_ptr->merges.size(), 2);
