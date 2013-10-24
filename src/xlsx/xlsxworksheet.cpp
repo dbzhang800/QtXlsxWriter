@@ -1101,6 +1101,36 @@ QByteArray Worksheet::saveToXmlData()
     return data;
 }
 
+QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("c"));
+
+    QString v_str;
+    QString f_str;
+    while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("v"))
+                v_str = reader.readElementText();
+            else if (reader.name() == QLatin1String("f"))
+                f_str = reader.readElementText();
+        }
+    }
+
+    if (v_str.isEmpty() && f_str.isEmpty()) {
+        //blank type
+        return QSharedPointer<Cell>(new Cell(QVariant(), Cell::Blank));
+    } else if (f_str.isEmpty()) {
+        //numeric type
+        return QSharedPointer<Cell>(new Cell(v_str.toDouble(), Cell::Numeric));
+    } else {
+        //formula type
+        QSharedPointer<Cell> cell(new Cell(v_str.toDouble(), Cell::Formula));
+        cell->d_ptr->formula = f_str;
+        return cell;
+    }
+}
+
 void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("sheetData"));
@@ -1174,16 +1204,21 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                             QSharedPointer<Cell> data(new Cell(value.toInt() ? true : false, Cell::Boolean, format));
                             cellTable[pos.x()][pos.y()] = data;
                         }
+                    } else if (type == QLatin1String("str")) {
+                        //formula type
+                        QSharedPointer<Cell> data = readNumericCellData(reader);
+                        data->d_ptr->format = format;
+                        cellTable[pos.x()][pos.y()] = data;
+                    } else if (type == QLatin1String("n")) {
+                        QSharedPointer<Cell> data = readNumericCellData(reader);
+                        data->d_ptr->format = format;
+                        cellTable[pos.x()][pos.y()] = data;
                     }
                 } else {
-                    //number type
-                    reader.readNextStartElement();
-                    if (reader.name() == QLatin1String("v")) {
-                        QString value = reader.readElementText();
-                        Cell *data = new Cell(value ,Cell::Numeric, format);
-                        cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
-                    }
-                }
+                    //default is "n"
+                    QSharedPointer<Cell> data = readNumericCellData(reader);
+                    data->d_ptr->format = format;
+                    cellTable[pos.x()][pos.y()] = data;                }
             }
         }
     }

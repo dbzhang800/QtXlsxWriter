@@ -46,6 +46,8 @@ void WorksheetTest::testWriteCells()
     sheet.write("A2", "Hello");
     sheet.writeInlineString(2, 0, "Hello inline"); //A3
     sheet.write("A4", true);
+    sheet.write("A5", "=44+33");
+    sheet.writeFormula(4, 1, "44+33", 0, 77);
 
     QByteArray xmldata = sheet.saveToXmlData();
 
@@ -53,7 +55,8 @@ void WorksheetTest::testWriteCells()
     QVERIFY2(xmldata.contains("<c r=\"A2\" t=\"s\"><v>0</v></c>"), "string");
     QVERIFY2(xmldata.contains("<c r=\"A3\" t=\"inlineStr\"><is><t>Hello inline</t></is></c>"), "inline string");
     QVERIFY2(xmldata.contains("<c r=\"A4\" t=\"b\"><v>1</v></c>"), "boolean");
-
+    QVERIFY2(xmldata.contains("<c r=\"A5\" t=\"str\"><f>44+33</f><v>0</v></c>"), "formula");
+    QVERIFY2(xmldata.contains("<c r=\"B5\" t=\"str\"><f>44+33</f><v>77</v></c>"), "formula");
 }
 
 void WorksheetTest::testMerge()
@@ -83,6 +86,8 @@ void WorksheetTest::testReadSheetData()
     const QByteArray xmlData = "<sheetData>"
             "<row r=\"1\" spans=\"1:6\">"
             "<c r=\"A1\" s=\"1\" t=\"s\"><v>0</v></c>"
+            "<c r=\"B1\"><f>44+33</f><v>77</v></c>"
+            "<c r=\"C1\" t=\"str\"><f>44+33</f><v>77</v></c>"
             "</row>"
             "<row r=\"3\" spans=\"1:6\">"
             "<c r=\"B3\" s=\"1\"><v>12345</v></c>"
@@ -100,6 +105,16 @@ void WorksheetTest::testReadSheetData()
     //A1
     QCOMPARE(sheet.d_ptr->cellTable[0][0]->dataType(), QXlsx::Cell::String);
     QCOMPARE(sheet.d_ptr->cellTable[0][0]->value().toInt(), 0);
+
+    //B1
+    QCOMPARE(sheet.d_ptr->cellTable[0][1]->dataType(), QXlsx::Cell::Formula);
+    QCOMPARE(sheet.d_ptr->cellTable[0][1]->value().toInt(), 77);
+    QCOMPARE(sheet.d_ptr->cellTable[0][1]->formula(), QStringLiteral("44+33"));
+
+    //C1
+    QCOMPARE(sheet.d_ptr->cellTable[0][2]->dataType(), QXlsx::Cell::Formula);
+    QCOMPARE(sheet.d_ptr->cellTable[0][2]->value().toInt(), 77);
+    QCOMPARE(sheet.d_ptr->cellTable[0][2]->formula(), QStringLiteral("44+33"));
 
     //B3
     QCOMPARE(sheet.d_ptr->cellTable[2][1]->dataType(), QXlsx::Cell::Numeric);

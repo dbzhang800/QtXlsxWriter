@@ -174,6 +174,7 @@ public:
     XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
     XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data);
 
+    QSharedPointer<Cell> readNumericCellData(XmlStreamReader &reader);
     void readSheetData(XmlStreamReader &reader);
     void readColumnsInfo(XmlStreamReader &reader);
     void readMergeCells(XmlStreamReader &reader);
