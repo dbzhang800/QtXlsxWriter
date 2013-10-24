@@ -35,6 +35,7 @@ namespace QXlsx {
 
 class XmlStreamWriter;
 class XmlStreamReader;
+class SharedStrings;
 
 struct XlsxUrlData
 {
@@ -178,6 +179,8 @@ public:
     void readSheetData(XmlStreamReader &reader);
     void readColumnsInfo(XmlStreamReader &reader);
     void readMergeCells(XmlStreamReader &reader);
+
+    SharedStrings *sharedStrings() const;
 
     Workbook *workbook;
     Drawing *drawing;

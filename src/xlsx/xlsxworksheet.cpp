@@ -370,10 +370,9 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
         error = -2;
     }
 
-    SharedStrings *sharedStrings = d->workbook->sharedStrings();
-    int index = sharedStrings->addSharedString(content);
+    d->sharedStrings()->addSharedString(content);
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(index, Cell::String, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(content, Cell::String, format));
     d->workbook->styles()->addFormat(format);
     return error;
 }
@@ -524,9 +523,8 @@ int Worksheet::writeUrl(int row, int column, const QUrl &url, Format *format, co
 
 
     //Write the hyperlink string as normal string.
-    SharedStrings *sharedStrings = d->workbook->sharedStrings();
-    int index = sharedStrings->addSharedString(urlString);
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(index, Cell::String, format));
+    d->sharedStrings()->addSharedString(urlString);
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(urlString, Cell::String, format));
 
     //Store the hyperlink data in sa separate table
     d->urlTable[row][column] = new XlsxUrlData(link_type, urlString, locationString, tip);
@@ -757,9 +755,9 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         writer.writeAttribute(QStringLiteral("s"), QString::number(colsInfoHelper[col]->format->xfIndex()));
 
     if (cell->dataType() == Cell::String) {
-        //cell->data: Index of the string in sharedStringTable
+        int sst_idx = sharedStrings()->getSharedStringIndex(cell->value().toString());
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("s"));
-        writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
+        writer.writeTextElement(QStringLiteral("v"), QString::number(sst_idx));
     } else if (cell->dataType() == Cell::InlineString) {
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("inlineStr"));
         writer.writeStartElement(QStringLiteral("is"));
@@ -1177,12 +1175,15 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                     QString type = attributes.value(QLatin1String("t")).toString();
                     if (type == QLatin1String("s")) {
                         //string type
-                        reader.readNextStartElement();
-                        if (reader.name() == QLatin1String("v")) {
-                            QString value = reader.readElementText();
-                            workbook->sharedStrings()->incRefByStringIndex(value.toInt());
-                            Cell *data = new Cell(value ,Cell::String, format);
-                            cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
+                        while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                            reader.readNextStartElement();
+                            if (reader.name() == QLatin1String("v")) {
+                                int sst_idx = reader.readElementText().toInt();
+                                sharedStrings()->incRefByStringIndex(sst_idx);
+                                QString value = sharedStrings()->getSharedString(sst_idx);
+                                QSharedPointer<Cell> data(new Cell(value ,Cell::String, format));
+                                cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
+                            }
                         }
                     } else if (type == QLatin1String("inlineStr")) {
                         //inline string type
@@ -1343,6 +1344,15 @@ bool Worksheet::loadFromXmlData(const QByteArray &data)
     buffer.open(QIODevice::ReadOnly);
 
     return loadFromXmlFile(&buffer);
+}
+
+/*!
+ * \internal
+ *  Unit test can use this member to get sharedString object.
+ */
+SharedStrings *WorksheetPrivate::sharedStrings() const
+{
+    return workbook->sharedStrings();
 }
 
 QT_END_NAMESPACE_XLSX

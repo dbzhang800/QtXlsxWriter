@@ -5,6 +5,7 @@
 #include "xlsxcell.h"
 #include "private/xlsxworksheet_p.h"
 #include "private/xlsxxmlreader_p.h"
+#include "private/xlsxsharedstrings_p.h"
 
 class WorksheetTest : public QObject
 {
@@ -57,6 +58,8 @@ void WorksheetTest::testWriteCells()
     QVERIFY2(xmldata.contains("<c r=\"A4\" t=\"b\"><v>1</v></c>"), "boolean");
     QVERIFY2(xmldata.contains("<c r=\"A5\" t=\"str\"><f>44+33</f><v>0</v></c>"), "formula");
     QVERIFY2(xmldata.contains("<c r=\"B5\" t=\"str\"><f>44+33</f><v>77</v></c>"), "formula");
+
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0), QStringLiteral("Hello"));
 }
 
 void WorksheetTest::testMerge()
@@ -98,13 +101,14 @@ void WorksheetTest::testReadSheetData()
     reader.readNextStartElement();//current node is sheetData
 
     QXlsx::Worksheet sheet("", 0);
+    sheet.d_ptr->sharedStrings()->addSharedString("Hello");
     sheet.d_ptr->readSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->cellTable.size(), 2);
 
     //A1
     QCOMPARE(sheet.d_ptr->cellTable[0][0]->dataType(), QXlsx::Cell::String);
-    QCOMPARE(sheet.d_ptr->cellTable[0][0]->value().toInt(), 0);
+    QCOMPARE(sheet.d_ptr->cellTable[0][0]->value().toString(), QStringLiteral("Hello"));
 
     //B1
     QCOMPARE(sheet.d_ptr->cellTable[0][1]->dataType(), QXlsx::Cell::Formula);

@@ -80,7 +80,7 @@ private:
     static QSharedPointer<Workbook> loadFromXmlFile(QIODevice *device);
     static QSharedPointer<Workbook> loadFromXmlData(const QByteArray &data);
 
-    SharedStrings *sharedStrings();
+    SharedStrings *sharedStrings() const;
     Styles *styles();
     QList<QImage> images();
     QList<Drawing *> drawings();

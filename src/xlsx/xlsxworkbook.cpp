@@ -191,9 +191,9 @@ QList<QSharedPointer<Worksheet> > Workbook::worksheets() const
     return d->worksheets;
 }
 
-SharedStrings *Workbook::sharedStrings()
+SharedStrings *Workbook::sharedStrings() const
 {
-    Q_D(Workbook);
+    Q_D(const Workbook);
     return d->sharedStrings.data();
 }
 
