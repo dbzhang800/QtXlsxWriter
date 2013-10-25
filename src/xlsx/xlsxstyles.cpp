@@ -547,6 +547,9 @@ bool Styles::readNumFmts(XmlStreamReader &reader)
         fmt->formatString = attributes.value(QLatin1String("formatCode")).toString();
         m_customNumFmts.append(fmt);
         m_customNumFmtsHash.insert(fmt->formatString, fmt);
+
+        while (!(reader.name() == QLatin1String("numFmt") && reader.tokenType() == QXmlStreamReader::EndElement))
+            reader.readNextStartElement();
     }
     return true;
 }

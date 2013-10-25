@@ -186,12 +186,12 @@ void DocumentTest::testReadWriteDateTime()
 //    QCOMPARE(xlsx2.cellAt("A2")->isDateTime(), true);
 //    QCOMPARE(xlsx2.cellAt("A2")->dateTime(), dt);
 
-//    QCOMPARE(xlsx2.cellAt("A3")->dataType(), Cell::Numeric);
-//    QVERIFY(xlsx2.cellAt("A3")->format()!=0);
-//    qDebug()<<xlsx2.cellAt("A3")->format()->numberFormat();
-//    QCOMPARE(xlsx2.cellAt("A3")->isDateTime(), true);
-//    QCOMPARE(xlsx2.cellAt("A3")->dateTime(), dt);
-//    QCOMPARE(xlsx2.cellAt("A3")->format()->numberFormat(), QString("dd/mm/yyyy"));
+    QCOMPARE(xlsx2.cellAt("A3")->dataType(), Cell::Numeric);
+    QVERIFY(xlsx2.cellAt("A3")->format()!=0);
+    qDebug()<<xlsx2.cellAt("A3")->format()->numberFormat();
+    QCOMPARE(xlsx2.cellAt("A3")->isDateTime(), true);
+    QCOMPARE(xlsx2.cellAt("A3")->dateTime(), dt);
+    QCOMPARE(xlsx2.cellAt("A3")->format()->numberFormat(), QString("dd/mm/yyyy"));
 
     QFile::remove("test.xlsx");
 

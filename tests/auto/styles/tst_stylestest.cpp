@@ -142,6 +142,11 @@ void StylesTest::testReadNumFmts()
     styles.readNumFmts(reader);
 
     QCOMPARE(styles.m_customNumFmts.size(), 2);
+    QCOMPARE(styles.m_customNumFmts[0]->formatIndex, 164);
+    QCOMPARE(styles.m_customNumFmts[0]->formatString, QStringLiteral("yyyy-mm-ddThh:mm:ss"));
+    QCOMPARE(styles.m_customNumFmts[1]->formatIndex, 165);
+    QCOMPARE(styles.m_customNumFmts[1]->formatString, QStringLiteral("dd/mm/yyyy"));
+
 }
 
 QTEST_APPLESS_MAIN(StylesTest)
