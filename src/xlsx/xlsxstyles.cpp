@@ -928,7 +928,7 @@ bool Styles::loadFromXmlFile(QIODevice *device)
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
         QXmlStreamReader::TokenType token = reader.readNext();
-        if (token = QXmlStreamReader::StartElement) {
+        if (token == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("numFmts")) {
                 readNumFmts(reader);
             } else if (reader.name() == QLatin1String("fonts")) {
