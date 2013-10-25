@@ -93,7 +93,7 @@ private:
     bool loadFromXmlFile(QIODevice *device);
     bool loadFromXmlData(const QByteArray &data);
 
-    virtual bool isChartsheet() const;
+    bool isChartsheet() const;
     bool isHidden() const;
     bool isSelected() const;
     void setHidden(bool hidden);
