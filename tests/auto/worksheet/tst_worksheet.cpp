@@ -133,30 +133,30 @@ void WorksheetTest::testReadSheetData()
     QCOMPARE(sheet.d_ptr->cellTable.size(), 2);
 
     //A1
-    QCOMPARE(sheet.d_ptr->cellTable[0][0]->dataType(), QXlsx::Cell::String);
-    QCOMPARE(sheet.d_ptr->cellTable[0][0]->value().toString(), QStringLiteral("Hello"));
+    QCOMPARE(sheet.cellAt("A1")->dataType(), QXlsx::Cell::String);
+    QCOMPARE(sheet.cellAt("A1")->value().toString(), QStringLiteral("Hello"));
 
     //B1
-    QCOMPARE(sheet.d_ptr->cellTable[0][1]->dataType(), QXlsx::Cell::Formula);
-    QCOMPARE(sheet.d_ptr->cellTable[0][1]->value().toInt(), 77);
-    QCOMPARE(sheet.d_ptr->cellTable[0][1]->formula(), QStringLiteral("44+33"));
+    QCOMPARE(sheet.cellAt("B1")->dataType(), QXlsx::Cell::Formula);
+    QCOMPARE(sheet.cellAt("B1")->value().toInt(), 77);
+    QCOMPARE(sheet.cellAt("B1")->formula(), QStringLiteral("44+33"));
 
     //C1
-    QCOMPARE(sheet.d_ptr->cellTable[0][2]->dataType(), QXlsx::Cell::Formula);
-    QCOMPARE(sheet.d_ptr->cellTable[0][2]->value().toInt(), 77);
-    QCOMPARE(sheet.d_ptr->cellTable[0][2]->formula(), QStringLiteral("44+33"));
+    QCOMPARE(sheet.cellAt("C1")->dataType(), QXlsx::Cell::Formula);
+    QCOMPARE(sheet.cellAt("C1")->value().toInt(), 77);
+    QCOMPARE(sheet.cellAt("C1")->formula(), QStringLiteral("44+33"));
 
     //B3
-    QCOMPARE(sheet.d_ptr->cellTable[2][1]->dataType(), QXlsx::Cell::Numeric);
-    QCOMPARE(sheet.d_ptr->cellTable[2][1]->value().toInt(), 12345);
+    QCOMPARE(sheet.cellAt("B3")->dataType(), QXlsx::Cell::Numeric);
+    QCOMPARE(sheet.cellAt("B3")->value().toInt(), 12345);
 
     //C3
-    QCOMPARE(sheet.d_ptr->cellTable[2][2]->dataType(), QXlsx::Cell::InlineString);
-    QCOMPARE(sheet.d_ptr->cellTable[2][2]->value().toString(), QStringLiteral("inline test string"));
+    QCOMPARE(sheet.cellAt("C3")->dataType(), QXlsx::Cell::InlineString);
+    QCOMPARE(sheet.cellAt("C3")->value().toString(), QStringLiteral("inline test string"));
 
     //E3
-    QCOMPARE(sheet.d_ptr->cellTable[2][4]->dataType(), QXlsx::Cell::Error);
-    QCOMPARE(sheet.d_ptr->cellTable[2][4]->value().toString(), QStringLiteral("#DIV/0!"));
+    QCOMPARE(sheet.cellAt("E3")->dataType(), QXlsx::Cell::Error);
+    QCOMPARE(sheet.cellAt("E3")->value().toString(), QStringLiteral("#DIV/0!"));
 }
 
 void WorksheetTest::testReadColsInfo()
