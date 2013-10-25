@@ -80,6 +80,7 @@ public:
     QString sheetName() const;
     void setSheetName(const QString &sheetName);
 
+    Workbook *workbook() const;
     ~Worksheet();
 private:
     friend class Package;

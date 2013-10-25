@@ -31,6 +31,8 @@
 #include <QByteArray>
 #include <QList>
 
+class FormatTest;
+
 QT_BEGIN_NAMESPACE_XLSX
 
 class Styles;
@@ -133,6 +135,7 @@ public:
     void setNumberFormatIndex(int format);
     QString numberFormat() const;
     void setNumberFormat(const QString &format);
+    bool isDateTimeFormat() const;
 
     int fontSize() const;
     void setFontSize(int size);
@@ -210,6 +213,8 @@ private:
     friend class Styles;
     friend class Worksheet;
     friend class WorksheetPrivate;
+    friend class ::FormatTest;
+
     Format();
 
     bool numFmtIndexValid() const;

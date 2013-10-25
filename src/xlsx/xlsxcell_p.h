@@ -39,6 +39,7 @@ public:
     Cell::DataType dataType;
     Format *format;
 
+    Worksheet *parent;
     Cell *q_ptr;
 };
 

@@ -18,6 +18,7 @@ private Q_SLOTS:
     void testAddFormat2();
     void testSolidFillBackgroundColor();
 
+    void testReadNumFmts();
     void testReadFonts();
     void testReadFills();
     void testReadBorders();
@@ -126,6 +127,21 @@ void StylesTest::testReadBorders()
     styles.readBorders(reader);
 
     QCOMPARE(styles.m_bordersList.size(), 2);
+}
+
+void StylesTest::testReadNumFmts()
+{
+    QByteArray xmlData ="<numFmts count=\"2\">"
+            "<numFmt numFmtId=\"164\" formatCode=\"yyyy-mm-ddThh:mm:ss\"/>"
+            "<numFmt numFmtId=\"165\" formatCode=\"dd/mm/yyyy\"/>"
+            "</numFmts>";
+
+    QXlsx::Styles styles(true);
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//So current node is numFmts
+    styles.readNumFmts(reader);
+
+    QCOMPARE(styles.m_customNumFmts.size(), 2);
 }
 
 QTEST_APPLESS_MAIN(StylesTest)

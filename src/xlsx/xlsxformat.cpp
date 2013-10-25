@@ -25,6 +25,7 @@
 #include "xlsxformat.h"
 #include "xlsxformat_p.h"
 #include <QDataStream>
+#include <QRegularExpression>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -87,6 +88,7 @@ void Format::setNumberFormatIndex(int format)
     Q_D(Format);
     d->dirty = true;
     d->numberData.formatIndex = format;
+    d->numberData._valid = true;
 }
 
 /*!
@@ -102,13 +104,37 @@ QString Format::numberFormat() const
 
 /*!
  * Set number \a format.
+ * http://office.microsoft.com/en-001/excel-help/create-a-custom-number-format-HP010342372.aspx
  */
 void Format::setNumberFormat(const QString &format)
 {
     Q_D(Format);
+    if (format.isEmpty())
+        return;
     d->dirty = true;
     d->numberData.formatString = format;
     d->numberData._valid = false; //formatIndex must be re-generated
+}
+
+/*!
+ * Returns whether the number format is probably a dateTime or not
+ */
+bool Format::isDateTimeFormat() const
+{
+    Q_D(const Format);
+    if (d->numberData._valid && d->numberData.formatString.isEmpty()) {
+        int idx = d->numberData.formatIndex;
+        //Built in date time number index
+        if ((idx >= 15 && idx <= 22) || (idx >= 45 && idx <= 47))
+            return true;
+    } else {
+        //Gauss from the number string
+        QString formatCode = d->numberData.formatString;
+        formatCode.remove(QRegularExpression(QStringLiteral("\\[(Green|White|Blue|Magenta|Yellow|Cyan|Red)\\]")));
+        if (formatCode.contains(QRegularExpression(QStringLiteral("[dmhys]"))))
+            return true;
+    }
+    return false;
 }
 
 /*!

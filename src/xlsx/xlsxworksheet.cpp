@@ -378,7 +378,7 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
 
     d->sharedStrings()->addSharedString(content);
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(content, Cell::String, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(content, Cell::String, format, this));
     d->workbook->styles()->addFormat(format);
     return error;
 }
@@ -396,7 +396,7 @@ int Worksheet::writeInlineString(int row, int column, const QString &value, Form
         error = -2;
     }
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::InlineString, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::InlineString, format, this));
     d->workbook->styles()->addFormat(format);
     return error;
 }
@@ -407,7 +407,7 @@ int Worksheet::writeNumeric(int row, int column, double value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format, this));
     d->workbook->styles()->addFormat(format);
     return 0;
 }
@@ -424,7 +424,7 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
     if (formula.startsWith(QLatin1String("=")))
         formula.remove(0,1);
 
-    Cell *data = new Cell(result, Cell::Formula, format);
+    Cell *data = new Cell(result, Cell::Formula, format, this);
     data->d_ptr->formula = formula;
     d->cellTable[row][column] = QSharedPointer<Cell>(data);
     d->workbook->styles()->addFormat(format);
@@ -438,7 +438,7 @@ int Worksheet::writeBlank(int row, int column, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(QVariant(), Cell::Blank, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(QVariant(), Cell::Blank, format, this));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -450,7 +450,7 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Boolean, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Boolean, format, this));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -469,7 +469,7 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
 
     double value = datetimeToNumber(dt, d->workbook->isDate1904());
 
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format, this));
     d->workbook->styles()->addFormat(format);
 
     return 0;
@@ -517,7 +517,7 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, Format *form
 
     //Write the hyperlink string as normal string.
     d->sharedStrings()->addSharedString(displayString);
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(displayString, Cell::String, format));
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(displayString, Cell::String, format, this));
     d->workbook->styles()->addFormat(format);
 
     //Store the hyperlink data in a separate table
@@ -1124,6 +1124,7 @@ QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(XmlStreamReader &read
 
 void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
 {
+    Q_Q(Worksheet);
     Q_ASSERT(reader.name() == QLatin1String("sheetData"));
 
     while(!(reader.name() == QLatin1String("sheetData") && reader.tokenType() == QXmlStreamReader::EndElement)) {
@@ -1162,6 +1163,8 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                 if (attributes.hasAttribute(QLatin1String("s"))) {
                     int idx = attributes.value(QLatin1String("s")).toInt();
                     format = workbook->styles()->xfFormat(idx);
+                    if (!format)
+                        qDebug()<<"Invalid style index: "<<idx;
                 }
 
                 if (attributes.hasAttribute(QLatin1String("t"))) {
@@ -1174,7 +1177,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                                 int sst_idx = reader.readElementText().toInt();
                                 sharedStrings()->incRefByStringIndex(sst_idx);
                                 QString value = sharedStrings()->getSharedString(sst_idx);
-                                QSharedPointer<Cell> data(new Cell(value ,Cell::String, format));
+                                QSharedPointer<Cell> data(new Cell(value ,Cell::String, format, q));
                                 cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
                             }
                         }
@@ -1185,7 +1188,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                             if (reader.tokenType() == QXmlStreamReader::StartElement) {
                                 if (reader.name() == QLatin1String("t")) {
                                     QString value = reader.readElementText();
-                                    QSharedPointer<Cell> data(new Cell(value, Cell::InlineString, format));
+                                    QSharedPointer<Cell> data(new Cell(value, Cell::InlineString, format, q));
                                     cellTable[pos.x()][pos.y()] = data;
                                 }
                             }
@@ -1195,13 +1198,14 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                         reader.readNextStartElement();
                         if (reader.name() == QLatin1String("v")) {
                             QString value = reader.readElementText();
-                            QSharedPointer<Cell> data(new Cell(value.toInt() ? true : false, Cell::Boolean, format));
+                            QSharedPointer<Cell> data(new Cell(value.toInt() ? true : false, Cell::Boolean, format, q));
                             cellTable[pos.x()][pos.y()] = data;
                         }
                     } else if (type == QLatin1String("str")) {
                         //formula type
                         QSharedPointer<Cell> data = readNumericCellData(reader);
                         data->d_ptr->format = format;
+                        data->d_ptr->parent = q;
                         cellTable[pos.x()][pos.y()] = data;
                     } else if (type == QLatin1String("e")) {
                         //error type, such as #DIV/0! #NULL! #REF! etc
@@ -1215,20 +1219,23 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                                     f_str = reader.readElementText();
                             }
                         }
-                        QSharedPointer<Cell> data(new Cell(v_str, Cell::Error, format));
+                        QSharedPointer<Cell> data(new Cell(v_str, Cell::Error, format, q));
                         if (!f_str.isEmpty())
                             data->d_ptr->formula = f_str;
                         cellTable[pos.x()][pos.y()] = data;
                     } else if (type == QLatin1String("n")) {
                         QSharedPointer<Cell> data = readNumericCellData(reader);
                         data->d_ptr->format = format;
+                        data->d_ptr->parent = q;
                         cellTable[pos.x()][pos.y()] = data;
                     }
                 } else {
                     //default is "n"
                     QSharedPointer<Cell> data = readNumericCellData(reader);
                     data->d_ptr->format = format;
-                    cellTable[pos.x()][pos.y()] = data;                }
+                    data->d_ptr->parent = q;
+                    cellTable[pos.x()][pos.y()] = data;
+                }
             }
         }
     }
@@ -1362,6 +1369,15 @@ bool Worksheet::loadFromXmlData(const QByteArray &data)
 SharedStrings *WorksheetPrivate::sharedStrings() const
 {
     return workbook->sharedStrings();
+}
+
+/*!
+ * Return the workbook
+ */
+Workbook *Worksheet::workbook() const
+{
+    Q_D(const Worksheet);
+    return d->workbook;
 }
 
 QT_END_NAMESPACE_XLSX

@@ -24,6 +24,11 @@
 ****************************************************************************/
 #include "xlsxcell.h"
 #include "xlsxcell_p.h"
+#include "xlsxformat.h"
+#include "xlsxutility_p.h"
+#include "xlsxworksheet.h"
+#include "xlsxworkbook.h"
+#include <QDateTime>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -44,12 +49,13 @@ CellPrivate::CellPrivate(Cell *p) :
  * \internal
  * Created by Worksheet only.
  */
-Cell::Cell(const QVariant &data, DataType type, Format *format) :
+Cell::Cell(const QVariant &data, DataType type, Format *format, Worksheet *parent) :
     d_ptr(new CellPrivate(this))
 {
     d_ptr->value = data;
     d_ptr->dataType = type;
     d_ptr->format = format;
+    d_ptr->parent = parent;
 }
 
 /*!
@@ -86,6 +92,25 @@ QString Cell::formula() const
 {
     Q_D(const Cell);
     return d->formula;
+}
+
+/*!
+ * Returns whether the value is probably a dateTime or not
+ */
+bool Cell::isDateTime() const
+{
+    Q_D(const Cell);
+    if (d->dataType == Numeric && d->format && d->format->isDateTimeFormat())
+        return true;
+    return false;
+}
+
+QDateTime Cell::dateTime() const
+{
+    Q_D(const Cell);
+    if (!isDateTime())
+        return QDateTime();
+    return datetimeFromNumber(d->value.toDouble(), d->parent->workbook()->isDate1904());
 }
 
 QT_END_NAMESPACE_XLSX

@@ -54,11 +54,14 @@ public:
     Format * format() const;
     QString formula() const;
 
+    bool isDateTime() const;
+    QDateTime dateTime() const;
+
 private:
     friend class Worksheet;
     friend class WorksheetPrivate;
 
-    Cell(const QVariant &data=QVariant(), DataType type=Blank, Format *format=0);
+    Cell(const QVariant &data=QVariant(), DataType type=Blank, Format *format=0, Worksheet *parent=0);
 
     CellPrivate * const d_ptr;
 };

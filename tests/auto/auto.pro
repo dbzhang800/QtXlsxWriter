@@ -8,4 +8,5 @@ SUBDIRS=\
     propsapp \
     document \
     sharedstrings \
-    styles
+    styles \
+    format
