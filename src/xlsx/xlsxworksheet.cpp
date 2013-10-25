@@ -302,20 +302,20 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 
     if (value.isNull()) { //blank
         ret = writeBlank(row, column, format);
-    } else if (value.type() == QMetaType::Bool) { //Bool
+    } else if (value.userType() == QMetaType::Bool) { //Bool
         ret = writeBool(row,column, value.toBool(), format);
     } else if (value.toDateTime().isValid()) { //DateTime
         ret = writeDateTime(row, column, value.toDateTime(), format);
     } else if (value.toDouble(&ok), ok) { //Number
-        if (!d->workbook->isStringsToNumbersEnabled() && value.type() == QMetaType::QString) {
+        if (!d->workbook->isStringsToNumbersEnabled() && value.userType() == QMetaType::QString) {
             //Don't convert string to number if the flag not enabled.
             ret = writeString(row, column, value.toString(), format);
         } else {
             ret = writeNumeric(row, column, value.toDouble(), format);
         }
-    } else if (value.type() == QMetaType::QUrl) { //url
+    } else if (value.userType() == QMetaType::QUrl) { //url
         ret = writeHyperlink(row, column, value.toUrl(), format);
-    } else if (value.type() == QMetaType::QString) { //string
+    } else if (value.userType() == QMetaType::QString) { //string
         QString token = value.toString();
         QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"));
         if (token.startsWith(QLatin1String("="))) {
