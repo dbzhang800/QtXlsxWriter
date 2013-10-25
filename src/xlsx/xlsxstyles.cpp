@@ -93,7 +93,7 @@ void Styles::addFormat(Format *format)
             m_builtinNumFmtsHash.insert(QStringLiteral("0.00%"), 10);
             m_builtinNumFmtsHash.insert(QStringLiteral("0.00E+00"), 11);
             m_builtinNumFmtsHash.insert(QStringLiteral("# ?/?"), 12);
-            m_builtinNumFmtsHash.insert(QStringLiteral("# ??/??"), 13);
+            m_builtinNumFmtsHash.insert(QStringLiteral("# ?\?/??"), 13);// Note: "??/" is a c++ trigraph, so escape one "?"
             m_builtinNumFmtsHash.insert(QStringLiteral("m/d/yy"), 14);
             m_builtinNumFmtsHash.insert(QStringLiteral("d-mmm-yy"), 15);
             m_builtinNumFmtsHash.insert(QStringLiteral("d-mmm"), 16);
