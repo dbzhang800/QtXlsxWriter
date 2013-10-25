@@ -19,5 +19,9 @@ int main()
     xlsx.save();
     //![2]
 
+    QXlsx::Document xlsx2;
+    xlsx2.addWorksheet();
+    xlsx2.saveAs("Book2.xlsx");
+
     return 0;
 }

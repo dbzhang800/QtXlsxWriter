@@ -1,13 +1,13 @@
-QT       += testlib xlsx xlsx-private
+QT       += testlib xlsx # xlsx-private
 CONFIG += testcase
 DEFINES += XLSX_TEST
 
-TARGET = tst_readdocumenttest
+TARGET = tst_document
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
 
-SOURCES += tst_readdocumenttest.cpp
+SOURCES += tst_documenttest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

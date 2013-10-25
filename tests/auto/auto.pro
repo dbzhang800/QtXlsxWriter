@@ -6,6 +6,6 @@ SUBDIRS=\
     relationships \
     propscore \
     propsapp \
-    readdocument \
+    document \
     sharedstrings \
     styles
