@@ -126,7 +126,8 @@ void Workbook::setDefaultDateFormat(const QString &format)
 
 void Workbook::defineName(const QString &name, const QString &formula)
 {
-
+    Q_UNUSED(name);
+    Q_UNUSED(formula);
 }
 
 Worksheet *Workbook::addWorksheet(const QString &name)

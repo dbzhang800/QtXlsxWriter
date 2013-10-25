@@ -527,6 +527,7 @@ void Styles::writeDxfs(XmlStreamWriter &writer)
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_dxf_formatsList.size()));
     foreach (Format *format, m_dxf_formatsList) {
         writer.writeStartElement(QStringLiteral("dxf"));
+        Q_UNUSED(format)
         writer.writeEndElement();//dxf
     }
     writer.writeEndElement(); //dxfs

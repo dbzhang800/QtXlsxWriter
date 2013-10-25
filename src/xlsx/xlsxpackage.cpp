@@ -268,6 +268,7 @@ void Package::writeContentTypesFile(ZipWriter &zipWriter)
 
     int drawing_index = 1;
     foreach (Drawing *drawing, m_workbook->drawings()) {
+        Q_UNUSED(drawing);
         content.addDrawingName(QStringLiteral("drawing%1").arg(drawing_index));
         drawing_index += 1;
     }

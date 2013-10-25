@@ -536,7 +536,6 @@ int Worksheet::insertImage(int row, int column, const QImage &image, const QPoin
 
 int Worksheet::mergeCells(const QString &range)
 {
-    Q_D(Worksheet);
     QStringList cells = range.split(QLatin1Char(':'));
     if (cells.size() != 2)
         return -1;
@@ -572,7 +571,6 @@ int Worksheet::mergeCells(int row_begin, int column_begin, int row_end, int colu
 
 int Worksheet::unmergeCells(const QString &range)
 {
-    Q_D(Worksheet);
     QStringList cells = range.split(QLatin1Char(':'));
     if (cells.size() != 2)
         return -1;
@@ -1309,6 +1307,9 @@ void WorksheetPrivate::readMergeCells(XmlStreamReader &reader)
             }
         }
     }
+
+    if (merges.size() != count)
+        qDebug("read merge cells error");
 }
 
 bool Worksheet::loadFromXmlFile(QIODevice *device)

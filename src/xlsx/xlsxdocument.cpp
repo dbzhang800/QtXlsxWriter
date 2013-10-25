@@ -351,8 +351,6 @@ bool Document::saveAs(const QString &name)
  */
 bool Document::saveAs(QIODevice *device)
 {
-    Q_D(Document);
-
 //    activedWorksheet()->setHidden(false);
 //    activedWorksheet()->setSelected(true);
 
