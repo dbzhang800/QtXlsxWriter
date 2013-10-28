@@ -59,6 +59,14 @@ Cell::Cell(const QVariant &data, DataType type, Format *format, Worksheet *paren
 }
 
 /*!
+ * Destroys the Cell and cleans up.
+ */
+Cell::~Cell()
+{
+    delete d_ptr;
+}
+
+/*!
  * Return the dataType of this Cell
  */
 Cell::DataType Cell::dataType() const
