@@ -17,6 +17,11 @@ public:
 private Q_SLOTS:
     void testEmptySheet();
 
+    void testFirstRow();
+    void testLastRow();
+    void testFirstColumn();
+    void testLastColumn();
+
     void testWriteCells();
     void testWriteHyperlinks();
     void testMerge();
@@ -39,6 +44,78 @@ void WorksheetTest::testEmptySheet()
     QByteArray xmldata = sheet.saveToXmlData();
 
     QVERIFY2(!xmldata.contains("<mergeCell"), "");
+}
+
+void WorksheetTest::testFirstRow()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    QCOMPARE(sheet.firstRow(), 0); //Default
+
+    sheet.write(10000, 10000, "For test");
+    QCOMPARE(sheet.firstRow(), 10000);
+
+    sheet.write("C3", "Test");
+    QCOMPARE(sheet.firstRow(), 2); //Single Cell
+
+    sheet.write("B2", "Second");
+    QCOMPARE(sheet.firstRow(), 1);
+
+    sheet.write("D4", "Test");
+    QCOMPARE(sheet.firstRow(), 1);
+}
+
+void WorksheetTest::testLastRow()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    QCOMPARE(sheet.lastRow(), 0); //Default
+
+    sheet.write("C3", "Test");
+    QCOMPARE(sheet.lastRow(), 3); //Single Cell
+
+    sheet.write("B2", "Second");
+    QCOMPARE(sheet.lastRow(), 3);
+
+    sheet.write("D4", "Test");
+    QCOMPARE(sheet.lastRow(), 4);
+
+    sheet.write(10000, 10000, "For test");
+    QCOMPARE(sheet.lastRow(), 10001);
+}
+
+void WorksheetTest::testFirstColumn()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    QCOMPARE(sheet.firstColumn(), 0); //Default
+
+    sheet.write(10000, 10000, "For test");
+    QCOMPARE(sheet.firstColumn(), 10000);
+
+    sheet.write("C3", "Test");
+    QCOMPARE(sheet.firstColumn(), 2); //Single Cell
+
+    sheet.write("B2", "Second");
+    QCOMPARE(sheet.firstColumn(), 1);
+
+    sheet.write("D4", "Test");
+    QCOMPARE(sheet.firstColumn(), 1);
+}
+
+void WorksheetTest::testLastColumn()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    QCOMPARE(sheet.lastColumn(), 0); //Default
+
+    sheet.write("C3", "Test");
+    QCOMPARE(sheet.lastColumn(), 3); //Single Cell
+
+    sheet.write("B2", "Second");
+    QCOMPARE(sheet.lastColumn(), 3);
+
+    sheet.write("D4", "Test");
+    QCOMPARE(sheet.lastColumn(), 4);
+
+    sheet.write(10000, 10000, "For test");
+    QCOMPARE(sheet.lastColumn(), 10001);
 }
 
 void WorksheetTest::testWriteCells()

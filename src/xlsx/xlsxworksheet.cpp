@@ -892,6 +892,68 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
     return true;
 }
 
+/*!
+ * Returns the first row in the sheet that contains a used cell.
+ */
+int Worksheet::firstRow() const
+{
+    Q_D(const Worksheet);
+
+    if (d->dim_rowmax == INT32_MIN) {
+        //Row dimenstion isn't set.
+        return 0;
+    } else {
+        return d->dim_rowmin;
+    }
+}
+
+/*!
+ * Returns the zero-based index of the row after the last row in
+ * the sheet that contains a used cell.
+ */
+int Worksheet::lastRow() const
+{
+    Q_D(const Worksheet);
+
+    if (d->dim_rowmax == INT32_MIN) {
+        //Row dimenstion isn't set.
+        return 0;
+    } else {
+        return d->dim_rowmax + 1;
+    }
+}
+
+/*!
+ * Returns the first column in the sheet that contains a used cell.
+ */
+int Worksheet::firstColumn() const
+{
+    Q_D(const Worksheet);
+
+    if (d->dim_colmax == INT32_MIN) {
+        //Col dimenstion isn't set.
+        return 0;
+    } else {
+        return d->dim_colmin;
+    }
+}
+
+/*!
+ * Returns the zero-based index of the column after the last column
+ * in the sheet that contains a used cell.
+ */
+int Worksheet::lastColumn() const
+{
+    Q_D(const Worksheet);
+
+    if (d->dim_colmax == INT32_MIN) {
+        //Col dimenstion isn't set.
+        return 0;
+    } else {
+        return d->dim_colmax + 1;
+    }
+}
+
 Drawing *Worksheet::drawing() const
 {
     Q_D(const Worksheet);
