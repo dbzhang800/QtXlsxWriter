@@ -45,6 +45,7 @@ class Workbook;
 class Format;
 class Drawing;
 class DataValidation;
+class CellRange;
 struct XlsxImageData;
 
 class WorksheetPrivate;
@@ -79,11 +80,7 @@ public:
 
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
-
-    int firstRow() const;
-    int lastRow() const;
-    int firstColumn() const;
-    int lastColumn() const;
+    CellRange dimension() const;
 
     void setRightToLeft(bool enable);
     void setZeroValuesHidden(bool enable);

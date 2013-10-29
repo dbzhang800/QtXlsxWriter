@@ -209,6 +209,14 @@ Cell *Document::cellAt(int row, int col) const
 }
 
 /*!
+    Return the range that contains cell data.
+ */
+CellRange Document::dimension() const
+{
+    return currentWorksheet()->dimension();
+}
+
+/*!
  * Returns the value of the document's \a key property.
  */
 QString Document::documentProperty(const QString &key) const

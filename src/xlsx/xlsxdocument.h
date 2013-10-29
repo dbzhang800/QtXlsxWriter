@@ -39,6 +39,7 @@ class Worksheet;
 class Package;
 class Format;
 class Cell;
+class CellRange;
 class DataValidation;
 
 class DocumentPrivate;
@@ -65,6 +66,8 @@ public:
 
     Cell *cellAt(const QString &cell) const;
     Cell *cellAt(int row, int col) const;
+
+    CellRange dimension() const;
 
     QString documentProperty(const QString &name) const;
     void setDocumentProperty(const QString &name, const QString &property);

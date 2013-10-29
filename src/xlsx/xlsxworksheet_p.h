@@ -195,10 +195,7 @@ public:
     int xls_rowmax;
     int xls_colmax;
     int xls_strmax;
-    int dim_rowmin;
-    int dim_rowmax;
-    int dim_colmin;
-    int dim_colmax;
+    CellRange dimension;
     int previous_row;
 
     QMap<int, QString> row_spans;

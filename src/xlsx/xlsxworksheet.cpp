@@ -57,10 +57,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
     xls_rowmax = 1048576;
     xls_colmax = 16384;
     xls_strmax = 32767;
-    dim_rowmin = INT32_MAX;
-    dim_rowmax = INT32_MIN;
-    dim_colmin = INT32_MAX;
-    dim_colmax = INT32_MIN;
 
     previous_row = 0;
 
@@ -94,9 +90,9 @@ void WorksheetPrivate::calculateSpans()
     int span_min = INT32_MAX;
     int span_max = INT32_MIN;
 
-    for (int row_num = dim_rowmin; row_num <= dim_rowmax; row_num++) {
+    for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
         if (cellTable.contains(row_num)) {
-            for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
+            for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (cellTable[row_num].contains(col_num)) {
                     if (span_max == INT32_MIN) {
                         span_min = col_num;
@@ -111,7 +107,7 @@ void WorksheetPrivate::calculateSpans()
             }
         }
         if (comments.contains(row_num)) {
-            for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
+            for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (comments[row_num].contains(col_num)) {
                     if (span_max == INT32_MIN) {
                         span_min = col_num;
@@ -126,7 +122,7 @@ void WorksheetPrivate::calculateSpans()
             }
         }
 
-        if ((row_num + 1)%16 == 0 || row_num == dim_rowmax) {
+        if ((row_num + 1)%16 == 0 || row_num == dimension.lastRow()) {
             int span_index = row_num / 16;
             if (span_max != INT32_MIN) {
                 span_min += 1;
@@ -141,32 +137,10 @@ void WorksheetPrivate::calculateSpans()
 
 QString WorksheetPrivate::generateDimensionString()
 {
-    if (dim_rowmax == INT32_MIN && dim_colmax == INT32_MIN) {
-        //If the max dimensions are equal to INT32_MIN, then no dimension have been set
-        //and we use the default "A1"
+    if (!dimension.isValid())
         return QStringLiteral("A1");
-    }
-
-    if (dim_rowmax == INT32_MIN) {
-        //row dimensions aren't set but the column dimensions are set
-        if (dim_colmin == dim_colmax) {
-            //The dimensions are a single cell and not a range
-            return xl_rowcol_to_cell(0, dim_colmin);
-        } else {
-            const QString cell_1 = xl_rowcol_to_cell(0, dim_colmin);
-            const QString cell_2 = xl_rowcol_to_cell(0, dim_colmax);
-            return cell_1 + QLatin1String(":") + cell_2;
-        }
-    }
-
-    if (dim_rowmin == dim_rowmax && dim_colmin == dim_colmax) {
-        //Single cell
-        return xl_rowcol_to_cell(dim_rowmin, dim_rowmin);
-    }
-
-    QString cell_1 = xl_rowcol_to_cell(dim_rowmin, dim_colmin);
-    QString cell_2 = xl_rowcol_to_cell(dim_rowmax, dim_colmax);
-    return cell_1 + QLatin1String(":") + cell_2;
+    else
+        return dimension.toString();
 }
 
 /*
@@ -182,12 +156,12 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
         return -1;
 
     if (!ignore_row) {
-        if (row < dim_rowmin) dim_rowmin = row;
-        if (row > dim_rowmax) dim_rowmax = row;
+        if (row < dimension.firstRow() || dimension.firstRow() == -1) dimension.setFirstRow(row);
+        if (row > dimension.lastRow()) dimension.setLastRow(row);
     }
     if (!ignore_col) {
-        if (col < dim_colmin) dim_colmin = col;
-        if (col > dim_colmax) dim_colmax = col;
+        if (col < dimension.firstColumn() || dimension.firstColumn() == -1) dimension.setFirstColumn(col);
+        if (col > dimension.lastColumn()) dimension.setLastColumn(col);
     }
 
     return 0;
@@ -671,11 +645,8 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     }
 
     writer.writeStartElement(QStringLiteral("sheetData"));
-    if (d->dim_rowmax == INT32_MIN) {
-        //If the max dimensions are equal to INT32_MIN, then there is no data to write
-    } else {
+    if (d->dimension.isValid())
         d->writeSheetData(writer);
-    }
     writer.writeEndElement();//sheetData
 
     d->writeMergeCells(writer);
@@ -690,7 +661,7 @@ void Worksheet::saveToXmlFile(QIODevice *device)
 void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
 {
     calculateSpans();
-    for (int row_num = dim_rowmin; row_num <= dim_rowmax; row_num++) {
+    for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
         if (!(cellTable.contains(row_num) || comments.contains(row_num) || rowsInfo.contains(row_num))) {
             //Only process rows with cell data / comments / formatting
             continue;
@@ -722,7 +693,7 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
                     writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
             }
 
-            for (int col_num = dim_colmin; col_num <= dim_colmax; col_num++) {
+            for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (cellTable[row_num].contains(col_num)) {
                     writeCellData(writer, row_num, col_num, cellTable[row_num][col_num]);
                 }
@@ -934,7 +905,7 @@ void WorksheetPrivate::writeDrawings(XmlStreamWriter &writer)
 bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
 {
     Q_D(Worksheet);
-    int min_col = d->dim_colmax == INT32_MIN ? 0 : d->dim_colmin;
+    int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
     if (d->checkDimensions(row, min_col))
         return false;
@@ -976,65 +947,12 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
 }
 
 /*!
- * Returns the first row in the sheet that contains a used cell.
+    Return the range that contains cell data.
  */
-int Worksheet::firstRow() const
+CellRange Worksheet::dimension() const
 {
     Q_D(const Worksheet);
-
-    if (d->dim_rowmax == INT32_MIN) {
-        //Row dimenstion isn't set.
-        return 0;
-    } else {
-        return d->dim_rowmin;
-    }
-}
-
-/*!
- * Returns the zero-based index of the row after the last row in
- * the sheet that contains a used cell.
- */
-int Worksheet::lastRow() const
-{
-    Q_D(const Worksheet);
-
-    if (d->dim_rowmax == INT32_MIN) {
-        //Row dimenstion isn't set.
-        return 0;
-    } else {
-        return d->dim_rowmax + 1;
-    }
-}
-
-/*!
- * Returns the first column in the sheet that contains a used cell.
- */
-int Worksheet::firstColumn() const
-{
-    Q_D(const Worksheet);
-
-    if (d->dim_colmax == INT32_MIN) {
-        //Col dimenstion isn't set.
-        return 0;
-    } else {
-        return d->dim_colmin;
-    }
-}
-
-/*!
- * Returns the zero-based index of the column after the last column
- * in the sheet that contains a used cell.
- */
-int Worksheet::lastColumn() const
-{
-    Q_D(const Worksheet);
-
-    if (d->dim_colmax == INT32_MIN) {
-        //Col dimenstion isn't set.
-        return 0;
-    } else {
-        return d->dim_colmax + 1;
-    }
+    return d->dimension;
 }
 
 Drawing *Worksheet::drawing() const
@@ -1571,21 +1489,8 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("dimension")) {
                 QXmlStreamAttributes attributes = reader.attributes();
-                QStringList range = attributes.value(QLatin1String("ref")).toString().split(QLatin1Char(':'));
-                if (range.size() == 2) {
-                    QPoint start = xl_cell_to_rowcol(range[0]);
-                    QPoint end = xl_cell_to_rowcol(range[1]);
-                    d->dim_rowmin = start.x();
-                    d->dim_colmin = start.y();
-                    d->dim_rowmax = end.x();
-                    d->dim_colmax = end.y();
-                } else {
-                    QPoint p = xl_cell_to_rowcol(range[0]);
-                    d->dim_rowmin = p.x();
-                    d->dim_colmin = p.y();
-                    d->dim_rowmax = p.x();
-                    d->dim_colmax = p.y();
-                }
+                QString range = attributes.value(QLatin1String("ref")).toString();
+                d->dimension = CellRange(range);
             } else if (reader.name() == QLatin1String("sheetViews")) {
 
             } else if (reader.name() == QLatin1String("sheetFormatPr")) {

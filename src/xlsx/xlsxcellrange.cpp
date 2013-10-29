@@ -116,4 +116,9 @@ QString CellRange::toString() const
     return cell_1 + QLatin1String(":") + cell_2;
 }
 
+bool CellRange::isValid() const
+{
+    return left <= right && top <= bottom;
+}
+
 QT_END_NAMESPACE_XLSX
