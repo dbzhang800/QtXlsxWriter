@@ -183,6 +183,16 @@ bool Document::setColumn(int colFirst, int colLast, double width, Format *format
 }
 
 /*!
+ * \brief Add a data validation rule for current worksheet
+ * \param validation
+ * \return
+ */
+bool Document::addDataValidation(const DataValidation &validation)
+{
+    return currentWorksheet()->addDataValidation(validation);
+}
+
+/*!
  * Returns a Cell object based on the given \a pos.
  */
 Cell *Document::cellAt(const QString &pos) const

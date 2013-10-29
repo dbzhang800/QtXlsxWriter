@@ -22,29 +22,36 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXCELL_P_H
-#define XLSXCELL_P_H
 
-#include "xlsxglobal.h"
-#include "xlsxcell.h"
+#ifndef XLSXDATAVALIDATION_P_H
+#define XLSXDATAVALIDATION_P_H
+#include "xlsxdatavalidation.h"
+#include <QSharedData>
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class CellPrivate
+class Q_XLSX_EXPORT  DataValidationPrivate : public QSharedData
 {
-    Q_DECLARE_PUBLIC(Cell)
 public:
-    CellPrivate(Cell *p);
+    DataValidationPrivate();
+    DataValidationPrivate(DataValidation::ValidationType type, DataValidation::ValidationOperator op, const QString &formula1, const QString &formula2, bool allowBlank);
+    DataValidationPrivate(const DataValidationPrivate &other);
+    ~DataValidationPrivate();
 
-    QVariant value;
-    QString formula;
-    Cell::DataType dataType;
-    Format *format;
-
-    Worksheet *parent;
-    Cell *q_ptr;
+    DataValidation::ValidationType validationType;
+    DataValidation::ValidationOperator validationOperator;
+    DataValidation::ErrorStyle errorStyle;
+    bool allowBlank;
+    bool isPromptMessageVisible;
+    bool isErrorMessageVisible;
+    QString formula1;
+    QString formula2;
+    QString errorMessage;
+    QString errorMessageTitle;
+    QString promptMessage;
+    QString promptMessageTitle;
+    QList<CellRange> ranges;
 };
 
 QT_END_NAMESPACE_XLSX
-
-#endif // XLSXCELL_P_H
+#endif // XLSXDATAVALIDATION_P_H

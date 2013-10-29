@@ -27,6 +27,7 @@
 #include "xlsxglobal.h"
 #include "xlsxworksheet.h"
 #include "xlsxcell.h"
+#include "xlsxdatavalidation.h"
 
 #include <QImage>
 #include <QSharedPointer>
@@ -177,6 +178,7 @@ public:
     void writeMergeCells(XmlStreamWriter &writer);
     void writeHyperlinks(XmlStreamWriter &writer);
     void writeDrawings(XmlStreamWriter &writer);
+    void writeDataValidation(XmlStreamWriter &writer);
     int rowPixelsSize(int row);
     int colPixelsSize(int col);
     XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
@@ -186,6 +188,8 @@ public:
     void readSheetData(XmlStreamReader &reader);
     void readColumnsInfo(XmlStreamReader &reader);
     void readMergeCells(XmlStreamReader &reader);
+    void readDataValidations(XmlStreamReader &reader);
+    void readDataValidation(XmlStreamReader &reader);
 
     SharedStrings *sharedStrings() const;
 
@@ -202,6 +206,8 @@ public:
     QList<QSharedPointer<XlsxColumnInfo> > colsInfo;
     QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfoHelper;
     QList<QPair<QString, QString> > drawingLinks;
+
+    QList<DataValidation> dataValidationsList;
 
     int xls_rowmax;
     int xls_colmax;

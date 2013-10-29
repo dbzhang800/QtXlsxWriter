@@ -5,5 +5,6 @@ SUBDIRS = hello style \
     mergecells \
     rowcolumn \
     numberformat \
-    readwrite
+    readwrite \
+    datavalidation
 

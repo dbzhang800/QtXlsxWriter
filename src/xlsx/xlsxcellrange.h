@@ -22,29 +22,33 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXCELL_P_H
-#define XLSXCELL_P_H
-
+#ifndef QXLSX_XLSXCELLRANGE_H
+#define QXLSX_XLSXCELLRANGE_H
 #include "xlsxglobal.h"
-#include "xlsxcell.h"
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class CellPrivate
+class Q_XLSX_EXPORT CellRange
 {
-    Q_DECLARE_PUBLIC(Cell)
 public:
-    CellPrivate(Cell *p);
+    CellRange();
+    CellRange(int firstRow, int firstColumn, int lastRow, int lastColumn);
+    CellRange(const QString &range);
+    CellRange(const CellRange &other);
+    ~CellRange();
 
-    QVariant value;
-    QString formula;
-    Cell::DataType dataType;
-    Format *format;
+    QString toString() const;
+    inline int firstRow() const { return top; }
+    inline int lastRow() const { return bottom; }
+    inline int firstColumn() const { return left; }
+    inline int lastColumn() const { return right; }
+    inline int rowCount() const { return bottom - top + 1; }
+    inline int columnCount() const { return right - left + 1; }
 
-    Worksheet *parent;
-    Cell *q_ptr;
+private:
+    int top, left, bottom, right;
 };
 
 QT_END_NAMESPACE_XLSX
 
-#endif // XLSXCELL_P_H
+#endif // QXLSX_XLSXCELLRANGE_H

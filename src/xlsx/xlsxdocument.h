@@ -39,6 +39,7 @@ class Worksheet;
 class Package;
 class Format;
 class Cell;
+class DataValidation;
 
 class DocumentPrivate;
 class Q_XLSX_EXPORT Document : public QObject
@@ -60,6 +61,7 @@ public:
     int unmergeCells(const QString &range);
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
+    bool addDataValidation(const DataValidation &validation);
 
     Cell *cellAt(const QString &cell) const;
     Cell *cellAt(int row, int col) const;

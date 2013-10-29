@@ -3,6 +3,7 @@
 
 #include "xlsxworksheet.h"
 #include "xlsxcell.h"
+#include "xlsxdatavalidation.h"
 #include "private/xlsxworksheet_p.h"
 #include "private/xlsxxmlreader_p.h"
 #include "private/xlsxsharedstrings_p.h"
@@ -24,6 +25,7 @@ private Q_SLOTS:
 
     void testWriteCells();
     void testWriteHyperlinks();
+    void testWriteDataValidations();
     void testMerge();
     void testUnMerge();
 
@@ -31,6 +33,7 @@ private Q_SLOTS:
     void testReadColsInfo();
     void testReadRowsInfo();
     void testReadMergeCells();
+    void testReadDataValidations();
 };
 
 WorksheetTest::WorksheetTest()
@@ -164,6 +167,20 @@ void WorksheetTest::testWriteHyperlinks()
     QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(4), QStringLiteral("xyz@debao.me?subject=Test"));
 }
 
+void WorksheetTest::testWriteDataValidations()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    QXlsx::DataValidation validation(QXlsx::DataValidation::Whole);
+    validation.setFormula1("10");
+    validation.setFormula2("100");
+    validation.addCell("A1");
+    validation.addCell("C2:C4");
+    sheet.addDataValidation(validation);
+
+    QByteArray xmldata = sheet.saveToXmlData();
+    QVERIFY(xmldata.contains("<dataValidation type=\"whole\" showInputMessage=\"1\" showErrorMessage=\"1\" sqref=\"A1 C2:C4\"><formula1>10</formula1><formula2>100</formula2></dataValidation>"));
+ }
+
 void WorksheetTest::testMerge()
 {
     QXlsx::Worksheet sheet("", 1, 0);
@@ -283,6 +300,23 @@ void WorksheetTest::testReadMergeCells()
 
     QCOMPARE(sheet.d_ptr->merges.size(), 2);
     QCOMPARE(sheet.d_ptr->merges[0].row_end, 4);
+}
+
+void WorksheetTest::testReadDataValidations()
+{
+    const QByteArray xmlData = "<dataValidations count=\"2\">"
+            "<dataValidation type=\"whole\" showInputMessage=\"1\" showErrorMessage=\"1\" sqref=\"A1 C2:C4\"><formula1>10</formula1><formula2>100</formula2></dataValidation>"
+            "<dataValidation type=\"whole\" showInputMessage=\"1\" showErrorMessage=\"1\" sqref=\"A1 C2:C4\"><formula1>10</formula1><formula2>100</formula2></dataValidation>"
+            "</dataValidations>";
+
+    QXlsx::XmlStreamReader reader(xmlData);
+    reader.readNextStartElement();//current node is dataValidations
+
+    QXlsx::Worksheet sheet("", 1, 0);
+    sheet.d_ptr->readDataValidations(reader);
+
+    QCOMPARE(sheet.d_ptr->dataValidationsList.size(), 2);
+    QCOMPARE(sheet.d_ptr->dataValidationsList[0].validationType(), QXlsx::DataValidation::Whole);
 }
 
 QTEST_APPLESS_MAIN(WorksheetTest)

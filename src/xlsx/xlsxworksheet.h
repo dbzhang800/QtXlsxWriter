@@ -43,6 +43,7 @@ class Package;
 class Workbook;
 class Format;
 class Drawing;
+class DataValidation;
 struct XlsxImageData;
 
 class WorksheetPrivate;
@@ -60,6 +61,8 @@ public:
     int writeBool(int row, int column, bool value, Format *format=0);
     int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
     int writeHyperlink(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
+
+    bool addDataValidation(const DataValidation &validation);
 
     Cell *cellAt(const QString &row_column) const;
     Cell *cellAt(int row, int column) const;
