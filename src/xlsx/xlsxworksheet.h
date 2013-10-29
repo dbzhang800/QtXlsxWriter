@@ -27,6 +27,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxcell.h"
+#include "xlsxcellrange.h"
 #include <QStringList>
 #include <QMap>
 #include <QVariant>
@@ -71,8 +72,10 @@ public:
 
     int mergeCells(int row_begin, int column_begin, int row_end, int column_end);
     int mergeCells(const QString &range);
+    int mergeCells(const CellRange &range);
     int unmergeCells(int row_begin, int column_begin, int row_end, int column_end);
     int unmergeCells(const QString &range);
+    int unmergeCells(const CellRange &range);
 
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);

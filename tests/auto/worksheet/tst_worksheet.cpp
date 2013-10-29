@@ -299,7 +299,7 @@ void WorksheetTest::testReadMergeCells()
     sheet.d_ptr->readMergeCells(reader);
 
     QCOMPARE(sheet.d_ptr->merges.size(), 2);
-    QCOMPARE(sheet.d_ptr->merges[0].row_end, 4);
+    QCOMPARE(sheet.d_ptr->merges[0].toString(), QStringLiteral("B1:B5"));
 }
 
 void WorksheetTest::testReadDataValidations()

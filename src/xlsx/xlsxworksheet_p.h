@@ -74,23 +74,6 @@ struct XlsxImageData
     double yScale;
 };
 
-struct XlsxCellRange
-{
-    int row_begin;
-    int row_end;
-    int column_begin;
-    int column_end;
-
-    bool operator ==(const XlsxCellRange &other) const {
-        return row_begin==other.row_begin && row_end==other.row_end
-                && column_begin == other.column_begin && column_end==other.column_end;
-    }
-    bool operator !=(const XlsxCellRange &other) const {
-        return row_begin!=other.row_begin || row_end!=other.row_end
-                || column_begin != other.column_begin || column_end!=other.column_end;
-    }
-};
-
 /*
      The vertices that define the position of a graphical object
      within the worksheet in pixels.
@@ -198,7 +181,7 @@ public:
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, XlsxUrlData *> > urlTable;
-    QList<XlsxCellRange> merges;
+    QList<CellRange> merges;
     QStringList externUrlList;
     QStringList externDrawingList;
     QList<XlsxImageData *> imageList;

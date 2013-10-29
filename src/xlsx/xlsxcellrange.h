@@ -45,10 +45,22 @@ public:
     inline int rowCount() const { return bottom - top + 1; }
     inline int columnCount() const { return right - left + 1; }
 
+    inline bool operator ==(const CellRange &other) const
+    {
+        return top==other.top && bottom==other.bottom
+                && left == other.left && right == other.right;
+    }
+    inline bool operator !=(const CellRange &other) const
+    {
+        return top!=other.top || bottom!=other.bottom
+                || left != other.left || right != other.right;
+    }
 private:
     int top, left, bottom, right;
 };
 
 QT_END_NAMESPACE_XLSX
+
+Q_DECLARE_TYPEINFO(QXlsx::CellRange, Q_MOVABLE_TYPE);
 
 #endif // QXLSX_XLSXCELLRANGE_H

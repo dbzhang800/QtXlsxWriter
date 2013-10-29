@@ -545,6 +545,19 @@ int Worksheet::insertImage(int row, int column, const QImage &image, const QPoin
     return 0;
 }
 
+int Worksheet::mergeCells(const CellRange &range)
+{
+    Q_D(Worksheet);
+    if (range.rowCount() < 2 && range.columnCount() < 2)
+        return -1;
+
+    if (d->checkDimensions(range.firstRow(), range.firstColumn()))
+        return -1;
+
+    d->merges.append(range);
+    return 0;
+}
+
 int Worksheet::mergeCells(const QString &range)
 {
     QStringList cells = range.split(QLatin1Char(':'));
@@ -556,27 +569,21 @@ int Worksheet::mergeCells(const QString &range)
     if (cell1 == QPoint(-1,-1) || cell2 == QPoint(-1, -1))
         return -1;
 
-    return mergeCells(cell1.x(), cell1.y(), cell2.x(), cell2.y());
+    return mergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
 }
 
 int Worksheet::mergeCells(int row_begin, int column_begin, int row_end, int column_end)
 {
+    return mergeCells(CellRange(row_begin, column_begin, row_end, column_end));
+}
+
+int Worksheet::unmergeCells(const CellRange &range)
+{
     Q_D(Worksheet);
-
-    if (row_begin == row_end && column_begin == column_end)
+    if (!d->merges.contains(range))
         return -1;
 
-    if (d->checkDimensions(row_end, column_end))
-        return -1;
-
-    XlsxCellRange range;
-    range.row_begin = row_begin;
-    range.row_end = row_end;
-    range.column_begin = column_begin;
-    range.column_end = column_end;
-
-    d->merges.append(range);
-
+    d->merges.removeOne(range);
     return 0;
 }
 
@@ -591,24 +598,12 @@ int Worksheet::unmergeCells(const QString &range)
     if (cell1 == QPoint(-1,-1) || cell2 == QPoint(-1, -1))
         return -1;
 
-    return unmergeCells(cell1.x(), cell1.y(), cell2.x(), cell2.y());
+    return unmergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
 }
 
 int Worksheet::unmergeCells(int row_begin, int column_begin, int row_end, int column_end)
 {
-    Q_D(Worksheet);
-    XlsxCellRange range;
-    range.row_begin = row_begin;
-    range.row_end = row_end;
-    range.column_begin = column_begin;
-    range.column_end = column_end;
-
-    if (!d->merges.contains(range))
-        return -1;
-
-    d->merges.removeOne(range);
-
-    return 0;
+    return unmergeCells(CellRange(row_begin, column_begin, row_end, column_end));
 }
 
 void Worksheet::saveToXmlFile(QIODevice *device)
@@ -793,9 +788,9 @@ void WorksheetPrivate::writeMergeCells(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("mergeCells"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(merges.size()));
 
-    foreach (XlsxCellRange range, merges) {
-        QString cell1 = xl_rowcol_to_cell(range.row_begin, range.column_begin);
-        QString cell2 = xl_rowcol_to_cell(range.row_end, range.column_end);
+    foreach (CellRange range, merges) {
+        QString cell1 = xl_rowcol_to_cell(range.firstRow(), range.firstColumn());
+        QString cell2 = xl_rowcol_to_cell(range.lastRow(), range.lastColumn());
         writer.writeEmptyElement(QStringLiteral("mergeCell"));
         writer.writeAttribute(QStringLiteral("ref"), cell1+QLatin1Char(':')+cell2);
     }
@@ -1446,13 +1441,7 @@ void WorksheetPrivate::readMergeCells(XmlStreamReader &reader)
                     QPoint p0 = xl_cell_to_rowcol(items[0]);
                     QPoint p1 = xl_cell_to_rowcol(items[1]);
 
-                    XlsxCellRange range;
-                    range.row_begin = p0.x();
-                    range.column_begin = p0.y();
-                    range.row_end = p1.x();
-                    range.column_end = p1.y();
-
-                    merges.append(range);
+                    merges.append(CellRange(p0.x(), p0.y(), p1.x(), p1.y()));
                 }
             }
         }
