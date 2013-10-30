@@ -40,6 +40,14 @@
     The \l{Qt Xlsx C++ Classes}{Qt Xlsx Module} provides a set of classes to read and write Excel files. It doesn't require
     Microsoft Excel and can be used in any platform that Qt5 supported.
 
+    The library can be used to
+
+    \list
+       \li Generate a new .xlsx file from scratch
+       \li Extract data from an existing .xlsx file
+       \li Edit an existing .xlsx file
+    \endlist
+
     \section1 Getting Started
 
     To include the definitions of the module's classes, using the following directive:
