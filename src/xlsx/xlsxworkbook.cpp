@@ -142,10 +142,12 @@ bool Workbook::defineName(const QString &name, const QString &formula, const QSt
         formulaString = formula.mid(1);
 
     int id=-1;
-    for (int i=0; i<d->worksheets.size(); ++i) {
-        if (d->worksheets[i]->sheetName() == scope) {
-            id = i;
-            break;
+    if (!scope.isEmpty()) {
+        for (int i=0; i<d->worksheets.size(); ++i) {
+            if (d->worksheets[i]->sheetName() == scope) {
+                id = d->worksheets[i]->sheetId();
+                break;
+            }
         }
     }
 
