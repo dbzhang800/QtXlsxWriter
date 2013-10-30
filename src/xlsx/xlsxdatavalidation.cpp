@@ -224,13 +224,18 @@ void DataValidation::setErrorStyle(DataValidation::ErrorStyle es)
 
 void DataValidation::setFormula1(const QString &formula)
 {
-    d->formula1 = formula;
+    if (formula.startsWith(QLatin1Char('=')))
+        d->formula1 = formula.mid(1);
+    else
+        d->formula1 = formula;
 }
 
 void DataValidation::setFormula2(const QString &formula)
 {
-    d->formula2 = formula;
-}
+    if (formula.startsWith(QLatin1Char('=')))
+        d->formula2 = formula.mid(1);
+    else
+        d->formula2 = formula;}
 
 void DataValidation::setErrorMessage(const QString &error, const QString &title)
 {
