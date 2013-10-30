@@ -27,12 +27,12 @@
 #include <QString>
 #include <QPoint>
 #include <QStringList>
+
 QT_BEGIN_NAMESPACE_XLSX
+
 /*!
     \class CellRange
-
-    \brief The CellRange class provides a way to
-
+    \brief For a range "A1:B2" or single cell "A1"
     \inmodule QtXlsx
 
     The CellRange class stores the top left and bottom

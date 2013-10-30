@@ -62,7 +62,8 @@ DataValidationPrivate::~DataValidationPrivate()
 
 /*!
  * \class DataValidation
- *
+ * \brief Data validation for single cell or a range
+ * \inmodule QtXlsx
  * The data validation can be applied to a single cell or a range of cells.
  */
 
@@ -103,7 +104,7 @@ DataValidationPrivate::~DataValidationPrivate()
  *  The enum type defines the type of error dialog that
  *  is displayed.
  *
- * \value Error
+ * \value Stop
  * \value Warning
  * \value Information
  */
