@@ -2,7 +2,7 @@
     \example hello
     \title Xlsx Hello Example
     \brief This is a simplest xlsx examples.
-    \ingroup qtxlsx
+    \ingroup qtxlsx-examples
 
     This example demonstrates how to generate a
     simplest .xlsx file with Qt Xlsx Library.

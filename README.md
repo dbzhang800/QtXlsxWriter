@@ -4,7 +4,42 @@ QtXlsx is a library that can read and write Excel files. It doesn't require Micr
 
 ## Getting Started
 
-### Usage(1): Use source code directly
+### Usage(1): Use Xlsx as Qt5's addon module
+
+* Download the source code.
+
+* Put the source code in any directory you like. At the toplevel directory run
+
+**Note**: Perl is needed.
+
+```
+    qmake
+    make
+    make install
+```
+
+The library, the header files, and others will be installed to your system.
+
+* Add following line to your qmake's project file:
+
+```
+    QT += xlsx
+```
+
+* Then, using Qt Xlsx in your code
+
+```cpp
+    #include "xlsxdocument.h"
+    int main()
+    {
+        QXlsx::Document xlsx;
+        xlsx.write("A1", "Hello Qt!");
+        xlsx.saveAs("Test.xlsx");
+        return 0;
+    }
+```
+
+### Usage(2): Use source code directly
 
 The package contains a **qtxlsx.pri** file that allows you to integrate the component into applications that use qmake for the build step.
 
@@ -34,41 +69,6 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 
 * Then, using Qt Xlsx in your code
 
-```cpp
-    #include "xlsxdocument.h"
-    int main()
-    {
-        QXlsx::Document xlsx;
-        xlsx.write("A1", "Hello Qt!");
-        xlsx.saveAs("Test.xlsx");
-        return 0;
-    }
-```
-
-### Usage(2): Use Xlsx as Qt5's addon module
-
-**Note**: Perl is needed.
-
-* Download the source code.
-
-* Put the source code in any directory you like. At the toplevel directory run
-
-```
-    qmake
-    make
-    make install
-```
-
-The library, the header files, and the feature file will be installed to your system.
-
-* Add following line to your qmake's project file:
-
-```
-    QT += xlsx
-```
-
-* Then, using Qt Xlsx in your code
-
 ## References
 
 * https://github.com/jmcnamara/XlsxWriter
@@ -76,9 +76,6 @@ The library, the header files, and the feature file will be installed to your sy
 * http://officeopenxml.com/anatomyofOOXML-xlsx.php
 * http://www.libxl.com
 * http://closedxml.codeplex.com/
-* http://search.cpan.org/~jmcnamara/Excel-Writer-XLSX-0.71/
-* http://www.codeproject.com/Articles/208075/How-to-read-and-write-xlsx-Excel-2007-file-Part-I
-* http://www.codeproject.com/Articles/210014/How-to-read-and-write-xlsx-Excel-2007-file-Part-II
 * http://epplus.codeplex.com/
 * http://excelpackage.codeplex.com/
 * http://spreadsheetlight.com/
