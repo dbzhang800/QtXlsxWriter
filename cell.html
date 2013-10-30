@@ -43,14 +43,17 @@ Qt 0.0.1 Reference Documentation</li>
 <a name="public-types"></a>
 <h2>Public Types</h2>
 <table class="alignedsummary">
-<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="cell.html#DataType-enum">DataType</a></b> { Blank, String, Number, Formula, Boolean, Error }</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="cell.html#DataType-enum">DataType</a></b> { Blank, String, Numeric, Formula, ..., InlineString }</td></tr>
 </table>
 <a name="public-functions"></a>
 <h2>Public Functions</h2>
 <table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dtor.Cell">~Cell</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> DataType </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dataType">dataType</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dateTime">dateTime</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Format * </td><td class="memItemRight bottomAlign"><b><a href="cell.html#format">format</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="cell.html#formula">formula</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="cell.html#isDateTime">isDateTime</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QVariant </td><td class="memItemRight bottomAlign"><b><a href="cell.html#value">value</a></b>() const</td></tr>
 </table>
 <a name="details"></a>
@@ -62,16 +65,23 @@ Qt 0.0.1 Reference Documentation</li>
 <!-- @@@Cell -->
 <div class="types">
 <h2>Member Type Documentation</h2>
-<!-- $$$DataType$$$Blank$$$String$$$Number$$$Formula$$$Boolean$$$Error -->
+<!-- $$$DataType$$$Blank$$$String$$$Numeric$$$Formula$$$Boolean$$$Error$$$InlineString -->
 <h3 class="fn"><a name="DataType-enum"></a>enum Cell::<span class="name">DataType</span></h3>
 <!-- @@@DataType -->
 </div>
 <div class="func">
 <h2>Member Function Documentation</h2>
+<!-- $$$~Cell[overload1]$$$~Cell -->
+<h3 class="fn"><a name="dtor.Cell"></a>Cell::<span class="name">~Cell</span>()</h3>
+<p>Destroys the Cell and cleans up.</p>
+<!-- @@@~Cell -->
 <!-- $$$dataType[overload1]$$$dataType -->
 <h3 class="fn"><a name="dataType"></a><span class="type"><a href="cell.html#DataType-enum">DataType</a></span> Cell::<span class="name">dataType</span>() const</h3>
 <p>Return the dataType of this Cell</p>
 <!-- @@@dataType -->
+<!-- $$$dateTime[overload1]$$$dateTime -->
+<h3 class="fn"><a name="dateTime"></a><span class="type">QDateTime</span> Cell::<span class="name">dateTime</span>() const</h3>
+<!-- @@@dateTime -->
 <!-- $$$format[overload1]$$$format -->
 <h3 class="fn"><a name="format"></a><span class="type"><a href="format.html">Format</a></span> * Cell::<span class="name">format</span>() const</h3>
 <p>Return the style used by this Cell. If no style used, 0 will be returned.</p>
@@ -80,6 +90,10 @@ Qt 0.0.1 Reference Documentation</li>
 <h3 class="fn"><a name="formula"></a><span class="type">QString</span> Cell::<span class="name">formula</span>() const</h3>
 <p>Return the formula contents if the dataType is Formula</p>
 <!-- @@@formula -->
+<!-- $$$isDateTime[overload1]$$$isDateTime -->
+<h3 class="fn"><a name="isDateTime"></a><span class="type">bool</span> Cell::<span class="name">isDateTime</span>() const</h3>
+<p>Returns whether the value is probably a dateTime or not</p>
+<!-- @@@isDateTime -->
 <!-- $$$value[overload1]$$$value -->
 <h3 class="fn"><a name="value"></a><span class="type">QVariant</span> Cell::<span class="name">value</span>() const</h3>
 <p>Return the data content of this Cell</p>

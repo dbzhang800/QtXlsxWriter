@@ -46,11 +46,14 @@ Qt 0.0.1 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#Document-2">Document</a></b>(const QString &amp;<i> name</i>, QObject *<i> parent</i> = 0)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#Document-3">Document</a></b>(QIODevice *<i> device</i>, QObject *<i> parent</i> = 0)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#dtor.Document">~Document</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#addDataValidation">addDataValidation</a></b>(const DataValidation &amp;<i> validation</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#addWorksheet">addWorksheet</a></b>(const QString &amp;<i> name</i> = QString())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="document.html#cellAt">cellAt</a></b>(const QString &amp;<i> pos</i>) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="document.html#cellAt-2">cellAt</a></b>(int<i> row</i>, int<i> col</i>) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Format * </td><td class="memItemRight bottomAlign"><b><a href="document.html#createFormat">createFormat</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Worksheet * </td><td class="memItemRight bottomAlign"><b><a href="document.html#currentWorksheet">currentWorksheet</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#defineName">defineName</a></b>(const QString &amp;<i> name</i>, const QString &amp;<i> formula</i>, const QString &amp;<i> comment</i> = QString(), const QString &amp;<i> scope</i> = QString())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CellRange </td><td class="memItemRight bottomAlign"><b><a href="document.html#dimension">dimension</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="document.html#documentProperty">documentProperty</a></b>(const QString &amp;<i> key</i>) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QStringList </td><td class="memItemRight bottomAlign"><b><a href="document.html#documentPropertyNames">documentPropertyNames</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#insertImage">insertImage</a></b>(int<i> row</i>, int<i> column</i>, const QImage &amp;<i> image</i>, double<i> xOffset</i> = 0, double<i> yOffset</i> = 0, double<i> xScale</i> = 1, double<i> yScale</i> = 1)</td></tr>
@@ -67,7 +70,7 @@ Qt 0.0.1 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setSheetName">setSheetName</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#unmergeCells">unmergeCells</a></b>(const QString &amp;<i> range</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Workbook * </td><td class="memItemRight bottomAlign"><b><a href="document.html#workbook">workbook</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#write">write</a></b>(const QString<i> row_column</i>, const QVariant &amp;<i> value</i>, Format *<i> format</i> = 0)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#write">write</a></b>(const QString &amp;<i> row_column</i>, const QVariant &amp;<i> value</i>, Format *<i> format</i> = 0)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#write-2">write</a></b>(int<i> row</i>, int<i> col</i>, const QVariant &amp;<i> value</i>, Format *<i> format</i> = 0)</td></tr>
 </table>
 <a name="details"></a>
@@ -97,6 +100,10 @@ Qt 0.0.1 Reference Documentation</li>
 <h3 class="fn"><a name="dtor.Document"></a>Document::<span class="name">~Document</span>()</h3>
 <p>Destroys the document and cleans up.</p>
 <!-- @@@~Document -->
+<!-- $$$addDataValidation[overload1]$$$addDataValidationconstDataValidation& -->
+<h3 class="fn"><a name="addDataValidation"></a><span class="type">bool</span> Document::<span class="name">addDataValidation</span>(const <span class="type"><a href="datavalidation.html">DataValidation</a></span> &amp;<i> validation</i>)</h3>
+<p>Add a data validation rule for current worksheet <i>validation</i> Returns</p>
+<!-- @@@addDataValidation -->
 <!-- $$$addWorksheet[overload1]$$$addWorksheetconstQString& -->
 <h3 class="fn"><a name="addWorksheet"></a><span class="type">bool</span> Document::<span class="name">addWorksheet</span>(const <span class="type">QString</span> &amp;<i> name</i> = QString())</h3>
 <p>Creates and append an document with name <i>name</i>.</p>
@@ -118,6 +125,14 @@ Qt 0.0.1 Reference Documentation</li>
 <p>Return pointer of current worksheet.</p>
 <p><b>See also </b><a href="document.html#setCurrentWorksheet">setCurrentWorksheet</a>().</p>
 <!-- @@@currentWorksheet -->
+<!-- $$$defineName[overload1]$$$defineNameconstQString&constQString&constQString&constQString& -->
+<h3 class="fn"><a name="defineName"></a><span class="type">bool</span> Document::<span class="name">defineName</span>(const <span class="type">QString</span> &amp;<i> name</i>, const <span class="type">QString</span> &amp;<i> formula</i>, const <span class="type">QString</span> &amp;<i> comment</i> = QString(), const <span class="type">QString</span> &amp;<i> scope</i> = QString())</h3>
+<p>Create a defined name in the workbook. <i>name</i> The defined name <i>formula</i> The cell or range that the defined name refers to. <i>comment</i> <i>scope</i> The name of one worksheet, or empty which means golbal scope. Returns Return false if the name invalid.</p>
+<!-- @@@defineName -->
+<!-- $$$dimension[overload1]$$$dimension -->
+<h3 class="fn"><a name="dimension"></a><span class="type">CellRange</span> Document::<span class="name">dimension</span>() const</h3>
+<p>Return the range that contains cell data.</p>
+<!-- @@@dimension -->
 <!-- $$$documentProperty[overload1]$$$documentPropertyconstQString& -->
 <h3 class="fn"><a name="documentProperty"></a><span class="type">QString</span> Document::<span class="name">documentProperty</span>(const <span class="type">QString</span> &amp;<i> key</i>) const</h3>
 <p>Returns the value of the document's <i>key</i> property.</p>
@@ -199,8 +214,8 @@ Qt 0.0.1 Reference Documentation</li>
 <h3 class="fn"><a name="workbook"></a><span class="type">Workbook</span> * Document::<span class="name">workbook</span>() const</h3>
 <p>Return the internal Workbook object.</p>
 <!-- @@@workbook -->
-<!-- $$$write[overload1]$$$writeconstQStringconstQVariant&Format* -->
-<h3 class="fn"><a name="write"></a><span class="type">int</span> Document::<span class="name">write</span>(const <span class="type">QString</span><i> row_column</i>, const <span class="type">QVariant</span> &amp;<i> value</i>, <span class="type"><a href="format.html">Format</a></span> *<i> format</i> = 0)</h3>
+<!-- $$$write[overload1]$$$writeconstQString&constQVariant&Format* -->
+<h3 class="fn"><a name="write"></a><span class="type">int</span> Document::<span class="name">write</span>(const <span class="type">QString</span> &amp;<i> row_column</i>, const <span class="type">QVariant</span> &amp;<i> value</i>, <span class="type"><a href="format.html">Format</a></span> *<i> format</i> = 0)</h3>
 <p>Write <i>value</i> to cell <i>row_column</i> with the <i>format</i>.</p>
 <!-- @@@write -->
 <!-- $$$write$$$writeintintconstQVariant&Format* -->

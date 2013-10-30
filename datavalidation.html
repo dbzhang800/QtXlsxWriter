@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- xlsxdatavalidation.cpp -->
+  <title>DataValidation Class | QtXlsx 0.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li>Qt 0.0</li>
+<li>DataValidation</li>
+<li id="buildversion">
+Qt 0.0.1 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#public-types">Public Types</a></li>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<h1 class="title">DataValidation Class</h1>
+<!-- $$$DataValidation-brief -->
+<p>Data validation for single cell or a range The data validation can be applied to a single cell or a range of cells. <a href="#details">More...</a></p>
+<!-- @@@DataValidation -->
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;DataValidation&gt;</span>
+</tt></td></tr></table><ul>
+<li><a href="datavalidation-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h2>Public Types</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#ErrorStyle-enum">ErrorStyle</a></b> { Stop, Warning, Information }</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#ValidationOperator-enum">ValidationOperator</a></b> { Between, NotBetween, Equal, NotEqual, ..., GreaterThanOrEqual }</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#ValidationType-enum">ValidationType</a></b> { None, Whole, Decimal, List, ..., Custom }</td></tr>
+</table>
+<a name="public-functions"></a>
+<h2>Public Functions</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#DataValidation">DataValidation</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#DataValidation-2">DataValidation</a></b>(ValidationType<i> type</i>, ValidationOperator<i> op</i> = Between, const QString &amp;<i> formula1</i> = QString(), const QString &amp;<i> formula2</i> = QString(), bool<i> allowBlank</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#dtor.DataValidation">~DataValidation</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#addCell">addCell</a></b>(const QString &amp;<i> cell</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#addCell-2">addCell</a></b>(int<i> row</i>, int<i> col</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#addRange">addRange</a></b>(const QString &amp;<i> range</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#addRange-2">addRange</a></b>(int<i> firstRow</i>, int<i> firstCol</i>, int<i> lastRow</i>, int<i> lastCol</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#addRange-3">addRange</a></b>(const CellRange &amp;<i> range</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#allowBlank">allowBlank</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#errorMessage">errorMessage</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#errorMessageTitle">errorMessageTitle</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> ErrorStyle </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#errorStyle">errorStyle</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#formula1">formula1</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#formula2">formula2</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#isErrorMessageVisible">isErrorMessageVisible</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#isPromptMessageVisible">isPromptMessageVisible</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#promptMessage">promptMessage</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#promptMessageTitle">promptMessageTitle</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QList&lt;CellRange&gt; </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#ranges">ranges</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setAllowBlank">setAllowBlank</a></b>(bool<i> enable</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setErrorMessage">setErrorMessage</a></b>(const QString &amp;<i> error</i>, const QString &amp;<i> title</i> = QString())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setErrorMessageVisible">setErrorMessageVisible</a></b>(bool<i> visible</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setErrorStyle">setErrorStyle</a></b>(ErrorStyle<i> es</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setFormula1">setFormula1</a></b>(const QString &amp;<i> formula</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setFormula2">setFormula2</a></b>(const QString &amp;<i> formula</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setPromptMessage">setPromptMessage</a></b>(const QString &amp;<i> prompt</i>, const QString &amp;<i> title</i> = QString())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setPromptMessageVisible">setPromptMessageVisible</a></b>(bool<i> visible</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setValidationOperator">setValidationOperator</a></b>(ValidationOperator<i> op</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#setValidationType">setValidationType</a></b>(ValidationType<i> type</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> ValidationOperator </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#validationOperator">validationOperator</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> ValidationType </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#validationType">validationType</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> DataValidation &amp; </td><td class="memItemRight bottomAlign"><b><a href="datavalidation.html#operator-eq">operator=</a></b>(const DataValidation &amp;<i> other</i>)</td></tr>
+</table>
+<a name="details"></a>
+<!-- $$$DataValidation-description -->
+<div class="descr">
+<h2>Detailed Description</h2>
+<p>Data validation for single cell or a range The data validation can be applied to a single cell or a range of cells.</p>
+</div>
+<!-- @@@DataValidation -->
+<div class="types">
+<h2>Member Type Documentation</h2>
+<!-- $$$ErrorStyle$$$Stop$$$Warning$$$Information -->
+<h3 class="fn"><a name="ErrorStyle-enum"></a>enum DataValidation::<span class="name">ErrorStyle</span></h3>
+<p>The enum type defines the type of error dialog that is displayed.</p>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>DataValidation::Stop</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Warning</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Information</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+</table>
+<!-- @@@ErrorStyle -->
+<!-- $$$ValidationOperator$$$Between$$$NotBetween$$$Equal$$$NotEqual$$$LessThan$$$LessThanOrEqual$$$GreaterThan$$$GreaterThanOrEqual -->
+<h3 class="fn"><a name="ValidationOperator-enum"></a>enum DataValidation::<span class="name">ValidationOperator</span></h3>
+<p>The enum type defines the criteria by which the data in the cell is validated</p>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>DataValidation::Between</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::NotBetween</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Equal</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::NotEqual</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::LessThan</tt></td><td class="topAlign"><tt>4</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::LessThanOrEqual</tt></td><td class="topAlign"><tt>5</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::GreaterThan</tt></td><td class="topAlign"><tt>6</tt></td></tr>
+<tr><td class="topAlign"><tt>DataValidation::GreaterThanOrEqual</tt></td><td class="topAlign"><tt>7</tt></td></tr>
+</table>
+<!-- @@@ValidationOperator -->
+<!-- $$$ValidationType$$$None$$$Whole$$$Decimal$$$List$$$Date$$$Time$$$TextLength$$$Custom -->
+<h3 class="fn"><a name="ValidationType-enum"></a>enum DataValidation::<span class="name">ValidationType</span></h3>
+<p>The enum type defines the type of data that you wish to validate.</p>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>DataValidation::None</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">the type of data is unrestricted. This is the same as not applying a data validation.</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Whole</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">restricts the cell to integer values. Means &quot;Whole number&quot;?</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Decimal</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">restricts the cell to decimal values.</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::List</tt></td><td class="topAlign"><tt>3</tt></td><td class="topAlign">restricts the cell to a set of user specified values.</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Date</tt></td><td class="topAlign"><tt>4</tt></td><td class="topAlign">restricts the cell to date values.</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Time</tt></td><td class="topAlign"><tt>5</tt></td><td class="topAlign">restricts the cell to time values.</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::TextLength</tt></td><td class="topAlign"><tt>6</tt></td><td class="topAlign">restricts the cell data based on an integer string length.</td></tr>
+<tr><td class="topAlign"><tt>DataValidation::Custom</tt></td><td class="topAlign"><tt>7</tt></td><td class="topAlign">restricts the cell based on an external Excel formula that returns a true/false value.</td></tr>
+</table>
+<!-- @@@ValidationType -->
+</div>
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$DataValidation[overload1]$$$DataValidation -->
+<h3 class="fn"><a name="DataValidation"></a>DataValidation::<span class="name">DataValidation</span>()</h3>
+<p>Construct a data validation object</p>
+<!-- @@@DataValidation -->
+<!-- $$$DataValidation$$$DataValidationValidationTypeValidationOperatorconstQString&constQString&bool -->
+<h3 class="fn"><a name="DataValidation-2"></a>DataValidation::<span class="name">DataValidation</span>(<span class="type"><a href="datavalidation.html#ValidationType-enum">ValidationType</a></span><i> type</i>, <span class="type"><a href="datavalidation.html#ValidationOperator-enum">ValidationOperator</a></span><i> op</i> = Between, const <span class="type">QString</span> &amp;<i> formula1</i> = QString(), const <span class="type">QString</span> &amp;<i> formula2</i> = QString(), <span class="type">bool</span><i> allowBlank</i> = false)</h3>
+<p>Construct a data validation object</p>
+<!-- @@@DataValidation -->
+<!-- $$$~DataValidation[overload1]$$$~DataValidation -->
+<h3 class="fn"><a name="dtor.DataValidation"></a>DataValidation::<span class="name">~DataValidation</span>()</h3>
+<p>Destroy the object.</p>
+<!-- @@@~DataValidation -->
+<!-- $$$addCell[overload1]$$$addCellconstQString& -->
+<h3 class="fn"><a name="addCell"></a><span class="type">void</span> DataValidation::<span class="name">addCell</span>(const <span class="type">QString</span> &amp;<i> cell</i>)</h3>
+<p>Add the <i>cell</i> which the <a href="datavalidation.html">DataValidation</a> will apply to.</p>
+<!-- @@@addCell -->
+<!-- $$$addCell$$$addCellintint -->
+<h3 class="fn"><a name="addCell-2"></a><span class="type">void</span> DataValidation::<span class="name">addCell</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>)</h3>
+<p>This is an overloaded function.</p>
+<!-- @@@addCell -->
+<!-- $$$addRange[overload1]$$$addRangeconstQString& -->
+<h3 class="fn"><a name="addRange"></a><span class="type">void</span> DataValidation::<span class="name">addRange</span>(const <span class="type">QString</span> &amp;<i> range</i>)</h3>
+<p>Add the <i>range</i> which the <a href="datavalidation.html">DataValidation</a> will apply to.</p>
+<!-- @@@addRange -->
+<!-- $$$addRange$$$addRangeintintintint -->
+<h3 class="fn"><a name="addRange-2"></a><span class="type">void</span> DataValidation::<span class="name">addRange</span>(<span class="type">int</span><i> firstRow</i>, <span class="type">int</span><i> firstCol</i>, <span class="type">int</span><i> lastRow</i>, <span class="type">int</span><i> lastCol</i>)</h3>
+<p>This is an overloaded function.</p>
+<!-- @@@addRange -->
+<!-- $$$addRange$$$addRangeconstCellRange& -->
+<h3 class="fn"><a name="addRange-3"></a><span class="type">void</span> DataValidation::<span class="name">addRange</span>(const <span class="type">CellRange</span> &amp;<i> range</i>)</h3>
+<p>This is an overloaded function.</p>
+<!-- @@@addRange -->
+<!-- $$$allowBlank[overload1]$$$allowBlank -->
+<h3 class="fn"><a name="allowBlank"></a><span class="type">bool</span> DataValidation::<span class="name">allowBlank</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setAllowBlank">setAllowBlank</a>().</p>
+<!-- @@@allowBlank -->
+<!-- $$$errorMessage[overload1]$$$errorMessage -->
+<h3 class="fn"><a name="errorMessage"></a><span class="type">QString</span> DataValidation::<span class="name">errorMessage</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setErrorMessage">setErrorMessage</a>().</p>
+<!-- @@@errorMessage -->
+<!-- $$$errorMessageTitle[overload1]$$$errorMessageTitle -->
+<h3 class="fn"><a name="errorMessageTitle"></a><span class="type">QString</span> DataValidation::<span class="name">errorMessageTitle</span>() const</h3>
+<!-- @@@errorMessageTitle -->
+<!-- $$$errorStyle[overload1]$$$errorStyle -->
+<h3 class="fn"><a name="errorStyle"></a><span class="type"><a href="datavalidation.html#ErrorStyle-enum">ErrorStyle</a></span> DataValidation::<span class="name">errorStyle</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setErrorStyle">setErrorStyle</a>().</p>
+<!-- @@@errorStyle -->
+<!-- $$$formula1[overload1]$$$formula1 -->
+<h3 class="fn"><a name="formula1"></a><span class="type">QString</span> DataValidation::<span class="name">formula1</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setFormula1">setFormula1</a>().</p>
+<!-- @@@formula1 -->
+<!-- $$$formula2[overload1]$$$formula2 -->
+<h3 class="fn"><a name="formula2"></a><span class="type">QString</span> DataValidation::<span class="name">formula2</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setFormula2">setFormula2</a>().</p>
+<!-- @@@formula2 -->
+<!-- $$$isErrorMessageVisible[overload1]$$$isErrorMessageVisible -->
+<h3 class="fn"><a name="isErrorMessageVisible"></a><span class="type">bool</span> DataValidation::<span class="name">isErrorMessageVisible</span>() const</h3>
+<!-- @@@isErrorMessageVisible -->
+<!-- $$$isPromptMessageVisible[overload1]$$$isPromptMessageVisible -->
+<h3 class="fn"><a name="isPromptMessageVisible"></a><span class="type">bool</span> DataValidation::<span class="name">isPromptMessageVisible</span>() const</h3>
+<!-- @@@isPromptMessageVisible -->
+<!-- $$$promptMessage[overload1]$$$promptMessage -->
+<h3 class="fn"><a name="promptMessage"></a><span class="type">QString</span> DataValidation::<span class="name">promptMessage</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setPromptMessage">setPromptMessage</a>().</p>
+<!-- @@@promptMessage -->
+<!-- $$$promptMessageTitle[overload1]$$$promptMessageTitle -->
+<h3 class="fn"><a name="promptMessageTitle"></a><span class="type">QString</span> DataValidation::<span class="name">promptMessageTitle</span>() const</h3>
+<!-- @@@promptMessageTitle -->
+<!-- $$$ranges[overload1]$$$ranges -->
+<h3 class="fn"><a name="ranges"></a><span class="type">QList</span>&lt;<span class="type">CellRange</span>&gt; DataValidation::<span class="name">ranges</span>() const</h3>
+<!-- @@@ranges -->
+<!-- $$$setAllowBlank[overload1]$$$setAllowBlankbool -->
+<h3 class="fn"><a name="setAllowBlank"></a><span class="type">void</span> DataValidation::<span class="name">setAllowBlank</span>(<span class="type">bool</span><i> enable</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#allowBlank">allowBlank</a>().</p>
+<!-- @@@setAllowBlank -->
+<!-- $$$setErrorMessage[overload1]$$$setErrorMessageconstQString&constQString& -->
+<h3 class="fn"><a name="setErrorMessage"></a><span class="type">void</span> DataValidation::<span class="name">setErrorMessage</span>(const <span class="type">QString</span> &amp;<i> error</i>, const <span class="type">QString</span> &amp;<i> title</i> = QString())</h3>
+<p><b>See also </b><a href="datavalidation.html#errorMessage">errorMessage</a>().</p>
+<!-- @@@setErrorMessage -->
+<!-- $$$setErrorMessageVisible[overload1]$$$setErrorMessageVisiblebool -->
+<h3 class="fn"><a name="setErrorMessageVisible"></a><span class="type">void</span> DataValidation::<span class="name">setErrorMessageVisible</span>(<span class="type">bool</span><i> visible</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#isErrorMessageVisible">isErrorMessageVisible</a>().</p>
+<!-- @@@setErrorMessageVisible -->
+<!-- $$$setErrorStyle[overload1]$$$setErrorStyleErrorStyle -->
+<h3 class="fn"><a name="setErrorStyle"></a><span class="type">void</span> DataValidation::<span class="name">setErrorStyle</span>(<span class="type"><a href="datavalidation.html#ErrorStyle-enum">ErrorStyle</a></span><i> es</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#errorStyle">errorStyle</a>().</p>
+<!-- @@@setErrorStyle -->
+<!-- $$$setFormula1[overload1]$$$setFormula1constQString& -->
+<h3 class="fn"><a name="setFormula1"></a><span class="type">void</span> DataValidation::<span class="name">setFormula1</span>(const <span class="type">QString</span> &amp;<i> formula</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#formula1">formula1</a>().</p>
+<!-- @@@setFormula1 -->
+<!-- $$$setFormula2[overload1]$$$setFormula2constQString& -->
+<h3 class="fn"><a name="setFormula2"></a><span class="type">void</span> DataValidation::<span class="name">setFormula2</span>(const <span class="type">QString</span> &amp;<i> formula</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#formula2">formula2</a>().</p>
+<!-- @@@setFormula2 -->
+<!-- $$$setPromptMessage[overload1]$$$setPromptMessageconstQString&constQString& -->
+<h3 class="fn"><a name="setPromptMessage"></a><span class="type">void</span> DataValidation::<span class="name">setPromptMessage</span>(const <span class="type">QString</span> &amp;<i> prompt</i>, const <span class="type">QString</span> &amp;<i> title</i> = QString())</h3>
+<p><b>See also </b><a href="datavalidation.html#promptMessage">promptMessage</a>().</p>
+<!-- @@@setPromptMessage -->
+<!-- $$$setPromptMessageVisible[overload1]$$$setPromptMessageVisiblebool -->
+<h3 class="fn"><a name="setPromptMessageVisible"></a><span class="type">void</span> DataValidation::<span class="name">setPromptMessageVisible</span>(<span class="type">bool</span><i> visible</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#isPromptMessageVisible">isPromptMessageVisible</a>().</p>
+<!-- @@@setPromptMessageVisible -->
+<!-- $$$setValidationOperator[overload1]$$$setValidationOperatorValidationOperator -->
+<h3 class="fn"><a name="setValidationOperator"></a><span class="type">void</span> DataValidation::<span class="name">setValidationOperator</span>(<span class="type"><a href="datavalidation.html#ValidationOperator-enum">ValidationOperator</a></span><i> op</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#validationOperator">validationOperator</a>().</p>
+<!-- @@@setValidationOperator -->
+<!-- $$$setValidationType[overload1]$$$setValidationTypeValidationType -->
+<h3 class="fn"><a name="setValidationType"></a><span class="type">void</span> DataValidation::<span class="name">setValidationType</span>(<span class="type"><a href="datavalidation.html#ValidationType-enum">ValidationType</a></span><i> type</i>)</h3>
+<p><b>See also </b><a href="datavalidation.html#validationType">validationType</a>().</p>
+<!-- @@@setValidationType -->
+<!-- $$$validationOperator[overload1]$$$validationOperator -->
+<h3 class="fn"><a name="validationOperator"></a><span class="type"><a href="datavalidation.html#ValidationOperator-enum">ValidationOperator</a></span> DataValidation::<span class="name">validationOperator</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setValidationOperator">setValidationOperator</a>().</p>
+<!-- @@@validationOperator -->
+<!-- $$$validationType[overload1]$$$validationType -->
+<h3 class="fn"><a name="validationType"></a><span class="type"><a href="datavalidation.html#ValidationType-enum">ValidationType</a></span> DataValidation::<span class="name">validationType</span>() const</h3>
+<p><b>See also </b><a href="datavalidation.html#setValidationType">setValidationType</a>().</p>
+<!-- @@@validationType -->
+<!-- $$$operator=[overload1]$$$operator=constDataValidation& -->
+<h3 class="fn"><a name="operator-eq"></a><span class="type">DataValidation</span> &amp; DataValidation::<span class="name">operator=</span>(const <span class="type">DataValidation</span> &amp;<i> other</i>)</h3>
+<!-- @@@operator= -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+        <div class="qt13a-copyright" id="copyright">
+            <div class="qt13a-container">
+            <p>
+              <acronym title="Copyright">&copy;</acronym> 2013 Digia Plc and/or its
+              subsidiaries. Documentation contributions included herein are the copyrights of
+              their respective owners.</p>
+            <p>
+              The documentation provided herein is licensed under the terms of the
+              <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+              License version 1.3</a> as published by the Free Software Foundation.</p>
+            <p>
+              Documentation sources may be obtained from <a href="http://www.qt-project.org">
+              www.qt-project.org</a>.</p>
+            <p>
+              Digia, Qt and their respective logos are trademarks of Digia Plc 
+              in Finland and/or other countries worldwide. All other trademarks are property
+              of their respective owners. <a title="Privacy Policy"
+              href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+            </div>
+        </div>
+</div>
+</body>
+</html>

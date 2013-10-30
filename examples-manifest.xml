@@ -8,7 +8,7 @@
         </example>
         <example name="Xlsx Style Example" docUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/qtxlsx-style-example.html" projectPath="xlsx/style/style.pro">
             <description><![CDATA[This is a simplest xlsx examples.]]></description>
-            <tags>xlsx,style</tags>
+            <tags>style,xlsx</tags>
             <fileToOpen>xlsx/style/main.cpp</fileToOpen>
         </example>
         <example name="Xlsx DocProperties Example" docUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/qtxlsx-documentproperty-example.html" projectPath="xlsx/documentproperty/documentproperty.pro">
@@ -18,7 +18,7 @@
         </example>
         <example name="Xlsx Hello Example" docUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/qtxlsx-hello-example.html" projectPath="xlsx/hello/hello.pro" imageUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/images/hello.png">
             <description><![CDATA[This is a simplest xlsx examples.]]></description>
-            <tags>xlsx,hello</tags>
+            <tags>hello,xlsx</tags>
             <fileToOpen>xlsx/hello/main.cpp</fileToOpen>
         </example>
         <example name="Xlsx Readwrite Example" docUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/qtxlsx-readwrite-example.html" projectPath="xlsx/readwrite/readwrite.pro" imageUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/images/readwrite.png">
@@ -28,7 +28,7 @@
         </example>
         <example name="Xlsx Style Example" docUrl="qthelp://me.debao.qtxlsx.001/qtxlsx/qtxlsx-style-example.html" projectPath="xlsx/style/style.pro">
             <description><![CDATA[This is a simplest xlsx examples.]]></description>
-            <tags>xlsx,style</tags>
+            <tags>style,xlsx</tags>
             <fileToOpen>xlsx/style/main.cpp</fileToOpen>
         </example>
     </examples>
