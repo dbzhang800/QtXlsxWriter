@@ -124,10 +124,33 @@ void Workbook::setDefaultDateFormat(const QString &format)
     d->defaultDateFormat = format;
 }
 
-void Workbook::defineName(const QString &name, const QString &formula)
+/*!
+ * \brief Create a defined name in the workbook.
+ * \param name The defined name
+ * \param formula The cell or range that the defined name refers to.
+ * \param comment
+ * \param scope The name of one worksheet, or empty which means golbal scope.
+ * \return Return false if the name invalid.
+ */
+bool Workbook::defineName(const QString &name, const QString &formula, const QString &comment, const QString &scope)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(formula);
+    Q_D(Workbook);
+
+    //Remove the = sign from the formula if it exists.
+    QString formulaString = formula;
+    if (formulaString.startsWith(QLatin1Char('=')))
+        formulaString = formula.mid(1);
+
+    int id=-1;
+    for (int i=0; i<d->worksheets.size(); ++i) {
+        if (d->worksheets[i]->sheetName() == scope) {
+            id = i;
+            break;
+        }
+    }
+
+    d->definedNamesList.append(XlsxDefineNameData(name, formulaString, comment, id));
+    return true;
 }
 
 Worksheet *Workbook::addWorksheet(const QString &name)
@@ -310,8 +333,27 @@ void Workbook::saveToXmlFile(QIODevice *device)
     }
     writer.writeEndElement();//sheets
 
-//    writer.writeStartElement(QStringLiteral("definedNames"));
-//    writer.writeEndElement();//definedNames
+    if (!d->definedNamesList.isEmpty()) {
+        writer.writeStartElement(QStringLiteral("definedNames"));
+        foreach (XlsxDefineNameData data, d->definedNamesList) {
+            writer.writeStartElement(QStringLiteral("definedName"));
+            writer.writeAttribute(QStringLiteral("name"), data.name);
+            if (!data.comment.isEmpty())
+                writer.writeAttribute(QStringLiteral("comment"), data.comment);
+            if (data.sheetId != -1) {
+                //find the local index of the sheet.
+                for (int i=0; i<d->worksheets.size(); ++i) {
+                    if (d->worksheets[i]->sheetId() == data.sheetId) {
+                        writer.writeAttribute(QStringLiteral("localSheetId"), QString::number(i));
+                        break;
+                    }
+                }
+            }
+            writer.writeCharacters(data.formula);
+            writer.writeEndElement();//definedName
+        }
+        writer.writeEndElement();//definedNames
+    }
 
     writer.writeStartElement(QStringLiteral("calcPr"));
     writer.writeAttribute(QStringLiteral("calcId"), QStringLiteral("124519"));
@@ -370,10 +412,23 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
                                 book->d_func()->firstsheet = attrs.value(QLatin1String("firstSheet")).toInt();
                             if (attrs.hasAttribute(QLatin1String("activeTab")))
                                 book->d_func()->activesheet = attrs.value(QLatin1String("activeTab")).toInt();
-
                         }
                     }
                 }
+             } else if (reader.name() == QLatin1String("definedName")) {
+                 QXmlStreamAttributes attrs = reader.attributes();
+                 XlsxDefineNameData data;
+
+                 data.name = attrs.value(QLatin1String("name")).toString();
+                 if (attrs.hasAttribute(QLatin1String("comment")))
+                     data.comment = attrs.value(QLatin1String("comment")).toString();
+                 if (attrs.hasAttribute(QLatin1String("localSheetId"))) {
+                     int localId = attrs.value(QLatin1String("localSheetId")).toInt();
+                     int sheetId = book->d_func()->sheetItemInfoList[localId].sheetId;
+                     data.sheetId = sheetId;
+                 }
+                 data.formula = reader.readElementText();
+                 book->d_func()->definedNamesList.append(data);
              }
          }
     }

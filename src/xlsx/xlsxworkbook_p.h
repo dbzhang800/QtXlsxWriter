@@ -40,6 +40,23 @@ struct XlsxSheetItemInfo
     QString state;
 };
 
+struct XlsxDefineNameData
+{
+    XlsxDefineNameData()
+        :sheetId(-1)
+    {}
+    XlsxDefineNameData(const QString &name, const QString &formula, const QString &comment, int sheetId=-1)
+        :name(name), formula(formula), comment(comment), sheetId(sheetId)
+    {
+
+    }
+    QString name;
+    QString formula;
+    QString comment;
+    //using internal sheetId, instead of the localSheetId(order in the workbook)
+    int sheetId;
+};
+
 class WorkbookPrivate
 {
     Q_DECLARE_PUBLIC(Workbook)
@@ -53,6 +70,7 @@ public:
     QSharedPointer<Styles> styles;
     QList<QImage> images;
     QList<Drawing *> drawings;
+    QList<XlsxDefineNameData> definedNamesList;
 
     QList<XlsxSheetItemInfo> sheetItemInfoList;//Data from xml file
 

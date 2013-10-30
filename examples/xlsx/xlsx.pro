@@ -6,5 +6,6 @@ SUBDIRS = hello style \
     rowcolumn \
     numberformat \
     readwrite \
-    datavalidation
+    datavalidation \
+    definename
 

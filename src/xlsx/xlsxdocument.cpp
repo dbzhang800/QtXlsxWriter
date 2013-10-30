@@ -209,6 +209,21 @@ Cell *Document::cellAt(int row, int col) const
 }
 
 /*!
+ * \brief Create a defined name in the workbook.
+ * \param name The defined name
+ * \param formula The cell or range that the defined name refers to.
+ * \param comment
+ * \param scope The name of one worksheet, or empty which means golbal scope.
+ * \return Return false if the name invalid.
+ */
+bool Document::defineName(const QString &name, const QString &formula, const QString &comment, const QString &scope)
+{
+    Q_D(Document);
+
+    return d->workbook->defineName(name, formula, comment, scope);
+}
+
+/*!
     Return the range that contains cell data.
  */
 CellRange Document::dimension() const

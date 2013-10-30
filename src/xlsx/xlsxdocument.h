@@ -67,6 +67,8 @@ public:
     Cell *cellAt(const QString &cell) const;
     Cell *cellAt(int row, int col) const;
 
+    bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());
+
     CellRange dimension() const;
 
     QString documentProperty(const QString &name) const;
