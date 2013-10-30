@@ -373,9 +373,9 @@ QByteArray Workbook::saveToXmlData()
     return data;
 }
 
-QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
+bool Workbook::loadFromXmlFile(QIODevice *device)
 {
-    QSharedPointer<Workbook> book(new Workbook);
+    Q_D(Workbook);
 
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
@@ -389,11 +389,11 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
                  info.rId = attributes.value(QLatin1String("r:id")).toString();
                  if (attributes.hasAttribute(QLatin1String("state")))
                      info.state = attributes.value(QLatin1String("state")).toString();
-                 book->d_func()->sheetItemInfoList.append(info);
+                 d->sheetItemInfoList.append(info);
              } else if (reader.name() == QLatin1String("workbookPr")) {
                 QXmlStreamAttributes attrs = reader.attributes();
                 if (attrs.hasAttribute(QLatin1String("date1904")))
-                    book->d_ptr->date1904 = true;
+                    d->date1904 = true;
              } else if (reader.name() == QLatin1String("bookviews")) {
                 while(!(reader.name() == QLatin1String("bookviews") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                     reader.readNextStartElement();
@@ -401,17 +401,17 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
                         if (reader.name() == QLatin1String("workbookView")) {
                             QXmlStreamAttributes attrs = reader.attributes();
                             if (attrs.hasAttribute(QLatin1String("xWindow")))
-                                book->d_func()->x_window = attrs.value(QLatin1String("xWindow")).toInt();
+                                d->x_window = attrs.value(QLatin1String("xWindow")).toInt();
                             if (attrs.hasAttribute(QLatin1String("yWindow")))
-                                book->d_func()->y_window = attrs.value(QLatin1String("yWindow")).toInt();
+                                d->y_window = attrs.value(QLatin1String("yWindow")).toInt();
                             if (attrs.hasAttribute(QLatin1String("windowWidth")))
-                                book->d_func()->window_width = attrs.value(QLatin1String("windowWidth")).toInt();
+                                d->window_width = attrs.value(QLatin1String("windowWidth")).toInt();
                             if (attrs.hasAttribute(QLatin1String("windowHeight")))
-                                book->d_func()->window_height = attrs.value(QLatin1String("windowHeight")).toInt();
+                                d->window_height = attrs.value(QLatin1String("windowHeight")).toInt();
                             if (attrs.hasAttribute(QLatin1String("firstSheet")))
-                                book->d_func()->firstsheet = attrs.value(QLatin1String("firstSheet")).toInt();
+                                d->firstsheet = attrs.value(QLatin1String("firstSheet")).toInt();
                             if (attrs.hasAttribute(QLatin1String("activeTab")))
-                                book->d_func()->activesheet = attrs.value(QLatin1String("activeTab")).toInt();
+                                d->activesheet = attrs.value(QLatin1String("activeTab")).toInt();
                         }
                     }
                 }
@@ -424,18 +424,18 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
                      data.comment = attrs.value(QLatin1String("comment")).toString();
                  if (attrs.hasAttribute(QLatin1String("localSheetId"))) {
                      int localId = attrs.value(QLatin1String("localSheetId")).toInt();
-                     int sheetId = book->d_func()->sheetItemInfoList[localId].sheetId;
+                     int sheetId = d->sheetItemInfoList[localId].sheetId;
                      data.sheetId = sheetId;
                  }
                  data.formula = reader.readElementText();
-                 book->d_func()->definedNamesList.append(data);
+                 d->definedNamesList.append(data);
              }
          }
     }
-    return book;
+    return true;
 }
 
-QSharedPointer<Workbook> Workbook::loadFromXmlData(const QByteArray &data)
+bool Workbook::loadFromXmlData(const QByteArray &data)
 {
     QBuffer buffer;
     buffer.setData(data);

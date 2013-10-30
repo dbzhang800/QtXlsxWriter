@@ -138,8 +138,8 @@ bool Package::parsePackage(QIODevice *packageDevice)
     QStringList xlworkbook_PathList = splitPath(xlworkbook_Path);
     QString xlworkbook_Dir = xlworkbook_PathList[0];
     QString xlworkbook_Name = xlworkbook_PathList[1];
-    QSharedPointer<Workbook> book = Workbook::loadFromXmlData(zipReader.fileData(xlworkbook_Path));
-    QList<XlsxSheetItemInfo> sheetNameIdPairList = book->d_func()->sheetItemInfoList;
+    m_document->workbook()->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
+    QList<XlsxSheetItemInfo> sheetNameIdPairList = m_document->workbook()->d_func()->sheetItemInfoList;
     Relationships xlworkbook_Rels = Relationships::loadFromXmlData(
                 zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
 

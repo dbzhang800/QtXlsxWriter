@@ -77,8 +77,8 @@ private:
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();
-    static QSharedPointer<Workbook> loadFromXmlFile(QIODevice *device);
-    static QSharedPointer<Workbook> loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlFile(QIODevice *device);
+    bool loadFromXmlData(const QByteArray &data);
 
     SharedStrings *sharedStrings() const;
     Styles *styles();
