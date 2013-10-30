@@ -136,6 +136,21 @@ Worksheet *Workbook::addWorksheet(const QString &name)
     return insertWorkSheet(d->worksheets.size(), name);
 }
 
+/*!
+ * \internal
+ * Used only when load the xlsx file!!
+ */
+Worksheet *Workbook::addWorksheet(const QString &name, int sheetId)
+{
+    Q_D(Workbook);
+    if (sheetId > d->last_sheet_id)
+        d->last_sheet_id = sheetId;
+
+    Worksheet *sheet = new Worksheet(name, sheetId, this);
+    d->worksheets.append(QSharedPointer<Worksheet>(sheet));
+    return sheet;
+}
+
 Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
 {
     Q_D(Workbook);
@@ -325,10 +340,14 @@ QSharedPointer<Workbook> Workbook::loadFromXmlFile(QIODevice *device)
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("sheet")) {
+                 XlsxSheetItemInfo info;
                  QXmlStreamAttributes attributes = reader.attributes();
-                 QString sheetName = attributes.value(QLatin1String("name")).toString();
-                 QString rId = attributes.value(QLatin1String("r:id")).toString();
-                 book->d_func()->sheetNameIdPairList.append(QPair<QString, QString>(sheetName, rId));
+                 info.name = attributes.value(QLatin1String("name")).toString();
+                 info.sheetId = attributes.value(QLatin1String("sheetId")).toInt();
+                 info.rId = attributes.value(QLatin1String("r:id")).toString();
+                 if (attributes.hasAttribute(QLatin1String("state")))
+                     info.state = attributes.value(QLatin1String("state")).toString();
+                 book->d_func()->sheetItemInfoList.append(info);
              } else if (reader.name() == QLatin1String("workbookPr")) {
                 QXmlStreamAttributes attrs = reader.attributes();
                 if (attrs.hasAttribute(QLatin1String("date1904")))

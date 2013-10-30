@@ -139,7 +139,7 @@ bool Package::parsePackage(QIODevice *packageDevice)
     QString xlworkbook_Dir = xlworkbook_PathList[0];
     QString xlworkbook_Name = xlworkbook_PathList[1];
     QSharedPointer<Workbook> book = Workbook::loadFromXmlData(zipReader.fileData(xlworkbook_Path));
-    QList<QPair<QString, QString> > sheetNameIdPairList = book->d_func()->sheetNameIdPairList;
+    QList<XlsxSheetItemInfo> sheetNameIdPairList = book->d_func()->sheetItemInfoList;
     Relationships xlworkbook_Rels = Relationships::loadFromXmlData(
                 zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
 
@@ -177,11 +177,11 @@ bool Package::parsePackage(QIODevice *packageDevice)
         return false;
 
     for (int i=0; i<sheetNameIdPairList.size(); ++i) {
-        QPair<QString, QString> pair = sheetNameIdPairList[i];
-        QString worksheet_rId = pair.second;
+        XlsxSheetItemInfo info = sheetNameIdPairList[i];
+        QString worksheet_rId = info.rId;
         QString name = xlworkbook_Rels.getRelationshipById(worksheet_rId).target;
         QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + name;
-        Worksheet *sheet = m_document->workbook()->addWorksheet(pair.first);
+        Worksheet *sheet = m_document->workbook()->addWorksheet(info.name, info.sheetId);
         sheet->loadFromXmlData(zipReader.fileData(worksheet_path));
     }
 

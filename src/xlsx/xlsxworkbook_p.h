@@ -30,6 +30,16 @@
 
 namespace QXlsx {
 
+struct XlsxSheetItemInfo
+{
+    XlsxSheetItemInfo(){}
+
+    QString name;
+    int sheetId;
+    QString rId;
+    QString state;
+};
+
 class WorkbookPrivate
 {
     Q_DECLARE_PUBLIC(Workbook)
@@ -44,7 +54,7 @@ public:
     QList<QImage> images;
     QList<Drawing *> drawings;
 
-    QList<QPair<QString, QString> > sheetNameIdPairList;//Data from xml file
+    QList<XlsxSheetItemInfo> sheetItemInfoList;//Data from xml file
 
     bool strings_to_numbers_enabled;
     bool date1904;

@@ -85,7 +85,7 @@ private:
     QList<QImage> images();
     QList<Drawing *> drawings();
     void prepareDrawings();
-
+    Worksheet *addWorksheet(const QString &name, int sheetId);
     WorkbookPrivate * const d_ptr;
 };
 
