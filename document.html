@@ -63,10 +63,12 @@ Qt 0.0.1 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#saveAs">saveAs</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#saveAs-2">saveAs</a></b>(QIODevice *<i> device</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setColumn">setColumn</a></b>(int<i> colFirst</i>, int<i> colLast</i>, double<i> width</i>, Format *<i> format</i> = 0, bool<i> hidden</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setColumn-2">setColumn</a></b>(const QString &amp;<i> colFirst</i>, const QString &amp;<i> colLast</i>, double<i> width</i>, Format *<i> format</i> = 0, bool<i> hidden</i> = false)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="document.html#setCurrentWorksheet">setCurrentWorksheet</a></b>(int<i> index</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="document.html#setCurrentWorksheet-2">setCurrentWorksheet</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="document.html#setDocumentProperty">setDocumentProperty</a></b>(const QString &amp;<i> key</i>, const QString &amp;<i> property</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setRow">setRow</a></b>(int<i> row</i>, double<i> height</i>, Format *<i> format</i> = 0, bool<i> hidden</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setRow-2">setRow</a></b>(const QString &amp;<i> row</i>, double<i> height</i>, Format *<i> format</i> = 0, bool<i> hidden</i> = false)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setSheetName">setSheetName</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#unmergeCells">unmergeCells</a></b>(const QString &amp;<i> range</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Workbook * </td><td class="memItemRight bottomAlign"><b><a href="document.html#workbook">workbook</a></b>() const</td></tr>
@@ -169,7 +171,11 @@ Qt 0.0.1 Reference Documentation</li>
 <!-- @@@saveAs -->
 <!-- $$$setColumn[overload1]$$$setColumnintintdoubleFormat*bool -->
 <h3 class="fn"><a name="setColumn"></a><span class="type">bool</span> Document::<span class="name">setColumn</span>(<span class="type">int</span><i> colFirst</i>, <span class="type">int</span><i> colLast</i>, <span class="type">double</span><i> width</i>, <span class="type"><a href="format.html">Format</a></span> *<i> format</i> = 0, <span class="type">bool</span><i> hidden</i> = false)</h3>
-<p>Set properties for columns of cells. <i>First</i> column (zero-indexed). <i>Last</i> column (zero-indexed). <i>width</i> The width of the column(s). <i>format</i> Optional Format object. <i>hidden</i></p>
+<p>Sets column width and format for all columns from colFirst to colLast. Column width measured as the number of characters of the maximum digit width of the numbers 0, 1, 2, ..&#x2e;, 9 as rendered in the normal style's font. If format equals 0 then format is ignored. <i>colFirst</i> and <i>colLast</i> are all zero-indexed.</p>
+<!-- @@@setColumn -->
+<!-- $$$setColumn$$$setColumnconstQString&constQString&doubleFormat*bool -->
+<h3 class="fn"><a name="setColumn-2"></a><span class="type">bool</span> Document::<span class="name">setColumn</span>(const <span class="type">QString</span> &amp;<i> colFirst</i>, const <span class="type">QString</span> &amp;<i> colLast</i>, <span class="type">double</span><i> width</i>, <span class="type"><a href="format.html">Format</a></span> *<i> format</i> = 0, <span class="type">bool</span><i> hidden</i> = false)</h3>
+<p>Sets column width and format for all columns from colFirst to colLast. Column width measured as the number of characters of the maximum digit width of the numbers 0, 1, 2, ..&#x2e;, 9 as rendered in the normal style's font. If format equals 0 then format is ignored. <i>colFirst</i> and <i>colLast</i> should be &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, ..&#x2e;</p>
 <!-- @@@setColumn -->
 <!-- $$$setCurrentWorksheet[overload1]$$$setCurrentWorksheetint -->
 <h3 class="fn"><a name="setCurrentWorksheet"></a><span class="type">void</span> Document::<span class="name">setCurrentWorksheet</span>(<span class="type">int</span><i> index</i>)</h3>
@@ -201,6 +207,11 @@ Qt 0.0.1 Reference Documentation</li>
 <!-- $$$setRow[overload1]$$$setRowintdoubleFormat*bool -->
 <h3 class="fn"><a name="setRow"></a><span class="type">bool</span> Document::<span class="name">setRow</span>(<span class="type">int</span><i> row</i>, <span class="type">double</span><i> height</i>, <span class="type"><a href="format.html">Format</a></span> *<i> format</i> = 0, <span class="type">bool</span><i> hidden</i> = false)</h3>
 <p>Set properties for a row of cells. <i>row</i> The worksheet row (zero indexed). <i>height</i> The row height. <i>format</i> Optional Format object. <i>hidden</i></p>
+<!-- @@@setRow -->
+<!-- $$$setRow$$$setRowconstQString&doubleFormat*bool -->
+<h3 class="fn"><a name="setRow-2"></a><span class="type">bool</span> Document::<span class="name">setRow</span>(const <span class="type">QString</span> &amp;<i> row</i>, <span class="type">double</span><i> height</i>, <span class="type"><a href="format.html">Format</a></span> *<i> format</i> = 0, <span class="type">bool</span><i> hidden</i> = false)</h3>
+<p>This is an overloaded function.</p>
+<p>Sets row height and format. Row height measured in point size. If format equals 0 then format is ignored. <i>row</i> should be &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, ..&#x2e;</p>
 <!-- @@@setRow -->
 <!-- $$$setSheetName[overload1]$$$setSheetNameconstQString& -->
 <h3 class="fn"><a name="setSheetName"></a><span class="type">bool</span> Document::<span class="name">setSheetName</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>

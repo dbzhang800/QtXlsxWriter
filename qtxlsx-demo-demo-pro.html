@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- examples.qdoc -->
-  <title>Qt Xlsx Examples | QtXlsx 0.0</title>
+  <title>demo.pro Example File (demo/demo.pro) | QtXlsx 0.0</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -14,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.0</li>
-<li>Qt Xlsx Examples</li>
+<li>demo.pro Example File (demo/demo.pro)</li>
 <li id="buildversion">
 Qt 0.0.1 Reference Documentation</li>
     </ul>
@@ -23,20 +22,21 @@ Qt 0.0.1 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">Qt Xlsx Examples</h1>
-<span class="subtitle"></span>
-<!-- $$$qtxlsx-examples-description -->
+<h1 class="title">demo.pro Example File</h1>
+<span class="small-subtitle">demo/demo.pro</span>
+<!-- $$$demo/demo.pro-description -->
 <div class="descr"> <a name="details"></a>
-<p>Qt Xlsx comes with the following examples:</p>
+<pre class="cpp">TARGET = demo
+
+#include(../../../src/xlsx/qtxlsx.pri)
+QT+=xlsx
+
+CONFIG   += console
+CONFIG   -= app_bundle
+
+SOURCES += main.cpp</pre>
 </div>
-<!-- @@@qtxlsx-examples -->
-<table class="annotated">
-<tr class="odd topAlign"><td class="tblName"><p><a href="qtxlsx-demo-example.html">Xlsx Demo</a></p></td><td class="tblDescr"><p>This is a demo which is used to show features of the library</p></td></tr>
-<tr class="even topAlign"><td class="tblName"><p><a href="qtxlsx-documentproperty-example.html">Xlsx DocProperties Example</a></p></td><td class="tblDescr"><p>This is a simplest xlsx examples.</p></td></tr>
-<tr class="odd topAlign"><td class="tblName"><p><a href="qtxlsx-hello-example.html">Xlsx Hello Example</a></p></td><td class="tblDescr"><p>This is a simplest xlsx examples.</p></td></tr>
-<tr class="even topAlign"><td class="tblName"><p><a href="qtxlsx-readwrite-example.html">Xlsx Readwrite Example</a></p></td><td class="tblDescr"><p>Open an existing xlsx file, modify and save it.</p></td></tr>
-<tr class="odd topAlign"><td class="tblName"><p><a href="qtxlsx-style-example.html">Xlsx Style Example</a></p></td><td class="tblDescr"><p>This is a simplest xlsx examples.</p></td></tr>
-</table>
+<!-- @@@demo/demo.pro -->
         </div>
        </div>
    </div>
