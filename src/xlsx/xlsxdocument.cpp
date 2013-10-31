@@ -170,14 +170,33 @@ bool Document::setRow(int row, double height, Format *format, bool hidden)
 }
 
 /*!
- * \brief Set properties for columns of cells.
- * \param First column (zero-indexed).
- * \param Last column (zero-indexed).
- * \param width The width of the column(s).
- * \param format Optional Format object.
- * \param hidden
+  \overload
+  Sets row height and format. Row height measured in point size. If format
+  equals 0 then format is ignored. \a row should be "1", "2", "3", ...
+ */
+bool Document::setRow(const QString &row, double height, Format *format, bool hidden)
+{
+    return currentWorksheet()->setRow(row, height, format, hidden);
+}
+
+/*!
+  Sets column width and format for all columns from colFirst to colLast. Column
+  width measured as the number of characters of the maximum digit width of the
+  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
+  equals 0 then format is ignored. \a colFirst and \a colLast are all zero-indexed.
  */
 bool Document::setColumn(int colFirst, int colLast, double width, Format *format, bool hidden)
+{
+    return currentWorksheet()->setColumn(colFirst, colLast, width, format, hidden);
+}
+
+/*!
+  Sets column width and format for all columns from colFirst to colLast. Column
+  width measured as the number of characters of the maximum digit width of the
+  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
+  equals 0 then format is ignored. \a colFirst and \a colLast should be "A", "B", "C", ...
+ */
+bool Document::setColumn(const QString &colFirst, const QString &colLast, double width, Format *format, bool hidden)
 {
     return currentWorksheet()->setColumn(colFirst, colLast, width, format, hidden);
 }

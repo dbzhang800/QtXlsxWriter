@@ -129,6 +129,24 @@ QString xl_col_to_name(int col_num)
     return col_str;
 }
 
+int xl_col_name_to_value(const QString &col_str)
+{
+    QRegularExpression re(QStringLiteral("^([A-Z]{1,3})$"));
+    QRegularExpressionMatch match = re.match(col_str);
+    if (match.hasMatch()) {
+        int col = 0;
+        int expn = 0;
+        for (int i=col_str.size()-1; i>-1; --i) {
+            col += (col_str[i].unicode() - 'A' + 1) * intPow(26, expn);
+            expn++;
+        }
+
+        col--;
+        return col;
+    }
+    return -1;
+}
+
 QString xl_rowcol_to_cell(int row, int col, bool row_abs, bool col_abs)
 {
     row += 1; //Change to 1-index

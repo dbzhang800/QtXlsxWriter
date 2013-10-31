@@ -135,13 +135,13 @@ struct XlsxRowInfo
 
 struct XlsxColumnInfo
 {
-    XlsxColumnInfo(int column_min=0, int column_max=1, double width=0, Format *format=0, bool hidden=false) :
-        column_min(column_min), column_max(column_max), width(width), format(format), hidden(hidden)
+    XlsxColumnInfo(int firstColumn=0, int lastColumn=1, double width=0, Format *format=0, bool hidden=false) :
+        firstColumn(firstColumn), lastColumn(lastColumn), width(width), format(format), hidden(hidden)
     {
 
     }
-    int column_min;
-    int column_max;
+    int firstColumn;
+    int lastColumn;
     double width;
     Format *format;
     bool hidden;

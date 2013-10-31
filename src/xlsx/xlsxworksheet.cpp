@@ -804,8 +804,8 @@ void Worksheet::saveToXmlFile(QIODevice *device)
         for (int i=0; i<d->colsInfo.size(); ++i) {
             QSharedPointer<XlsxColumnInfo> col_info = d->colsInfo[i];
             writer.writeStartElement(QStringLiteral("col"));
-            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->column_min + 1));
-            writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->column_max));
+            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->firstColumn + 1));
+            writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->lastColumn + 1));
             writer.writeAttribute(QStringLiteral("width"), QString::number(col_info->width, 'g', 15));
             if (col_info->format)
                 writer.writeAttribute(QStringLiteral("style"), QString::number(col_info->format->xfIndex()));
@@ -1072,9 +1072,9 @@ void WorksheetPrivate::writeDrawings(XmlStreamWriter &writer)
     writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(index));
 }
 
-/*
+/*!
   Sets row height and format. Row height measured in point size. If format
-  equals 0 then format is ignored.
+  equals 0 then format is ignored. \a row is zero-indexed.
  */
 bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
 {
@@ -1089,7 +1089,22 @@ bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
     return true;
 }
 
-/*
+/*!
+  \overload
+  Sets row height and format. Row height measured in point size. If format
+  equals 0 then format is ignored. \a row should be "1", "2", "3", ...
+ */
+bool Worksheet::setRow(const QString &row, double height, Format *format, bool hidden)
+{
+    bool ok=true;
+    int r = row.toInt(&ok);
+    if (ok)
+        return setRow(r, height, format, hidden);
+
+    return false;
+}
+
+/*!
   Sets column width and format for all columns from colFirst to colLast. Column
   width measured as the number of characters of the maximum digit width of the
   numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
@@ -1101,7 +1116,7 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
     bool ignore_row = true;
     bool ignore_col = (format || (width && hidden)) ? false : true;
 
-    if (colFirst >= colLast)
+    if (colFirst > colLast)
         return false;
 
     if (d->checkDimensions(0, colLast, ignore_row, ignore_col))
@@ -1112,12 +1127,29 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
     QSharedPointer<XlsxColumnInfo> info(new XlsxColumnInfo(colFirst, colLast, width, format, hidden));
     d->colsInfo.append(info);
 
-    for (int col=colFirst; col<colLast; ++col)
+    for (int col=colFirst; col<=colLast; ++col)
         d->colsInfoHelper[col] = info;
 
     d->workbook->styles()->addFormat(format);
 
     return true;
+}
+
+/*!
+  Sets column width and format for all columns from colFirst to colLast. Column
+  width measured as the number of characters of the maximum digit width of the
+  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
+  equals 0 then format is ignored. \a colFirst and \a colLast should be "A", "B", "C", ...
+ */
+bool Worksheet::setColumn(const QString &colFirst, const QString &colLast, double width, Format *format, bool hidden)
+{
+    int col1 = xl_col_name_to_value(colFirst);
+    int col2 = xl_col_name_to_value(colLast);
+
+    if (col1 == -1 || col2 == -1)
+        return false;
+
+    return setColumn(col1, col2, width, format, hidden);
 }
 
 /*!
@@ -1489,8 +1521,8 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 QXmlStreamAttributes colAttrs = reader.attributes();
                 int min = colAttrs.value(QLatin1String("min")).toInt();
                 int max = colAttrs.value(QLatin1String("max")).toInt();
-                info->column_min = min - 1;
-                info->column_max = max;
+                info->firstColumn = min - 1;
+                info->lastColumn = max - 1;
 
                 if (colAttrs.hasAttribute(QLatin1String("customWidth"))) {
                     double width = colAttrs.value(QLatin1String("width")).toDouble();
@@ -1506,7 +1538,7 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 }
 
                 colsInfo.append(info);
-                for (int col=min; col<max; ++col)
+                for (int col=min; col<=max; ++col)
                     colsInfoHelper[col] = info;
             }
         }
