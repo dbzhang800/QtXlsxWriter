@@ -7,5 +7,6 @@ SUBDIRS = hello style \
     numberformat \
     readwrite \
     datavalidation \
-    definename
+    definename \
+    demo
 

@@ -1,0 +1,8 @@
+/*!
+    \example demo
+    \title Xlsx Demo
+    \brief This is a demo which is used to show features of the library
+    \ingroup qtxlsx-examples
+
+    \image xlsx_demo.png
+*/

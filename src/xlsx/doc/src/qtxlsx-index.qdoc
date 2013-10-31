@@ -28,6 +28,17 @@
     \page index.html
     \brief Qt Xlsx provides functionality for handling .xlsx files.
 
+    The \l{Qt Xlsx C++ Classes}{Qt Xlsx Module} provides a set of classes to read and write Excel files. It doesn't require
+    Microsoft Excel and can be used in any platform that Qt5 supported. The library can be used to
+
+    \list
+       \li Generate a new .xlsx file from scratch
+       \li Extract data from an existing .xlsx file
+       \li Edit an existing .xlsx file
+    \endlist
+
+    \image xlsx_demo.png
+
     \table
       \row
         \li Source code: \li \l{https://github.com/dbzhang800/QtXlsxWriter}
@@ -36,17 +47,6 @@
       \row
         \li License: \li MIT
     \endtable
-
-    The \l{Qt Xlsx C++ Classes}{Qt Xlsx Module} provides a set of classes to read and write Excel files. It doesn't require
-    Microsoft Excel and can be used in any platform that Qt5 supported.
-
-    The library can be used to
-
-    \list
-       \li Generate a new .xlsx file from scratch
-       \li Extract data from an existing .xlsx file
-       \li Edit an existing .xlsx file
-    \endlist
 
     \section1 Getting Started
 
