@@ -63,10 +63,44 @@ void writeBorderAndFontColorCell(Document &xlsx, const QString &cell, const QStr
    xlsx.write(cell, text, format);
 }
 
+void writeFontNameCell(Document &xlsx, const QString &cell, const QString &text)
+{
+    Format *format = xlsx.createFormat();
+    format->setFontName(text);
+    format->setFontSize(16);
+    xlsx.write(cell, text, format);
+}
+
+void writeFontSizeCell(Document &xlsx, const QString &cell, int size)
+{
+    Format *format = xlsx.createFormat();
+    format->setFontSize(size);
+    xlsx.write(cell, "Qt Xlsx", format);
+}
+
+void writeInternalNumFormatsCell(Document &xlsx, int row, double value, int numFmt)
+{
+    Format *format = xlsx.createFormat();
+    format->setNumberFormatIndex(numFmt);
+    xlsx.write(row, 0, value);
+    xlsx.write(row, 1, numFmt);
+    xlsx.write(row, 2, value, format);
+}
+
+void writeCustomNumFormatsCell(Document &xlsx, int row, double value, const QString &numFmt)
+{
+    Format *format = xlsx.createFormat();
+    format->setNumberFormat(numFmt);
+    xlsx.write(row, 0, value);
+    xlsx.write(row, 1, numFmt);
+    xlsx.write(row, 2, value, format);
+}
+
 int main()
 {
     Document xlsx;
 
+    //---------------------------------------------------------------
     //The default sheet is "Sheet1"
     xlsx.setSheetName("Aligns & Borders");
     xlsx.setColumn("B", "B", 20);
@@ -109,6 +143,128 @@ int main()
     writeBorderAndFontColorCell(xlsx, "H19", "Qt::magenta", Qt::magenta);
     writeBorderAndFontColorCell(xlsx, "H21", "Qt::green", Qt::green);
     writeBorderAndFontColorCell(xlsx, "H23", "Qt::gray", Qt::gray);
+
+    //---------------------------------------------------------------
+    //Create the second sheet.
+    xlsx.addWorksheet("Fonts");
+
+    xlsx.write("B3", "Normal");
+    Format *font_bold = xlsx.createFormat();
+    font_bold->setFontBold(true);
+    xlsx.write("B4", "Bold", font_bold);
+    Format *font_italic = xlsx.createFormat();
+    font_italic->setFontItalic(true);
+    xlsx.write("B5", "Italic", font_italic);
+    Format *font_underline = xlsx.createFormat();
+    font_underline->setFontUnderline(Format::FontUnderlineSingle);
+    xlsx.write("B6", "Underline", font_underline);
+    Format *font_strikeout = xlsx.createFormat();
+    font_strikeout->setFontStrikeOut(true);
+    xlsx.write("B7", "StrikeOut", font_strikeout);
+
+    writeFontNameCell(xlsx, "D3", "Arial");
+    writeFontNameCell(xlsx, "D4", "Arial Black");
+    writeFontNameCell(xlsx, "D5", "Comic Sans MS");
+    writeFontNameCell(xlsx, "D6", "Courier New");
+    writeFontNameCell(xlsx, "D7", "Impact");
+    writeFontNameCell(xlsx, "D8", "Times New Roman");
+    writeFontNameCell(xlsx, "D9", "Verdana");
+
+    writeFontSizeCell(xlsx, "G3", 10);
+    writeFontSizeCell(xlsx, "G4", 12);
+    writeFontSizeCell(xlsx, "G5", 14);
+    writeFontSizeCell(xlsx, "G6", 16);
+    writeFontSizeCell(xlsx, "G7", 18);
+    writeFontSizeCell(xlsx, "G8", 20);
+    writeFontSizeCell(xlsx, "G9", 25);
+
+    Format *font_vertical = xlsx.createFormat();
+    font_vertical->setRotation(255);
+    font_vertical->setFontSize(16);
+    xlsx.write("J3", "vertical", font_vertical);
+    xlsx.mergeCells("J3:J9");
+
+    //---------------------------------------------------------------
+    //Create the third sheet.
+    xlsx.addWorksheet("Formulas");
+    xlsx.setColumn("A", "B", 40);
+    Format *rAlign = xlsx.createFormat();
+    rAlign->setHorizontalAlignment(Format::AlignRight);
+    Format *lAlign = xlsx.createFormat();
+    lAlign->setHorizontalAlignment(Format::AlignLeft);
+    xlsx.write("B3", 40, lAlign);
+    xlsx.write("B4", 30, lAlign);
+    xlsx.write("B5", 50, lAlign);
+    xlsx.write("A7", "SUM(B3:B5)=", rAlign);
+    xlsx.write("B7", "=SUM(B3:B5)", lAlign);
+    xlsx.write("A8", "AVERAGE(B3:B5)=", rAlign);
+    xlsx.write("B8", "=AVERAGE(B3:B5)", lAlign);
+    xlsx.write("A9", "MAX(B3:B5)=", rAlign);
+    xlsx.write("B9", "=MAX(B3:B5)", lAlign);
+    xlsx.write("A10", "MIN(B3:B5)=", rAlign);
+    xlsx.write("B10", "=MIN(B3:B5)", lAlign);
+    xlsx.write("A11", "COUNT(B3:B5)=", rAlign);
+    xlsx.write("B11", "=COUNT(B3:B5)", lAlign);
+
+    xlsx.write("A13", "IF(B7>100,\"large\",\"small\")=", rAlign);
+    xlsx.write("B13", "=IF(B7>100,\"large\",\"small\")", lAlign);
+
+    xlsx.write("A15", "SQRT(25)=", rAlign);
+    xlsx.write("B15", "=SQRT(25)", lAlign);
+    xlsx.write("A16", "RAND()=", rAlign);
+    xlsx.write("B16", "=RAND()", lAlign);
+    xlsx.write("A17", "2*PI()=", rAlign);
+    xlsx.write("B17", "=2*PI()", lAlign);
+
+    xlsx.write("A19", "UPPER(\"qtxlsx\")=", rAlign);
+    xlsx.write("B19", "=UPPER(\"qtxlsx\")", lAlign);
+    xlsx.write("A20", "LEFT(\"ubuntu\",3)=", rAlign);
+    xlsx.write("B20", "=LEFT(\"ubuntu\",3)", lAlign);
+    xlsx.write("A21", "LEN(\"Hello Qt!\")=", rAlign);
+    xlsx.write("B21", "=LEN(\"Hello Qt!\")", lAlign);
+
+    Format *dateFormat = xlsx.createFormat();
+    dateFormat->setHorizontalAlignment(Format::AlignLeft);
+    dateFormat->setNumberFormat("yyyy-mm-dd");
+    xlsx.write("A23", "DATE(2013,8,13)=", rAlign);
+    xlsx.write("B23", "=DATE(2013,8,13)", dateFormat);
+    xlsx.write("A24", "DAY(B23)=", rAlign);
+    xlsx.write("B24", "=DAY(B23)", lAlign);
+    xlsx.write("A25", "MONTH(B23)=", rAlign);
+    xlsx.write("B25", "=MONTH(B23)", lAlign);
+    xlsx.write("A26", "YEAR(B23)=", rAlign);
+    xlsx.write("B26", "=YEAR(B23)", lAlign);
+    xlsx.write("A27", "DAYS360(B23,TODAY())=", rAlign);
+    xlsx.write("B27", "=DAYS360(B23,TODAY())", lAlign);
+
+    xlsx.write("A29", "B3+100*(2-COS(0)))=", rAlign);
+    xlsx.write("B29", "=B3+100*(2-COS(0))", lAlign);
+    xlsx.write("A30", "ISNUMBER(B29)=", rAlign);
+    xlsx.write("B30", "=ISNUMBER(B29)", lAlign);
+    xlsx.write("A31", "AND(1,0)=", rAlign);
+    xlsx.write("B31", "=AND(1,0)", lAlign);
+
+    xlsx.write("A33", "HYPERLINK(\"http://qt-project.org\")=", rAlign);
+    xlsx.write("B33", "=HYPERLINK(\"http://qt-project.org\")", lAlign);
+
+    //---------------------------------------------------------------
+    //Create the fourth sheet.
+    xlsx.addWorksheet("NumFormats");
+    xlsx.setColumn("B", "B", 40);
+    writeInternalNumFormatsCell(xlsx, 3, 2.5681, 2);
+    writeInternalNumFormatsCell(xlsx, 4, 2500000, 3);
+    writeInternalNumFormatsCell(xlsx, 5, -500, 5);
+    writeInternalNumFormatsCell(xlsx, 6, -0.25, 9);
+    writeInternalNumFormatsCell(xlsx, 7, 890, 11);
+    writeInternalNumFormatsCell(xlsx, 8, 0.75, 12);
+    writeInternalNumFormatsCell(xlsx, 9, 41499, 14);
+    writeInternalNumFormatsCell(xlsx, 10, 41499, 17);
+
+    writeCustomNumFormatsCell(xlsx, 12, 20.5627, "#.###");
+    writeCustomNumFormatsCell(xlsx, 13, 4.8, "#.00");
+    writeCustomNumFormatsCell(xlsx, 14, 1.23, "0.00 \"RMB\"");
+    writeCustomNumFormatsCell(xlsx, 15, 60, "[Red][<=100];[Green][>100]");
+
 
     xlsx.saveAs("Book1.xlsx");
 
