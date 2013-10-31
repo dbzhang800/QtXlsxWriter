@@ -19,6 +19,7 @@ public:
 private Q_SLOTS:
     void testEmptySheet();
     void testDimension();
+    void testSheetView();
 
     void testWriteCells();
     void testWriteHyperlinks();
@@ -63,6 +64,17 @@ void WorksheetTest::testDimension()
 
     sheet.write(10000, 10000, "For test");
     QCOMPARE(sheet.dimension(), QXlsx::CellRange(1, 1, 10000, 10000));
+}
+
+void WorksheetTest::testSheetView()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    sheet.setGridLinesVisible(false);
+    sheet.setWindowProtected(true);
+    QByteArray xmldata = sheet.saveToXmlData();
+
+    QVERIFY2(xmldata.contains("showGridLines=\"0\""), "gridlines");
+    QVERIFY2(xmldata.contains("windowProtection=\"1\""), "windowProtection");
 }
 
 void WorksheetTest::testWriteCells()

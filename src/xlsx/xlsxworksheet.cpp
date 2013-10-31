@@ -51,6 +51,9 @@ QT_BEGIN_NAMESPACE_XLSX
 
 WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
     q_ptr(p)
+  , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
+  , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
+  , showOutlineSymbols(true), showWhiteSpace(true)
 {
     drawing = 0;
 
@@ -67,9 +70,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
     default_row_zeroed = false;
 
     hidden = false;
-    selected = false;
-    right_to_left = false;
-    show_zeros = true;
 }
 
 WorksheetPrivate::~WorksheetPrivate()
@@ -212,22 +212,10 @@ bool Worksheet::isHidden() const
     return d->hidden;
 }
 
-bool Worksheet::isSelected() const
-{
-    Q_D(const Worksheet);
-    return d->selected;
-}
-
 void Worksheet::setHidden(bool hidden)
 {
     Q_D(Worksheet);
     d->hidden = hidden;
-}
-
-void Worksheet::setSelected(bool select)
-{
-    Q_D(Worksheet);
-    d->selected = select;
 }
 
 int Worksheet::sheetId() const
@@ -236,17 +224,189 @@ int Worksheet::sheetId() const
     return d->id;
 }
 
+/*!
+ * Returns whether sheet is protected.
+ */
+bool Worksheet::isWindowProtected() const
+{
+    Q_D(const Worksheet);
+    return d->windowProtection;
+}
+
+/*!
+ * Protects/unprotects the sheet.
+ */
+void Worksheet::setWindowProtected(bool protect)
+{
+    Q_D(Worksheet);
+    d->windowProtection = protect;
+}
+
+/*!
+ * Return whether formulas instead of their calculated results shown in cells
+ */
+bool Worksheet::isFormulasVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showFormulas;
+}
+
+/*!
+ * Show formulas in cells instead of their calculated results
+ */
+void Worksheet::setFormulasVisible(bool visible)
+{
+    Q_D(Worksheet);
+    d->showFormulas = visible;
+}
+
+/*!
+ * Return whether gridlines is shown or not.
+ */
+bool Worksheet::isGridLinesVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showGridLines;
+}
+
+/*!
+ * Show or hide the gridline based on \a visible
+ */
+void Worksheet::setGridLinesVisible(bool visible)
+{
+    Q_D(Worksheet);
+    d->showGridLines = visible;
+}
+
+/*!
+ * Return whether is row and column headers is vislbe.
+ */
+bool Worksheet::isRowColumnHeadersVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showRowColHeaders;
+}
+
+/*!
+ * Show or hide the row column headers based on \a visible
+ */
+void Worksheet::setRowColumnHeadersVisible(bool visible)
+{
+    Q_D(Worksheet);
+    d->showRowColHeaders = visible;
+}
+
+
+/*!
+ * Return whether the sheet is shown right-to-left or not.
+ */
+bool Worksheet::isRightToLeft() const
+{
+    Q_D(const Worksheet);
+    return d->rightToLeft;
+}
+
+/*!
+ * Enable or disable the right-to-left.
+ */
 void Worksheet::setRightToLeft(bool enable)
 {
     Q_D(Worksheet);
-    d->right_to_left = enable;
+    d->rightToLeft = enable;
 }
 
-void Worksheet::setZeroValuesHidden(bool enable)
+/*!
+ * Return whether is cells that have zero value show a zero.
+ */
+bool Worksheet::isZerosVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showZeros;
+}
+
+/*!
+ * Show a zero in cells that have zero value.
+ */
+void Worksheet::setZerosVisible(bool visible)
 {
     Q_D(Worksheet);
-    d->show_zeros = !enable;
+    d->showZeros = visible;
 }
+
+/*!
+ * Return whether this tab is selected.
+ */
+bool Worksheet::isSelected() const
+{
+    Q_D(const Worksheet);
+    return d->tabSelected;
+}
+
+/*!
+ * Set
+ */
+void Worksheet::setSelected(bool select)
+{
+    Q_D(Worksheet);
+    d->tabSelected = select;
+}
+
+/*!
+ * Return whether is ruler is shown.
+ */
+bool Worksheet::isRulerVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showRuler;
+
+}
+
+/*!
+ * Show or hide the ruler.
+ */
+void Worksheet::setRulerVisible(bool visible)
+{
+    Q_D(Worksheet);
+    d->showRuler = visible;
+
+}
+
+/*!
+ * Return whether is outline symbols is shown.
+ */
+bool Worksheet::isOutlineSymbolsVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showOutlineSymbols;
+}
+
+/*!
+ * Show or hide the outline symbols.
+ */
+void Worksheet::setOutlineSymbolsVisible(bool visible)
+{
+    Q_D(Worksheet);
+    d->showOutlineSymbols = visible;
+}
+
+/*!
+ * Return whether is white space is shown.
+ */
+bool Worksheet::isWhiteSpaceVisible() const
+{
+    Q_D(const Worksheet);
+    return d->showWhiteSpace;
+}
+
+/*!
+ * Show or hide the white space.
+ */
+void Worksheet::setWhiteSpaceVisible(bool visible)
+{
+    Q_D(Worksheet);
+    d->showWhiteSpace = visible;
+}
+
 
 QStringList Worksheet::externUrlList() const
 {
@@ -601,12 +761,26 @@ void Worksheet::saveToXmlFile(QIODevice *device)
 
     writer.writeStartElement(QStringLiteral("sheetViews"));
     writer.writeStartElement(QStringLiteral("sheetView"));
-    if (!d->show_zeros)
+    if (d->windowProtection)
+        writer.writeAttribute(QStringLiteral("windowProtection"), QStringLiteral("1"));
+    if (d->showFormulas)
+        writer.writeAttribute(QStringLiteral("showFormulas"), QStringLiteral("1"));
+    if (!d->showGridLines)
+        writer.writeAttribute(QStringLiteral("showGridLines"), QStringLiteral("0"));
+    if (!d->showRowColHeaders)
+        writer.writeAttribute(QStringLiteral("showRowColHeaders"), QStringLiteral("0"));
+    if (!d->showZeros)
         writer.writeAttribute(QStringLiteral("showZeros"), QStringLiteral("0"));
-    if (d->right_to_left)
+    if (d->rightToLeft)
         writer.writeAttribute(QStringLiteral("rightToLeft"), QStringLiteral("1"));
-    if (d->selected)
+    if (d->tabSelected)
         writer.writeAttribute(QStringLiteral("tabSelected"), QStringLiteral("1"));
+    if (!d->showRuler)
+        writer.writeAttribute(QStringLiteral("showRuler"), QStringLiteral("0"));
+    if (!d->showOutlineSymbols)
+        writer.writeAttribute(QStringLiteral("showOutlineSymbols"), QStringLiteral("0"));
+    if (!d->showWhiteSpace)
+        writer.writeAttribute(QStringLiteral("showWhiteSpace"), QStringLiteral("0"));
     writer.writeAttribute(QStringLiteral("workbookViewId"), QStringLiteral("0"));
     writer.writeEndElement();//sheetView
     writer.writeEndElement();//sheetViews
@@ -1479,6 +1653,31 @@ void WorksheetPrivate::readDataValidation(XmlStreamReader &reader)
     dataValidationsList.append(validation);
 }
 
+void WorksheetPrivate::readSheetViews(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("sheetViews"));
+
+    while(!(reader.name() == QLatin1String("sheetViews")
+            && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == QLatin1String("sheetView")) {
+            QXmlStreamAttributes attrs = reader.attributes();
+            //default false
+            windowProtection = attrs.value(QLatin1String("windowProtection")) == QLatin1String("1");
+            showFormulas = attrs.value(QLatin1String("showFormulas")) == QLatin1String("1");
+            rightToLeft = attrs.value(QLatin1String("rightToLeft")) == QLatin1String("1");
+            tabSelected = attrs.value(QLatin1String("tabSelected")) == QLatin1String("1");
+            //default true
+            showGridLines = attrs.value(QLatin1String("showGridLines")) != QLatin1String("0");
+            showRowColHeaders = attrs.value(QLatin1String("showRowColHeaders")) != QLatin1String("0");
+            showZeros = attrs.value(QLatin1String("showZeros")) != QLatin1String("0");
+            showRuler = attrs.value(QLatin1String("showRuler")) != QLatin1String("0");
+            showOutlineSymbols = attrs.value(QLatin1String("showOutlineSymbols")) != QLatin1String("0");
+            showWhiteSpace = attrs.value(QLatin1String("showWhiteSpace")) != QLatin1String("0");
+        }
+    }
+}
+
 bool Worksheet::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
@@ -1492,7 +1691,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QString range = attributes.value(QLatin1String("ref")).toString();
                 d->dimension = CellRange(range);
             } else if (reader.name() == QLatin1String("sheetViews")) {
-
+                d->readSheetViews(reader);
             } else if (reader.name() == QLatin1String("sheetFormatPr")) {
 
             } else if (reader.name() == QLatin1String("cols")) {

@@ -173,6 +173,7 @@ public:
     void readMergeCells(XmlStreamReader &reader);
     void readDataValidations(XmlStreamReader &reader);
     void readDataValidation(XmlStreamReader &reader);
+    void readSheetViews(XmlStreamReader &reader);
 
     SharedStrings *sharedStrings() const;
 
@@ -211,9 +212,17 @@ public:
     QString name;
     int id;
     bool hidden;
-    bool selected;
-    bool right_to_left;
-    bool show_zeros;
+
+    bool windowProtection;
+    bool showFormulas;
+    bool showGridLines;
+    bool showRowColHeaders;
+    bool showZeros;
+    bool rightToLeft;
+    bool tabSelected;
+    bool showRuler;
+    bool showOutlineSymbols;
+    bool showWhiteSpace;
 
     Worksheet *q_ptr;
 };

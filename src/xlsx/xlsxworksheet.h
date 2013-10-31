@@ -82,8 +82,26 @@ public:
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
     CellRange dimension() const;
 
+    bool isWindowProtected() const;
+    void setWindowProtected(bool protect);
+    bool isFormulasVisible() const;
+    void setFormulasVisible(bool visible);
+    bool isGridLinesVisible() const;
+    void setGridLinesVisible(bool visible);
+    bool isRowColumnHeadersVisible() const;
+    void setRowColumnHeadersVisible(bool visible);
+    bool isZerosVisible() const;
+    void setZerosVisible(bool visible);
+    bool isRightToLeft() const;
     void setRightToLeft(bool enable);
-    void setZeroValuesHidden(bool enable);
+    bool isSelected() const;
+    void setSelected(bool select);
+    bool isRulerVisible() const;
+    void setRulerVisible(bool visible);
+    bool isOutlineSymbolsVisible() const;
+    void setOutlineSymbolsVisible(bool visible);
+    bool isWhiteSpaceVisible() const;
+    void setWhiteSpaceVisible(bool visible);
 
     QString sheetName() const;
     void setSheetName(const QString &sheetName);
@@ -103,9 +121,7 @@ private:
 
     bool isChartsheet() const;
     bool isHidden() const;
-    bool isSelected() const;
     void setHidden(bool hidden);
-    void setSelected(bool select);
     int sheetId() const;
     QStringList externUrlList() const;
     QStringList externDrawingList() const;
