@@ -19,17 +19,9 @@ void writeVerticalAlignCell(Document &xlsx, const QString &range, const QString 
    Format *format = xlsx.createFormat();
    format->setVerticalAlignment(align);
    format->setBorderStyle(Format::BorderThin);
-   xlsx.mergeCells(range);
-
    CellRange r(range);
-   for (int row=r.firstRow(); row<=r.lastRow(); ++row) {
-       for (int col=r.firstColumn(); col<=r.lastColumn(); ++col) {
-           if (row == r.firstRow() && col == r.firstColumn())
-               xlsx.write(row, col, text, format);
-           else
-               xlsx.write(row, col, QVariant(), format);
-       }
-   }
+   xlsx.write(r.firstRow(), r.firstColumn(), text);
+   xlsx.mergeCells(r, format);
 }
 
 void writeBorderStyleCell(Document &xlsx, const QString &cell, const QString &text, Format::BorderStyle bs)
@@ -83,7 +75,7 @@ void writeInternalNumFormatsCell(Document &xlsx, int row, double value, int numF
     Format *format = xlsx.createFormat();
     format->setNumberFormatIndex(numFmt);
     xlsx.write(row, 0, value);
-    xlsx.write(row, 1, numFmt);
+    xlsx.write(row, 1, QString("Builtin NumFmt %1").arg(numFmt));
     xlsx.write(row, 2, value, format);
 }
 
@@ -265,6 +257,18 @@ int main()
     writeCustomNumFormatsCell(xlsx, 14, 1.23, "0.00 \"RMB\"");
     writeCustomNumFormatsCell(xlsx, 15, 60, "[Red][<=100];[Green][>100]");
 
+    //---------------------------------------------------------------
+    //Create the fifth sheet.
+    xlsx.addWorksheet("Merging");
+    Format *centerAlign = xlsx.createFormat();
+    centerAlign->setHorizontalAlignment(Format::AlignHCenter);
+    centerAlign->setVerticalAlignment(Format::AlignVCenter);
+    xlsx.write("B4", "Hello Qt!");
+    xlsx.mergeCells("B4:F6", centerAlign);
+    xlsx.write("B8", 1);
+    xlsx.mergeCells("B8:C21", centerAlign);
+    xlsx.write("E8", 2);
+    xlsx.mergeCells("E8:F21", centerAlign);
 
     xlsx.saveAs("Book1.xlsx");
 

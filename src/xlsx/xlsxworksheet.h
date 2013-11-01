@@ -71,10 +71,8 @@ public:
 
     int insertImage(int row, int column, const QImage &image, const QPointF &offset=QPointF(), double xScale=1, double yScale=1);
 
-    int mergeCells(int row_begin, int column_begin, int row_end, int column_end);
-    int mergeCells(const QString &range);
-    int mergeCells(const CellRange &range);
-    int unmergeCells(int row_begin, int column_begin, int row_end, int column_end);
+    int mergeCells(const QString &range, Format *format=0);
+    int mergeCells(const CellRange &range, Format *format=0);
     int unmergeCells(const QString &range);
     int unmergeCells(const CellRange &range);
 

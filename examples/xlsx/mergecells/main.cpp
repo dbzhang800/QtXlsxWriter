@@ -1,15 +1,24 @@
 #include "xlsxdocument.h"
+#include "xlsxformat.h"
+
+QTXLSX_USE_NAMESPACE
 
 int main()
 {
-    QXlsx::Document xlsx;
-
-    xlsx.write("B1", "Merge Cells");
-    xlsx.mergeCells("B1:B5");
-
-    xlsx.write("E2", "Merge Cells 2");
-    xlsx.mergeCells("E2:G4");
-
+    Document xlsx;
+    //![0]
+    Format *format = xlsx.createFormat();
+    format->setHorizontalAlignment(Format::AlignHCenter);
+    format->setVerticalAlignment(Format::AlignVCenter);
+    //![0]
+    //![1]
+    xlsx.write("B4", "Hello Qt!");
+    xlsx.mergeCells("B4:F6", format);
+    xlsx.write("B8", 1);
+    xlsx.mergeCells("B8:C21", format);
+    xlsx.write("E8", 2);
+    xlsx.mergeCells("E8:F21", format);
+    //![1]
     xlsx.save();
 
     return 0;

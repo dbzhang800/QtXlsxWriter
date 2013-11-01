@@ -1,0 +1,19 @@
+/*!
+    \example mergecells
+    \title Merge Cells Example
+    \brief Demonstrates how to merge cells
+    \ingroup qtxlsx-examples
+
+    This example demonstrates how to generate a
+    simplest .xlsx file which contians merged cells with
+    Qt Xlsx Library.
+
+    \image xlsx-mergecells.png
+
+    Create an format which will be applied to the merged cells:
+    \snippet mergecells/main.cpp 0
+
+    Merge cells.
+    \snippet mergecells/main.cpp 1
+
+*/

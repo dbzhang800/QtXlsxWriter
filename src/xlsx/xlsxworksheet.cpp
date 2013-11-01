@@ -679,7 +679,13 @@ int Worksheet::insertImage(int row, int column, const QImage &image, const QPoin
     return 0;
 }
 
-int Worksheet::mergeCells(const CellRange &range)
+/*!
+    Merge a \a range of cells. The first cell should contain the data and the others should
+    be blank. All cells will be applied the same style if a valid \a format is given.
+
+    \note All cells except the top-left one will be cleared.
+ */
+int Worksheet::mergeCells(const CellRange &range, Format *format)
 {
     Q_D(Worksheet);
     if (range.rowCount() < 2 && range.columnCount() < 2)
@@ -688,11 +694,37 @@ int Worksheet::mergeCells(const CellRange &range)
     if (d->checkDimensions(range.firstRow(), range.firstColumn()))
         return -1;
 
+    for (int row = range.firstRow(); row <= range.lastRow(); ++row) {
+        for (int col = range.firstColumn(); col <= range.lastColumn(); ++col) {
+            if (row == range.firstRow() && col == range.firstColumn()) {
+                Cell *cell = cellAt(row, col);
+                if (cell) {
+                    if (format)
+                        cell->d_ptr->format = format;
+                } else {
+                    writeBlank(row, col, format);
+                }
+            } else {
+                writeBlank(row, col, format);
+            }
+        }
+    }
+
+    if (format)
+        d->workbook->styles()->addFormat(format);
+
     d->merges.append(range);
     return 0;
 }
 
-int Worksheet::mergeCells(const QString &range)
+/*!
+    \overload
+    Merge a \a range of cells. The first cell should contain the data and the others should
+    be blank. All cells will be applied the same style if a valid \a format is given.
+
+    \note All cells except the top-left one will be cleared.
+ */
+int Worksheet::mergeCells(const QString &range, Format *format)
 {
     QStringList cells = range.split(QLatin1Char(':'));
     if (cells.size() != 2)
@@ -703,14 +735,12 @@ int Worksheet::mergeCells(const QString &range)
     if (cell1 == QPoint(-1,-1) || cell2 == QPoint(-1, -1))
         return -1;
 
-    return mergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
+    return mergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()), format);
 }
 
-int Worksheet::mergeCells(int row_begin, int column_begin, int row_end, int column_end)
-{
-    return mergeCells(CellRange(row_begin, column_begin, row_end, column_end));
-}
-
+/*!
+    Unmerge the cells in the \a range.
+*/
 int Worksheet::unmergeCells(const CellRange &range)
 {
     Q_D(Worksheet);
@@ -721,6 +751,10 @@ int Worksheet::unmergeCells(const CellRange &range)
     return 0;
 }
 
+/*!
+    \overload
+    Unmerge the cells in the \a range.
+*/
 int Worksheet::unmergeCells(const QString &range)
 {
     QStringList cells = range.split(QLatin1Char(':'));
@@ -733,11 +767,6 @@ int Worksheet::unmergeCells(const QString &range)
         return -1;
 
     return unmergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
-}
-
-int Worksheet::unmergeCells(int row_begin, int column_begin, int row_end, int column_end)
-{
-    return unmergeCells(CellRange(row_begin, column_begin, row_end, column_end));
 }
 
 void Worksheet::saveToXmlFile(QIODevice *device)

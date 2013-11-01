@@ -142,17 +142,40 @@ int Document::insertImage(int row, int column, const QImage &image, double xOffs
 }
 
 /*!
- * Merge cell \a range.
+    Merge a \a range of cells. The first cell should contain the data and the others should
+    be blank. All cells will be applied the same style if a valid \a format is given.
+
+    \note All cells except the top-left one will be cleared.
  */
-int Document::mergeCells(const QString &range)
+int Document::mergeCells(const CellRange &range, Format *format)
 {
-    return currentWorksheet()->mergeCells(range);
+    return currentWorksheet()->mergeCells(range, format);
 }
 
 /*!
- * Unmerge cell \a range.
+    \overload
+    Merge a \a range of cells. The first cell should contain the data and the others should
+    be blank. All cells will be applied the same style if a valid \a format is given.
+
+    \note All cells except the top-left one will be cleared.
  */
+int Document::mergeCells(const QString &range, Format *format)
+{
+    return currentWorksheet()->mergeCells(range, format);
+}
+
+/*!
+    Unmerge the cells in the \a range.
+*/
 int Document::unmergeCells(const QString &range)
+{
+    return currentWorksheet()->unmergeCells(range);
+}
+
+/*!
+    Unmerge the cells in the \a range.
+*/
+int Document::unmergeCells(const CellRange &range)
 {
     return currentWorksheet()->unmergeCells(range);
 }
