@@ -498,6 +498,15 @@ Cell *Worksheet::cellAt(int row, int column) const
     return d->cellTable[row][column].data();
 }
 
+Format *WorksheetPrivate::cellFormat(int row, int col) const
+{
+    if (!cellTable.contains(row))
+        return 0;
+    if (!cellTable[row].contains(col))
+        return 0;
+    return cellTable[row][col]->format();
+}
+
 int Worksheet::writeString(int row, int column, const QString &value, Format *format)
 {
     Q_D(Worksheet);
@@ -512,7 +521,7 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     }
 
     d->sharedStrings()->addSharedString(content);
-
+    format = format ? format : d->cellFormat(row, column);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(content, Cell::String, format, this));
     d->workbook->styles()->addFormat(format);
     return error;
@@ -531,6 +540,7 @@ int Worksheet::writeInlineString(int row, int column, const QString &value, Form
         error = -2;
     }
 
+    format = format ? format : d->cellFormat(row, column);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::InlineString, format, this));
     d->workbook->styles()->addFormat(format);
     return error;
@@ -542,6 +552,7 @@ int Worksheet::writeNumeric(int row, int column, double value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
+    format = format ? format : d->cellFormat(row, column);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, format, this));
     d->workbook->styles()->addFormat(format);
     return 0;
@@ -559,6 +570,7 @@ int Worksheet::writeFormula(int row, int column, const QString &content, Format 
     if (formula.startsWith(QLatin1String("=")))
         formula.remove(0,1);
 
+    format = format ? format : d->cellFormat(row, column);
     Cell *data = new Cell(result, Cell::Formula, format, this);
     data->d_ptr->formula = formula;
     d->cellTable[row][column] = QSharedPointer<Cell>(data);
@@ -573,6 +585,7 @@ int Worksheet::writeBlank(int row, int column, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
+    format = format ? format : d->cellFormat(row, column);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(QVariant(), Cell::Blank, format, this));
     d->workbook->styles()->addFormat(format);
 
@@ -585,6 +598,7 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
     if (d->checkDimensions(row, column))
         return -1;
 
+    format = format ? format : d->cellFormat(row, column);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Boolean, format, this));
     d->workbook->styles()->addFormat(format);
 
@@ -652,6 +666,7 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, Format *form
 
     //Write the hyperlink string as normal string.
     d->sharedStrings()->addSharedString(displayString);
+    format = format ? format : d->cellFormat(row, column);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(displayString, Cell::String, format, this));
     d->workbook->styles()->addFormat(format);
 

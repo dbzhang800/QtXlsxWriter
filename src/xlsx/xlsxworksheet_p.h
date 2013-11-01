@@ -154,6 +154,7 @@ public:
     WorksheetPrivate(Worksheet *p);
     ~WorksheetPrivate();
     int checkDimensions(int row, int col, bool ignore_row=false, bool ignore_col=false);
+    Format *cellFormat(int row, int col) const;
     QString generateDimensionString();
     void calculateSpans();
     void writeSheetData(XmlStreamWriter &writer);
