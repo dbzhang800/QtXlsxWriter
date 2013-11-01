@@ -30,6 +30,7 @@
 #include <QSharedPointer>
 #include <QHash>
 #include <QList>
+#include <QMap>
 #include <QStringList>
 
 class QIODevice;
@@ -82,8 +83,9 @@ private:
     bool readCellXfs(XmlStreamReader &reader);
 
     QHash<QString, int> m_builtinNumFmtsHash;
-    QList<QSharedPointer<NumberData> > m_customNumFmts;
+    QMap<int, QSharedPointer<NumberData> > m_customNumFmtIdMap;
     QHash<QString, QSharedPointer<NumberData> > m_customNumFmtsHash;
+    int m_nextCustomNumFmtId;
     QList<QSharedPointer<FontData> > m_fontsList; //Keep a copy of unique fonts
     QList<QSharedPointer<FillData> > m_fillsList; //Keep a copy of unique fills
     QList<QSharedPointer<BorderData> > m_bordersList; //Keep a copy of unique borders

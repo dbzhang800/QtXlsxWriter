@@ -35,9 +35,15 @@
 
 namespace QXlsx {
 
-
+/*
+  When loading from existing .xlsx file. we should create a clean styles object.
+  otherwise, default formats should be added.
+*/
 Styles::Styles(bool createEmpty)
 {
+    //!Fix me. Should the custom num fmt Id starts with 164 or 176 or others??
+    m_nextCustomNumFmtId = 176;
+
     if (!createEmpty) {
         //Add default Format
         addFormat(createFormat());
@@ -85,10 +91,10 @@ void Styles::addFormat(Format *format)
             m_builtinNumFmtsHash.insert(QStringLiteral("0.00"), 2);
             m_builtinNumFmtsHash.insert(QStringLiteral("#,##0"), 3);
             m_builtinNumFmtsHash.insert(QStringLiteral("#,##0.00"), 4);
-            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0_);($#,##0)"), 5);
-            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0_);[Red]($#,##0)"), 6);
-            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0.00_);($#,##0.00)"), 7);
-            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0.00_);[Red]($#,##0.00)"), 8);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0_);($#,##0)"), 5);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0_);[Red]($#,##0)"), 6);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0.00_);($#,##0.00)"), 7);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("($#,##0.00_);[Red]($#,##0.00)"), 8);
             m_builtinNumFmtsHash.insert(QStringLiteral("0%"), 9);
             m_builtinNumFmtsHash.insert(QStringLiteral("0.00%"), 10);
             m_builtinNumFmtsHash.insert(QStringLiteral("0.00E+00"), 11);
@@ -108,10 +114,10 @@ void Styles::addFormat(Format *format)
             m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0_);[Red](#,##0)"), 38);
             m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0.00_);(#,##0.00)"), 39);
             m_builtinNumFmtsHash.insert(QStringLiteral("(#,##0.00_);[Red](#,##0.00)"), 40);
-            m_builtinNumFmtsHash.insert(QStringLiteral("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(_)"), 41);
-            m_builtinNumFmtsHash.insert(QStringLiteral("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(_)"), 42);
-            m_builtinNumFmtsHash.insert(QStringLiteral("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(_)"), 43);
-            m_builtinNumFmtsHash.insert(QStringLiteral("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(_)"), 44);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(_)"), 41);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(_)"), 42);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(_)"), 43);
+//            m_builtinNumFmtsHash.insert(QStringLiteral("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(_)"), 44);
             m_builtinNumFmtsHash.insert(QStringLiteral("mm:ss"), 45);
             m_builtinNumFmtsHash.insert(QStringLiteral("[h]:mm:ss"), 46);
             m_builtinNumFmtsHash.insert(QStringLiteral("mm:ss.0"), 47);
@@ -125,12 +131,14 @@ void Styles::addFormat(Format *format)
         } else if (m_customNumFmtsHash.contains(str)) {
             format->setNumFmt(m_customNumFmtsHash[str]->formatIndex, str);
         } else {
-            int idx = 164 + m_customNumFmts.size();
-            format->setNumFmt(idx, str);
+            //Assign a new fmt Id.
+            format->setNumFmt(m_nextCustomNumFmtId, str);
 
             QSharedPointer<NumberData> fmt(new NumberData(format->d_func()->numberData));
-            m_customNumFmts.append(fmt);
+            m_customNumFmtIdMap.insert(m_nextCustomNumFmtId, fmt);
             m_customNumFmtsHash.insert(str, fmt);
+
+            m_nextCustomNumFmtId += 1;
         }
     }
 
@@ -249,15 +257,18 @@ void Styles::saveToXmlFile(QIODevice *device)
 
 void Styles::writeNumFmts(XmlStreamWriter &writer)
 {
-    if (m_customNumFmts.size() == 0)
+    if (m_customNumFmtIdMap.size() == 0)
         return;
 
     writer.writeStartElement(QStringLiteral("numFmts"));
-    writer.writeAttribute(QStringLiteral("count"), QString::number(m_customNumFmts.count()));
-    for (int i=0; i<m_customNumFmts.size(); ++i) {
+    writer.writeAttribute(QStringLiteral("count"), QString::number(m_customNumFmtIdMap.count()));
+
+    QMapIterator<int, QSharedPointer<NumberData> > it(m_customNumFmtIdMap);
+    while(it.hasNext()) {
+        it.next();
         writer.writeEmptyElement(QStringLiteral("numFmt"));
-        writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(164 + i));
-        writer.writeAttribute(QStringLiteral("formatCode"), m_customNumFmts[i]->formatString);
+        writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(it.value()->formatIndex));
+        writer.writeAttribute(QStringLiteral("formatCode"), it.value()->formatString);
     }
     writer.writeEndElement();//numFmts
 }
@@ -546,7 +557,9 @@ bool Styles::readNumFmts(XmlStreamReader &reader)
         QSharedPointer<NumberData> fmt (new NumberData);
         fmt->formatIndex = attributes.value(QLatin1String("numFmtId")).toInt();
         fmt->formatString = attributes.value(QLatin1String("formatCode")).toString();
-        m_customNumFmts.append(fmt);
+        if (fmt->formatIndex >= m_nextCustomNumFmtId)
+            m_nextCustomNumFmtId = fmt->formatIndex + 1;
+        m_customNumFmtIdMap.insert(fmt->formatIndex, fmt);
         m_customNumFmtsHash.insert(fmt->formatString, fmt);
 
         while (!(reader.name() == QLatin1String("numFmt") && reader.tokenType() == QXmlStreamReader::EndElement))
@@ -829,11 +842,10 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
 
         if (xfAttrs.hasAttribute(QLatin1String("applyNumberFormat"))) {
             int numFmtIndex = xfAttrs.value(QLatin1String("numFmtId")).toInt();
-            if (numFmtIndex < 164) {
+            if (!m_customNumFmtIdMap.contains(numFmtIndex))
                 format->setNumberFormatIndex(numFmtIndex);
-            } else {
-                format->d_func()->numberData = *m_customNumFmts[numFmtIndex-164];
-            }
+            else
+                format->d_func()->numberData = *m_customNumFmtIdMap[numFmtIndex];
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFont"))) {

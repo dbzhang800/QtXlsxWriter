@@ -64,7 +64,7 @@ void StylesTest::testAddFormat2()
     format2->setNumberFormat("aaaaa h:mm:ss AM/PM"); //custom
     styles.addFormat(format2);
 
-    QCOMPARE(format2->numberFormatIndex(), 164);
+    QCOMPARE(format2->numberFormatIndex(), 176);
 }
 
 // For a solid fill, Excel reverses the role of foreground and background colours
@@ -141,12 +141,11 @@ void StylesTest::testReadNumFmts()
     reader.readNextStartElement();//So current node is numFmts
     styles.readNumFmts(reader);
 
-    QCOMPARE(styles.m_customNumFmts.size(), 2);
-    QCOMPARE(styles.m_customNumFmts[0]->formatIndex, 164);
-    QCOMPARE(styles.m_customNumFmts[0]->formatString, QStringLiteral("yyyy-mm-ddThh:mm:ss"));
-    QCOMPARE(styles.m_customNumFmts[1]->formatIndex, 165);
-    QCOMPARE(styles.m_customNumFmts[1]->formatString, QStringLiteral("dd/mm/yyyy"));
-
+    QCOMPARE(styles.m_customNumFmtIdMap.size(), 2);
+    QVERIFY(styles.m_customNumFmtIdMap.contains(164));
+    QCOMPARE(styles.m_customNumFmtIdMap[164]->formatString, QStringLiteral("yyyy-mm-ddThh:mm:ss"));
+    QVERIFY(styles.m_customNumFmtIdMap.contains(165));
+    QCOMPARE(styles.m_customNumFmtIdMap[165]->formatString, QStringLiteral("dd/mm/yyyy"));
 }
 
 QTEST_APPLESS_MAIN(StylesTest)
