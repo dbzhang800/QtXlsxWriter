@@ -620,7 +620,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
                         QString colorString = attributes.value(QLatin1String("rgb")).toString();
                         font->color = fromARGBString(colorString);
                     } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-
+                        font->color = getColorByIndex(attributes.value(QLatin1String("indexed")).toInt());
                     } else if (attributes.hasAttribute(QLatin1String("theme"))) {
 
                     }
@@ -693,22 +693,26 @@ bool Styles::readFill(XmlStreamReader &reader)
                 fill->pattern = patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone;
             } else if (reader.name() == QLatin1String("fgColor")) {
                 QXmlStreamAttributes attributes = reader.attributes();
-                if (attributes.hasAttribute(QLatin1String("rgb"))) {
-                    QColor c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
-                    if (fill->pattern == Format::PatternSolid)
-                        fill->bgColor = c;
-                    else
-                        fill->fgColor = c;
-                }
+                QColor c;
+                if (attributes.hasAttribute(QLatin1String("rgb")))
+                    c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
+                else if (attributes.hasAttribute(QLatin1String("indexed")))
+                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toInt());
+                if (fill->pattern == Format::PatternSolid)
+                    fill->bgColor = c;
+                else
+                    fill->fgColor = c;
             } else if (reader.name() == QLatin1String("bgColor")) {
                 QXmlStreamAttributes attributes = reader.attributes();
-                if (attributes.hasAttribute(QLatin1String("rgb"))) {
-                    QColor c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
-                    if (fill->pattern == Format::PatternSolid)
-                        fill->fgColor = c;
-                    else
-                        fill->bgColor = c;
-                }
+                QColor c;
+                if (attributes.hasAttribute(QLatin1String("rgb")))
+                    c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
+                else if (attributes.hasAttribute(QLatin1String("indexed")))
+                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toInt());
+                if (fill->pattern == Format::PatternSolid)
+                    fill->fgColor = c;
+                else
+                    fill->bgColor = c;
             }
         }
 
@@ -814,6 +818,8 @@ bool Styles::readSubBorder(XmlStreamReader &reader, const QString &name, Format:
                             QString colorString = colorAttrs.value(QLatin1String("rgb")).toString();
                             //get color
                             color = fromARGBString(colorString);
+                        } else if (colorAttrs.hasAttribute(QLatin1String("indexed"))) {
+                            color = getColorByIndex(colorAttrs.value(QLatin1String("indexed")).toInt());
                         }
                     }
 
@@ -940,8 +946,53 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
     return true;
 }
 
+bool Styles::readColors(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("colors"));
+    while (!(reader.name() == QLatin1String("colors") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("indexedColors")) {
+                readIndexedColors(reader);
+            } else if (reader.name() == QLatin1String("mruColors")) {
+
+            }
+        }
+    }
+    return true;
+}
+
+bool Styles::readIndexedColors(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("indexedColors"));
+    while (!(reader.name() == QLatin1String("indexedColors") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("rgbColor")) {
+                QString color = reader.attributes().value(QLatin1String("rgb")).toString();
+                m_indexedColors.append(fromARGBString(color));
+            }
+        }
+    }
+    return true;
+}
+
 bool Styles::loadFromXmlFile(QIODevice *device)
 {
+    {
+        //Try load colors part first!
+        XmlStreamReader reader(device);
+        while(!reader.atEnd()) {
+            QXmlStreamReader::TokenType token = reader.readNext();
+            if (token == QXmlStreamReader::StartElement) {
+                if (reader.name() == QLatin1String("colors")) {
+                    readColors(reader);
+                }
+            }
+        }
+        device->seek(0);
+    }
+
     XmlStreamReader reader(device);
     while(!reader.atEnd()) {
         QXmlStreamReader::TokenType token = reader.readNext();
@@ -977,6 +1028,31 @@ bool Styles::loadFromXmlData(const QByteArray &data)
     buffer.open(QIODevice::ReadOnly);
 
     return loadFromXmlFile(&buffer);
+}
+
+QColor Styles::getColorByIndex(int idx)
+{
+    if (m_indexedColors.isEmpty()) {
+        m_indexedColors<<QColor("#000000") <<QColor("#FFFFFF") <<QColor("#FF0000") <<QColor("#00FF00")
+                      <<QColor("#0000FF") <<QColor("#FFFF00") <<QColor("#FF00FF") <<QColor("#00FFFF")
+                     <<QColor("#000000") <<QColor("#FFFFFF") <<QColor("#FF0000") <<QColor("#00FF00")
+                    <<QColor("#0000FF") <<QColor("#FFFF00") <<QColor("#FF00FF") <<QColor("#00FFFF")
+                   <<QColor("#800000") <<QColor("#008000") <<QColor("#000080") <<QColor("#808000")
+                  <<QColor("#800080") <<QColor("#008080") <<QColor("#C0C0C0") <<QColor("#808080")
+                 <<QColor("#9999FF") <<QColor("#993366") <<QColor("#FFFFCC") <<QColor("#CCFFFF")
+                <<QColor("#660066") <<QColor("#FF8080") <<QColor("#0066CC") <<QColor("#CCCCFF")
+               <<QColor("#000080") <<QColor("#FF00FF") <<QColor("#FFFF00") <<QColor("#00FFFF")
+              <<QColor("#800080") <<QColor("#800000") <<QColor("#008080") <<QColor("#0000FF")
+             <<QColor("#00CCFF") <<QColor("#CCFFFF") <<QColor("#CCFFCC") <<QColor("#FFFF99")
+            <<QColor("#99CCFF") <<QColor("#FF99CC") <<QColor("#CC99FF") <<QColor("#FFCC99")
+           <<QColor("#3366FF") <<QColor("#33CCCC") <<QColor("#99CC00") <<QColor("#FFCC00")
+          <<QColor("#FF9900") <<QColor("#FF6600") <<QColor("#666699") <<QColor("#969696")
+         <<QColor("#003366") <<QColor("#339966") <<QColor("#003300") <<QColor("#333300")
+        <<QColor("#993300") <<QColor("#993366") <<QColor("#333399") <<QColor("#333333");
+    }
+    if (idx < 0 || idx >= m_indexedColors.size())
+        return QColor();
+    return m_indexedColors[idx];
 }
 
 } //namespace QXlsx

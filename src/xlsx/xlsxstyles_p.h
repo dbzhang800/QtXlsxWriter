@@ -32,6 +32,7 @@
 #include <QList>
 #include <QMap>
 #include <QStringList>
+#include <QVector>
 
 class QIODevice;
 class StylesTest;
@@ -81,6 +82,10 @@ private:
     bool readBorder(XmlStreamReader &reader);
     bool readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color);
     bool readCellXfs(XmlStreamReader &reader);
+    bool readColors(XmlStreamReader &reader);
+    bool readIndexedColors(XmlStreamReader &reader);
+
+    QColor getColorByIndex(int idx);
 
     QHash<QString, int> m_builtinNumFmtsHash;
     QMap<int, QSharedPointer<NumberData> > m_customNumFmtIdMap;
@@ -92,6 +97,8 @@ private:
     QHash<QByteArray, QSharedPointer<FontData> > m_fontsHash;
     QHash<QByteArray, QSharedPointer<FillData> > m_fillsHash;
     QHash<QByteArray, QSharedPointer<BorderData> > m_bordersHash;
+
+    QVector<QColor> m_indexedColors;
 
     QList<QSharedPointer<Format> > m_createdFormatsList; //All created formats
 
