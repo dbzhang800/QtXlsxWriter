@@ -1475,7 +1475,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                     int idx = attributes.value(QLatin1String("s")).toInt();
                     format = workbook->styles()->xfFormat(idx);
                     if (!format)
-                        qDebug()<<"Invalid style index: "<<idx;
+                        qDebug()<<QStringLiteral("<c s=\"%1\">Invalid style index: ").arg(idx)<<idx;
                 }
 
                 if (attributes.hasAttribute(QLatin1String("t"))) {

@@ -52,7 +52,7 @@ public:
     Styles(bool createEmpty=false);
     ~Styles();
     Format *createFormat();
-    void addFormat(Format *format);
+    void addFormat(Format *format, bool force=false);
     Format *xfFormat(int idx) const;
 
     QByteArray saveToXmlData();

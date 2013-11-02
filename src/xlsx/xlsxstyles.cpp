@@ -77,8 +77,12 @@ Format *Styles::xfFormat(int idx) const
 
 /*
    Assign index to Font/Fill/Border and Format
+
+   When \a force is true, add the format to the format list, even other format has
+   the same key have been in.
+   This is useful when reading existing .xlsx files which may contains duplicated formats.
 */
-void Styles::addFormat(Format *format)
+void Styles::addFormat(Format *format, bool force)
 {
     if (!format)
         return;
@@ -188,7 +192,7 @@ void Styles::addFormat(Format *format)
         }
     } else {
         if (!format->xfIndexValid()) {
-            if (!m_xf_formatsHash.contains(format->formatKey())) {
+            if (!m_xf_formatsHash.contains(format->formatKey()) || force) {
                 format->setXfIndex(m_xf_formatsList.size());
                 m_xf_formatsList.append(format);
                 m_xf_formatsHash[format->formatKey()] = format;
@@ -926,7 +930,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             }
         }
 
-        addFormat(format);
+        addFormat(format, true);
 
         //Find the endElement of xf
         while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QLatin1String("xf")))
