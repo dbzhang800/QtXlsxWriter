@@ -161,10 +161,10 @@ QSharedPointer<SharedStrings> SharedStrings::loadFromXmlFile(QIODevice *device)
              } else if (reader.name() == QLatin1String("si")) {
                  if (reader.readNextStartElement()) {
                      if (reader.name() == QLatin1String("t")) {
-                         QXmlStreamAttributes attributes = reader.attributes();
+//                         QXmlStreamAttributes attributes = reader.attributes();
                          QString string = reader.readElementText();
-
-                         sst->m_stringTable[string] = XlsxSharedStringInfo(sst->m_stringTable.size(), 0);
+                         int idx = sst->m_stringList.size();
+                         sst->m_stringTable[string] = XlsxSharedStringInfo(idx, 0);
                          sst->m_stringList.append(string);
                      }
                  }

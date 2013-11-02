@@ -96,6 +96,8 @@ void SharedStringsTest::testLoadXmlData()
 
     QCOMPARE(sst2->getSharedString(0), QStringLiteral("Hello Qt!"));
     QCOMPARE(sst2->getSharedString(2), QStringLiteral("Hello World"));
+    QCOMPARE(sst2->getSharedStringIndex("Hello Qt!"), 0);
+    QCOMPARE(sst2->getSharedStringIndex("Hello World"), 2);
 }
 
 QTEST_APPLESS_MAIN(SharedStringsTest)
