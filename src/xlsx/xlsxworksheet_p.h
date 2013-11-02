@@ -178,6 +178,7 @@ public:
 
     SharedStrings *sharedStrings() const;
 
+    Worksheet *q_ptr;
     Workbook *workbook;
     Drawing *drawing;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
@@ -224,8 +225,6 @@ public:
     bool showRuler;
     bool showOutlineSymbols;
     bool showWhiteSpace;
-
-    Worksheet *q_ptr;
 };
 
 }
