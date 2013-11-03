@@ -857,6 +857,10 @@ void Worksheet::saveToXmlFile(QIODevice *device)
                 writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
             if (col_info->width)
                 writer.writeAttribute(QStringLiteral("customWidth"), QStringLiteral("1"));
+            if (col_info->outlineLevel)
+                writer.writeAttribute(QStringLiteral("outlineLevel"), QString::number(col_info->outlineLevel));
+            if (col_info->collapsed)
+                writer.writeAttribute(QStringLiteral("collapsed"), QStringLiteral("1"));
             writer.writeEndElement();//col
         }
         writer.writeEndElement();//cols
@@ -1617,18 +1621,22 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 info->firstColumn = min - 1;
                 info->lastColumn = max - 1;
 
-                if (colAttrs.hasAttribute(QLatin1String("customWidth"))) {
+                //!Todo, customWidth support.
+                //Note, node may have "width" without "customWidth"
+                if (colAttrs.hasAttribute(QLatin1String("width"))) {
                     double width = colAttrs.value(QLatin1String("width")).toDouble();
                     info->width = width;
                 }
 
-                if (colAttrs.hasAttribute(QLatin1String("hidden")))
-                    info->hidden = true;
+                info->hidden = colAttrs.value(QLatin1String("hidden")) == QLatin1String("1");
+                info->collapsed = colAttrs.value(QLatin1String("collapsed")) == QLatin1String("1");
 
                 if (colAttrs.hasAttribute(QLatin1String("style"))) {
                     int idx = colAttrs.value(QLatin1String("style")).toInt();
                     info->format = workbook->styles()->xfFormat(idx);
                 }
+                if (colAttrs.hasAttribute(QLatin1String("outlineLevel")))
+                    info->outlineLevel = colAttrs.value(QLatin1String("outlineLevel")).toInt();
 
                 colsInfo.append(info);
                 for (int col=min; col<=max; ++col)
