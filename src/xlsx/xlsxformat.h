@@ -126,7 +126,8 @@ public:
         PatternLightUp,
         PatternLightTrellis,
         PatternGray125,
-        PatternGray0625
+        PatternGray0625,
+        PatternLightGrid
     };
 
     ~Format();

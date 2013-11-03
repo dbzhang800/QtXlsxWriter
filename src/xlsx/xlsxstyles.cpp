@@ -403,6 +403,7 @@ void Styles::writeFill(XmlStreamWriter &writer, FillData *fill)
         patternStrings[Format::PatternLightTrellis] = QStringLiteral("lightTrellis");
         patternStrings[Format::PatternGray125] = QStringLiteral("gray125");
         patternStrings[Format::PatternGray0625] = QStringLiteral("gray0625");
+        patternStrings[Format::PatternLightGrid] = QStringLiteral("lightGrid");
     }
 
     writer.writeStartElement(QStringLiteral("fill"));
@@ -682,6 +683,7 @@ bool Styles::readFill(XmlStreamReader &reader)
         patternValues[QStringLiteral("lightTrellis")] = Format::PatternLightTrellis;
         patternValues[QStringLiteral("gray125")] = Format::PatternGray125;
         patternValues[QStringLiteral("gray0625")] = Format::PatternGray0625;
+        patternValues[QStringLiteral("lightGrid")] = Format::PatternLightGrid;
     }
 
     QSharedPointer<FillData> fill(new FillData);
