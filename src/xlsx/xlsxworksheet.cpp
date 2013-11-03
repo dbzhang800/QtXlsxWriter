@@ -903,12 +903,16 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
                     writer.writeAttribute(QStringLiteral("s"), QString::number(rowInfo->format->xfIndex()));
                     writer.writeAttribute(QStringLiteral("customFormat"), QStringLiteral("1"));
                 }
-                if (rowInfo->height != 15) {
+                if (rowInfo->height != 15 && rowInfo->height != 0) {
                     writer.writeAttribute(QStringLiteral("ht"), QString::number(rowInfo->height));
                     writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("1"));
                 }
                 if (rowInfo->hidden)
                     writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
+                if (rowInfo->outlineLevel > 0)
+                    writer.writeAttribute(QStringLiteral("outlineLevel"), QString::number(rowInfo->outlineLevel));
+                if (rowInfo->collapsed)
+                    writer.writeAttribute(QStringLiteral("collapsed"), QStringLiteral("1"));
             }
 
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
@@ -1197,6 +1201,42 @@ bool Worksheet::setColumn(const QString &colFirst, const QString &colLast, doubl
 }
 
 /*!
+   Groups rows from rowFirst to rowLast. Returns false if error occurs.
+ */
+bool Worksheet::groupRows(int rowFirst, int rowLast, bool collapsed)
+{
+    Q_D(Worksheet);
+
+    for (int row=rowFirst; row<=rowLast; ++row) {
+        if (d->rowsInfo.contains(row)) {
+            d->rowsInfo[row]->outlineLevel += 1;
+        } else {
+            QSharedPointer<XlsxRowInfo> info(new XlsxRowInfo);
+            info->outlineLevel += 1;
+            d->rowsInfo.insert(row, info);
+        }
+        if (collapsed)
+            d->rowsInfo[row]->hidden = true;
+    }
+    if (collapsed) {
+        if (!d->rowsInfo.contains(rowLast+1))
+            d->rowsInfo.insert(rowLast+1, QSharedPointer<XlsxRowInfo>(new XlsxRowInfo));
+        d->rowsInfo[rowLast+1]->collapsed = true;
+    }
+    return true;
+}
+
+/*!
+   Groups columns from colFirst to colLast. Returns false if error occurs.
+*/
+bool Worksheet::groupColumns(int colFirst, int colLast, bool collapsed)
+{
+    Q_D(Worksheet);
+
+    return false;
+}
+
+/*!
     Return the range that contains cell data.
  */
 CellRange Worksheet::dimension() const
@@ -1447,7 +1487,9 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
 
                 if (attributes.hasAttribute(QLatin1String("customFormat"))
                         || attributes.hasAttribute(QLatin1String("customHeight"))
-                        || attributes.hasAttribute(QLatin1String("hidden"))) {
+                        || attributes.hasAttribute(QLatin1String("hidden"))
+                        || attributes.hasAttribute(QLatin1String("outlineLevel"))
+                        || attributes.hasAttribute(QLatin1String("collapsed"))) {
 
                     QSharedPointer<XlsxRowInfo> info(new XlsxRowInfo);
                     if (attributes.hasAttribute(QLatin1String("customFormat")) && attributes.hasAttribute(QLatin1String("s"))) {
@@ -1457,11 +1499,18 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                     if (attributes.hasAttribute(QLatin1String("customHeight")) && attributes.hasAttribute(QLatin1String("ht"))) {
                         info->height = attributes.value(QLatin1String("ht")).toDouble();
                     }
-                    if (attributes.hasAttribute(QLatin1String("hidden")))
-                        info->hidden = true;
+                    //both "hidden" and "collapsed" default are false
+                    info->hidden = attributes.value(QLatin1String("hidden")) == QLatin1String("1");
+                    info->collapsed = attributes.value(QLatin1String("collapsed")) == QLatin1String("1");
 
-                    int row = attributes.value(QLatin1String("r")).toInt();
-                    rowsInfo[row] = info;
+                    if (attributes.hasAttribute(QLatin1String("outlineLevel")))
+                        info->outlineLevel = attributes.value(QLatin1String("outlineLevel")).toInt();
+
+                    //"r" is optional too.
+                    if (attributes.hasAttribute(QLatin1String("r"))) {
+                        int row = attributes.value(QLatin1String("r")).toInt()-1;
+                        rowsInfo[row] = info;
+                    }
                 }
 
             } else if (reader.name() == QLatin1String("c")) {

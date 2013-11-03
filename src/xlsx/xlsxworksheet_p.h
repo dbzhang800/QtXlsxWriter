@@ -123,7 +123,8 @@ struct XlsxObjectPositionData
 struct XlsxRowInfo
 {
     XlsxRowInfo(double height=0, Format *format=0, bool hidden=false) :
-        height(height), format(format), hidden(hidden)
+        height(height), format(format), hidden(hidden), outlineLevel(0)
+      , collapsed(false)
     {
 
     }
@@ -131,12 +132,15 @@ struct XlsxRowInfo
     double height;
     Format *format;
     bool hidden;
+    int outlineLevel;
+    bool collapsed;
 };
 
 struct XlsxColumnInfo
 {
     XlsxColumnInfo(int firstColumn=0, int lastColumn=1, double width=0, Format *format=0, bool hidden=false) :
         firstColumn(firstColumn), lastColumn(lastColumn), width(width), format(format), hidden(hidden)
+      , outlineLevel(0), collapsed(false)
     {
 
     }
@@ -145,6 +149,8 @@ struct XlsxColumnInfo
     double width;
     Format *format;
     bool hidden;
+    int outlineLevel;
+    bool collapsed;
 };
 
 class XLSX_AUTOTEST_EXPORT WorksheetPrivate

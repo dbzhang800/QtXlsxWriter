@@ -80,6 +80,8 @@ public:
     bool setRow(const QString &row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
     bool setColumn(const QString &colFirst, const QString &colLast, double width, Format* format=0, bool hidden=false);
+    bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
+    bool groupColumns(int colFirst, int colLast, bool collapsed = true);
     CellRange dimension() const;
 
     bool isWindowProtected() const;
