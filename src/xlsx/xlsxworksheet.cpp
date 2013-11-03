@@ -1143,7 +1143,7 @@ bool Worksheet::setRow(const QString &row, double height, Format *format, bool h
     bool ok=true;
     int r = row.toInt(&ok);
     if (ok)
-        return setRow(r, height, format, hidden);
+        return setRow(r-1, height, format, hidden);
 
     return false;
 }
