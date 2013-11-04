@@ -42,7 +42,6 @@ FormatPrivate::FormatPrivate(Format *p) :
     dxf_indexValid = false;
 
     theme = 0;
-    color_indexed = 0;
 }
 
 /*!
@@ -981,12 +980,6 @@ int Format::theme() const
 {
     Q_D(const Format);
     return d->theme;
-}
-
-int Format::colorIndexed() const
-{
-    Q_D(const Format);
-    return d->color_indexed;
 }
 
 QT_END_NAMESPACE_XLSX

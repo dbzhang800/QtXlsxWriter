@@ -266,7 +266,6 @@ public:
     bool dxf_indexValid;
 
     int theme;
-    int color_indexed;
 
     Format *q_ptr;
 };

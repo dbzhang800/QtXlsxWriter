@@ -253,7 +253,6 @@ private:
     void setDxfIndex(int index);
 
     int theme() const;
-    int colorIndexed() const;
 
     FormatPrivate * const d_ptr;
 };
