@@ -43,6 +43,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
 {
     sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings);
     styles = QSharedPointer<Styles>(new Styles);
+    theme = QSharedPointer<Theme>(new Theme);
 
     x_window = 240;
     y_window = 15;
@@ -245,6 +246,12 @@ Styles *Workbook::styles()
 {
     Q_D(Workbook);
     return d->styles.data();
+}
+
+Theme *Workbook::theme()
+{
+    Q_D(Workbook);
+    return d->theme.data();
 }
 
 QList<QImage> Workbook::images()

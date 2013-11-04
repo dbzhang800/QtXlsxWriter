@@ -41,6 +41,7 @@ class Styles;
 class Package;
 class Drawing;
 class Document;
+class Theme;
 class DocumentPrivate;
 
 class WorkbookPrivate;
@@ -82,6 +83,7 @@ private:
 
     SharedStrings *sharedStrings() const;
     Styles *styles();
+    Theme *theme();
     QList<QImage> images();
     QList<Drawing *> drawings();
     void prepareDrawings();

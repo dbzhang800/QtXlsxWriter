@@ -25,6 +25,7 @@
 #ifndef XLSXWORKBOOK_P_H
 #define XLSXWORKBOOK_P_H
 #include "xlsxworkbook.h"
+#include "xlsxtheme_p.h"
 #include <QSharedPointer>
 #include <QPair>
 
@@ -68,6 +69,7 @@ public:
     QSharedPointer<SharedStrings> sharedStrings;
     QList<QSharedPointer<Worksheet> > worksheets;
     QSharedPointer<Styles> styles;
+    QSharedPointer<Theme> theme;
     QList<QImage> images;
     QList<Drawing *> drawings;
     QList<XlsxDefineNameData> definedNamesList;

@@ -168,7 +168,9 @@ bool Package::parsePackage(QIODevice *packageDevice)
     QList<XlsxRelationship> rels_theme = xlworkbook_Rels.documentRelationships(QStringLiteral("/theme"));
     if (!rels_theme.isEmpty()) {
         //In normal case this should be theme/theme1.xml which in xl
-        //:Todo
+        QString name = rels_theme[0].target;
+        QString path = xlworkbook_Dir + QLatin1String("/") + name;
+        m_document->workbook()->theme()->loadFromXmlData(zipReader.fileData(path));
     }
 
     //load worksheets
@@ -338,7 +340,7 @@ void Package::writeThemeFile(ZipWriter &zipWriter)
     QByteArray data;
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
-    Theme().saveToXmlFile(&buffer);
+    m_workbook->theme()->saveToXmlFile(&buffer);
     zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), data);
 }
 

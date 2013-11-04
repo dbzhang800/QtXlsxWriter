@@ -36,6 +36,9 @@ public:
     Theme();
 
     void saveToXmlFile(QIODevice *device);
+    void loadFromXmlData(const QByteArray &data);
+
+    QByteArray xmlData;
 };
 
 }
