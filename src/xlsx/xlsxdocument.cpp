@@ -225,6 +225,22 @@ bool Document::setColumn(const QString &colFirst, const QString &colLast, double
 }
 
 /*!
+   Groups rows from rowFirst to rowLast. Returns false if error occurs.
+ */
+bool Document::groupRows(int rowFirst, int rowLast, bool collapsed)
+{
+    return currentWorksheet()->groupRows(rowFirst, rowLast, collapsed);
+}
+
+/*!
+   Groups columns from colFirst to colLast. Returns false if error occurs.
+ */
+bool Document::groupColumns(int colFirst, int colLast, bool collapsed)
+{
+    return currentWorksheet()->groupColumns(colFirst, colLast, collapsed);
+}
+
+/*!
  * \brief Add a data validation rule for current worksheet
  * \param validation
  * \return

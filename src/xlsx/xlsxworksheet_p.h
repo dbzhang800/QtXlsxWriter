@@ -163,6 +163,8 @@ public:
     Format *cellFormat(int row, int col) const;
     QString generateDimensionString();
     void calculateSpans();
+    void splitColsInfo(int colFirst, int colLast);
+
     void writeSheetData(XmlStreamWriter &writer);
     void writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell);
     void writeMergeCells(XmlStreamWriter &writer);
@@ -195,7 +197,7 @@ public:
     QStringList externDrawingList;
     QList<XlsxImageData *> imageList;
     QMap<int, QSharedPointer<XlsxRowInfo> > rowsInfo;
-    QList<QSharedPointer<XlsxColumnInfo> > colsInfo;
+    QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfo;
     QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfoHelper;
     QList<QPair<QString, QString> > drawingLinks;
 

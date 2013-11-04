@@ -845,8 +845,10 @@ void Worksheet::saveToXmlFile(QIODevice *device)
 
     if (!d->colsInfo.isEmpty()) {
         writer.writeStartElement(QStringLiteral("cols"));
-        for (int i=0; i<d->colsInfo.size(); ++i) {
-            QSharedPointer<XlsxColumnInfo> col_info = d->colsInfo[i];
+        QMapIterator<int, QSharedPointer<XlsxColumnInfo> > it(d->colsInfo);
+        while (it.hasNext()) {
+            it.next();
+            QSharedPointer<XlsxColumnInfo> col_info = it.value();
             writer.writeStartElement(QStringLiteral("col"));
             writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->firstColumn + 1));
             writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->lastColumn + 1));
@@ -1156,6 +1158,48 @@ bool Worksheet::setRow(const QString &row, double height, Format *format, bool h
     return false;
 }
 
+void WorksheetPrivate::splitColsInfo(int colFirst, int colLast)
+{
+    // Split current columnInfo, for example, if "A:H" has been set,
+    // we are trying to set "B:D", there should be "A", "B:D", "E:H".
+    // This will be more complex if we try to set "C:F" after "B:D".
+    {
+        QMapIterator<int, QSharedPointer<XlsxColumnInfo> > it(colsInfo);
+        while(it.hasNext()) {
+            it.next();
+            QSharedPointer<XlsxColumnInfo> info = it.value();
+            if (colFirst > info->firstColumn && colFirst <= info->lastColumn) {
+                //split the range,
+                QSharedPointer<XlsxColumnInfo> info2(new XlsxColumnInfo(*info));
+                info->lastColumn = colFirst - 1;
+                info2->firstColumn = colFirst;
+                colsInfo.insert(colFirst, info2);
+                for (int c = info2->firstColumn; c <= info2->lastColumn; ++c)
+                    colsInfoHelper[c] = info2;
+
+                break;
+            }
+        }
+    }
+    {
+        QMapIterator<int, QSharedPointer<XlsxColumnInfo> > it(colsInfo);
+        while(it.hasNext()) {
+            it.next();
+            QSharedPointer<XlsxColumnInfo> info = it.value();
+            if (colLast >= info->firstColumn && colLast < info->lastColumn) {
+                QSharedPointer<XlsxColumnInfo> info2(new XlsxColumnInfo(*info));
+                info->lastColumn = colLast;
+                info2->firstColumn = colLast + 1;
+                colsInfo.insert(colLast + 1, info2);
+                for (int c = info2->firstColumn; c <= info2->lastColumn; ++c)
+                    colsInfoHelper[c] = info2;
+
+                break;
+            }
+        }
+    }
+}
+
 /*!
   Sets column width and format for all columns from colFirst to colLast. Column
   width measured as the number of characters of the maximum digit width of the
@@ -1176,12 +1220,35 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *forma
     if (d->checkDimensions(0, colFirst, ignore_row, ignore_col))
         return false;
 
-    QSharedPointer<XlsxColumnInfo> info(new XlsxColumnInfo(colFirst, colLast, width, format, hidden));
-    d->colsInfo.append(info);
+    d->splitColsInfo(colFirst, colLast);
 
-    for (int col=colFirst; col<=colLast; ++col)
-        d->colsInfoHelper[col] = info;
+    QList<int> nodes;
+    nodes.append(colFirst);
+    for (int col = colFirst; col <= colLast; ++col) {
+        if (d->colsInfo.contains(col)) {
+            if (nodes.last() != col)
+                nodes.append(col);
+            int nextCol = d->colsInfo[col]->lastColumn + 1;
+            if (nextCol <= colLast)
+                nodes.append(nextCol);
+        }
+    }
 
+    for (int idx = 0; idx < nodes.size(); ++idx) {
+        int colStart = nodes[idx];
+        if (d->colsInfo.contains(colStart)) {
+            QSharedPointer<XlsxColumnInfo> info = d->colsInfo[colStart];
+            info->width = width;
+            info->format = format;
+            info->hidden = hidden;
+        } else {
+            int colEnd = (idx == nodes.size() - 1) ? colLast : nodes[idx+1] - 1;
+            QSharedPointer<XlsxColumnInfo> info(new XlsxColumnInfo(colStart, colEnd, width, format, hidden));
+            d->colsInfo.insert(colFirst, info);
+            for (int c = colStart; c <= colEnd; ++c)
+                d->colsInfoHelper[c] = info;
+        }
+    }
     d->workbook->styles()->addFormat(format);
 
     return true;
@@ -1236,6 +1303,52 @@ bool Worksheet::groupRows(int rowFirst, int rowLast, bool collapsed)
 bool Worksheet::groupColumns(int colFirst, int colLast, bool collapsed)
 {
     Q_D(Worksheet);
+
+    d->splitColsInfo(colFirst, colLast);
+
+    QList<int> nodes;
+    nodes.append(colFirst);
+    for (int col = colFirst; col <= colLast; ++col) {
+        if (d->colsInfo.contains(col)) {
+            if (nodes.last() != col)
+                nodes.append(col);
+            int nextCol = d->colsInfo[col]->lastColumn + 1;
+            if (nextCol <= colLast)
+                nodes.append(nextCol);
+        }
+    }
+
+    for (int idx = 0; idx < nodes.size(); ++idx) {
+        int colStart = nodes[idx];
+        if (d->colsInfo.contains(colStart)) {
+            QSharedPointer<XlsxColumnInfo> info = d->colsInfo[colStart];
+            info->outlineLevel += 1;
+            if (collapsed)
+                info->hidden = true;
+        } else {
+            int colEnd = (idx == nodes.size() - 1) ? colLast : nodes[idx+1] - 1;
+            QSharedPointer<XlsxColumnInfo> info(new XlsxColumnInfo(colStart, colEnd));
+            info->outlineLevel += 1;
+            d->colsInfo.insert(colFirst, info);
+            if (collapsed)
+                info->hidden = true;
+            for (int c = colStart; c <= colEnd; ++c)
+                d->colsInfoHelper[c] = info;
+        }
+    }
+
+    if (collapsed) {
+        int col = colLast+1;
+        d->splitColsInfo(col, col);
+        if (d->colsInfo.contains(col))
+            d->colsInfo[col]->collapsed = true;
+        else {
+            QSharedPointer<XlsxColumnInfo> info(new XlsxColumnInfo(col, col));
+            info->collapsed = true;
+            d->colsInfo.insert(col, info);
+            d->colsInfoHelper[col] = info;
+        }
+    }
 
     return false;
 }
@@ -1638,7 +1751,7 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 if (colAttrs.hasAttribute(QLatin1String("outlineLevel")))
                     info->outlineLevel = colAttrs.value(QLatin1String("outlineLevel")).toInt();
 
-                colsInfo.append(info);
+                colsInfo.insert(min, info);
                 for (int col=min; col<=max; ++col)
                     colsInfoHelper[col] = info;
             }

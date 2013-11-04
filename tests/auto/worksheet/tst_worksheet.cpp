@@ -221,7 +221,7 @@ void WorksheetTest::testReadColsInfo()
     sheet.d_ptr->readColumnsInfo(reader);
 
     QCOMPARE(sheet.d_ptr->colsInfo.size(), 1);
-    QCOMPARE(sheet.d_ptr->colsInfo[0]->width, 5.0);
+    QCOMPARE(sheet.d_ptr->colsInfo[9]->width, 5.0);
 }
 
 void WorksheetTest::testReadRowsInfo()
@@ -241,7 +241,7 @@ void WorksheetTest::testReadRowsInfo()
     sheet.d_ptr->readSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->rowsInfo.size(), 1);
-    QCOMPARE(sheet.d_ptr->rowsInfo[3]->height, 40.0);
+    QCOMPARE(sheet.d_ptr->rowsInfo[2]->height, 40.0);
 }
 
 void WorksheetTest::testReadMergeCells()

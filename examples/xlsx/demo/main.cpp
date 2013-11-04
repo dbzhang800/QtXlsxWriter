@@ -270,6 +270,21 @@ int main()
     xlsx.write("E8", 2);
     xlsx.mergeCells("E8:F21", centerAlign);
 
+    //---------------------------------------------------------------
+    //Create the fifth sheet.
+    xlsx.addWorksheet("Grouping");
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+    for (int row=1; row<31; ++row) {
+        for (int col=0; col<10; ++col)
+            xlsx.write(row, col, qrand() % 100);
+    }
+    xlsx.groupRows(3, 6);
+    xlsx.groupRows(10, 25, false);
+    xlsx.groupRows(14, 16, false);
+    xlsx.groupRows(19, 21, false);
+    xlsx.groupColumns(0, 1);
+    xlsx.groupColumns(4, 7, false);
+
     xlsx.saveAs("Book1.xlsx");
 
     //Make sure that read/write works well.
