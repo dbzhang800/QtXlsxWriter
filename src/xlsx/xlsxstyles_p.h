@@ -70,7 +70,7 @@ private:
     void writeFills(XmlStreamWriter &writer);
     void writeFill(XmlStreamWriter &writer, FillData *fill);
     void writeBorders(XmlStreamWriter &writer);
-    void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color);
+    void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
     void writeCellXfs(XmlStreamWriter &writer);
     void writeDxfs(XmlStreamWriter &writer);
 
@@ -80,7 +80,7 @@ private:
     bool readFill(XmlStreamReader &reader);
     bool readBorders(XmlStreamReader &reader);
     bool readBorder(XmlStreamReader &reader);
-    bool readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color);
+    bool readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor);
     bool readCellXfs(XmlStreamReader &reader);
     bool readColors(XmlStreamReader &reader);
     bool readIndexedColors(XmlStreamReader &reader);

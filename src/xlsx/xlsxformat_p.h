@@ -53,6 +53,7 @@ struct FontData
     bool italic;
     bool strikeOut;
     QColor color;
+    QString themeColor;
     bool bold;
     Format::FontScript scirpt;
     Format::FontUnderline underline;
@@ -70,7 +71,7 @@ struct FontData
         if (_dirty) {
             QByteArray key;
             QDataStream stream(&key, QIODevice::WriteOnly);
-            stream<<bold<<charset<<color<<condense
+            stream<<bold<<charset<<color<<themeColor<<condense
                  <<extend<<family<<italic<<name
                 <<outline<<scheme<<scirpt<<shadow
                <<size<<strikeOut<<underline;
@@ -141,6 +142,11 @@ struct BorderData
     QColor topColor;
     QColor bottomColor;
     QColor diagonalColor;
+    QString leftThemeColor;
+    QString rightThemeColor;
+    QString topThemeColor;
+    QString bottomThemeColor;
+    QString diagonalThemeColor;
     Format::DiagonalBorderType diagonalType;
 
     QByteArray key() const
@@ -148,9 +154,9 @@ struct BorderData
         if (_dirty) {
             QByteArray key;
             QDataStream stream(&key, QIODevice::WriteOnly);
-            stream << bottom << bottomColor << top << topColor
-                 << diagonal << diagonalColor << diagonalType
-                << left << leftColor << right << rightColor;
+            stream << bottom << bottomColor << bottomThemeColor << top << topColor << topThemeColor
+                 << diagonal << diagonalColor << diagonalThemeColor << diagonalType
+                << left << leftColor << leftThemeColor << right << rightColor << rightThemeColor;
             const_cast<BorderData*>(this)->_key = key;
             const_cast<BorderData*>(this)->_dirty = false;
             const_cast<BorderData*>(this)->_indexValid = false;
@@ -192,13 +198,17 @@ struct FillData {
     Format::FillPattern pattern;
     QColor bgColor;
     QColor fgColor;
+    QString bgThemeColor;
+    QString fgThemeColor;
 
     QByteArray key() const
     {
         if (_dirty) {
             QByteArray key;
             QDataStream stream(&key, QIODevice::WriteOnly);
-            stream<<bgColor<<fgColor<<pattern;
+            stream<< bgColor << bgThemeColor
+                  << fgColor << fgThemeColor
+                  << pattern;
             const_cast<FillData*>(this)->_key = key;
             const_cast<FillData*>(this)->_dirty = false;
             const_cast<FillData*>(this)->_indexValid = false;

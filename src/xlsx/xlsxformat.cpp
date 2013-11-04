@@ -219,6 +219,11 @@ void Format::setFontStrikeOut(bool strikeOut)
 QColor Format::fontColor() const
 {
     Q_D(const Format);
+    if (!d->fontData.color.isValid() && !d->fontData.themeColor.isEmpty()) {
+        //!Todo, get the real color from the theme{1}.xml file
+        //The same is ture for border and fill colord
+        return QColor();
+    }
     return d->fontData.color;
 }
 
