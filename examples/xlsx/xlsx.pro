@@ -7,7 +7,6 @@ SUBDIRS = hello \
     mergecells \
     rowcolumn \
     numberformat \
-    readwrite \
     datavalidation \
     definename \
     demo
