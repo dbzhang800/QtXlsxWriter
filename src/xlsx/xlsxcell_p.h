@@ -27,6 +27,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxcell.h"
+#include "xlsxcellrange.h"
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -40,6 +41,7 @@ public:
     QString formula;
     Cell::DataType dataType;
     Format *format;
+    CellRange range; //used for arrayFormula
 
     Worksheet *parent;
     Cell *q_ptr;

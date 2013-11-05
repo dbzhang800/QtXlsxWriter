@@ -65,6 +65,8 @@ public:
     int writeNumeric(int row, int column, double value, Format *format=0);
     int writeFormula(const QString &row_column, const QString &formula, Format *format=0, double result=0);
     int writeFormula(int row, int column, const QString &formula, Format *format=0, double result=0);
+    int writeArrayFormula(const QString &range, const QString &formula, Format *format=0);
+    int writeArrayFormula(const CellRange &range, const QString &formula, Format *format=0);
     int writeBlank(const QString &row_column, Format *format=0);
     int writeBlank(int row, int column, Format *format=0);
     int writeBool(const QString &row_column, bool value, Format *format=0);

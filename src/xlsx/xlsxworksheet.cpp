@@ -125,8 +125,6 @@ void WorksheetPrivate::calculateSpans()
         if ((row_num)%16 == 0 || row_num == dimension.lastRow()) {
             int span_index = row_num / 16;
             if (span_max != INT32_MIN) {
-                span_min += 1;
-                span_max += 1;
                 row_spans[span_index] = QStringLiteral("%1:%2").arg(span_min).arg(span_max);
                 span_max = INT32_MIN;
             }
@@ -459,6 +457,8 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
         QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"));
         if (token.startsWith(QLatin1String("="))) {
             ret = writeFormula(row, column, token, format);
+        } else if (token.startsWith(QLatin1String("{=")) && token.endsWith(QLatin1Char('}'))) {
+            ret = writeArrayFormula(CellRange(row, column, row, column), token, format);
         } else if (token.contains(urlPattern)) {
             ret = writeHyperlink(row, column, QUrl(token));
         } else {
@@ -674,6 +674,51 @@ int Worksheet::writeFormula(int row, int column, const QString &formula, Format 
     d->workbook->styles()->addFormat(format);
 
     return error;
+}
+
+/*!
+    Write \a formula to the \a range with the \a format
+*/
+int Worksheet::writeArrayFormula(const CellRange &range, const QString &formula, Format *format)
+{
+    Q_D(Worksheet);
+    int error = 0;
+
+    if (d->checkDimensions(range.firstRow(), range.firstColumn()))
+        return -1;
+    if (d->checkDimensions(range.lastRow(), range.lastColumn()))
+        return -1;
+    QString _formula = formula;
+    //Remove the formula "{=" and "}" sign if exists
+    if (_formula.startsWith(QLatin1String("{=")))
+        _formula.remove(0,2);
+    if (_formula.endsWith(QLatin1Char('}')))
+        _formula.chop(1);
+
+    for (int row=range.firstRow(); row<=range.lastRow(); ++row) {
+        for (int column=range.firstColumn(); column<=range.lastColumn(); ++column) {
+            Format *_format = format ? format : d->cellFormat(row, column);
+            if (row == range.firstRow() && column == range.firstColumn()) {
+                QSharedPointer<Cell> data(new Cell(0, Cell::ArrayFormula, _format, this));
+                data->d_ptr->formula = _formula;
+                data->d_ptr->range = range;
+                d->cellTable[row][column] = data;
+            } else {
+                d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(0, Cell::Numeric, _format, this));
+            }
+            d->workbook->styles()->addFormat(_format);
+        }
+    }
+
+    return error;
+}
+
+/*!
+    \overload
+ */
+int Worksheet::writeArrayFormula(const QString &range, const QString &formula, Format *format)
+{
+    return writeArrayFormula(CellRange(range), formula, format);
 }
 
 /*!
@@ -1129,6 +1174,13 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         if (!ok) //is string
             writer.writeAttribute(QStringLiteral("t"), QStringLiteral("str"));
         writer.writeTextElement(QStringLiteral("f"), cell->formula());
+        writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
+    } else if (cell->dataType() == Cell::ArrayFormula) {
+        writer.writeStartElement(QStringLiteral("f"));
+        writer.writeAttribute(QStringLiteral("t"), QStringLiteral("array"));
+        writer.writeAttribute(QStringLiteral("ref"), cell->d_ptr->range.toString());
+        writer.writeCharacters(cell->formula());
+        writer.writeEndElement(); //f
         writer.writeTextElement(QStringLiteral("v"), cell->value().toString());
     } else if (cell->dataType() == Cell::Boolean) {
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("b"));
@@ -1725,13 +1777,22 @@ QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(XmlStreamReader &read
 
     QString v_str;
     QString f_str;
+    QSharedPointer<Cell> cell;
     while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
-            if (reader.name() == QLatin1String("v"))
+            if (reader.name() == QLatin1String("v")) {
                 v_str = reader.readElementText();
-            else if (reader.name() == QLatin1String("f"))
+            } else if (reader.name() == QLatin1String("f")) {
+                QXmlStreamAttributes fAttrs = reader.attributes();
+                if (fAttrs.hasAttribute(QLatin1String("array"))) {
+                    cell = QSharedPointer<Cell>(new Cell(0, Cell::ArrayFormula));
+                    cell->d_ptr->range = CellRange(fAttrs.value(QLatin1String("ref")).toString());
+                } else {
+                    cell = QSharedPointer<Cell>(new Cell(0, Cell::Formula));
+                }
                 f_str = reader.readElementText();
+            }
         }
     }
 
@@ -1743,10 +1804,11 @@ QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(XmlStreamReader &read
         return QSharedPointer<Cell>(new Cell(v_str.toDouble(), Cell::Numeric));
     } else {
         //formula type
-        QSharedPointer<Cell> cell(new Cell(v_str.toDouble(), Cell::Formula));
+        cell->d_ptr->value = v_str.toDouble();
         cell->d_ptr->formula = f_str;
-        return cell;
     }
+
+    return cell;
 }
 
 void WorksheetPrivate::readSheetData(XmlStreamReader &reader)

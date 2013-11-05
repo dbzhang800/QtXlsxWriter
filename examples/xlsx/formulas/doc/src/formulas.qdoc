@@ -1,0 +1,24 @@
+/*!
+    \example formulas
+    \title Formulas Example
+    \brief This is a simplest Qt Xlsx example.
+    \ingroup qtxlsx-examples
+
+    This example demonstrates how to create a new
+     .xlsx file containing formulas
+    with Qt Xlsx Library. So lets see how this is achieved.
+
+    This creates a new instance of the all important Document
+    class which gives you access to the Excel workbook and worksheets.
+    \snippet formulas/main.cpp 0
+
+    A default worksheet have been created by Document. Let's start
+    by adding some basic formulas.
+    \snippet formulas/main.cpp 1
+
+    Then add one array formula.
+    \snippet formulas/main.cpp 2
+
+    Now save the file and all its components.
+    \snippet formulas/main.cpp 3
+*/

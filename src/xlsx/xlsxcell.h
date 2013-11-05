@@ -46,7 +46,8 @@ public:
         Formula,
         Boolean,
         Error,
-        InlineString
+        InlineString,
+        ArrayFormula
     };
 
     DataType dataType() const;

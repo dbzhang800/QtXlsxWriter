@@ -9,5 +9,6 @@ SUBDIRS = hello \
     numberformat \
     datavalidation \
     definename \
+    formulas \
     demo
 
