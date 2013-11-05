@@ -472,14 +472,43 @@ int Worksheet::write(int row, int column, const QVariant &value, Format *format)
     return ret;
 }
 
-//convert the "A1" notation to row/column notation
+/*!
+    \overload
+ */
 int Worksheet::write(const QString &row_column, const QVariant &value, Format *format)
 {
+    //convert the "A1" notation to row/column notation
     QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1)) {
+    if (pos == QPoint(-1, -1))
         return -1;
-    }
+
     return write(pos.x(), pos.y(), value, format);
+}
+
+/*!
+    \overload
+ */
+QVariant Worksheet::read(const QString &row_column) const
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return QVariant();
+
+    return read(pos.x(), pos.y());
+}
+
+/*!
+    Return the contents of the cell (\a row, \a column).
+ */
+QVariant Worksheet::read(int row, int column) const
+{
+    Cell *cell = cellAt(row, column);
+    if (!cell)
+        return QVariant();
+    if (!cell->formula().isEmpty())
+        return QLatin1String("=")+cell->formula();
+    return cell->value();
 }
 
 Cell *Worksheet::cellAt(const QString &row_column) const
@@ -511,6 +540,22 @@ Format *WorksheetPrivate::cellFormat(int row, int col) const
     return cellTable[row][col]->format();
 }
 
+/*!
+    \overload
+ */
+int Worksheet::writeString(const QString &row_column, const QString &value, Format *format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeString(pos.x(), pos.y(), value, format);
+}
+
+/*!
+    Write string \a value to the cell (\a row, \a column) with the \a format
+*/
 int Worksheet::writeString(int row, int column, const QString &value, Format *format)
 {
     Q_D(Worksheet);
@@ -531,6 +576,22 @@ int Worksheet::writeString(int row, int column, const QString &value, Format *fo
     return error;
 }
 
+/*!
+    \overload
+ */
+int Worksheet::writeInlineString(const QString &row_column, const QString &value, Format *format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeInlineString(pos.x(), pos.y(), value, format);
+}
+
+/*!
+    Write string \a value to the cell (\a row, \a column) with the \a format
+*/
 int Worksheet::writeInlineString(int row, int column, const QString &value, Format *format)
 {
     Q_D(Worksheet);
@@ -550,6 +611,22 @@ int Worksheet::writeInlineString(int row, int column, const QString &value, Form
     return error;
 }
 
+/*!
+    \overload
+ */
+int Worksheet::writeNumeric(const QString &row_column, double value, Format *format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeNumeric(pos.x(), pos.y(), value, format);
+}
+
+/*!
+    Write numeric \a value to the cell (\a row, \a column) with the \a format
+*/
 int Worksheet::writeNumeric(int row, int column, double value, Format *format)
 {
     Q_D(Worksheet);
@@ -562,27 +639,59 @@ int Worksheet::writeNumeric(int row, int column, double value, Format *format)
     return 0;
 }
 
-int Worksheet::writeFormula(int row, int column, const QString &content, Format *format, double result)
+/*!
+    \overload
+ */
+int Worksheet::writeFormula(const QString &row_column, const QString &formula, Format *format, double result)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeFormula(pos.x(), pos.y(), formula, format, result);
+}
+
+/*!
+    Write \a formula to the cell (\a row, \a column) with the \a format
+*/
+int Worksheet::writeFormula(int row, int column, const QString &formula, Format *format, double result)
 {
     Q_D(Worksheet);
     int error = 0;
-    QString formula = content;
+    QString _formula = formula;
     if (d->checkDimensions(row, column))
         return -1;
 
     //Remove the formula '=' sign if exists
-    if (formula.startsWith(QLatin1String("=")))
-        formula.remove(0,1);
+    if (_formula.startsWith(QLatin1String("=")))
+        _formula.remove(0,1);
 
     format = format ? format : d->cellFormat(row, column);
     Cell *data = new Cell(result, Cell::Formula, format, this);
-    data->d_ptr->formula = formula;
+    data->d_ptr->formula = _formula;
     d->cellTable[row][column] = QSharedPointer<Cell>(data);
     d->workbook->styles()->addFormat(format);
 
     return error;
 }
 
+/*!
+    \overload
+ */
+int Worksheet::writeBlank(const QString &row_column, Format *format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeBlank(pos.x(), pos.y(), format);
+}
+
+/*!
+    Write a empty cell (\a row, \a column) with the \a format
+ */
 int Worksheet::writeBlank(int row, int column, Format *format)
 {
     Q_D(Worksheet);
@@ -595,7 +704,22 @@ int Worksheet::writeBlank(int row, int column, Format *format)
 
     return 0;
 }
+/*!
+    \overload
+ */
+int Worksheet::writeBool(const QString &row_column, bool value, Format *format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
 
+    return writeBool(pos.x(), pos.y(), value, format);
+}
+
+/*!
+    Write a bool \a value to the cell (\a row, \a column) with the \a format
+ */
 int Worksheet::writeBool(int row, int column, bool value, Format *format)
 {
     Q_D(Worksheet);
@@ -608,7 +732,22 @@ int Worksheet::writeBool(int row, int column, bool value, Format *format)
 
     return 0;
 }
+/*!
+    \overload
+ */
+int Worksheet::writeDateTime(const QString &row_column, const QDateTime &dt, Format *format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
 
+    return writeDateTime(pos.x(), pos.y(), dt, format);
+}
+
+/*!
+    Write a QDateTime \a value to the cell (\a row, \a column) with the \a format
+ */
 int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *format)
 {
     Q_D(Worksheet);
@@ -628,6 +767,22 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, Format *f
     return 0;
 }
 
+/*!
+    \overload
+ */
+int Worksheet::writeHyperlink(const QString &row_column, const QUrl &url, Format *format, const QString &display, const QString &tip)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeHyperlink(pos.x(), pos.y(), url, format, display, tip);
+}
+
+/*!
+    Write a QUrl \a value to the cell (\a row, \a column) with the \a format
+ */
 int Worksheet::writeHyperlink(int row, int column, const QUrl &url, Format *format, const QString &display, const QString &tip)
 {
     Q_D(Worksheet);
@@ -1285,6 +1440,20 @@ bool Worksheet::groupRows(int rowFirst, int rowLast, bool collapsed)
         d->rowsInfo[rowLast+1]->collapsed = true;
     }
     return true;
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::groupColumns(const QString &colFirst, const QString &colLast, bool collapsed)
+{
+    int col1 = xl_col_name_to_value(colFirst);
+    int col2 = xl_col_name_to_value(colLast);
+
+    if (col1 == -1 || col2 == -1)
+        return false;
+
+    return groupColumns(col1, col2, collapsed);
 }
 
 /*!

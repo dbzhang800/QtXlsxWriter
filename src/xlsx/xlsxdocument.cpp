@@ -111,7 +111,9 @@ Format *Document::createFormat()
 }
 
 /*!
- * Write \a value to cell \a row_column with the \a format.
+    \overload
+
+    Write \a value to cell \a row_column with the \a format.
  */
 int Document::write(const QString &row_column, const QVariant &value, Format *format)
 {
@@ -124,6 +126,22 @@ int Document::write(const QString &row_column, const QVariant &value, Format *fo
 int Document::write(int row, int col, const QVariant &value, Format *format)
 {
     return currentWorksheet()->write(row, col, value, format);
+}
+
+/*!
+    \overload
+*/
+QVariant Document::read(const QString &cell) const
+{
+    return currentWorksheet()->read(cell);
+}
+
+/*!
+    Return the contents of the cell (\a row, \a column).
+ */
+QVariant Document::read(int row, int col) const
+{
+    return currentWorksheet()->read(row, col);
 }
 
 /*!

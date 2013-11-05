@@ -55,13 +55,23 @@ class Q_XLSX_EXPORT Worksheet
 public:
     int write(const QString &row_column, const QVariant &value, Format *format=0);
     int write(int row, int column, const QVariant &value, Format *format=0);
+    QVariant read(const QString &row_column) const;
+    QVariant read(int row, int column) const;
+    int writeString(const QString &row_column, const QString &value, Format *format=0);
     int writeString(int row, int column, const QString &value, Format *format=0);
+    int writeInlineString(const QString &row_column, const QString &value, Format *format=0);
     int writeInlineString(int row, int column, const QString &value, Format *format=0);
+    int writeNumeric(const QString &row_column, double value, Format *format=0);
     int writeNumeric(int row, int column, double value, Format *format=0);
+    int writeFormula(const QString &row_column, const QString &formula, Format *format=0, double result=0);
     int writeFormula(int row, int column, const QString &formula, Format *format=0, double result=0);
+    int writeBlank(const QString &row_column, Format *format=0);
     int writeBlank(int row, int column, Format *format=0);
+    int writeBool(const QString &row_column, bool value, Format *format=0);
     int writeBool(int row, int column, bool value, Format *format=0);
+    int writeDateTime(const QString &row_column, const QDateTime& dt, Format *format=0);
     int writeDateTime(int row, int column, const QDateTime& dt, Format *format=0);
+    int writeHyperlink(const QString &row_column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
     int writeHyperlink(int row, int column, const QUrl &url, Format *format=0, const QString &display=QString(), const QString &tip=QString());
 
     bool addDataValidation(const DataValidation &validation);
@@ -77,11 +87,11 @@ public:
     int unmergeCells(const CellRange &range);
 
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
-    bool setRow(const QString &row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
     bool setColumn(const QString &colFirst, const QString &colLast, double width, Format* format=0, bool hidden=false);
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
+    bool groupColumns(const QString &colFirst, const QString &colLast, bool collapsed = true);
     CellRange dimension() const;
 
     bool isWindowProtected() const;
