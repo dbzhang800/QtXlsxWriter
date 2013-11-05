@@ -32,8 +32,8 @@
     Microsoft Excel and can be used in any platform that Qt5 supported. The library can be used to
 
     \list
-       \li Generate a new .xlsx file from scratch
-       \li Extract data from an existing .xlsx file
+       \li \l{Hello QtXlsx Example}{Generate a new .xlsx file from scratch}
+       \li \l{Extract Data Example}{Extract data from an existing .xlsx file}
        \li Edit an existing .xlsx file
     \endlist
 

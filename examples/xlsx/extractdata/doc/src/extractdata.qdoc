@@ -9,8 +9,8 @@
 
     This creates a new instance of the all important Document
     class which gives you access to the Excel workbook and worksheets.
-    \snippet hello/main.cpp 0
+    \snippet extractdata/main.cpp 0
 
     Extracts data from current worksheet.
-    \snippet hello/main.cpp 1
+    \snippet extractdata/main.cpp 1
 */
