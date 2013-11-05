@@ -181,23 +181,10 @@ int Document::unmergeCells(const CellRange &range)
 }
 
 /*!
- * \brief Set properties for a row of cells.
- * \param row The worksheet row (zero indexed).
- * \param height The row height.
- * \param format Optional Format object.
- * \param hidden
+  Sets row \a height and \a format. Row height measured in point size. If format
+  equals 0 then format is ignored. \a row is 1-indexed.
  */
 bool Document::setRow(int row, double height, Format *format, bool hidden)
-{
-    return currentWorksheet()->setRow(row, height, format, hidden);
-}
-
-/*!
-  \overload
-  Sets row height and format. Row height measured in point size. If format
-  equals 0 then format is ignored. \a row should be "1", "2", "3", ...
- */
-bool Document::setRow(const QString &row, double height, Format *format, bool hidden)
 {
     return currentWorksheet()->setRow(row, height, format, hidden);
 }
@@ -206,7 +193,7 @@ bool Document::setRow(const QString &row, double height, Format *format, bool hi
   Sets column width and format for all columns from colFirst to colLast. Column
   width measured as the number of characters of the maximum digit width of the
   numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
-  equals 0 then format is ignored. \a colFirst and \a colLast are all zero-indexed.
+  equals 0 then format is ignored. \a colFirst and \a colLast are all 1-indexed.
  */
 bool Document::setColumn(int colFirst, int colLast, double width, Format *format, bool hidden)
 {

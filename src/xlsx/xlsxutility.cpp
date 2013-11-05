@@ -91,7 +91,7 @@ QDateTime datetimeFromNumber(double num, bool is1904)
 QPoint xl_cell_to_rowcol(const QString &cell_str)
 {
     if (cell_str.isEmpty())
-        return QPoint(0, 0);
+        return QPoint(-1, -1);
     QRegularExpression re(QStringLiteral("^([A-Z]{1,3})(\\d+)$"));
     QRegularExpressionMatch match = re.match(cell_str);
     if (match.hasMatch()) {
@@ -104,8 +104,7 @@ QPoint xl_cell_to_rowcol(const QString &cell_str)
             expn++;
         }
 
-        col--;
-        int row = row_str.toInt() - 1;
+        int row = row_str.toInt();
         return QPoint(row, col);
     } else {
         return QPoint(-1, -1); //...
@@ -114,7 +113,6 @@ QPoint xl_cell_to_rowcol(const QString &cell_str)
 
 QString xl_col_to_name(int col_num)
 {
-    col_num += 1; //Change to 1-index
     QString col_str;
 
     int remainder;
@@ -141,7 +139,6 @@ int xl_col_name_to_value(const QString &col_str)
             expn++;
         }
 
-        col--;
         return col;
     }
     return -1;
@@ -149,7 +146,6 @@ int xl_col_name_to_value(const QString &col_str)
 
 QString xl_rowcol_to_cell(int row, int col, bool row_abs, bool col_abs)
 {
-    row += 1; //Change to 1-index
     QString cell_str;
     if (col_abs)
         cell_str.append(QLatin1Char('$'));
@@ -170,7 +166,7 @@ QString xl_rowcol_to_cell_fast(int row, int col)
         col_str = xl_col_to_name(col);
         col_cache[col] = col_str;
     }
-    return col_str + QString::number(row+1);
+    return col_str + QString::number(row);
 }
 
 } //namespace QXlsx

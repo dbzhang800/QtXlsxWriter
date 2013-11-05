@@ -74,18 +74,18 @@ void writeInternalNumFormatsCell(Document &xlsx, int row, double value, int numF
 {
     Format *format = xlsx.createFormat();
     format->setNumberFormatIndex(numFmt);
-    xlsx.write(row, 0, value);
-    xlsx.write(row, 1, QString("Builtin NumFmt %1").arg(numFmt));
-    xlsx.write(row, 2, value, format);
+    xlsx.write(row, 1, value);
+    xlsx.write(row, 2, QString("Builtin NumFmt %1").arg(numFmt));
+    xlsx.write(row, 3, value, format);
 }
 
 void writeCustomNumFormatsCell(Document &xlsx, int row, double value, const QString &numFmt)
 {
     Format *format = xlsx.createFormat();
     format->setNumberFormat(numFmt);
-    xlsx.write(row, 0, value);
-    xlsx.write(row, 1, numFmt);
-    xlsx.write(row, 2, value, format);
+    xlsx.write(row, 1, value);
+    xlsx.write(row, 2, numFmt);
+    xlsx.write(row, 3, value, format);
 }
 
 int main()
@@ -243,19 +243,19 @@ int main()
     //Create the fourth sheet.
     xlsx.addWorksheet("NumFormats");
     xlsx.setColumn("B", "B", 40);
-    writeInternalNumFormatsCell(xlsx, 3, 2.5681, 2);
-    writeInternalNumFormatsCell(xlsx, 4, 2500000, 3);
-    writeInternalNumFormatsCell(xlsx, 5, -500, 5);
-    writeInternalNumFormatsCell(xlsx, 6, -0.25, 9);
-    writeInternalNumFormatsCell(xlsx, 7, 890, 11);
-    writeInternalNumFormatsCell(xlsx, 8, 0.75, 12);
-    writeInternalNumFormatsCell(xlsx, 9, 41499, 14);
-    writeInternalNumFormatsCell(xlsx, 10, 41499, 17);
+    writeInternalNumFormatsCell(xlsx, 4, 2.5681, 2);
+    writeInternalNumFormatsCell(xlsx, 5, 2500000, 3);
+    writeInternalNumFormatsCell(xlsx, 6, -500, 5);
+    writeInternalNumFormatsCell(xlsx, 7, -0.25, 9);
+    writeInternalNumFormatsCell(xlsx, 8, 890, 11);
+    writeInternalNumFormatsCell(xlsx, 9, 0.75, 12);
+    writeInternalNumFormatsCell(xlsx, 10, 41499, 14);
+    writeInternalNumFormatsCell(xlsx, 11, 41499, 17);
 
-    writeCustomNumFormatsCell(xlsx, 12, 20.5627, "#.###");
-    writeCustomNumFormatsCell(xlsx, 13, 4.8, "#.00");
-    writeCustomNumFormatsCell(xlsx, 14, 1.23, "0.00 \"RMB\"");
-    writeCustomNumFormatsCell(xlsx, 15, 60, "[Red][<=100];[Green][>100]");
+    writeCustomNumFormatsCell(xlsx, 13, 20.5627, "#.###");
+    writeCustomNumFormatsCell(xlsx, 14, 4.8, "#.00");
+    writeCustomNumFormatsCell(xlsx, 15, 1.23, "0.00 \"RMB\"");
+    writeCustomNumFormatsCell(xlsx, 16, 60, "[Red][<=100];[Green][>100]");
 
     //---------------------------------------------------------------
     //Create the fifth sheet.
@@ -274,16 +274,17 @@ int main()
     //Create the fifth sheet.
     xlsx.addWorksheet("Grouping");
     qsrand(QDateTime::currentMSecsSinceEpoch());
-    for (int row=1; row<31; ++row) {
-        for (int col=0; col<10; ++col)
+    for (int row=2; row<31; ++row) {
+        for (int col=1; col<=10; ++col)
             xlsx.write(row, col, qrand() % 100);
     }
-    xlsx.groupRows(3, 6);
-    xlsx.groupRows(10, 25, false);
-    xlsx.groupRows(14, 16, false);
-    xlsx.groupRows(19, 21, false);
-    xlsx.groupColumns(0, 1);
-    xlsx.groupColumns(4, 7, false);
+    xlsx.groupRows(4, 7);
+    xlsx.groupRows(11, 26, false);
+    xlsx.groupRows(15, 17, false);
+    xlsx.groupRows(20, 22, false);
+    xlsx.setColumn(1, 10, 10.0);
+    xlsx.groupColumns(1, 2);
+    xlsx.groupColumns(5, 8, false);
 
     xlsx.saveAs("Book1.xlsx");
 

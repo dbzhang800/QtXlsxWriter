@@ -55,16 +55,16 @@ void WorksheetTest::testDimension()
 
     sheet.write("C3", "Test");
     qDebug()<<sheet.dimension().toString();
-    QCOMPARE(sheet.dimension(), QXlsx::CellRange(2, 2, 2, 2)); //Single Cell
+    QCOMPARE(sheet.dimension(), QXlsx::CellRange(3, 3, 3, 3)); //Single Cell
 
     sheet.write("B2", "Second");
-    QCOMPARE(sheet.dimension(), QXlsx::CellRange(1, 1, 2, 2));
+    QCOMPARE(sheet.dimension(), QXlsx::CellRange(2, 2, 3, 3));
 
     sheet.write("D4", "Test");
     QCOMPARE(sheet.dimension(), QXlsx::CellRange("B2:D4"));
 
     sheet.write(10000, 10000, "For test");
-    QCOMPARE(sheet.dimension(), QXlsx::CellRange(1, 1, 10000, 10000));
+    QCOMPARE(sheet.dimension(), QXlsx::CellRange(2, 2, 10000, 10000));
 }
 
 void WorksheetTest::testSheetView()
@@ -81,9 +81,10 @@ void WorksheetTest::testSheetView()
 void WorksheetTest::testSetColumn()
 {
     QXlsx::Worksheet sheet("", 1, 0);
-    sheet.setColumn(0, 10, 20.0); //"A:K"
-    sheet.setColumn(3, 7, 10.0); //"D:H"
-    sheet.setColumn(5, 5, 15.0); //"F:F"
+    sheet.setColumn(1, 11, 20.0); //"A:K"
+    sheet.setColumn(4, 8, 10.0); //"D:H"
+    sheet.setColumn(6, 6, 15.0); //"F:F"
+    sheet.setColumn(1, 9, 8.8); //"A:H"
 
     QByteArray xmldata = sheet.saveToXmlData();
 
@@ -92,7 +93,8 @@ void WorksheetTest::testSetColumn()
     QVERIFY(xmldata.contains("<col min=\"4\" max=\"5\"")); //"D:E"
     QVERIFY(xmldata.contains("<col min=\"6\" max=\"6\"")); //"F:F"
     QVERIFY(xmldata.contains("<col min=\"7\" max=\"8\"")); //"G:H"
-    QVERIFY(xmldata.contains("<col min=\"9\" max=\"11\""));//"I:K"
+    QVERIFY(xmldata.contains("<col min=\"9\" max=\"9\""));//"I:I"
+    QVERIFY(xmldata.contains("<col min=\"10\" max=\"11\""));//"J:K"
 }
 
 void WorksheetTest::testWriteCells()
@@ -100,10 +102,10 @@ void WorksheetTest::testWriteCells()
     QXlsx::Worksheet sheet("", 1, 0);
     sheet.write("A1", 123);
     sheet.write("A2", "Hello");
-    sheet.writeInlineString(2, 0, "Hello inline"); //A3
+    sheet.writeInlineString(3, 1, "Hello inline"); //A3
     sheet.write("A4", true);
     sheet.write("A5", "=44+33");
-    sheet.writeFormula(4, 1, "44+33", 0, 77);
+    sheet.writeFormula(5, 2, "44+33", 0, 77);
 
     QByteArray xmldata = sheet.saveToXmlData();
 
@@ -259,7 +261,7 @@ void WorksheetTest::testReadRowsInfo()
     sheet.d_ptr->readSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->rowsInfo.size(), 1);
-    QCOMPARE(sheet.d_ptr->rowsInfo[2]->height, 40.0);
+    QCOMPARE(sheet.d_ptr->rowsInfo[3]->height, 40.0);
 }
 
 void WorksheetTest::testReadMergeCells()

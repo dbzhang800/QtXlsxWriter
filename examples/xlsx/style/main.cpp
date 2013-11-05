@@ -24,17 +24,17 @@ int main()
     format3->setFontBold(true);
     format3->setFontColor(QColor(Qt::blue));
     format3->setFontSize(20);
-    xlsx.write(10, 0, "Hello Row Style");
-    xlsx.write(10, 5, "Blue Color");
-    xlsx.setRow(10, 40, format3);
+    xlsx.write(11, 1, "Hello Row Style");
+    xlsx.write(11, 6, "Blue Color");
+    xlsx.setRow(11, 41, format3);
 
     QXlsx::Format *format4 = xlsx.createFormat();
     format4->setFontBold(true);
     format4->setFontColor(QColor(Qt::magenta));
-    for (int row=20; row<40; row++)
-        for (int col=8; col<15; col++)
+    for (int row=21; row<=40; row++)
+        for (int col=9; col<16; col++)
             xlsx.write(row, col, row+col);
-    xlsx.setColumn(8, 15, 5.0, format4);
+    xlsx.setColumn(9, 16, 5.0, format4);
 
     xlsx.write("A5", QDate(2013, 8, 29));
 

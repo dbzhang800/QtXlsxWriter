@@ -63,7 +63,6 @@ public:
     int unmergeCells(const CellRange &range);
     int unmergeCells(const QString &range);
     bool setRow(int row, double height, Format* format=0, bool hidden=false);
-    bool setRow(const QString &row, double height, Format* format=0, bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
     bool setColumn(const QString &colFirst, const QString &colLast, double width, Format* format=0, bool hidden=false);
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);

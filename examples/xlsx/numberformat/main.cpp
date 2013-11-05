@@ -7,7 +7,7 @@ int main(int argc, char** argv)
     QGuiApplication(argc, argv);
 
     QXlsx::Document xlsx;
-    xlsx.setColumn(0, 4, 20.0);
+    xlsx.setColumn(1, 4, 20.0);
 
     QXlsx::Format *header = xlsx.createFormat();
     header->setFontBold(true);
@@ -19,32 +19,32 @@ int main(int argc, char** argv)
              <<"yyyy-mmm-dd"
             <<"$ #,##0.00"
            <<"[red]0.00";
-    xlsx.write(0, 0, "Raw data", header);
-    xlsx.write(0, 1, "Format", header);
-    xlsx.write(0, 2, "Shown value", header);
+    xlsx.write(1, 1, "Raw data", header);
+    xlsx.write(1, 2, "Format", header);
+    xlsx.write(1, 3, "Shown value", header);
     for (int i=0; i<numFormats.size(); ++i) {
-        int row = i+1;
-        xlsx.write(row, 0, 100.0);
-        xlsx.write(row, 1, numFormats[i]);
+        int row = i+2;
+        xlsx.write(row, 1, 100.0);
+        xlsx.write(row, 2, numFormats[i]);
         QXlsx::Format *format = xlsx.createFormat();
         format->setNumberFormat(numFormats[i]);
-        xlsx.write(row, 2, 100.0, format);
+        xlsx.write(row, 3, 100.0, format);
     }
 
     //Builtin number formats
     xlsx.addWorksheet();
-    xlsx.setColumn(0, 4, 20.0);
-    xlsx.write(0, 0, "Raw data", header);
-    xlsx.write(0, 1, "Builtin Format", header);
-    xlsx.write(0, 2, "Shown value", header);
+    xlsx.setColumn(1, 4, 20.0);
+    xlsx.write(1, 1, "Raw data", header);
+    xlsx.write(1, 2, "Builtin Format", header);
+    xlsx.write(1, 3, "Shown value", header);
     for (int i=0; i<50; ++i) {
-        int row = i+1;
+        int row = i+2;
         int numFmt = i;
-        xlsx.write(row, 0, 100.0);
-        xlsx.write(row, 1, numFmt);
+        xlsx.write(row, 1, 100.0);
+        xlsx.write(row, 2, numFmt);
         QXlsx::Format *format = xlsx.createFormat();
         format->setNumberFormatIndex(numFmt);
-        xlsx.write(row, 2, 100.0, format);
+        xlsx.write(row, 3, 100.0, format);
     }
 
     xlsx.save();

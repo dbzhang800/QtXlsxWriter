@@ -68,18 +68,18 @@ void UtilityTest::test_cell_to_rowcol_data()
     QTest::addColumn<int>("row");
     QTest::addColumn<int>("col");
 
-    QTest::newRow("A1") << "A1" << 0 << 0;
-    QTest::newRow("B1") << "B1" << 0 << 1;
-    QTest::newRow("C1") << "C1" << 0 << 2;
-    QTest::newRow("J1") << "J1" << 0 << 9;
-    QTest::newRow("A2") << "A2" << 1 << 0;
-    QTest::newRow("A3") << "A3" << 2 << 0;
-    QTest::newRow("A10") << "A10" << 9 << 0;
-    QTest::newRow("Z8") << "Z8" << 7 << 25;
-    QTest::newRow("AA10") << "AA10" << 9 << 26;
-    QTest::newRow("IU2") << "IU2" << 1 << 254;
-    QTest::newRow("XFD1") << "XFD1" << 0 << 16383;
-    QTest::newRow("XFE1048577") << "XFE1048577" << 1048576 << 16384;
+    QTest::newRow("A1") << "A1" << 1 << 1;
+    QTest::newRow("B1") << "B1" << 1 << 2;
+    QTest::newRow("C1") << "C1" << 1 << 3;
+    QTest::newRow("J1") << "J1" << 1 << 10;
+    QTest::newRow("A2") << "A2" << 2 << 1;
+    QTest::newRow("A3") << "A3" << 3 << 1;
+    QTest::newRow("A10") << "A10" << 10 << 1;
+    QTest::newRow("Z8") << "Z8" << 8 << 26;
+    QTest::newRow("AA10") << "AA10" << 10 << 27;
+    QTest::newRow("IU2") << "IU2" << 2 << 255;
+    QTest::newRow("XFD1") << "XFD1" << 1 << 16384;
+    QTest::newRow("XFE1048577") << "XFE1048577" << 1048577 << 16385;
 }
 
 void UtilityTest::test_rowcol_to_cell()
@@ -101,11 +101,11 @@ void UtilityTest::test_rowcol_to_cell_data()
     QTest::addColumn<bool>("col_abs");
     QTest::addColumn<QString>("cell");
 
-    QTest::newRow("simple") << 0 << 0 << false << false << "A1";
-    QTest::newRow("rowabs") << 0 << 0 << true << false << "A$1";
-    QTest::newRow("colabs") << 0 << 0 << false << true << "$A1";
-    QTest::newRow("bothabs") << 0 << 0 << true << true << "$A$1";
-    QTest::newRow("...") << 1048576 << 16384 << false << false << "XFE1048577";
+    QTest::newRow("simple") << 1 << 1 << false << false << "A1";
+    QTest::newRow("rowabs") << 1 << 1 << true << false << "A$1";
+    QTest::newRow("colabs") << 1 << 1 << false << true << "$A1";
+    QTest::newRow("bothabs") << 1 << 1 << true << true << "$A$1";
+    QTest::newRow("...") << 1048577 << 16385 << false << false << "XFE1048577";
 }
 
 void UtilityTest::test_datetimeToNumber_data()

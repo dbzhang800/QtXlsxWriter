@@ -122,7 +122,7 @@ void WorksheetPrivate::calculateSpans()
             }
         }
 
-        if ((row_num + 1)%16 == 0 || row_num == dimension.lastRow()) {
+        if ((row_num)%16 == 0 || row_num == dimension.lastRow()) {
             int span_index = row_num / 16;
             if (span_max != INT32_MIN) {
                 span_min += 1;
@@ -426,6 +426,10 @@ QList<QPair<QString, QString> > Worksheet::drawingLinks() const
     return d->drawingLinks;
 }
 
+/*!
+ * Write \a value to cell (\a row, \a column) with the \a format.
+ * Both \a row and \a column are all 1-indexed value.
+ */
 int Worksheet::write(int row, int column, const QVariant &value, Format *format)
 {
     Q_D(Worksheet);
@@ -850,9 +854,10 @@ void Worksheet::saveToXmlFile(QIODevice *device)
             it.next();
             QSharedPointer<XlsxColumnInfo> col_info = it.value();
             writer.writeStartElement(QStringLiteral("col"));
-            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->firstColumn + 1));
-            writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->lastColumn + 1));
-            writer.writeAttribute(QStringLiteral("width"), QString::number(col_info->width, 'g', 15));
+            writer.writeAttribute(QStringLiteral("min"), QString::number(col_info->firstColumn));
+            writer.writeAttribute(QStringLiteral("max"), QString::number(col_info->lastColumn));
+            if (col_info->width)
+                writer.writeAttribute(QStringLiteral("width"), QString::number(col_info->width, 'g', 15));
             if (col_info->format)
                 writer.writeAttribute(QStringLiteral("style"), QString::number(col_info->format->xfIndex()));
             if (col_info->hidden)
@@ -891,14 +896,14 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
             continue;
         }
 
-        int span_index = row_num / 16;
+        int span_index = (row_num-1) / 16;
         QString span;
         if (row_spans.contains(span_index))
             span = row_spans[span_index];
 
         if (cellTable.contains(row_num)) {
             writer.writeStartElement(QStringLiteral("row"));
-            writer.writeAttribute(QStringLiteral("r"), QString::number(row_num + 1));
+            writer.writeAttribute(QStringLiteral("r"), QString::number(row_num));
 
             if (!span.isEmpty())
                 writer.writeAttribute(QStringLiteral("spans"), span);
@@ -938,10 +943,10 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
 void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell)
 {
     //This is the innermost loop so efficiency is important.
-    QString cell_range = xl_rowcol_to_cell_fast(row, col);
+    QString cell_pos = xl_rowcol_to_cell_fast(row, col);
 
     writer.writeStartElement(QStringLiteral("c"));
-    writer.writeAttribute(QStringLiteral("r"), cell_range);
+    writer.writeAttribute(QStringLiteral("r"), cell_pos);
 
     //Style used by the cell, row or col
     if (cell->format())
@@ -1127,8 +1132,8 @@ void WorksheetPrivate::writeDrawings(XmlStreamWriter &writer)
 }
 
 /*!
-  Sets row height and format. Row height measured in point size. If format
-  equals 0 then format is ignored. \a row is zero-indexed.
+  Sets row \a height and \a format. Row height measured in point size. If format
+  equals 0 then format is ignored. \a row is 1-indexed.
  */
 bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
 {
@@ -1141,21 +1146,6 @@ bool Worksheet::setRow(int row, double height, Format *format, bool hidden)
     d->rowsInfo[row] = QSharedPointer<XlsxRowInfo>(new XlsxRowInfo(height, format, hidden));
     d->workbook->styles()->addFormat(format);
     return true;
-}
-
-/*!
-  \overload
-  Sets row height and format. Row height measured in point size. If format
-  equals 0 then format is ignored. \a row should be "1", "2", "3", ...
- */
-bool Worksheet::setRow(const QString &row, double height, Format *format, bool hidden)
-{
-    bool ok=true;
-    int r = row.toInt(&ok);
-    if (ok)
-        return setRow(r-1, height, format, hidden);
-
-    return false;
 }
 
 void WorksheetPrivate::splitColsInfo(int colFirst, int colLast)
@@ -1201,10 +1191,10 @@ void WorksheetPrivate::splitColsInfo(int colFirst, int colLast)
 }
 
 /*!
-  Sets column width and format for all columns from colFirst to colLast. Column
+  Sets column \a width and \a format for all columns from \a colFirst to \a colLast. Column
   width measured as the number of characters of the maximum digit width of the
   numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
-  equals 0 then format is ignored.
+  equals 0 then format is ignored. Both \a colFirst and \a colLast are all 1-indexed.
  */
 bool Worksheet::setColumn(int colFirst, int colLast, double width, Format *format, bool hidden)
 {
@@ -1625,7 +1615,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
 
                     //"r" is optional too.
                     if (attributes.hasAttribute(QLatin1String("r"))) {
-                        int row = attributes.value(QLatin1String("r")).toInt()-1;
+                        int row = attributes.value(QLatin1String("r")).toInt();
                         rowsInfo[row] = info;
                     }
                 }
@@ -1731,8 +1721,8 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 QXmlStreamAttributes colAttrs = reader.attributes();
                 int min = colAttrs.value(QLatin1String("min")).toInt();
                 int max = colAttrs.value(QLatin1String("max")).toInt();
-                info->firstColumn = min - 1;
-                info->lastColumn = max - 1;
+                info->firstColumn = min;
+                info->lastColumn = max;
 
                 //!Todo, customWidth support.
                 //Note, node may have "width" without "customWidth"
