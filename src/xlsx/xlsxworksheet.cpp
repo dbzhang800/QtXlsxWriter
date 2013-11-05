@@ -507,7 +507,7 @@ QVariant Worksheet::read(int row, int column) const
     if (!cell)
         return QVariant();
     if (!cell->formula().isEmpty())
-        return QLatin1String("=")+cell->formula();
+        return QVariant(QLatin1String("=")+cell->formula());
     return cell->value();
 }
 
