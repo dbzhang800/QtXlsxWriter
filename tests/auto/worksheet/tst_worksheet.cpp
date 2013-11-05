@@ -20,6 +20,7 @@ private Q_SLOTS:
     void testEmptySheet();
     void testDimension();
     void testSheetView();
+    void testSetColumn();
 
     void testWriteCells();
     void testWriteHyperlinks();
@@ -75,6 +76,23 @@ void WorksheetTest::testSheetView()
 
     QVERIFY2(xmldata.contains("showGridLines=\"0\""), "gridlines");
     QVERIFY2(xmldata.contains("windowProtection=\"1\""), "windowProtection");
+}
+
+void WorksheetTest::testSetColumn()
+{
+    QXlsx::Worksheet sheet("", 1, 0);
+    sheet.setColumn(0, 10, 20.0); //"A:K"
+    sheet.setColumn(3, 7, 10.0); //"D:H"
+    sheet.setColumn(5, 5, 15.0); //"F:F"
+
+    QByteArray xmldata = sheet.saveToXmlData();
+
+    qDebug()<<xmldata;
+    QVERIFY(xmldata.contains("<col min=\"1\" max=\"3\"")); //"A:C"
+    QVERIFY(xmldata.contains("<col min=\"4\" max=\"5\"")); //"D:E"
+    QVERIFY(xmldata.contains("<col min=\"6\" max=\"6\"")); //"F:F"
+    QVERIFY(xmldata.contains("<col min=\"7\" max=\"8\"")); //"G:H"
+    QVERIFY(xmldata.contains("<col min=\"9\" max=\"11\""));//"I:K"
 }
 
 void WorksheetTest::testWriteCells()
