@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (demo/main.cpp) | QtXlsx 0.0</title>
+  <title>main.cpp Example File (demo/main.cpp) | QtXlsx 0.1</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -12,10 +12,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.0</li>
+<li>Qt 0.1</li>
 <li>main.cpp Example File (demo/main.cpp)</li>
 <li id="buildversion">
-Qt 0.0.1 Reference Documentation</li>
+Qt 0.1.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -47,17 +47,9 @@ QTXLSX_USE_NAMESPACE
    Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
    format<span class="operator">-</span><span class="operator">&gt;</span>setVerticalAlignment(align);
    format<span class="operator">-</span><span class="operator">&gt;</span>setBorderStyle(Format<span class="operator">::</span>BorderThin);
-   xlsx<span class="operator">.</span>mergeCells(range);
-
    CellRange r(range);
-   <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span>r<span class="operator">.</span>firstRow(); row<span class="operator">&lt;</span><span class="operator">=</span>r<span class="operator">.</span>lastRow(); <span class="operator">+</span><span class="operator">+</span>row) {
-       <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span>r<span class="operator">.</span>firstColumn(); col<span class="operator">&lt;</span><span class="operator">=</span>r<span class="operator">.</span>lastColumn(); <span class="operator">+</span><span class="operator">+</span>col) {
-           <span class="keyword">if</span> (row <span class="operator">=</span><span class="operator">=</span> r<span class="operator">.</span>firstRow() <span class="operator">&amp;</span><span class="operator">&amp;</span> col <span class="operator">=</span><span class="operator">=</span> r<span class="operator">.</span>firstColumn())
-               xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> text<span class="operator">,</span> format);
-           <span class="keyword">else</span>
-               xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> <span class="type">QVariant</span>()<span class="operator">,</span> format);
-       }
-   }
+   xlsx<span class="operator">.</span>write(r<span class="operator">.</span>firstRow()<span class="operator">,</span> r<span class="operator">.</span>firstColumn()<span class="operator">,</span> text);
+   xlsx<span class="operator">.</span>mergeCells(r<span class="operator">,</span> format);
 }
 
 <span class="type">void</span> writeBorderStyleCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>BorderStyle bs)
@@ -91,10 +83,44 @@ QTXLSX_USE_NAMESPACE
    xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> text<span class="operator">,</span> format);
 }
 
+<span class="type">void</span> writeFontNameCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text)
+{
+    Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    format<span class="operator">-</span><span class="operator">&gt;</span>setFontName(text);
+    format<span class="operator">-</span><span class="operator">&gt;</span>setFontSize(<span class="number">16</span>);
+    xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> text<span class="operator">,</span> format);
+}
+
+<span class="type">void</span> writeFontSizeCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="type">int</span> size)
+{
+    Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    format<span class="operator">-</span><span class="operator">&gt;</span>setFontSize(size);
+    xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> <span class="string">&quot;Qt Xlsx&quot;</span><span class="operator">,</span> format);
+}
+
+<span class="type">void</span> writeInternalNumFormatsCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="type">int</span> row<span class="operator">,</span> <span class="type">double</span> value<span class="operator">,</span> <span class="type">int</span> numFmt)
+{
+    Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    format<span class="operator">-</span><span class="operator">&gt;</span>setNumberFormatIndex(numFmt);
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> value);
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type">QString</span>(<span class="string">&quot;Builtin NumFmt %1&quot;</span>)<span class="operator">.</span>arg(numFmt));
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> value<span class="operator">,</span> format);
+}
+
+<span class="type">void</span> writeCustomNumFormatsCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="type">int</span> row<span class="operator">,</span> <span class="type">double</span> value<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>numFmt)
+{
+    Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    format<span class="operator">-</span><span class="operator">&gt;</span>setNumberFormat(numFmt);
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> value);
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> numFmt);
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> value<span class="operator">,</span> format);
+}
+
 <span class="type">int</span> main()
 {
     Document xlsx;
 
+    <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//The default sheet is &quot;Sheet1&quot;</span>
     xlsx<span class="operator">.</span>setSheetName(<span class="string">&quot;Aligns &amp; Borders&quot;</span>);
     xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">20</span>);
@@ -138,11 +164,161 @@ QTXLSX_USE_NAMESPACE
     writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H21&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::green&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>green);
     writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H23&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::gray&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>gray);
 
+    <span class="comment">//---------------------------------------------------------------</span>
+    <span class="comment">//Create the second sheet.</span>
+    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Fonts&quot;</span>);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B3&quot;</span><span class="operator">,</span> <span class="string">&quot;Normal&quot;</span>);
+    Format <span class="operator">*</span>font_bold <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    font_bold<span class="operator">-</span><span class="operator">&gt;</span>setFontBold(<span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="string">&quot;Bold&quot;</span><span class="operator">,</span> font_bold);
+    Format <span class="operator">*</span>font_italic <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    font_italic<span class="operator">-</span><span class="operator">&gt;</span>setFontItalic(<span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B5&quot;</span><span class="operator">,</span> <span class="string">&quot;Italic&quot;</span><span class="operator">,</span> font_italic);
+    Format <span class="operator">*</span>font_underline <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    font_underline<span class="operator">-</span><span class="operator">&gt;</span>setFontUnderline(Format<span class="operator">::</span>FontUnderlineSingle);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B6&quot;</span><span class="operator">,</span> <span class="string">&quot;Underline&quot;</span><span class="operator">,</span> font_underline);
+    Format <span class="operator">*</span>font_strikeout <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    font_strikeout<span class="operator">-</span><span class="operator">&gt;</span>setFontStrikeOut(<span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B7&quot;</span><span class="operator">,</span> <span class="string">&quot;StrikeOut&quot;</span><span class="operator">,</span> font_strikeout);
+
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D3&quot;</span><span class="operator">,</span> <span class="string">&quot;Arial&quot;</span>);
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D4&quot;</span><span class="operator">,</span> <span class="string">&quot;Arial Black&quot;</span>);
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D5&quot;</span><span class="operator">,</span> <span class="string">&quot;Comic Sans MS&quot;</span>);
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D6&quot;</span><span class="operator">,</span> <span class="string">&quot;Courier New&quot;</span>);
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D7&quot;</span><span class="operator">,</span> <span class="string">&quot;Impact&quot;</span>);
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D8&quot;</span><span class="operator">,</span> <span class="string">&quot;Times New Roman&quot;</span>);
+    writeFontNameCell(xlsx<span class="operator">,</span> <span class="string">&quot;D9&quot;</span><span class="operator">,</span> <span class="string">&quot;Verdana&quot;</span>);
+
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G3&quot;</span><span class="operator">,</span> <span class="number">10</span>);
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G4&quot;</span><span class="operator">,</span> <span class="number">12</span>);
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G5&quot;</span><span class="operator">,</span> <span class="number">14</span>);
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G6&quot;</span><span class="operator">,</span> <span class="number">16</span>);
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G7&quot;</span><span class="operator">,</span> <span class="number">18</span>);
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G8&quot;</span><span class="operator">,</span> <span class="number">20</span>);
+    writeFontSizeCell(xlsx<span class="operator">,</span> <span class="string">&quot;G9&quot;</span><span class="operator">,</span> <span class="number">25</span>);
+
+    Format <span class="operator">*</span>font_vertical <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    font_vertical<span class="operator">-</span><span class="operator">&gt;</span>setRotation(<span class="number">255</span>);
+    font_vertical<span class="operator">-</span><span class="operator">&gt;</span>setFontSize(<span class="number">16</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;J3&quot;</span><span class="operator">,</span> <span class="string">&quot;vertical&quot;</span><span class="operator">,</span> font_vertical);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;J3:J9&quot;</span>);
+
+    <span class="comment">//---------------------------------------------------------------</span>
+    <span class="comment">//Create the third sheet.</span>
+    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Formulas&quot;</span>);
+    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;A&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">40</span>);
+    Format <span class="operator">*</span>rAlign <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    rAlign<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignRight);
+    Format <span class="operator">*</span>lAlign <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    lAlign<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignLeft);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B3&quot;</span><span class="operator">,</span> <span class="number">40</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="number">30</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B5&quot;</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A7&quot;</span><span class="operator">,</span> <span class="string">&quot;SUM(B3:B5)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B7&quot;</span><span class="operator">,</span> <span class="string">&quot;=SUM(B3:B5)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A8&quot;</span><span class="operator">,</span> <span class="string">&quot;AVERAGE(B3:B5)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B8&quot;</span><span class="operator">,</span> <span class="string">&quot;=AVERAGE(B3:B5)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A9&quot;</span><span class="operator">,</span> <span class="string">&quot;MAX(B3:B5)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B9&quot;</span><span class="operator">,</span> <span class="string">&quot;=MAX(B3:B5)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A10&quot;</span><span class="operator">,</span> <span class="string">&quot;MIN(B3:B5)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B10&quot;</span><span class="operator">,</span> <span class="string">&quot;=MIN(B3:B5)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A11&quot;</span><span class="operator">,</span> <span class="string">&quot;COUNT(B3:B5)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B11&quot;</span><span class="operator">,</span> <span class="string">&quot;=COUNT(B3:B5)&quot;</span><span class="operator">,</span> lAlign);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A13&quot;</span><span class="operator">,</span> <span class="string">&quot;IF(B7&gt;100,\&quot;large\&quot;,\&quot;small\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B13&quot;</span><span class="operator">,</span> <span class="string">&quot;=IF(B7&gt;100,\&quot;large\&quot;,\&quot;small\&quot;)&quot;</span><span class="operator">,</span> lAlign);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A15&quot;</span><span class="operator">,</span> <span class="string">&quot;SQRT(25)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B15&quot;</span><span class="operator">,</span> <span class="string">&quot;=SQRT(25)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A16&quot;</span><span class="operator">,</span> <span class="string">&quot;RAND()=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B16&quot;</span><span class="operator">,</span> <span class="string">&quot;=RAND()&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A17&quot;</span><span class="operator">,</span> <span class="string">&quot;2*PI()=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B17&quot;</span><span class="operator">,</span> <span class="string">&quot;=2*PI()&quot;</span><span class="operator">,</span> lAlign);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A19&quot;</span><span class="operator">,</span> <span class="string">&quot;UPPER(\&quot;qtxlsx\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B19&quot;</span><span class="operator">,</span> <span class="string">&quot;=UPPER(\&quot;qtxlsx\&quot;)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A20&quot;</span><span class="operator">,</span> <span class="string">&quot;LEFT(\&quot;ubuntu\&quot;,3)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B20&quot;</span><span class="operator">,</span> <span class="string">&quot;=LEFT(\&quot;ubuntu\&quot;,3)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A21&quot;</span><span class="operator">,</span> <span class="string">&quot;LEN(\&quot;Hello Qt!\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B21&quot;</span><span class="operator">,</span> <span class="string">&quot;=LEN(\&quot;Hello Qt!\&quot;)&quot;</span><span class="operator">,</span> lAlign);
+
+    Format <span class="operator">*</span>dateFormat <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    dateFormat<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignLeft);
+    dateFormat<span class="operator">-</span><span class="operator">&gt;</span>setNumberFormat(<span class="string">&quot;yyyy-mm-dd&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A23&quot;</span><span class="operator">,</span> <span class="string">&quot;DATE(2013,8,13)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B23&quot;</span><span class="operator">,</span> <span class="string">&quot;=DATE(2013,8,13)&quot;</span><span class="operator">,</span> dateFormat);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A24&quot;</span><span class="operator">,</span> <span class="string">&quot;DAY(B23)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B24&quot;</span><span class="operator">,</span> <span class="string">&quot;=DAY(B23)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A25&quot;</span><span class="operator">,</span> <span class="string">&quot;MONTH(B23)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B25&quot;</span><span class="operator">,</span> <span class="string">&quot;=MONTH(B23)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A26&quot;</span><span class="operator">,</span> <span class="string">&quot;YEAR(B23)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B26&quot;</span><span class="operator">,</span> <span class="string">&quot;=YEAR(B23)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A27&quot;</span><span class="operator">,</span> <span class="string">&quot;DAYS360(B23,TODAY())=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B27&quot;</span><span class="operator">,</span> <span class="string">&quot;=DAYS360(B23,TODAY())&quot;</span><span class="operator">,</span> lAlign);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A29&quot;</span><span class="operator">,</span> <span class="string">&quot;B3+100*(2-COS(0)))=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B29&quot;</span><span class="operator">,</span> <span class="string">&quot;=B3+100*(2-COS(0))&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A30&quot;</span><span class="operator">,</span> <span class="string">&quot;ISNUMBER(B29)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B30&quot;</span><span class="operator">,</span> <span class="string">&quot;=ISNUMBER(B29)&quot;</span><span class="operator">,</span> lAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A31&quot;</span><span class="operator">,</span> <span class="string">&quot;AND(1,0)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B31&quot;</span><span class="operator">,</span> <span class="string">&quot;=AND(1,0)&quot;</span><span class="operator">,</span> lAlign);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A33&quot;</span><span class="operator">,</span> <span class="string">&quot;HYPERLINK(\&quot;http://qt-project.org\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B33&quot;</span><span class="operator">,</span> <span class="string">&quot;=HYPERLINK(\&quot;http://qt-project.org\&quot;)&quot;</span><span class="operator">,</span> lAlign);
+
+    <span class="comment">//---------------------------------------------------------------</span>
+    <span class="comment">//Create the fourth sheet.</span>
+    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;NumFormats&quot;</span>);
+    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">40</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">2.5681</span><span class="operator">,</span> <span class="number">2</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">5</span><span class="operator">,</span> <span class="number">2500000</span><span class="operator">,</span> <span class="number">3</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">6</span><span class="operator">,</span> <span class="operator">-</span><span class="number">500</span><span class="operator">,</span> <span class="number">5</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">7</span><span class="operator">,</span> <span class="operator">-</span><span class="number">0.25</span><span class="operator">,</span> <span class="number">9</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="number">890</span><span class="operator">,</span> <span class="number">11</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">9</span><span class="operator">,</span> <span class="number">0.75</span><span class="operator">,</span> <span class="number">12</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> <span class="number">41499</span><span class="operator">,</span> <span class="number">14</span>);
+    writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">11</span><span class="operator">,</span> <span class="number">41499</span><span class="operator">,</span> <span class="number">17</span>);
+
+    writeCustomNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">13</span><span class="operator">,</span> <span class="number">20.5627</span><span class="operator">,</span> <span class="string">&quot;#.###&quot;</span>);
+    writeCustomNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">14</span><span class="operator">,</span> <span class="number">4.8</span><span class="operator">,</span> <span class="string">&quot;#.00&quot;</span>);
+    writeCustomNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">15</span><span class="operator">,</span> <span class="number">1.23</span><span class="operator">,</span> <span class="string">&quot;0.00 \&quot;RMB\&quot;&quot;</span>);
+    writeCustomNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">16</span><span class="operator">,</span> <span class="number">60</span><span class="operator">,</span> <span class="string">&quot;[Red][&lt;=100];[Green][&gt;100]&quot;</span>);
+
+    <span class="comment">//---------------------------------------------------------------</span>
+    <span class="comment">//Create the fifth sheet.</span>
+    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Merging&quot;</span>);
+    Format <span class="operator">*</span>centerAlign <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    centerAlign<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignHCenter);
+    centerAlign<span class="operator">-</span><span class="operator">&gt;</span>setVerticalAlignment(Format<span class="operator">::</span>AlignVCenter);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B4:F6&quot;</span><span class="operator">,</span> centerAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B8&quot;</span><span class="operator">,</span> <span class="number">1</span>);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B8:C21&quot;</span><span class="operator">,</span> centerAlign);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;E8&quot;</span><span class="operator">,</span> <span class="number">2</span>);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;E8:F21&quot;</span><span class="operator">,</span> centerAlign);
+
+    <span class="comment">//---------------------------------------------------------------</span>
+    <span class="comment">//Create the fifth sheet.</span>
+    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Grouping&quot;</span>);
+    qsrand(<span class="type">QDateTime</span><span class="operator">::</span>currentMSecsSinceEpoch());
+    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">31</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+        <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span><span class="number">1</span>; col<span class="operator">&lt;</span><span class="operator">=</span><span class="number">10</span>; <span class="operator">+</span><span class="operator">+</span>col)
+            xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> qrand() <span class="operator">%</span> <span class="number">100</span>);
+    }
+    xlsx<span class="operator">.</span>groupRows(<span class="number">4</span><span class="operator">,</span> <span class="number">7</span>);
+    xlsx<span class="operator">.</span>groupRows(<span class="number">11</span><span class="operator">,</span> <span class="number">26</span><span class="operator">,</span> <span class="keyword">false</span>);
+    xlsx<span class="operator">.</span>groupRows(<span class="number">15</span><span class="operator">,</span> <span class="number">17</span><span class="operator">,</span> <span class="keyword">false</span>);
+    xlsx<span class="operator">.</span>groupRows(<span class="number">20</span><span class="operator">,</span> <span class="number">22</span><span class="operator">,</span> <span class="keyword">false</span>);
+    xlsx<span class="operator">.</span>setColumn(<span class="number">1</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> <span class="number">10.0</span>);
+    xlsx<span class="operator">.</span>groupColumns(<span class="number">1</span><span class="operator">,</span> <span class="number">2</span>);
+    xlsx<span class="operator">.</span>groupColumns(<span class="number">5</span><span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="keyword">false</span>);
+
     xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Book1.xlsx&quot;</span>);
 
     <span class="comment">//Make sure that read/write works well.</span>
-    Document xlsx2(<span class="string">&quot;Book1.xlsx&quot;</span>);
-    xlsx2<span class="operator">.</span>saveAs(<span class="string">&quot;Book2.xlsx&quot;</span>);
+    Document xlsx2(<span class="string">&quot;demo.xlsx&quot;</span>);
+    xlsx2<span class="operator">.</span>saveAs(<span class="string">&quot;demo2.xlsx&quot;</span>);
 
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>

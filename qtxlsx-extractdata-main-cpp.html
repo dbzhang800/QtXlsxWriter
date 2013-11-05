@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (documentproperty/main.cpp) | QtXlsx 0.1</title>
+  <title>main.cpp Example File (extractdata/main.cpp) | QtXlsx 0.1</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.1</li>
-<li>main.cpp Example File (documentproperty/main.cpp)</li>
+<li>main.cpp Example File (extractdata/main.cpp)</li>
 <li id="buildversion">
 Qt 0.1.0 Reference Documentation</li>
     </ul>
@@ -23,31 +23,37 @@ Qt 0.1.0 Reference Documentation</li>
 <div class="line">
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">documentproperty/main.cpp</span>
-<!-- $$$documentproperty/main.cpp-description -->
+<span class="small-subtitle">extractdata/main.cpp</span>
+<!-- $$$extractdata/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
 <span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
 
 <span class="type">int</span> main()
 {
+    {
+    <span class="comment">//Create a new .xlsx file.</span>
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;View the properties through:&quot;</span>);
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="string">&quot;Office Button -&gt; Prepare -&gt; Properties option in Excel&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="number">12345</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A3&quot;</span><span class="operator">,</span> <span class="string">&quot;=44+33&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A4&quot;</span><span class="operator">,</span> <span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="string">&quot;http://qt-project.org&quot;</span>);
+    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Book1.xlsx&quot;</span>);
+    }
 
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;title&quot;</span><span class="operator">,</span> <span class="string">&quot;This is an example spreadsheet&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;subject&quot;</span><span class="operator">,</span> <span class="string">&quot;With document properties&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;creator&quot;</span><span class="operator">,</span> <span class="string">&quot;Debao Zhang&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;company&quot;</span><span class="operator">,</span> <span class="string">&quot;HMICN&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;category&quot;</span><span class="operator">,</span> <span class="string">&quot;Example spreadsheets&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;keywords&quot;</span><span class="operator">,</span> <span class="string">&quot;Sample, Example, Properties&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;description&quot;</span><span class="operator">,</span> <span class="string">&quot;Created with Qt Xlsx&quot;</span>);
+    <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx(<span class="string">&quot;Book1.xlsx&quot;</span>);
 
-    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Test.xlsx&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A1&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A2&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A3&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A4&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A5&quot;</span>);
+
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>
 </div>
-<!-- @@@documentproperty/main.cpp -->
+<!-- @@@extractdata/main.cpp -->
         </div>
        </div>
    </div>

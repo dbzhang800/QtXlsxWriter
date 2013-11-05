@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- demo.qdoc -->
-  <title>Qt Xlsx Demo | QtXlsx 0.1</title>
+  <title>main.cpp Example File (mergecells/main.cpp) | QtXlsx 0.1</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -14,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.1</li>
-<li>Qt Xlsx Demo</li>
+<li>main.cpp Example File (mergecells/main.cpp)</li>
 <li id="buildversion">
 Qt 0.1.0 Reference Documentation</li>
     </ul>
@@ -23,17 +22,33 @@ Qt 0.1.0 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">Qt Xlsx Demo</h1>
-<span class="subtitle"></span>
-<!-- $$$demo-description -->
+<h1 class="title">main.cpp Example File</h1>
+<span class="small-subtitle">mergecells/main.cpp</span>
+<!-- $$$mergecells/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
-<p>This is a demo which is used to show features of the library<p class="centerAlign"><img src="images/xlsx_demo.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_fonts.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_formulas.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_merging.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_grouping.png" alt="" /></p><p>Files:</p>
-<ul>
-<li><a href="qtxlsx-demo-main-cpp.html">demo/main.cpp</a></li>
-<li><a href="qtxlsx-demo-demo-pro.html">demo/demo.pro</a></li>
-</ul>
+<pre class="cpp"><span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
+
+QTXLSX_USE_NAMESPACE
+
+<span class="type">int</span> main()
+{
+    Document xlsx;
+    Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
+    format<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignHCenter);
+    format<span class="operator">-</span><span class="operator">&gt;</span>setVerticalAlignment(Format<span class="operator">::</span>AlignVCenter);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B4:F6&quot;</span><span class="operator">,</span> format);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B8&quot;</span><span class="operator">,</span> <span class="number">1</span>);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B8:C21&quot;</span><span class="operator">,</span> format);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;E8&quot;</span><span class="operator">,</span> <span class="number">2</span>);
+    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;E8:F21&quot;</span><span class="operator">,</span> format);
+    xlsx<span class="operator">.</span>save();
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
 </div>
-<!-- @@@demo -->
+<!-- @@@mergecells/main.cpp -->
         </div>
        </div>
    </div>

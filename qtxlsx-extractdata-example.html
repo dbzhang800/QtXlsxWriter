@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- demo.qdoc -->
-  <title>Qt Xlsx Demo | QtXlsx 0.1</title>
+<!-- extractdata.qdoc -->
+  <title>Extract Data Example | QtXlsx 0.1</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.1</li>
-<li>Qt Xlsx Demo</li>
+<li>Extract Data Example</li>
 <li id="buildversion">
 Qt 0.1.0 Reference Documentation</li>
     </ul>
@@ -23,17 +23,26 @@ Qt 0.1.0 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">Qt Xlsx Demo</h1>
+<h1 class="title">Extract Data Example</h1>
 <span class="subtitle"></span>
-<!-- $$$demo-description -->
+<!-- $$$extractdata-description -->
 <div class="descr"> <a name="details"></a>
-<p>This is a demo which is used to show features of the library<p class="centerAlign"><img src="images/xlsx_demo.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_fonts.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_formulas.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_merging.png" alt="" /></p><p class="centerAlign"><img src="images/xlsx_demo_grouping.png" alt="" /></p><p>Files:</p>
+<p>This is a simplest Qt Xlsx example.<p>This example demonstrates how to extract data form existing .xlsx file with Qt Xlsx Library. So lets see how this is achieved.</p>
+<p>This creates a new instance of the all important Document class which gives you access to the Excel workbook and worksheets.</p>
+<pre class="cpp"><span class="type">QXlsx</span><span class="operator">::</span>Document xlsx(<span class="string">&quot;Book1.xlsx&quot;</span>);</pre>
+<p>Extracts data from current worksheet.</p>
+<pre class="cpp">qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A1&quot;</span>);
+qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A2&quot;</span>);
+qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A3&quot;</span>);
+qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A4&quot;</span>);
+qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A5&quot;</span>);</pre>
+<p>Files:</p>
 <ul>
-<li><a href="qtxlsx-demo-main-cpp.html">demo/main.cpp</a></li>
-<li><a href="qtxlsx-demo-demo-pro.html">demo/demo.pro</a></li>
+<li><a href="qtxlsx-extractdata-main-cpp.html">extractdata/main.cpp</a></li>
+<li><a href="qtxlsx-extractdata-extractdata-pro.html">extractdata/extractdata.pro</a></li>
 </ul>
 </div>
-<!-- @@@demo -->
+<!-- @@@extractdata -->
         </div>
        </div>
    </div>
