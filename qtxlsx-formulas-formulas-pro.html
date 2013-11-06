@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- demo.qdoc -->
-  <title>Qt Xlsx Demo | QtXlsx 0.1</title>
+  <title>formulas.pro Example File (formulas/formulas.pro) | QtXlsx 0.1</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -14,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.1</li>
-<li>Qt Xlsx Demo</li>
+<li>formulas.pro Example File (formulas/formulas.pro)</li>
 <li id="buildversion">
 Qt 0.1.0 Reference Documentation</li>
     </ul>
@@ -23,17 +22,21 @@ Qt 0.1.0 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">Qt Xlsx Demo</h1>
-<span class="subtitle"></span>
-<!-- $$$demo-description -->
+<h1 class="title">formulas.pro Example File</h1>
+<span class="small-subtitle">formulas/formulas.pro</span>
+<!-- $$$formulas/formulas.pro-description -->
 <div class="descr"> <a name="details"></a>
-<p>This is a demo which is used to show features of the library<p class="centerAlign"><img src="images/xlsx_demo.gif" alt="" /></p><p>Files:</p>
-<ul>
-<li><a href="qtxlsx-demo-main-cpp.html">demo/main.cpp</a></li>
-<li><a href="qtxlsx-demo-demo-pro.html">demo/demo.pro</a></li>
-</ul>
+<pre class="cpp">TARGET = hello
+
+#include(../../../src/xlsx/qtxlsx.pri)
+QT+=xlsx
+
+CONFIG   += console
+CONFIG   -= app_bundle
+
+SOURCES += main.cpp</pre>
 </div>
-<!-- @@@demo -->
+<!-- @@@formulas/formulas.pro -->
         </div>
        </div>
    </div>
