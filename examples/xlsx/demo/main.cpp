@@ -289,8 +289,8 @@ int main()
     xlsx.saveAs("Book1.xlsx");
 
     //Make sure that read/write works well.
-    Document xlsx2("demo.xlsx");
-    xlsx2.saveAs("demo2.xlsx");
+    Document xlsx2("Book1.xlsx");
+    xlsx2.saveAs("Book2.xlsx");
 
     return 0;
 }
