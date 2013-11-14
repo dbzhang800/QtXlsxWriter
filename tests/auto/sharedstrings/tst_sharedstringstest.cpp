@@ -40,8 +40,8 @@ void SharedStringsTest::testAddSharedString()
         if (token == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("sst")) {
                 QXmlStreamAttributes attributes = reader.attributes();
-                count = attributes.value("count").toInt();
-                uniqueCount = attributes.value("uniqueCount").toInt();
+                count = attributes.value("count").toString().toInt();
+                uniqueCount = attributes.value("uniqueCount").toString().toInt();
             }
         }
     }
@@ -73,8 +73,8 @@ void SharedStringsTest::testRemoveSharedString()
         if (token == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("sst")) {
                 QXmlStreamAttributes attributes = reader.attributes();
-                count = attributes.value("count").toInt();
-                uniqueCount = attributes.value("uniqueCount").toInt();
+                count = attributes.value("count").toString().toInt();
+                uniqueCount = attributes.value("uniqueCount").toString().toInt();
             }
         }
     }

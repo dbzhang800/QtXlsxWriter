@@ -577,14 +577,14 @@ bool Styles::readNumFmts(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("numFmts"));
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
     for (int i=0; i<count; ++i) {
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("numFmt"))
             return false;
         QXmlStreamAttributes attributes = reader.attributes();
         QSharedPointer<NumberData> fmt (new NumberData);
-        fmt->formatIndex = attributes.value(QLatin1String("numFmtId")).toInt();
+        fmt->formatIndex = attributes.value(QLatin1String("numFmtId")).toString().toInt();
         fmt->formatString = attributes.value(QLatin1String("formatCode")).toString();
         if (fmt->formatIndex >= m_nextCustomNumFmtId)
             m_nextCustomNumFmtId = fmt->formatIndex + 1;
@@ -601,7 +601,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("fonts"));
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
     for (int i=0; i<count; ++i) {
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("font"))
@@ -638,14 +638,14 @@ bool Styles::readFonts(XmlStreamReader &reader)
                     else
                         font->scirpt = Format::FontScriptSub;
                 } else if (reader.name() == QLatin1String("sz")) {
-                    font->size = reader.attributes().value(QLatin1String("val")).toInt();
+                    font->size = reader.attributes().value(QLatin1String("val")).toString().toInt();
                 } else if (reader.name() == QLatin1String("color")) {
                     QXmlStreamAttributes attributes = reader.attributes();
                     if (attributes.hasAttribute(QLatin1String("rgb"))) {
                         QString colorString = attributes.value(QLatin1String("rgb")).toString();
                         font->color = fromARGBString(colorString);
                     } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                        font->color = getColorByIndex(attributes.value(QLatin1String("indexed")).toInt());
+                        font->color = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
                     } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                         QString theme = attributes.value(QLatin1String("theme")).toString();
                         QString tint = attributes.value(QLatin1String("tint")).toString();
@@ -654,7 +654,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
                 } else if (reader.name() == QLatin1String("name")) {
                     font->name = reader.attributes().value(QLatin1String("val")).toString();
                 } else if (reader.name() == QLatin1String("family")) {
-                    font->family = reader.attributes().value(QLatin1String("val")).toInt();
+                    font->family = reader.attributes().value(QLatin1String("val")).toString().toInt();
                 } else if (reader.name() == QLatin1String("scheme")) {
                     font->scheme = reader.attributes().value(QLatin1String("val")).toString();
                 }
@@ -675,7 +675,7 @@ bool Styles::readFills(XmlStreamReader &reader)
     Q_ASSERT(reader.name() == QLatin1String("fills"));
 
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
     for (int i=0; i<count; ++i) {
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("fill") || reader.tokenType() != QXmlStreamReader::StartElement)
@@ -725,7 +725,7 @@ bool Styles::readFill(XmlStreamReader &reader)
                 if (attributes.hasAttribute(QLatin1String("rgb"))) {
                     c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
                 } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toInt());
+                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
@@ -741,7 +741,7 @@ bool Styles::readFill(XmlStreamReader &reader)
                 if (attributes.hasAttribute(QLatin1String("rgb"))) {
                     c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
                 } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toInt());
+                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
@@ -770,7 +770,7 @@ bool Styles::readBorders(XmlStreamReader &reader)
     Q_ASSERT(reader.name() == QLatin1String("borders"));
 
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
     for (int i=0; i<count; ++i) {
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("border") || reader.tokenType() != QXmlStreamReader::StartElement)
@@ -857,7 +857,7 @@ bool Styles::readSubBorder(XmlStreamReader &reader, const QString &name, Format:
                             //get color
                             color = fromARGBString(colorString);
                         } else if (colorAttrs.hasAttribute(QLatin1String("indexed"))) {
-                            color = getColorByIndex(colorAttrs.value(QLatin1String("indexed")).toInt());
+                            color = getColorByIndex(colorAttrs.value(QLatin1String("indexed")).toString().toInt());
                         } else if (colorAttrs.hasAttribute(QLatin1String("theme"))) {
                             QString theme = attributes.value(QLatin1String("theme")).toString();
                             QString tint = attributes.value(QLatin1String("tint")).toString();
@@ -880,7 +880,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("cellXfs"));
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
     for (int i=0; i<count; ++i) {
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("xf"))
@@ -893,7 +893,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
 //            qDebug()<<"... "<<i<<" "<<xfAttrs[i].name()<<xfAttrs[i].value();
 
         if (xfAttrs.hasAttribute(QLatin1String("applyNumberFormat"))) {
-            int numFmtIndex = xfAttrs.value(QLatin1String("numFmtId")).toInt();
+            int numFmtIndex = xfAttrs.value(QLatin1String("numFmtId")).toString().toInt();
             if (!m_customNumFmtIdMap.contains(numFmtIndex))
                 format->setNumberFormatIndex(numFmtIndex);
             else
@@ -901,7 +901,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFont"))) {
-            int fontIndex = xfAttrs.value(QLatin1String("fontId")).toInt();
+            int fontIndex = xfAttrs.value(QLatin1String("fontId")).toString().toInt();
             if (fontIndex >= m_fontsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fontId");
             } else {
@@ -910,7 +910,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFill"))) {
-            int id = xfAttrs.value(QLatin1String("fillId")).toInt();
+            int id = xfAttrs.value(QLatin1String("fillId")).toString().toInt();
             if (id >= m_fillsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fillId");
             } else {
@@ -919,7 +919,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyBorder"))) {
-            int id = xfAttrs.value(QLatin1String("borderId")).toInt();
+            int id = xfAttrs.value(QLatin1String("borderId")).toString().toInt();
             if (id >= m_bordersList.size()) {
                 qDebug("Error read styles.xml, cellXfs borderId");
             } else {
@@ -961,12 +961,12 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
                 }
 
                 if (alignAttrs.hasAttribute(QLatin1String("indent"))) {
-                    int indent = alignAttrs.value(QLatin1String("indent")).toInt();
+                    int indent = alignAttrs.value(QLatin1String("indent")).toString().toInt();
                     format->setIndent(indent);
                 }
 
                 if (alignAttrs.hasAttribute(QLatin1String("textRotation"))) {
-                    int rotation = alignAttrs.value(QLatin1String("textRotation")).toInt();
+                    int rotation = alignAttrs.value(QLatin1String("textRotation")).toString().toInt();
                     format->setRotation(rotation);
                 }
 
