@@ -157,7 +157,7 @@ QSharedPointer<SharedStrings> SharedStrings::loadFromXmlFile(QIODevice *device)
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("sst")) {
                  QXmlStreamAttributes attributes = reader.attributes();
-                 count = attributes.value(QLatin1String("uniqueCount")).toInt();
+                 count = attributes.value(QLatin1String("uniqueCount")).toString().toInt();
              } else if (reader.name() == QLatin1String("si")) {
                  if (reader.readNextStartElement()) {
                      if (reader.name() == QLatin1String("t")) {

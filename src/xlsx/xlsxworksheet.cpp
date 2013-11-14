@@ -1831,22 +1831,22 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
 
                     QSharedPointer<XlsxRowInfo> info(new XlsxRowInfo);
                     if (attributes.hasAttribute(QLatin1String("customFormat")) && attributes.hasAttribute(QLatin1String("s"))) {
-                        int idx = attributes.value(QLatin1String("s")).toInt();
+                        int idx = attributes.value(QLatin1String("s")).toString().toInt();
                         info->format = workbook->styles()->xfFormat(idx);
                     }
                     if (attributes.hasAttribute(QLatin1String("customHeight")) && attributes.hasAttribute(QLatin1String("ht"))) {
-                        info->height = attributes.value(QLatin1String("ht")).toDouble();
+                        info->height = attributes.value(QLatin1String("ht")).toString().toDouble();
                     }
                     //both "hidden" and "collapsed" default are false
                     info->hidden = attributes.value(QLatin1String("hidden")) == QLatin1String("1");
                     info->collapsed = attributes.value(QLatin1String("collapsed")) == QLatin1String("1");
 
                     if (attributes.hasAttribute(QLatin1String("outlineLevel")))
-                        info->outlineLevel = attributes.value(QLatin1String("outlineLevel")).toInt();
+                        info->outlineLevel = attributes.value(QLatin1String("outlineLevel")).toString().toInt();
 
                     //"r" is optional too.
                     if (attributes.hasAttribute(QLatin1String("r"))) {
-                        int row = attributes.value(QLatin1String("r")).toInt();
+                        int row = attributes.value(QLatin1String("r")).toString().toInt();
                         rowsInfo[row] = info;
                     }
                 }
@@ -1859,7 +1859,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                 //get format
                 Format *format = 0;
                 if (attributes.hasAttribute(QLatin1String("s"))) {
-                    int idx = attributes.value(QLatin1String("s")).toInt();
+                    int idx = attributes.value(QLatin1String("s")).toString().toInt();
                     format = workbook->styles()->xfFormat(idx);
                     if (!format)
                         qDebug()<<QStringLiteral("<c s=\"%1\">Invalid style index: ").arg(idx)<<idx;
@@ -1950,15 +1950,15 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 QSharedPointer<XlsxColumnInfo> info(new XlsxColumnInfo);
 
                 QXmlStreamAttributes colAttrs = reader.attributes();
-                int min = colAttrs.value(QLatin1String("min")).toInt();
-                int max = colAttrs.value(QLatin1String("max")).toInt();
+                int min = colAttrs.value(QLatin1String("min")).toString().toInt();
+                int max = colAttrs.value(QLatin1String("max")).toString().toInt();
                 info->firstColumn = min;
                 info->lastColumn = max;
 
                 //!Todo, customWidth support.
                 //Note, node may have "width" without "customWidth"
                 if (colAttrs.hasAttribute(QLatin1String("width"))) {
-                    double width = colAttrs.value(QLatin1String("width")).toDouble();
+                    double width = colAttrs.value(QLatin1String("width")).toString().toDouble();
                     info->width = width;
                 }
 
@@ -1966,11 +1966,11 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
                 info->collapsed = colAttrs.value(QLatin1String("collapsed")) == QLatin1String("1");
 
                 if (colAttrs.hasAttribute(QLatin1String("style"))) {
-                    int idx = colAttrs.value(QLatin1String("style")).toInt();
+                    int idx = colAttrs.value(QLatin1String("style")).toString().toInt();
                     info->format = workbook->styles()->xfFormat(idx);
                 }
                 if (colAttrs.hasAttribute(QLatin1String("outlineLevel")))
-                    info->outlineLevel = colAttrs.value(QLatin1String("outlineLevel")).toInt();
+                    info->outlineLevel = colAttrs.value(QLatin1String("outlineLevel")).toString().toInt();
 
                 colsInfo.insert(min, info);
                 for (int col=min; col<=max; ++col)
@@ -1985,7 +1985,7 @@ void WorksheetPrivate::readMergeCells(XmlStreamReader &reader)
     Q_ASSERT(reader.name() == QLatin1String("mergeCells"));
 
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
 
     while(!(reader.name() == QLatin1String("mergeCells") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
@@ -2014,7 +2014,7 @@ void WorksheetPrivate::readDataValidations(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("dataValidations"));
     QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toInt();
+    int count = attributes.value(QLatin1String("count")).toString().toInt();
 
     while(!(reader.name() == QLatin1String("dataValidations")
             && reader.tokenType() == QXmlStreamReader::EndElement)) {
