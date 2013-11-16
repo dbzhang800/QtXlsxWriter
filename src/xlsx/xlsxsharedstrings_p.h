@@ -62,8 +62,8 @@ public:
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;
-    static QSharedPointer<SharedStrings> loadFromXmlFile(QIODevice *device);
-    static QSharedPointer<SharedStrings> loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlFile(QIODevice *device);
+    bool loadFromXmlData(const QByteArray &data);
 
 private:
     QHash<QString, XlsxSharedStringInfo> m_stringTable; //for fast lookup

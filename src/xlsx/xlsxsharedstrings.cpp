@@ -146,10 +146,8 @@ QByteArray SharedStrings::saveToXmlData() const
     return data;
 }
 
-QSharedPointer<SharedStrings> SharedStrings::loadFromXmlFile(QIODevice *device)
+bool SharedStrings::loadFromXmlFile(QIODevice *device)
 {
-    QSharedPointer<SharedStrings> sst(new SharedStrings);
-
     XmlStreamReader reader(device);
     int count = 0;
     while(!reader.atEnd()) {
@@ -163,23 +161,24 @@ QSharedPointer<SharedStrings> SharedStrings::loadFromXmlFile(QIODevice *device)
                      if (reader.name() == QLatin1String("t")) {
 //                         QXmlStreamAttributes attributes = reader.attributes();
                          QString string = reader.readElementText();
-                         int idx = sst->m_stringList.size();
-                         sst->m_stringTable[string] = XlsxSharedStringInfo(idx, 0);
-                         sst->m_stringList.append(string);
+                         int idx = m_stringList.size();
+                         m_stringTable[string] = XlsxSharedStringInfo(idx, 0);
+                         m_stringList.append(string);
                      }
                  }
              }
          }
     }
 
-    if (sst->m_stringTable.size() != count) {
+    if (m_stringTable.size() != count) {
         qDebug("Error: Shared string count");
+        return false;
     }
 
-    return sst;
+    return true;
 }
 
-QSharedPointer<SharedStrings> SharedStrings::loadFromXmlData(const QByteArray &data)
+bool SharedStrings::loadFromXmlData(const QByteArray &data)
 {
     QBuffer buffer;
     buffer.setData(data);

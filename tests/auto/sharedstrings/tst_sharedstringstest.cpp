@@ -92,7 +92,8 @@ void SharedStringsTest::testLoadXmlData()
     sst.addSharedString("Hello Qt!");
     QByteArray xmlData = sst.saveToXmlData();
 
-    QSharedPointer<QXlsx::SharedStrings> sst2 = QXlsx::SharedStrings::loadFromXmlData(xmlData);
+    QSharedPointer<QXlsx::SharedStrings> sst2(new QXlsx::SharedStrings);
+    sst2->loadFromXmlData(xmlData);
 
     QCOMPARE(sst2->getSharedString(0), QStringLiteral("Hello Qt!"));
     QCOMPARE(sst2->getSharedString(2), QStringLiteral("Hello World"));
