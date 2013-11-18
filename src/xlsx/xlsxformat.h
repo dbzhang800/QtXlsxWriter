@@ -39,6 +39,7 @@ class Styles;
 class Worksheet;
 class WorksheetPrivate;
 class RichString;
+class SharedStrings;
 
 class FormatPrivate;
 class Q_XLSX_EXPORT Format
@@ -216,6 +217,7 @@ private:
     friend class Worksheet;
     friend class WorksheetPrivate;
     friend class RichString;
+    friend class SharedStrings;
     friend class ::FormatTest;
 
     Format();

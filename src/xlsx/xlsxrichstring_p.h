@@ -28,6 +28,7 @@
 #include "xlsxglobal.h"
 #include "xlsxformat.h"
 #include <QStringList>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -49,6 +50,7 @@ public:
     QString fragmentText(int index) const;
     Format *fragmentFormat(int index) const;
 
+    Format *createFormat();
 private:
     friend XLSX_AUTOTEST_EXPORT uint qHash(const RichString &rs, uint seed) Q_DECL_NOTHROW;
     friend XLSX_AUTOTEST_EXPORT bool operator==(const RichString &rs1, const RichString &rs2);
@@ -61,6 +63,7 @@ private:
     QList<Format *> m_fragmentFormats;
     QByteArray m_idKey;
     bool m_dirty;
+    QList<QSharedPointer<Format> > m_createdFormats;
 };
 
 

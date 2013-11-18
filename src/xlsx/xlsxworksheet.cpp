@@ -1158,7 +1158,12 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
         writer.writeAttribute(QStringLiteral("s"), QString::number(colsInfoHelper[col]->format->xfIndex()));
 
     if (cell->dataType() == Cell::String) {
-        int sst_idx = sharedStrings()->getSharedStringIndex(cell->value().toString());
+        int sst_idx;
+        if (cell->isRichString())
+            sst_idx = sharedStrings()->getSharedStringIndex(cell->d_ptr->richString);
+        else
+            sst_idx = sharedStrings()->getSharedStringIndex(cell->value().toString());
+
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("s"));
         writer.writeTextElement(QStringLiteral("v"), QString::number(sst_idx));
     } else if (cell->dataType() == Cell::InlineString) {
@@ -1168,13 +1173,17 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
             //Rich text string
             RichString string = cell->d_ptr->richString;
             for (int i=0; i<string.fragmentCount(); ++i) {
-                writer.writeStartElement(QStringLiteral("rPr"));
-                //:Todo
-                writer.writeEndElement();// rPr
+                writer.writeStartElement(QStringLiteral("r"));
+                if (string.fragmentFormat(i)) {
+                    writer.writeStartElement(QStringLiteral("rPr"));
+                    //:Todo
+                    writer.writeEndElement();// rPr
+                }
                 writer.writeStartElement(QStringLiteral("t"));
                 writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
                 writer.writeCharacters(string.fragmentText(i));
                 writer.writeEndElement();// t
+                writer.writeEndElement(); // r
             }
         } else {
             writer.writeTextElement(QStringLiteral("t"), cell->value().toString());

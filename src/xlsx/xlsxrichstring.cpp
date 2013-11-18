@@ -90,6 +90,17 @@ Format *RichString::fragmentFormat(int index) const
 /*!
  * \internal
  */
+Format *RichString::createFormat()
+{
+    Format *format = new Format();
+    m_createdFormats.append(QSharedPointer<Format>(format));
+
+    return format;
+}
+
+/*!
+ * \internal
+ */
 QByteArray RichString::idKey() const
 {
     if (m_dirty) {

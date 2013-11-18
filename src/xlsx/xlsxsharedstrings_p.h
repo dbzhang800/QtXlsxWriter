@@ -36,6 +36,7 @@ class QIODevice;
 namespace QXlsx {
 
 class XmlStreamReader;
+class XmlStreamWriter;
 class RichString;
 
 class XlsxSharedStringInfo
@@ -76,6 +77,8 @@ private:
     void readString(XmlStreamReader &reader); // <si>
     void readRichStringPart(XmlStreamReader &reader, RichString &rich); // <r>
     void readPlainStringPart(XmlStreamReader &reader, RichString &rich); // <v>
+    Format *readRichStringPart_rPr(XmlStreamReader &reader, RichString &richString);
+    void writeRichStringPart_rPr(XmlStreamWriter &writer, Format *format) const;
 
     QHash<RichString, XlsxSharedStringInfo> m_stringTable; //for fast lookup
     QList<RichString> m_stringList;

@@ -1,5 +1,6 @@
 #include "private/xlsxsharedstrings_p.h"
 #include "private/xlsxrichstring_p.h"
+#include "xlsxformat.h"
 #include <QString>
 #include <QtTest>
 #include <QXmlStreamReader>
@@ -16,6 +17,7 @@ private Q_SLOTS:
     void testRemoveSharedString();
 
     void testLoadXmlData();
+    void testLoadRichStringXmlData();
 
 };
 
@@ -125,6 +127,37 @@ void SharedStringsTest::testLoadXmlData()
     QCOMPARE(sst2->getSharedString(4).toPlainString(), QStringLiteral("Hello World"));
     QCOMPARE(sst2->getSharedStringIndex("Hello Qt!"), 0);
     QCOMPARE(sst2->getSharedStringIndex("Hello World"), 4);
+}
+
+void SharedStringsTest::testLoadRichStringXmlData()
+{
+    QByteArray xmlData = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+            "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"1\" uniqueCount=\"1\">"
+            "<si>"
+            "<r><t>e=mc</t></r>"
+            "<r>"
+            "<rPr><vertAlign val=\"superscript\"/>"
+            "<sz val=\"11\"/>"
+            "<rFont val=\"MyFontName\"/>"
+            "<family val=\"3\"/>"
+            "<charset val=\"134\"/>"
+            "<scheme val=\"minor\"/>"
+            "</rPr>"
+            "<t>2</t></r>"
+            "</si>"
+            "</sst>";
+
+    QSharedPointer<QXlsx::SharedStrings> sst(new QXlsx::SharedStrings);
+    sst->loadFromXmlData(xmlData);
+    QXlsx::RichString rs = sst->getSharedString(0);
+    QVERIFY(rs.fragmentText(0) == "e=mc");
+    QVERIFY(rs.fragmentText(1) == "2");
+    QVERIFY(rs.fragmentFormat(0) == 0);
+    QXlsx::Format *format = rs.fragmentFormat(1);
+    QCOMPARE(format->fontName(), QString("MyFontName"));
+//    QCOMPARE(format->fontFamily(), 3);
+    QCOMPARE(format->fontScript(), QXlsx::Format::FontScriptSuper);
+    QCOMPARE(format->fontSize(), 11);
 }
 
 QTEST_APPLESS_MAIN(SharedStringsTest)
