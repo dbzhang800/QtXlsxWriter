@@ -160,8 +160,7 @@ bool Package::parsePackage(QIODevice *packageDevice)
         //In normal case this should be sharedStrings.xml which in xl
         QString name = rels_sharedStrings[0].target;
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
-        QSharedPointer<SharedStrings> sst= SharedStrings::loadFromXmlData(zipReader.fileData(path));
-        m_document->workbook()->d_ptr->sharedStrings = sst;
+        m_document->workbook()->d_ptr->sharedStrings->loadFromXmlData(zipReader.fileData(path));
     }
 
     //load theme

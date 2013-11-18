@@ -22,6 +22,7 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
+#include "xlsxrichstring_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"
 #include "xlsxxmlreader_p.h"
@@ -44,6 +45,11 @@ int SharedStrings::count() const
 }
 
 int SharedStrings::addSharedString(const QString &string)
+{
+    return addSharedString(RichString(string));
+}
+
+int SharedStrings::addSharedString(const RichString &string)
 {
     m_stringCount += 1;
 
@@ -71,6 +77,11 @@ void SharedStrings::incRefByStringIndex(int idx)
 
 void SharedStrings::removeSharedString(const QString &string)
 {
+    removeSharedString(RichString(string));
+}
+
+void SharedStrings::removeSharedString(const RichString &string)
+{
     if (!m_stringTable.contains(string))
         return;
 
@@ -90,19 +101,24 @@ void SharedStrings::removeSharedString(const QString &string)
 
 int SharedStrings::getSharedStringIndex(const QString &string) const
 {
+    return getSharedStringIndex(RichString(string));
+}
+
+int SharedStrings::getSharedStringIndex(const RichString &string) const
+{
     if (m_stringTable.contains(string))
         return m_stringTable[string].index;
     return -1;
 }
 
-QString SharedStrings::getSharedString(int index) const
+RichString SharedStrings::getSharedString(int index) const
 {
     if (index < m_stringList.count() && index >= 0)
         return m_stringList[index];
-    return QString();
+    return RichString();
 }
 
-QStringList SharedStrings::getSharedStrings() const
+QList<RichString> SharedStrings::getSharedStrings() const
 {
     return m_stringList;
 }
@@ -117,16 +133,29 @@ void SharedStrings::saveToXmlFile(QIODevice *device) const
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_stringCount));
     writer.writeAttribute(QStringLiteral("uniqueCount"), QString::number(m_stringTable.size()));
 
-    foreach (QString string, m_stringList) {
+    foreach (RichString string, m_stringList) {
         writer.writeStartElement(QStringLiteral("si"));
-        if (string.contains(QRegularExpression(QStringLiteral("^<r>"))) || string.contains(QRegularExpression(QStringLiteral("</r>$")))) {
-            //Rich text string,
-//            writer.writeCharacters(string);
+        if (string.isRichString()) {
+            //Rich text string
+            for (int i=0; i<string.fragmentCount(); ++i) {
+                if (string.fragmentFormat(i)) {
+                    writer.writeStartElement(QStringLiteral("rPr"));
+                    //:Todo
+                    writer.writeEndElement();// rPr
+                }
+                writer.writeStartElement(QStringLiteral("t"));
+                writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
+                writer.writeCharacters(string.fragmentText(i));
+                writer.writeEndElement();// t
+            }
         } else {
             writer.writeStartElement(QStringLiteral("t"));
-            if (string.contains(QRegularExpression(QStringLiteral("^\\s"))) || string.contains(QRegularExpression(QStringLiteral("\\s$"))))
+            QString pString = string.toPlainString();
+            if (pString.contains(QRegularExpression(QStringLiteral("^\\s")))
+                    || pString.contains(QRegularExpression(QStringLiteral("\\s$")))) {
                 writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
-            writer.writeCharacters(string);
+            }
+            writer.writeCharacters(pString);
             writer.writeEndElement();//t
         }
         writer.writeEndElement();//si
@@ -146,6 +175,56 @@ QByteArray SharedStrings::saveToXmlData() const
     return data;
 }
 
+void SharedStrings::readString(XmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("si"));
+
+    RichString richString;
+
+    while (!(reader.name() == QLatin1String("si") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("r"))
+                readRichStringPart(reader, richString);
+            else if (reader.name() == QLatin1String("t"))
+                readPlainStringPart(reader, richString);
+        }
+    }
+
+    int idx = m_stringList.size();
+    m_stringTable[richString] = XlsxSharedStringInfo(idx, 0);
+    m_stringList.append(richString);
+}
+
+void SharedStrings::readRichStringPart(XmlStreamReader &reader, RichString &richString)
+{
+    Q_ASSERT(reader.name() == QLatin1String("r"));
+
+    QString text;
+    Format *format=0;
+    while (!(reader.name() == QLatin1String("r") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("rPr")) {
+                //:Todo
+            } else if (reader.name() == QLatin1String("t")) {
+                text = reader.readElementText();
+            }
+        }
+    }
+    richString.addFragment(text, format);
+}
+
+void SharedStrings::readPlainStringPart(XmlStreamReader &reader, RichString &richString)
+{
+    Q_ASSERT(reader.name() == QLatin1String("t"));
+
+    //QXmlStreamAttributes attributes = reader.attributes();
+
+    QString text = reader.readElementText();
+    richString.addFragment(text, 0);
+}
+
 bool SharedStrings::loadFromXmlFile(QIODevice *device)
 {
     XmlStreamReader reader(device);
@@ -157,15 +236,7 @@ bool SharedStrings::loadFromXmlFile(QIODevice *device)
                  QXmlStreamAttributes attributes = reader.attributes();
                  count = attributes.value(QLatin1String("uniqueCount")).toString().toInt();
              } else if (reader.name() == QLatin1String("si")) {
-                 if (reader.readNextStartElement()) {
-                     if (reader.name() == QLatin1String("t")) {
-//                         QXmlStreamAttributes attributes = reader.attributes();
-                         QString string = reader.readElementText();
-                         int idx = m_stringList.size();
-                         m_stringTable[string] = XlsxSharedStringInfo(idx, 0);
-                         m_stringList.append(string);
-                     }
-                 }
+                 readString(reader);
              }
          }
     }

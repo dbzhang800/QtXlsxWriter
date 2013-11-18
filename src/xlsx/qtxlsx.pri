@@ -31,7 +31,8 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxcell_p.h \
     $$PWD/xlsxdatavalidation.h \
     $$PWD/xlsxdatavalidation_p.h \
-    $$PWD/xlsxcellrange.h
+    $$PWD/xlsxcellrange.h \
+    $$PWD/xlsxrichstring_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -53,4 +54,5 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocument.cpp \
     $$PWD/xlsxcell.cpp \
     $$PWD/xlsxdatavalidation.cpp \
-    $$PWD/xlsxcellrange.cpp
+    $$PWD/xlsxcellrange.cpp \
+    $$PWD/xlsxrichstring.cpp

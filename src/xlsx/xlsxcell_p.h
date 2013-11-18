@@ -28,6 +28,9 @@
 #include "xlsxglobal.h"
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
+#include "xlsxrichstring_p.h"
+#include <QList>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -42,6 +45,8 @@ public:
     Cell::DataType dataType;
     Format *format;
     CellRange range; //used for arrayFormula
+
+    RichString richString;
 
     Worksheet *parent;
     Cell *q_ptr;

@@ -38,6 +38,7 @@ QT_BEGIN_NAMESPACE_XLSX
 class Styles;
 class Worksheet;
 class WorksheetPrivate;
+class RichString;
 
 class FormatPrivate;
 class Q_XLSX_EXPORT Format
@@ -214,6 +215,7 @@ private:
     friend class Styles;
     friend class Worksheet;
     friend class WorksheetPrivate;
+    friend class RichString;
     friend class ::FormatTest;
 
     Format();

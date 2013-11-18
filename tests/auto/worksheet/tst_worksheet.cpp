@@ -8,6 +8,7 @@
 #include "private/xlsxworksheet_p.h"
 #include "private/xlsxxmlreader_p.h"
 #include "private/xlsxsharedstrings_p.h"
+#include "private/xlsxrichstring_p.h"
 
 class WorksheetTest : public QObject
 {
@@ -116,7 +117,7 @@ void WorksheetTest::testWriteCells()
     QVERIFY2(xmldata.contains("<c r=\"A5\" t=\"str\"><f>44+33</f><v>0</v></c>"), "formula");
     QVERIFY2(xmldata.contains("<c r=\"B5\" t=\"str\"><f>44+33</f><v>77</v></c>"), "formula");
 
-    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0), QStringLiteral("Hello"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0).toPlainString(), QStringLiteral("Hello"));
 }
 
 void WorksheetTest::testWriteHyperlinks()
@@ -136,11 +137,11 @@ void WorksheetTest::testWriteHyperlinks()
     QVERIFY2(xmldata.contains("<hyperlink ref=\"D1\" r:id=\"rId4\"/>"), "mail");
     QVERIFY2(xmldata.contains("<hyperlink ref=\"E1\" r:id=\"rId5\"/>"), "mail with subject");
 
-    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0), QStringLiteral("http://qt-project.org"));
-    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(1), QStringLiteral("http://qt-project.org/abc"));
-    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(2), QStringLiteral("http://qt-project.org/abc.html#test"));
-    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(3), QStringLiteral("xyz@debao.me"));
-    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(4), QStringLiteral("xyz@debao.me?subject=Test"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(0).toPlainString(), QStringLiteral("http://qt-project.org"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(1).toPlainString(), QStringLiteral("http://qt-project.org/abc"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(2).toPlainString(), QStringLiteral("http://qt-project.org/abc.html#test"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(3).toPlainString(), QStringLiteral("xyz@debao.me"));
+    QCOMPARE(sheet.d_ptr->sharedStrings()->getSharedString(4).toPlainString(), QStringLiteral("xyz@debao.me?subject=Test"));
 }
 
 void WorksheetTest::testWriteDataValidations()

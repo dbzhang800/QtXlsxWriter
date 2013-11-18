@@ -121,4 +121,16 @@ QDateTime Cell::dateTime() const
     return datetimeFromNumber(d->value.toDouble(), d->parent->workbook()->isDate1904());
 }
 
+/*!
+ * Returns whether the cell is probably a rich string or not
+ */
+bool Cell::isRichString() const
+{
+    Q_D(const Cell);
+    if (d->dataType != String && d->dataType != InlineString)
+        return false;
+
+    return d->richString.isRichString();
+}
+
 QT_END_NAMESPACE_XLSX

@@ -22,6 +22,7 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
+#include "xlsxrichstring_p.h"
 #include "xlsxworksheet.h"
 #include "xlsxworksheet_p.h"
 #include "xlsxworkbook.h"
@@ -1163,7 +1164,21 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
     } else if (cell->dataType() == Cell::InlineString) {
         writer.writeAttribute(QStringLiteral("t"), QStringLiteral("inlineStr"));
         writer.writeStartElement(QStringLiteral("is"));
-        writer.writeTextElement(QStringLiteral("t"), cell->value().toString());
+        if (cell->isRichString()) {
+            //Rich text string
+            RichString string = cell->d_ptr->richString;
+            for (int i=0; i<string.fragmentCount(); ++i) {
+                writer.writeStartElement(QStringLiteral("rPr"));
+                //:Todo
+                writer.writeEndElement();// rPr
+                writer.writeStartElement(QStringLiteral("t"));
+                writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
+                writer.writeCharacters(string.fragmentText(i));
+                writer.writeEndElement();// t
+            }
+        } else {
+            writer.writeTextElement(QStringLiteral("t"), cell->value().toString());
+        }
         writer.writeEndElement();//is
     } else if (cell->dataType() == Cell::Numeric){
         double value = cell->value().toDouble();
@@ -1874,8 +1889,10 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                             if (reader.name() == QLatin1String("v")) {
                                 int sst_idx = reader.readElementText().toInt();
                                 sharedStrings()->incRefByStringIndex(sst_idx);
-                                QString value = sharedStrings()->getSharedString(sst_idx);
-                                QSharedPointer<Cell> data(new Cell(value ,Cell::String, format, q));
+                                RichString rs = sharedStrings()->getSharedString(sst_idx);
+                                QSharedPointer<Cell> data(new Cell(rs.toPlainString() ,Cell::String, format, q));
+                                if (rs.isRichString())
+                                    data->d_ptr->richString = rs;
                                 cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
                             }
                         }
@@ -1884,6 +1901,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
                         while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                             reader.readNextStartElement();
                             if (reader.tokenType() == QXmlStreamReader::StartElement) {
+                                //:Todo, add rich text read support
                                 if (reader.name() == QLatin1String("t")) {
                                     QString value = reader.readElementText();
                                     QSharedPointer<Cell> data(new Cell(value, Cell::InlineString, format, q));

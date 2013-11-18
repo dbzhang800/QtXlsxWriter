@@ -1,4 +1,5 @@
 #include "private/xlsxsharedstrings_p.h"
+#include "private/xlsxrichstring_p.h"
 #include <QString>
 #include <QtTest>
 #include <QXmlStreamReader>
@@ -27,6 +28,19 @@ void SharedStringsTest::testAddSharedString()
     QXlsx::SharedStrings sst;
     sst.addSharedString("Hello Qt!");
     sst.addSharedString("Xlsx Writer");
+
+    QXlsx::RichString rs;
+    rs.addFragment("Hello", 0);
+    rs.addFragment(" RichText", 0);
+    sst.addSharedString(rs);
+
+    for (int i=0; i<3; ++i) {
+        QXlsx::RichString rs2;
+        rs2.addFragment("Hello", 0);
+        rs2.addFragment(" Qt!", 0);
+        sst.addSharedString(rs2);
+    }
+
     sst.addSharedString("Hello World");
     sst.addSharedString("Hello Qt!");
 
@@ -46,8 +60,8 @@ void SharedStringsTest::testAddSharedString()
         }
     }
 
-    QCOMPARE(count, 4);
-    QCOMPARE(uniqueCount, 3);
+    QCOMPARE(count, 8);
+    QCOMPARE(uniqueCount, 5);
 }
 
 void SharedStringsTest::testRemoveSharedString()
@@ -88,6 +102,17 @@ void SharedStringsTest::testLoadXmlData()
     QXlsx::SharedStrings sst;
     sst.addSharedString("Hello Qt!");
     sst.addSharedString("Xlsx Writer");
+
+    QXlsx::RichString rs;
+    rs.addFragment("Hello", 0);
+    rs.addFragment(" RichText", 0);
+    sst.addSharedString(rs);
+    for (int i=0; i<3; ++i) {
+        QXlsx::RichString rs2;
+        rs2.addFragment("Hello", 0);
+        rs2.addFragment(" Qt!", 0);
+        sst.addSharedString(rs2);
+    }
     sst.addSharedString("Hello World");
     sst.addSharedString("Hello Qt!");
     QByteArray xmlData = sst.saveToXmlData();
@@ -95,10 +120,11 @@ void SharedStringsTest::testLoadXmlData()
     QSharedPointer<QXlsx::SharedStrings> sst2(new QXlsx::SharedStrings);
     sst2->loadFromXmlData(xmlData);
 
-    QCOMPARE(sst2->getSharedString(0), QStringLiteral("Hello Qt!"));
-    QCOMPARE(sst2->getSharedString(2), QStringLiteral("Hello World"));
+    QCOMPARE(sst2->getSharedString(0).toPlainString(), QStringLiteral("Hello Qt!"));
+    QCOMPARE(sst2->getSharedString(2), rs);
+    QCOMPARE(sst2->getSharedString(4).toPlainString(), QStringLiteral("Hello World"));
     QCOMPARE(sst2->getSharedStringIndex("Hello Qt!"), 0);
-    QCOMPARE(sst2->getSharedStringIndex("Hello World"), 2);
+    QCOMPARE(sst2->getSharedStringIndex("Hello World"), 4);
 }
 
 QTEST_APPLESS_MAIN(SharedStringsTest)

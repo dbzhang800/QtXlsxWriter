@@ -58,6 +58,8 @@ public:
     bool isDateTime() const;
     QDateTime dateTime() const;
 
+    bool isRichString() const;
+
     ~Cell();
 private:
     friend class Worksheet;

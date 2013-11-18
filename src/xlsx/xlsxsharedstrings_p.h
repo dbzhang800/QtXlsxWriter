@@ -26,6 +26,7 @@
 #define XLSXSHAREDSTRINGS_H
 
 #include "xlsxglobal.h"
+#include "xlsxrichstring_p.h"
 #include <QHash>
 #include <QStringList>
 #include <QSharedPointer>
@@ -33,6 +34,9 @@
 class QIODevice;
 
 namespace QXlsx {
+
+class XmlStreamReader;
+class RichString;
 
 class XlsxSharedStringInfo
 {
@@ -53,12 +57,15 @@ public:
     int count() const;
     
     int addSharedString(const QString &string);
+    int addSharedString(const RichString &string);
     void removeSharedString(const QString &string);
+    void removeSharedString(const RichString &string);
     void incRefByStringIndex(int idx);
 
     int getSharedStringIndex(const QString &string) const;
-    QString getSharedString(int index) const;
-    QStringList getSharedStrings() const;
+    int getSharedStringIndex(const RichString &string) const;
+    RichString getSharedString(int index) const;
+    QList<RichString> getSharedStrings() const;
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;
@@ -66,8 +73,12 @@ public:
     bool loadFromXmlData(const QByteArray &data);
 
 private:
-    QHash<QString, XlsxSharedStringInfo> m_stringTable; //for fast lookup
-    QStringList m_stringList;
+    void readString(XmlStreamReader &reader); // <si>
+    void readRichStringPart(XmlStreamReader &reader, RichString &rich); // <r>
+    void readPlainStringPart(XmlStreamReader &reader, RichString &rich); // <v>
+
+    QHash<RichString, XlsxSharedStringInfo> m_stringTable; //for fast lookup
+    QList<RichString> m_stringList;
     int m_stringCount;
 };
 

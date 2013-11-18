@@ -9,4 +9,5 @@ SUBDIRS=\
     document \
     sharedstrings \
     styles \
-    format
+    format \
+    richstring
