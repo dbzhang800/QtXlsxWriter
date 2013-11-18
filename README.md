@@ -9,13 +9,15 @@ The library can be used to
  
 ## Getting Started
 
+* **Note** QZipWriter and QZipReader which live in *gui-private* is used in this library. For linux user, if your Qt is installed through package manager tools such "apt-get", make sure that you have installed the Qt5 develop package *qtbase5-private-dev* ; if you Qt is built from source by yourself, or download from qt-project.org directly, nothing need to do.
+
+* **Note**: Perl is needed if you want to build this library as Qt5's module, aka. Usage(1) .
+
 ### Usage(1): Use Xlsx as Qt5's addon module
 
 * Download the source code.
 
 * Put the source code in any directory you like. At the toplevel directory run
-
-**Note**: Perl is needed.
 
 ```
     qmake
