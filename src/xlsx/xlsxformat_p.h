@@ -26,18 +26,9 @@
 #define XLSXFORMAT_P_H
 #include "xlsxformat.h"
 #include <QSharedData>
+#include <QHash>
 
 namespace QXlsx {
-
-struct XlsxFormatNumberData
-{
-    XlsxFormatNumberData() : formatIndex(0), _valid(true) {}
-
-    int formatIndex;
-    QString formatString;
-
-    bool _valid;
-};
 
 struct XlsxFormatFontData
 {
@@ -254,11 +245,42 @@ struct XlsxFormatProtectionData {
 class FormatPrivate : public QSharedData
 {
 public:
+    enum FormatType
+    {
+        FT_Invalid = 0,
+        FT_NumFmt = 0x01,
+        FT_Font = 0x02,
+        FT_Alignment = 0x04,
+        FT_Border = 0x08,
+        FT_Fill = 0x10,
+        FT_Protection = 0x20
+    };
+
+    enum Property {
+        //numFmt
+        P_NumFmt_Id,
+        P_NumFmt_FormatCode,
+
+        //font
+        P_Font_,
+
+        //alignment
+        P_Alignment_,
+
+        //border
+        P_Border_,
+
+        //fill
+        P_Fill_,
+
+        //protection
+        P_Protection_,
+    };
+
     FormatPrivate();
     FormatPrivate(const FormatPrivate &other);
     ~FormatPrivate();
 
-    XlsxFormatNumberData numberData;
     XlsxFormatFontData fontData;
     XlsxFormatAlignmentData alignmentData;
     XlsxFormatBorderData borderData;
@@ -276,6 +298,8 @@ public:
     mutable bool dxf_indexValid;
 
     int theme;
+
+    QHash<int, QVariant> property;
 };
 
 }

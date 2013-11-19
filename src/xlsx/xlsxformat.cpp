@@ -45,7 +45,7 @@ FormatPrivate::FormatPrivate()
 
 FormatPrivate::FormatPrivate(const FormatPrivate &other)
     : QSharedData(other)
-    , numberData(other.numberData), fontData(other.fontData), alignmentData(other.alignmentData)
+    , fontData(other.fontData), alignmentData(other.alignmentData)
     , borderData(other.borderData), fillData(other.fillData), protectionData(other.protectionData)
     , dirty(other.dirty), formatKey(other.formatKey)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
@@ -107,7 +107,7 @@ Format::~Format()
  */
 int Format::numberFormatIndex() const
 {
-    return d->numberData.formatIndex;
+    return intProperty(FormatPrivate::P_NumFmt_Id);
 }
 
 /*!
@@ -117,9 +117,8 @@ int Format::numberFormatIndex() const
  */
 void Format::setNumberFormatIndex(int format)
 {
-    d->dirty = true;
-    d->numberData.formatIndex = format;
-    d->numberData._valid = true;
+    setProperty(FormatPrivate::P_NumFmt_Id, format);
+    clearProperty(FormatPrivate::P_NumFmt_FormatCode);
 }
 
 /*!
@@ -129,7 +128,7 @@ void Format::setNumberFormatIndex(int format)
  */
 QString Format::numberFormat() const
 {
-    return d->numberData.formatString;
+    return stringProperty(FormatPrivate::P_NumFmt_FormatCode);
 }
 
 /*!
@@ -140,9 +139,8 @@ void Format::setNumberFormat(const QString &format)
 {
     if (format.isEmpty())
         return;
-    d->dirty = true;
-    d->numberData.formatString = format;
-    d->numberData._valid = false; //formatIndex must be re-generated
+    setProperty(FormatPrivate::P_NumFmt_FormatCode, format);
+    clearProperty(FormatPrivate::P_NumFmt_Id); //numFmt id must be re-generated.
 }
 
 /*!
@@ -150,37 +148,32 @@ void Format::setNumberFormat(const QString &format)
  */
 bool Format::isDateTimeFormat() const
 {
-    if (d->numberData._valid && d->numberData.formatString.isEmpty()) {
-        int idx = d->numberData.formatIndex;
-        //Built in date time number index
-        if ((idx >= 15 && idx <= 22) || (idx >= 45 && idx <= 47))
-            return true;
-    } else {
+    if (hasProperty(FormatPrivate::P_NumFmt_FormatCode)) {
+        //Custom numFmt, so
         //Gauss from the number string
-        QString formatCode = d->numberData.formatString;
+        QString formatCode = numberFormat();
         formatCode.remove(QRegularExpression(QStringLiteral("\\[(Green|White|Blue|Magenta|Yellow|Cyan|Red)\\]")));
         if (formatCode.contains(QRegularExpression(QStringLiteral("[dmhys]"))))
             return true;
+    } else if (hasProperty(FormatPrivate::P_NumFmt_Id)){
+        //Non-custom numFmt
+        int idx = numberFormatIndex();
+
+        //Is built-in date time number id?
+        if ((idx >= 15 && idx <= 22) || (idx >= 45 && idx <= 47))
+            return true;
     }
+
     return false;
 }
 
 /*!
- * \internal
+ * Set a custom num \a format with the given \a id.
  */
-bool Format::numFmtIndexValid() const
+void Format::setNumberFormat(int id, const QString &format)
 {
-    return d->numberData._valid;
-}
-
-/*!
- * \internal
- */
-void Format::setNumFmt(int index, const QString &string)
-{
-    d->numberData.formatIndex = index;
-    d->numberData.formatString = string;
-    d->numberData._valid = true;
+    setProperty(FormatPrivate::P_NumFmt_Id, id);
+    setProperty(FormatPrivate::P_NumFmt_FormatCode, format);
 }
 
 /*!
@@ -860,7 +853,7 @@ QByteArray Format::formatKey() const
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         stream<<fontKey()<<borderKey()<<fillKey()
-             <<d->numberData.formatIndex
+             <<numberFormatIndex()
             <<d->alignmentData.alignH<<d->alignmentData.alignV<<d->alignmentData.indent
            <<d->alignmentData.rotation<<d->alignmentData.shinkToFit<<d->alignmentData.wrap
           <<d->protectionData.hidden<<d->protectionData.locked;
@@ -923,6 +916,115 @@ bool Format::isDxfFormat() const
 int Format::theme() const
 {
     return d->theme;
+}
+
+/*!
+ * \internal
+ */
+QVariant Format::property(int propertyId) const
+{
+    if (d->property.contains(propertyId))
+        return d->property[propertyId];
+    return QVariant();
+}
+
+/*!
+ * \internal
+ */
+void Format::setProperty(int propertyId, const QVariant &value)
+{
+    if (value.isValid())
+        d->property[propertyId] = value;
+    else
+        d->property.remove(propertyId);
+    d->dirty = true;
+}
+
+/*!
+ * \internal
+ */
+void Format::clearProperty(int propertyId)
+{
+    d->property.remove(propertyId);
+    d->dirty = true;
+}
+
+/*!
+ * \internal
+ */
+bool Format::hasProperty(int propertyId) const
+{
+    return d->property.contains(propertyId);
+}
+
+/*!
+ * \internal
+ */
+bool Format::boolProperty(int propertyId) const
+{
+    if (!hasProperty(propertyId))
+        return false;
+
+    const QVariant prop = d->property[propertyId];
+    if (prop.userType() != QMetaType::Bool)
+        return false;
+    return prop.toBool();
+}
+
+/*!
+ * \internal
+ */
+int Format::intProperty(int propertyId) const
+{
+    if (!hasProperty(propertyId))
+        return 0;
+
+    const QVariant prop = d->property[propertyId];
+    if (prop.userType() != QMetaType::Int)
+        return 0;
+    return prop.toInt();
+}
+
+/*!
+ * \internal
+ */
+double Format::doubleProperty(int propertyId) const
+{
+    if (!hasProperty(propertyId))
+        return 0;
+
+    const QVariant prop = d->property[propertyId];
+    if (prop.userType() != QMetaType::Double && prop.userType() != QMetaType::Float)
+        return 0;
+    return prop.toDouble();
+}
+
+/*!
+ * \internal
+ */
+QString Format::stringProperty(int propertyId) const
+{
+    if (!hasProperty(propertyId))
+        return QString();
+
+    const QVariant prop = d->property[propertyId];
+    if (prop.userType() != QMetaType::QString)
+        return QString();
+    return prop.toString();
+}
+
+/*!
+ * \internal
+ */
+QColor Format::colorProperty(int propertyId) const
+{
+    if (!hasProperty(propertyId))
+        return QColor();
+
+    const QVariant prop = d->property[propertyId];
+    if (prop.userType() != qMetaTypeId<QColor>())
+        return QColor();
+    return qvariant_cast<QColor>(prop);
 }
 
 QT_END_NAMESPACE_XLSX

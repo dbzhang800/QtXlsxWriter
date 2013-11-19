@@ -32,6 +32,7 @@ void StylesTest::testEmptyStyle()
 {
     QXlsx::Styles styles;
     QByteArray xmlData = styles.saveToXmlData();
+    qDebug()<<xmlData;
 
     QVERIFY2(xmlData.contains("<cellXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/></cellXfs>"), "Must have one cell style");
 }

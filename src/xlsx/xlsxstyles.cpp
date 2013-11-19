@@ -88,7 +88,7 @@ void Styles::addFormat(Format *format, bool force)
         return;
 
     //numFmt
-    if (!format->numFmtIndexValid()) {
+    if (format->hasProperty(FormatPrivate::P_NumFmt_FormatCode) && !format->hasProperty(FormatPrivate::P_NumFmt_Id)) {
         if (m_builtinNumFmtsHash.isEmpty()) {
             m_builtinNumFmtsHash.insert(QStringLiteral("General"), 0);
             m_builtinNumFmtsHash.insert(QStringLiteral("0"), 1);
@@ -131,14 +131,16 @@ void Styles::addFormat(Format *format, bool force)
         const QString str = format->numberFormat();
         //Assign proper number format index
         if (m_builtinNumFmtsHash.contains(str)) {
-            format->setNumFmt(m_builtinNumFmtsHash[str], str);
+            format->setNumberFormat(m_builtinNumFmtsHash[str], str);
         } else if (m_customNumFmtsHash.contains(str)) {
-            format->setNumFmt(m_customNumFmtsHash[str]->formatIndex, str);
+            format->setNumberFormat(m_customNumFmtsHash[str]->formatIndex, str);
         } else {
             //Assign a new fmt Id.
-            format->setNumFmt(m_nextCustomNumFmtId, str);
+            format->setNumberFormat(m_nextCustomNumFmtId, str);
 
-            QSharedPointer<XlsxFormatNumberData> fmt(new XlsxFormatNumberData(format->d->numberData));
+            QSharedPointer<XlsxFormatNumberData> fmt(new XlsxFormatNumberData);
+            fmt->formatIndex = m_nextCustomNumFmtId;
+            fmt->formatString = str;
             m_customNumFmtIdMap.insert(m_nextCustomNumFmtId, fmt);
             m_customNumFmtsHash.insert(str, fmt);
 
@@ -897,7 +899,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (!m_customNumFmtIdMap.contains(numFmtIndex))
                 format->setNumberFormatIndex(numFmtIndex);
             else
-                format->d->numberData = *m_customNumFmtIdMap[numFmtIndex];
+                format->setNumberFormat(numFmtIndex, m_customNumFmtIdMap[numFmtIndex]->formatString);
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFont"))) {

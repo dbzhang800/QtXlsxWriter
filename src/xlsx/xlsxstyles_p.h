@@ -40,12 +40,19 @@ class StylesTest;
 namespace QXlsx {
 
 class Format;
-struct XlsxFormatNumberData;
 struct XlsxFormatFontData;
 struct XlsxFormatFillData;
 struct XlsxFormatBorderData;
 class XmlStreamWriter;
 class XmlStreamReader;
+
+struct XlsxFormatNumberData
+{
+    XlsxFormatNumberData() : formatIndex(0) {}
+
+    int formatIndex;
+    QString formatString;
+};
 
 class XLSX_AUTOTEST_EXPORT Styles
 {

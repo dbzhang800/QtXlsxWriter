@@ -141,6 +141,7 @@ public:
     void setNumberFormatIndex(int format);
     QString numberFormat() const;
     void setNumberFormat(const QString &format);
+    void setNumberFormat(int id, const QString &format);
     bool isDateTimeFormat() const;
 
     int fontSize() const;
@@ -215,6 +216,17 @@ public:
     bool operator == (const Format &format) const;
     bool operator != (const Format &format) const;
 
+    QVariant property(int propertyId) const;
+    void setProperty(int propertyId, const QVariant &value);
+    void clearProperty(int propertyId);
+    bool hasProperty(int propertyId) const;
+
+    bool boolProperty(int propertyId) const;
+    int intProperty(int propertyId) const;
+    double doubleProperty(int propertyId) const;
+    QString stringProperty(int propertyId) const;
+    QColor colorProperty(int propertyId) const;
+
 private:
     friend class Styles;
     friend class Worksheet;
@@ -222,9 +234,6 @@ private:
     friend class RichString;
     friend class SharedStrings;
     friend class ::FormatTest;
-
-    bool numFmtIndexValid() const;
-    void setNumFmt(int index, const QString &string);
 
     bool fontIndexValid() const;
     int fontIndex() const;
