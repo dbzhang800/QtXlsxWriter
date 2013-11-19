@@ -25,6 +25,7 @@
 #include "xlsxcell.h"
 #include "xlsxcell_p.h"
 #include "xlsxformat.h"
+#include "xlsxformat_p.h"
 #include "xlsxutility_p.h"
 #include "xlsxworksheet.h"
 #include "xlsxworkbook.h"

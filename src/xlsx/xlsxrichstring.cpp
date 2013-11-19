@@ -23,6 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxrichstring_p.h"
+#include "xlsxformat_p.h"
 
 QT_BEGIN_NAMESPACE_XLSX
 

@@ -138,7 +138,7 @@ void Styles::addFormat(Format *format, bool force)
             //Assign a new fmt Id.
             format->setNumFmt(m_nextCustomNumFmtId, str);
 
-            QSharedPointer<XlsxFormatNumberData> fmt(new XlsxFormatNumberData(format->d_func()->numberData));
+            QSharedPointer<XlsxFormatNumberData> fmt(new XlsxFormatNumberData(format->d->numberData));
             m_customNumFmtIdMap.insert(m_nextCustomNumFmtId, fmt);
             m_customNumFmtsHash.insert(str, fmt);
 
@@ -149,7 +149,7 @@ void Styles::addFormat(Format *format, bool force)
     //Font
     if (!format->fontIndexValid()) {
         if (!m_fontsHash.contains(format->fontKey())) {
-            QSharedPointer<XlsxFormatFontData> font = QSharedPointer<XlsxFormatFontData>(new XlsxFormatFontData(format->d_func()->fontData));
+            QSharedPointer<XlsxFormatFontData> font = QSharedPointer<XlsxFormatFontData>(new XlsxFormatFontData(format->d->fontData));
             font->setIndex(m_fontsList.size()); //Assign proper index
             m_fontsList.append(font);
             m_fontsHash[font->key()] = font;
@@ -160,7 +160,7 @@ void Styles::addFormat(Format *format, bool force)
     //Fill
     if (!format->fillIndexValid()) {
         if (!m_fillsHash.contains(format->fillKey())) {
-            QSharedPointer<XlsxFormatFillData> fill = QSharedPointer<XlsxFormatFillData>(new XlsxFormatFillData(format->d_func()->fillData));
+            QSharedPointer<XlsxFormatFillData> fill = QSharedPointer<XlsxFormatFillData>(new XlsxFormatFillData(format->d->fillData));
             fill->setIndex(m_fillsList.size()); //Assign proper index
             m_fillsList.append(fill);
             m_fillsHash[fill->key()] = fill;
@@ -171,7 +171,7 @@ void Styles::addFormat(Format *format, bool force)
     //Border
     if (!format->borderIndexValid()) {
         if (!m_bordersHash.contains(format->borderKey())) {
-            QSharedPointer<XlsxFormatBorderData> border = QSharedPointer<XlsxFormatBorderData>(new XlsxFormatBorderData(format->d_func()->borderData));
+            QSharedPointer<XlsxFormatBorderData> border = QSharedPointer<XlsxFormatBorderData>(new XlsxFormatBorderData(format->d->borderData));
             border->setIndex(m_bordersList.size()); //Assign proper index
             m_bordersList.append(border);
             m_bordersHash[border->key()] = border;
@@ -897,7 +897,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (!m_customNumFmtIdMap.contains(numFmtIndex))
                 format->setNumberFormatIndex(numFmtIndex);
             else
-                format->d_func()->numberData = *m_customNumFmtIdMap[numFmtIndex];
+                format->d->numberData = *m_customNumFmtIdMap[numFmtIndex];
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFont"))) {
@@ -905,7 +905,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (fontIndex >= m_fontsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fontId");
             } else {
-                format->d_func()->fontData = *m_fontsList[fontIndex];
+                format->d->fontData = *m_fontsList[fontIndex];
             }
         }
 
@@ -914,7 +914,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (id >= m_fillsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fillId");
             } else {
-                format->d_func()->fillData = *m_fillsList[id];
+                format->d->fillData = *m_fillsList[id];
             }
         }
 
@@ -923,7 +923,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (id >= m_bordersList.size()) {
                 qDebug("Error read styles.xml, cellXfs borderId");
             } else {
-                format->d_func()->borderData = *m_bordersList[id];
+                format->d->borderData = *m_bordersList[id];
             }
         }
 

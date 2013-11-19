@@ -32,6 +32,7 @@
 #include "xlsxxmlwriter_p.h"
 #include "xlsxxmlreader_p.h"
 #include "xlsxworksheet_p.h"
+#include "xlsxformat_p.h"
 
 #include <QFile>
 #include <QBuffer>

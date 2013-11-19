@@ -27,6 +27,7 @@
 #include "xlsxworksheet_p.h"
 #include "xlsxworkbook.h"
 #include "xlsxformat.h"
+#include "xlsxformat_p.h"
 #include "xlsxutility_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"

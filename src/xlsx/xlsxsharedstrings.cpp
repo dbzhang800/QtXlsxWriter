@@ -130,7 +130,7 @@ void SharedStrings::writeRichStringPart_rPr(XmlStreamWriter &writer, Format *for
     if (!format)
         return;
 
-    XlsxFormatFontData *font = &format->d_ptr->fontData;
+    XlsxFormatFontData *font = &format->d->fontData;
 
     if (font->bold)
         writer.writeEmptyElement(QStringLiteral("b"));
@@ -303,9 +303,9 @@ Format *SharedStrings::readRichStringPart_rPr(XmlStreamReader &reader, RichStrin
             if (reader.name() == QLatin1String("rFont")) {
                 format->setFontName(attributes.value(QLatin1String("val")).toString());
             } else if (reader.name() == QLatin1String("charset")) {
-                format->d_ptr->fontData.charset = attributes.value(QLatin1String("val")).toString().toInt();
+                format->d->fontData.charset = attributes.value(QLatin1String("val")).toString().toInt();
             }  else if (reader.name() == QLatin1String("family")) {
-                format->d_ptr->fontData.family = attributes.value(QLatin1String("val")).toString().toInt();
+                format->d->fontData.family = attributes.value(QLatin1String("val")).toString().toInt();
             }  else if (reader.name() == QLatin1String("b")) {
                 format->setFontBold(true);
             }  else if (reader.name() == QLatin1String("i")) {
@@ -315,11 +315,11 @@ Format *SharedStrings::readRichStringPart_rPr(XmlStreamReader &reader, RichStrin
             }  else if (reader.name() == QLatin1String("outline")) {
                 format->setFontOutline(true);
             }  else if (reader.name() == QLatin1String("shadow")) {
-                format->d_ptr->fontData.shadow = true;
+                format->d->fontData.shadow = true;
             }  else if (reader.name() == QLatin1String("condense")) {
-                format->d_ptr->fontData.condense = attributes.value(QLatin1String("val")).toString().toInt();
+                format->d->fontData.condense = attributes.value(QLatin1String("val")).toString().toInt();
             }  else if (reader.name() == QLatin1String("extend")) {
-                format->d_ptr->fontData.extend = attributes.value(QLatin1String("val")).toString().toInt();
+                format->d->fontData.extend = attributes.value(QLatin1String("val")).toString().toInt();
             }  else if (reader.name() == QLatin1String("color")) {
                 if (attributes.hasAttribute(QLatin1String("rgb"))) {
                     QString colorString = attributes.value(QLatin1String("rgb")).toString();
@@ -329,7 +329,7 @@ Format *SharedStrings::readRichStringPart_rPr(XmlStreamReader &reader, RichStrin
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
-                    format->d_ptr->fontData.themeColor = theme + QLatin1Char(':') + tint;
+                    format->d->fontData.themeColor = theme + QLatin1Char(':') + tint;
                 }
             }  else if (reader.name() == QLatin1String("sz")) {
                 format->setFontSize(attributes.value(QLatin1String("val")).toString().toInt());
@@ -350,7 +350,7 @@ Format *SharedStrings::readRichStringPart_rPr(XmlStreamReader &reader, RichStrin
                 else if (value == QLatin1String("subscript"))
                     format->setFontScript(Format::FontScriptSub);
             }  else if (reader.name() == QLatin1String("scheme")) {
-                format->d_ptr->fontData.scheme = attributes.value(QLatin1String("val")).toString();
+                format->d->fontData.scheme = attributes.value(QLatin1String("val")).toString();
             }
         }
     }

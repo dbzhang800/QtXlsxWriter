@@ -25,6 +25,7 @@
 #ifndef XLSXFORMAT_P_H
 #define XLSXFORMAT_P_H
 #include "xlsxformat.h"
+#include <QSharedData>
 
 namespace QXlsx {
 
@@ -250,11 +251,12 @@ struct XlsxFormatProtectionData {
     bool hidden;
 };
 
-class FormatPrivate
+class FormatPrivate : public QSharedData
 {
-    Q_DECLARE_PUBLIC(Format)
 public:
-    FormatPrivate(Format *p);
+    FormatPrivate();
+    FormatPrivate(const FormatPrivate &other);
+    ~FormatPrivate();
 
     XlsxFormatNumberData numberData;
     XlsxFormatFontData fontData;
@@ -263,21 +265,17 @@ public:
     XlsxFormatFillData fillData;
     XlsxFormatProtectionData protectionData;
 
-    bool dirty; //The key re-generation is need.
-    QByteArray formatKey;
+    mutable bool dirty; //The key re-generation is need.
+    mutable QByteArray formatKey;
 
-    static QList<Format *> s_xfFormats;
     int xf_index;
-    bool xf_indexValid;
+    mutable bool xf_indexValid;
 
-    static QList<Format *> s_dxfFormats;
     bool is_dxf_fomat;
     int dxf_index;
-    bool dxf_indexValid;
+    mutable bool dxf_indexValid;
 
     int theme;
-
-    Format *q_ptr;
 };
 
 }

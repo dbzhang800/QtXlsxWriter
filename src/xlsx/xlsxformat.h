@@ -30,6 +30,7 @@
 #include <QColor>
 #include <QByteArray>
 #include <QList>
+#include <QSharedDataPointer>
 
 class FormatTest;
 
@@ -44,7 +45,6 @@ class SharedStrings;
 class FormatPrivate;
 class Q_XLSX_EXPORT Format
 {
-    Q_DECLARE_PRIVATE(Format)
 public:
     enum FontScript
     {
@@ -132,6 +132,9 @@ public:
         PatternLightGrid
     };
 
+    Format();
+    Format(const Format &other);
+    Format &operator=(const Format &rhs);
     ~Format();
 
     int numberFormatIndex() const;
@@ -220,8 +223,6 @@ private:
     friend class SharedStrings;
     friend class ::FormatTest;
 
-    Format();
-
     bool numFmtIndexValid() const;
     void setNumFmt(int index, const QString &string);
 
@@ -258,7 +259,7 @@ private:
 
     int theme() const;
 
-    FormatPrivate * const d_ptr;
+    QSharedDataPointer<FormatPrivate> d;
 };
 
 QT_END_NAMESPACE_XLSX

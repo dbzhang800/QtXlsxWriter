@@ -30,8 +30,7 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-FormatPrivate::FormatPrivate(Format *p) :
-    q_ptr(p)
+FormatPrivate::FormatPrivate()
 {
     dirty = true;
 
@@ -44,6 +43,23 @@ FormatPrivate::FormatPrivate(Format *p) :
     theme = 0;
 }
 
+FormatPrivate::FormatPrivate(const FormatPrivate &other)
+    : QSharedData(other)
+    , numberData(other.numberData), fontData(other.fontData), alignmentData(other.alignmentData)
+    , borderData(other.borderData), fillData(other.fillData), protectionData(other.protectionData)
+    , dirty(other.dirty), formatKey(other.formatKey)
+    , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
+    , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
+    , theme(other.theme)
+{
+
+}
+
+FormatPrivate::~FormatPrivate()
+{
+
+}
+
 /*!
  * \class Format
  * \inmodule QtXlsx
@@ -52,20 +68,38 @@ FormatPrivate::FormatPrivate(Format *p) :
 
 
 /*!
- * \internal
+ *  Creates a new format.
  */
 Format::Format() :
-    d_ptr(new FormatPrivate(this))
+    d(new FormatPrivate)
 {
 
 }
 
 /*!
- * \internal
+   Creates a new format with the same attributes as the \a other format.
+ */
+Format::Format(const Format &other)
+    :d(other.d)
+{
+
+}
+
+/*!
+   Assigns the \a other format to this format, and returns a
+   reference to this format.
+ */
+Format &Format::operator =(const Format &other)
+{
+    d = other.d;
+    return *this;
+}
+
+/*!
+ * Destroys this format.
  */
 Format::~Format()
 {
-    delete d_ptr;
 }
 
 /*!
@@ -73,7 +107,6 @@ Format::~Format()
  */
 int Format::numberFormatIndex() const
 {
-    Q_D(const Format);
     return d->numberData.formatIndex;
 }
 
@@ -84,7 +117,6 @@ int Format::numberFormatIndex() const
  */
 void Format::setNumberFormatIndex(int format)
 {
-    Q_D(Format);
     d->dirty = true;
     d->numberData.formatIndex = format;
     d->numberData._valid = true;
@@ -97,7 +129,6 @@ void Format::setNumberFormatIndex(int format)
  */
 QString Format::numberFormat() const
 {
-    Q_D(const Format);
     return d->numberData.formatString;
 }
 
@@ -107,7 +138,6 @@ QString Format::numberFormat() const
  */
 void Format::setNumberFormat(const QString &format)
 {
-    Q_D(Format);
     if (format.isEmpty())
         return;
     d->dirty = true;
@@ -120,7 +150,6 @@ void Format::setNumberFormat(const QString &format)
  */
 bool Format::isDateTimeFormat() const
 {
-    Q_D(const Format);
     if (d->numberData._valid && d->numberData.formatString.isEmpty()) {
         int idx = d->numberData.formatIndex;
         //Built in date time number index
@@ -141,7 +170,6 @@ bool Format::isDateTimeFormat() const
  */
 bool Format::numFmtIndexValid() const
 {
-    Q_D(const Format);
     return d->numberData._valid;
 }
 
@@ -150,7 +178,6 @@ bool Format::numFmtIndexValid() const
  */
 void Format::setNumFmt(int index, const QString &string)
 {
-    Q_D(Format);
     d->numberData.formatIndex = index;
     d->numberData.formatString = string;
     d->numberData._valid = true;
@@ -161,7 +188,6 @@ void Format::setNumFmt(int index, const QString &string)
  */
 int Format::fontSize() const
 {
-    Q_D(const Format);
     return d->fontData.size;
 }
 
@@ -170,7 +196,6 @@ int Format::fontSize() const
  */
 void Format::setFontSize(int size)
 {
-    Q_D(Format);
     d->fontData.size = size;
     d->fontData._dirty = true;
 }
@@ -180,7 +205,6 @@ void Format::setFontSize(int size)
  */
 bool Format::fontItalic() const
 {
-    Q_D(const Format);
     return d->fontData.italic;
 }
 
@@ -189,7 +213,6 @@ bool Format::fontItalic() const
  */
 void Format::setFontItalic(bool italic)
 {
-    Q_D(Format);
     d->fontData.italic = italic;
     d->fontData._dirty = true;
 }
@@ -199,7 +222,6 @@ void Format::setFontItalic(bool italic)
  */
 bool Format::fontStrikeOut() const
 {
-    Q_D(const Format);
     return d->fontData.strikeOut;
 }
 
@@ -208,7 +230,6 @@ bool Format::fontStrikeOut() const
  */
 void Format::setFontStrikeOut(bool strikeOut)
 {
-    Q_D(Format);
     d->fontData.strikeOut = strikeOut;
     d->fontData._dirty = true;
 }
@@ -218,7 +239,6 @@ void Format::setFontStrikeOut(bool strikeOut)
  */
 QColor Format::fontColor() const
 {
-    Q_D(const Format);
     if (!d->fontData.color.isValid() && !d->fontData.themeColor.isEmpty()) {
         //!Todo, get the real color from the theme{1}.xml file
         //The same is ture for border and fill colord
@@ -232,7 +252,6 @@ QColor Format::fontColor() const
  */
 void Format::setFontColor(const QColor &color)
 {
-    Q_D(Format);
     d->fontData.color = color;
     d->fontData._dirty = true;
 }
@@ -242,7 +261,6 @@ void Format::setFontColor(const QColor &color)
  */
 bool Format::fontBold() const
 {
-    Q_D(const Format);
     return d->fontData.bold;
 }
 
@@ -251,7 +269,6 @@ bool Format::fontBold() const
  */
 void Format::setFontBold(bool bold)
 {
-    Q_D(Format);
     d->fontData.bold = bold;
     d->fontData._dirty = true;
 }
@@ -261,7 +278,6 @@ void Format::setFontBold(bool bold)
  */
 Format::FontScript Format::fontScript() const
 {
-    Q_D(const Format);
     return d->fontData.scirpt;
 }
 
@@ -270,7 +286,6 @@ Format::FontScript Format::fontScript() const
  */
 void Format::setFontScript(FontScript script)
 {
-    Q_D(Format);
     d->fontData.scirpt = script;
     d->fontData._dirty = true;
 }
@@ -280,7 +295,6 @@ void Format::setFontScript(FontScript script)
  */
 Format::FontUnderline Format::fontUnderline() const
 {
-    Q_D(const Format);
     return d->fontData.underline;
 }
 
@@ -289,7 +303,6 @@ Format::FontUnderline Format::fontUnderline() const
  */
 void Format::setFontUnderline(FontUnderline underline)
 {
-    Q_D(Format);
     d->fontData.underline = underline;
     d->fontData._dirty = true;
 }
@@ -299,7 +312,6 @@ void Format::setFontUnderline(FontUnderline underline)
  */
 bool Format::fontOutline() const
 {
-    Q_D(const Format);
     return d->fontData.outline;
 }
 
@@ -308,7 +320,6 @@ bool Format::fontOutline() const
  */
 void Format::setFontOutline(bool outline)
 {
-    Q_D(Format);
     d->fontData.outline = outline;
     d->fontData._dirty = true;
 }
@@ -318,7 +329,6 @@ void Format::setFontOutline(bool outline)
  */
 QString Format::fontName() const
 {
-    Q_D(const Format);
     return d->fontData.name;
 }
 
@@ -327,7 +337,6 @@ QString Format::fontName() const
  */
 void Format::setFontName(const QString &name)
 {
-    Q_D(Format);
     d->fontData.name = name;
     d->fontData._dirty = true;
 }
@@ -337,7 +346,6 @@ void Format::setFontName(const QString &name)
  */
 bool Format::fontIndexValid() const
 {
-    Q_D(const Format);
     return d->fontData.indexValid();
 }
 
@@ -346,7 +354,6 @@ bool Format::fontIndexValid() const
  */
 int Format::fontIndex() const
 {
-    Q_D(const Format);
     return d->fontData.index();
 }
 
@@ -355,7 +362,6 @@ int Format::fontIndex() const
  */
 void Format::setFontIndex(int index)
 {
-    Q_D(Format);
     d->fontData.setIndex(index);
 }
 
@@ -364,7 +370,6 @@ void Format::setFontIndex(int index)
  */
 int Format::fontFamily() const
 {
-    Q_D(const Format);
     return d->fontData.family;
 }
 
@@ -373,7 +378,6 @@ int Format::fontFamily() const
  */
 bool Format::fontShadow() const
 {
-    Q_D(const Format);
     return d->fontData.shadow;
 }
 
@@ -382,7 +386,6 @@ bool Format::fontShadow() const
  */
 QString Format::fontScheme() const
 {
-    Q_D(const Format);
     return d->fontData.scheme;
 }
 
@@ -390,9 +393,8 @@ QString Format::fontScheme() const
  */
 QByteArray Format::fontKey() const
 {
-    Q_D(const Format);
     if (d->fontData._dirty)
-        const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
+        d->dirty = true; //Make sure formatKey() will be re-generated.
     return d->fontData.key();
 }
 
@@ -401,7 +403,6 @@ QByteArray Format::fontKey() const
  */
 Format::HorizontalAlignment Format::horizontalAlignment() const
 {
-    Q_D(const Format);
     return d->alignmentData.alignH;
 }
 
@@ -410,7 +411,6 @@ Format::HorizontalAlignment Format::horizontalAlignment() const
  */
 void Format::setHorizontalAlignment(HorizontalAlignment align)
 {
-    Q_D(Format);
     if (d->alignmentData.indent &&(align != AlignHGeneral && align != AlignLeft &&
                               align != AlignRight && align != AlignHDistributed)) {
         d->alignmentData.indent = 0;
@@ -430,7 +430,6 @@ void Format::setHorizontalAlignment(HorizontalAlignment align)
  */
 Format::VerticalAlignment Format::verticalAlignment() const
 {
-    Q_D(const Format);
     return d->alignmentData.alignV;
 }
 
@@ -439,7 +438,6 @@ Format::VerticalAlignment Format::verticalAlignment() const
  */
 void Format::setVerticalAlignment(VerticalAlignment align)
 {
-    Q_D(Format);
     d->alignmentData.alignV = align;
     d->dirty = true;
 }
@@ -449,7 +447,6 @@ void Format::setVerticalAlignment(VerticalAlignment align)
  */
 bool Format::textWrap() const
 {
-    Q_D(const Format);
     return d->alignmentData.wrap;
 }
 
@@ -458,7 +455,6 @@ bool Format::textWrap() const
  */
 void Format::setTextWarp(bool wrap)
 {
-    Q_D(Format);
     if (wrap && d->alignmentData.shinkToFit)
         d->alignmentData.shinkToFit = false;
 
@@ -471,7 +467,6 @@ void Format::setTextWarp(bool wrap)
  */
 int Format::rotation() const
 {
-    Q_D(const Format);
     return d->alignmentData.rotation;
 }
 
@@ -480,7 +475,6 @@ int Format::rotation() const
  */
 void Format::setRotation(int rotation)
 {
-    Q_D(Format);
     d->alignmentData.rotation = rotation;
     d->dirty = true;
 }
@@ -490,7 +484,6 @@ void Format::setRotation(int rotation)
  */
 int Format::indent() const
 {
-    Q_D(const Format);
     return d->alignmentData.indent;
 }
 
@@ -499,7 +492,6 @@ int Format::indent() const
  */
 void Format::setIndent(int indent)
 {
-    Q_D(Format);
     if (indent && (d->alignmentData.alignH != AlignHGeneral
                    && d->alignmentData.alignH != AlignLeft
                    && d->alignmentData.alignH != AlignRight
@@ -515,7 +507,6 @@ void Format::setIndent(int indent)
  */
 bool Format::shrinkToFit() const
 {
-    Q_D(const Format);
     return d->alignmentData.shinkToFit;
 }
 
@@ -524,7 +515,6 @@ bool Format::shrinkToFit() const
  */
 void Format::setShrinkToFit(bool shink)
 {
-    Q_D(Format);
     if (shink && d->alignmentData.wrap)
         d->alignmentData.wrap = false;
     if (shink && (d->alignmentData.alignH == AlignHFill
@@ -542,7 +532,6 @@ void Format::setShrinkToFit(bool shink)
  */
 bool Format::alignmentChanged() const
 {
-    Q_D(const Format);
     return d->alignmentData.alignH != AlignHGeneral
             || d->alignmentData.alignV != AlignBottom
             || d->alignmentData.indent != 0
@@ -553,7 +542,6 @@ bool Format::alignmentChanged() const
 
 QString Format::horizontalAlignmentString() const
 {
-    Q_D(const Format);
     QString alignH;
     switch (d->alignmentData.alignH) {
     case Format::AlignLeft:
@@ -585,7 +573,6 @@ QString Format::horizontalAlignmentString() const
 
 QString Format::verticalAlignmentString() const
 {
-    Q_D(const Format);
     QString align;
     switch (d->alignmentData.alignV) {
     case AlignTop:
@@ -633,7 +620,6 @@ void Format::setBorderColor(const QColor &color)
  */
 Format::BorderStyle Format::leftBorderStyle() const
 {
-    Q_D(const Format);
     return d->borderData.left;
 }
 
@@ -642,7 +628,6 @@ Format::BorderStyle Format::leftBorderStyle() const
  */
 void Format::setLeftBorderStyle(BorderStyle style)
 {
-    Q_D(Format);
     d->borderData.left = style;
     d->borderData._dirty = true;
 }
@@ -652,149 +637,126 @@ void Format::setLeftBorderStyle(BorderStyle style)
  */
 QColor Format::leftBorderColor() const
 {
-    Q_D(const Format);
     return d->borderData.leftColor;
 }
 
 void Format::setLeftBorderColor(const QColor &color)
 {
-    Q_D(Format);
     d->borderData.leftColor = color;
     d->borderData._dirty = true;
 }
 
 Format::BorderStyle Format::rightBorderStyle() const
 {
-    Q_D(const Format);
     return d->borderData.right;
 }
 
 void Format::setRightBorderStyle(BorderStyle style)
 {
-    Q_D(Format);
     d->borderData.right = style;
     d->borderData._dirty = true;
 }
 
 QColor Format::rightBorderColor() const
 {
-    Q_D(const Format);
     return d->borderData.rightColor;
 }
 
 void Format::setRightBorderColor(const QColor &color)
 {
-    Q_D(Format);
     d->borderData.rightColor = color;
     d->borderData._dirty = true;
 }
 
 Format::BorderStyle Format::topBorderStyle() const
 {
-    Q_D(const Format);
     return d->borderData.top;
 }
 
 void Format::setTopBorderStyle(BorderStyle style)
 {
-    Q_D(Format);
     d->borderData.top = style;
     d->borderData._dirty = true;
 }
 
 QColor Format::topBorderColor() const
 {
-    Q_D(const Format);
     return d->borderData.topColor;
 }
 
 void Format::setTopBorderColor(const QColor &color)
 {
-    Q_D(Format);
     d->borderData.topColor = color;
     d->borderData._dirty = true;
 }
 
 Format::BorderStyle Format::bottomBorderStyle() const
 {
-    Q_D(const Format);
     return d->borderData.bottom;
 }
 
 void Format::setBottomBorderStyle(BorderStyle style)
 {
-    Q_D(Format);
     d->borderData.bottom = style;
     d->borderData._dirty = true;
 }
 
 QColor Format::bottomBorderColor() const
 {
-    Q_D(const Format);
     return d->borderData.bottomColor;
 }
 
 void Format::setBottomBorderColor(const QColor &color)
 {
-    Q_D(Format);
     d->borderData.bottomColor = color;
     d->borderData._dirty = true;
 }
 
 Format::BorderStyle Format::diagonalBorderStyle() const
 {
-    Q_D(const Format);
     return d->borderData.diagonal;
 }
 
 void Format::setDiagonalBorderStyle(BorderStyle style)
 {
-    Q_D(Format);
     d->borderData.diagonal = style;
     d->borderData._dirty = true;
 }
 
 Format::DiagonalBorderType Format::diagonalBorderType() const
 {
-    Q_D(const Format);
     return d->borderData.diagonalType;
 }
 
 void Format::setDiagonalBorderType(DiagonalBorderType style)
 {
-    Q_D(Format);
     d->borderData.diagonalType = style;
     d->borderData._dirty = true;
 }
 
 QColor Format::diagonalBorderColor() const
 {
-    Q_D(const Format);
     return d->borderData.diagonalColor;
 }
 
 void Format::setDiagonalBorderColor(const QColor &color)
 {
-    Q_D(Format);
     d->borderData.diagonalColor = color;
     d->borderData._dirty = true;
 }
 
 bool Format::borderIndexValid() const
 {
-    Q_D(const Format);
     return d->borderData.indexValid();
 }
 
 int Format::borderIndex() const
 {
-    Q_D(const Format);
     return d->borderData.index();
 }
 
 void Format::setBorderIndex(int index)
 {
-    Q_D(Format);
     d->borderData.setIndex(index);
 }
 
@@ -802,35 +764,30 @@ void Format::setBorderIndex(int index)
  */
 QByteArray Format::borderKey() const
 {
-    Q_D(const Format);
     if (d->borderData._dirty)
-        const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
+        d->dirty = true; //Make sure formatKey() will be re-generated.
 
     return d->borderData.key();
 }
 
 Format::FillPattern Format::fillPattern() const
 {
-    Q_D(const Format);
     return d->fillData.pattern;
 }
 
 void Format::setFillPattern(FillPattern pattern)
 {
-    Q_D(Format);
     d->fillData.pattern = pattern;
     d->fillData._dirty = true;
 }
 
 QColor Format::patternForegroundColor() const
 {
-    Q_D(const Format);
     return d->fillData.fgColor;
 }
 
 void Format::setPatternForegroundColor(const QColor &color)
 {
-    Q_D(Format);
     if (color.isValid() && d->fillData.pattern == PatternNone)
         d->fillData.pattern = PatternSolid;
     d->fillData.fgColor = color;
@@ -839,13 +796,11 @@ void Format::setPatternForegroundColor(const QColor &color)
 
 QColor Format::patternBackgroundColor() const
 {
-    Q_D(const Format);
     return d->fillData.bgColor;
 }
 
 void Format::setPatternBackgroundColor(const QColor &color)
 {
-    Q_D(Format);
     if (color.isValid() && d->fillData.pattern == PatternNone)
         d->fillData.pattern = PatternSolid;
     d->fillData.bgColor = color;
@@ -854,19 +809,16 @@ void Format::setPatternBackgroundColor(const QColor &color)
 
 bool Format::fillIndexValid() const
 {
-    Q_D(const Format);
     return d->fillData.indexValid();
 }
 
 int Format::fillIndex() const
 {
-    Q_D(const Format);
     return d->fillData.index();
 }
 
 void Format::setFillIndex(int index)
 {
-    Q_D(Format);
     d->fillData.setIndex(index);
 }
 
@@ -874,42 +826,36 @@ void Format::setFillIndex(int index)
  */
 QByteArray Format::fillKey() const
 {
-    Q_D(const Format);
     if (d->fillData._dirty)
-        const_cast<FormatPrivate*>(d)->dirty = true; //Make sure formatKey() will be re-generated.
+        d->dirty = true; //Make sure formatKey() will be re-generated.
 
     return d->fillData.key();
 }
 
 bool Format::hidden() const
 {
-    Q_D(const Format);
     return d->protectionData.hidden;
 }
 
 void Format::setHidden(bool hidden)
 {
-    Q_D(Format);
     d->protectionData.hidden = hidden;
     d->dirty = true;
 }
 
 bool Format::locked() const
 {
-    Q_D(const Format);
     return d->protectionData.locked;
 }
 
 void Format::setLocked(bool locked)
 {
-    Q_D(Format);
     d->protectionData.locked = locked;
     d->dirty = true;
 }
 
 QByteArray Format::formatKey() const
 {
-    Q_D(const Format);
     if (d->dirty || d->fontData._dirty || d->borderData._dirty || d->fillData._dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
@@ -918,10 +864,10 @@ QByteArray Format::formatKey() const
             <<d->alignmentData.alignH<<d->alignmentData.alignV<<d->alignmentData.indent
            <<d->alignmentData.rotation<<d->alignmentData.shinkToFit<<d->alignmentData.wrap
           <<d->protectionData.hidden<<d->protectionData.locked;
-        const_cast<FormatPrivate*>(d)->formatKey = key;
-        const_cast<FormatPrivate*>(d)->dirty = false;
-        const_cast<FormatPrivate*>(d)->xf_indexValid = false;
-        const_cast<FormatPrivate*>(d)->dxf_indexValid = false;
+        d->formatKey = key;
+        d->dirty = false;
+        d->xf_indexValid = false;
+        d->dxf_indexValid = false;
     }
 
     return d->formatKey;
@@ -929,39 +875,33 @@ QByteArray Format::formatKey() const
 
 void Format::setXfIndex(int index)
 {
-    Q_D(Format);
     d->xf_index = index;
     d->xf_indexValid = true;
 }
 
 int Format::xfIndex() const
 {
-    Q_D(const Format);
     return d->xf_index;
 }
 
 bool Format::xfIndexValid() const
 {
-    Q_D(const Format);
     return !d->dirty && d->xf_indexValid;
 }
 
 void Format::setDxfIndex(int index)
 {
-    Q_D(Format);
     d->dxf_index = index;
     d->dxf_indexValid = true;
 }
 
 int Format::dxfIndex() const
 {
-    Q_D(const Format);
     return d->dxf_index;
 }
 
 bool Format::dxfIndexValid() const
 {
-    Q_D(const Format);
     return !d->dirty && d->dxf_indexValid;
 }
 
@@ -977,13 +917,11 @@ bool Format::operator !=(const Format &format) const
 
 bool Format::isDxfFormat() const
 {
-    Q_D(const Format);
     return d->is_dxf_fomat;
 }
 
 int Format::theme() const
 {
-    Q_D(const Format);
     return d->theme;
 }
 

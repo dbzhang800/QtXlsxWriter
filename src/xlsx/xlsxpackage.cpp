@@ -38,6 +38,7 @@
 #include "xlsxdrawing_p.h"
 #include "xlsxzipreader_p.h"
 #include "xlsxdocument.h"
+#include "xlsxformat_p.h"
 #include <QBuffer>
 #include <QDebug>
 #include <QDir>
