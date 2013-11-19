@@ -40,10 +40,10 @@ class StylesTest;
 namespace QXlsx {
 
 class Format;
-struct NumberData;
-struct FontData;
-struct FillData;
-struct BorderData;
+struct XlsxFormatNumberData;
+struct XlsxFormatFontData;
+struct XlsxFormatFillData;
+struct XlsxFormatBorderData;
 class XmlStreamWriter;
 class XmlStreamReader;
 
@@ -68,7 +68,7 @@ private:
     void writeNumFmts(XmlStreamWriter &writer);
     void writeFonts(XmlStreamWriter &writer);
     void writeFills(XmlStreamWriter &writer);
-    void writeFill(XmlStreamWriter &writer, FillData *fill);
+    void writeFill(XmlStreamWriter &writer, XlsxFormatFillData *fill);
     void writeBorders(XmlStreamWriter &writer);
     void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
     void writeCellXfs(XmlStreamWriter &writer);
@@ -88,15 +88,15 @@ private:
     QColor getColorByIndex(int idx);
 
     QHash<QString, int> m_builtinNumFmtsHash;
-    QMap<int, QSharedPointer<NumberData> > m_customNumFmtIdMap;
-    QHash<QString, QSharedPointer<NumberData> > m_customNumFmtsHash;
+    QMap<int, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtIdMap;
+    QHash<QString, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtsHash;
     int m_nextCustomNumFmtId;
-    QList<QSharedPointer<FontData> > m_fontsList; //Keep a copy of unique fonts
-    QList<QSharedPointer<FillData> > m_fillsList; //Keep a copy of unique fills
-    QList<QSharedPointer<BorderData> > m_bordersList; //Keep a copy of unique borders
-    QHash<QByteArray, QSharedPointer<FontData> > m_fontsHash;
-    QHash<QByteArray, QSharedPointer<FillData> > m_fillsHash;
-    QHash<QByteArray, QSharedPointer<BorderData> > m_bordersHash;
+    QList<QSharedPointer<XlsxFormatFontData> > m_fontsList; //Keep a copy of unique fonts
+    QList<QSharedPointer<XlsxFormatFillData> > m_fillsList; //Keep a copy of unique fills
+    QList<QSharedPointer<XlsxFormatBorderData> > m_bordersList; //Keep a copy of unique borders
+    QHash<QByteArray, QSharedPointer<XlsxFormatFontData> > m_fontsHash;
+    QHash<QByteArray, QSharedPointer<XlsxFormatFillData> > m_fillsHash;
+    QHash<QByteArray, QSharedPointer<XlsxFormatBorderData> > m_bordersHash;
 
     QVector<QColor> m_indexedColors;
 

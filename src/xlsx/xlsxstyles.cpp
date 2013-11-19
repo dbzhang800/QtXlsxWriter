@@ -48,7 +48,7 @@ Styles::Styles(bool createEmpty)
         //Add default Format
         addFormat(createFormat());
         //Add another fill format
-        QSharedPointer<FillData> fill = QSharedPointer<FillData>(new FillData);
+        QSharedPointer<XlsxFormatFillData> fill = QSharedPointer<XlsxFormatFillData>(new XlsxFormatFillData);
         fill->pattern = Format::PatternGray125;
         m_fillsList.append(fill);
         m_fillsHash[fill->key()] = fill;
@@ -138,7 +138,7 @@ void Styles::addFormat(Format *format, bool force)
             //Assign a new fmt Id.
             format->setNumFmt(m_nextCustomNumFmtId, str);
 
-            QSharedPointer<NumberData> fmt(new NumberData(format->d_func()->numberData));
+            QSharedPointer<XlsxFormatNumberData> fmt(new XlsxFormatNumberData(format->d_func()->numberData));
             m_customNumFmtIdMap.insert(m_nextCustomNumFmtId, fmt);
             m_customNumFmtsHash.insert(str, fmt);
 
@@ -149,7 +149,7 @@ void Styles::addFormat(Format *format, bool force)
     //Font
     if (!format->fontIndexValid()) {
         if (!m_fontsHash.contains(format->fontKey())) {
-            QSharedPointer<FontData> font = QSharedPointer<FontData>(new FontData(format->d_func()->fontData));
+            QSharedPointer<XlsxFormatFontData> font = QSharedPointer<XlsxFormatFontData>(new XlsxFormatFontData(format->d_func()->fontData));
             font->setIndex(m_fontsList.size()); //Assign proper index
             m_fontsList.append(font);
             m_fontsHash[font->key()] = font;
@@ -160,7 +160,7 @@ void Styles::addFormat(Format *format, bool force)
     //Fill
     if (!format->fillIndexValid()) {
         if (!m_fillsHash.contains(format->fillKey())) {
-            QSharedPointer<FillData> fill = QSharedPointer<FillData>(new FillData(format->d_func()->fillData));
+            QSharedPointer<XlsxFormatFillData> fill = QSharedPointer<XlsxFormatFillData>(new XlsxFormatFillData(format->d_func()->fillData));
             fill->setIndex(m_fillsList.size()); //Assign proper index
             m_fillsList.append(fill);
             m_fillsHash[fill->key()] = fill;
@@ -171,7 +171,7 @@ void Styles::addFormat(Format *format, bool force)
     //Border
     if (!format->borderIndexValid()) {
         if (!m_bordersHash.contains(format->borderKey())) {
-            QSharedPointer<BorderData> border = QSharedPointer<BorderData>(new BorderData(format->d_func()->borderData));
+            QSharedPointer<XlsxFormatBorderData> border = QSharedPointer<XlsxFormatBorderData>(new XlsxFormatBorderData(format->d_func()->borderData));
             border->setIndex(m_bordersList.size()); //Assign proper index
             m_bordersList.append(border);
             m_bordersHash[border->key()] = border;
@@ -267,7 +267,7 @@ void Styles::writeNumFmts(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("numFmts"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_customNumFmtIdMap.count()));
 
-    QMapIterator<int, QSharedPointer<NumberData> > it(m_customNumFmtIdMap);
+    QMapIterator<int, QSharedPointer<XlsxFormatNumberData> > it(m_customNumFmtIdMap);
     while(it.hasNext()) {
         it.next();
         writer.writeEmptyElement(QStringLiteral("numFmt"));
@@ -285,7 +285,7 @@ void Styles::writeFonts(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("fonts"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fontsList.count()));
     for (int i=0; i<m_fontsList.size(); ++i) {
-        QSharedPointer<FontData> font = m_fontsList[i];
+        QSharedPointer<XlsxFormatFontData> font = m_fontsList[i];
 
         writer.writeStartElement(QStringLiteral("font"));
         if (font->bold)
@@ -381,13 +381,13 @@ void Styles::writeFills(XmlStreamWriter &writer)
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fillsList.size()));
 
     for (int i=0; i<m_fillsList.size(); ++i) {
-        QSharedPointer<FillData> fill = m_fillsList[i];
+        QSharedPointer<XlsxFormatFillData> fill = m_fillsList[i];
         writeFill(writer, fill.data());
     }
     writer.writeEndElement(); //fills
 }
 
-void Styles::writeFill(XmlStreamWriter &writer, FillData *fill)
+void Styles::writeFill(XmlStreamWriter &writer, XlsxFormatFillData *fill)
 {
     static QMap<int, QString> patternStrings;
     if (patternStrings.isEmpty()) {
@@ -446,7 +446,7 @@ void Styles::writeBorders(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("borders"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_bordersList.count()));
     for (int i=0; i<m_bordersList.size(); ++i) {
-        QSharedPointer<BorderData> border = m_bordersList[i];
+        QSharedPointer<XlsxFormatBorderData> border = m_bordersList[i];
 
         writer.writeStartElement(QStringLiteral("border"));
         if (border->diagonalType == Format::DiagonalBorderUp) {
@@ -583,7 +583,7 @@ bool Styles::readNumFmts(XmlStreamReader &reader)
         if (reader.name() != QLatin1String("numFmt"))
             return false;
         QXmlStreamAttributes attributes = reader.attributes();
-        QSharedPointer<NumberData> fmt (new NumberData);
+        QSharedPointer<XlsxFormatNumberData> fmt (new XlsxFormatNumberData);
         fmt->formatIndex = attributes.value(QLatin1String("numFmtId")).toString().toInt();
         fmt->formatString = attributes.value(QLatin1String("formatCode")).toString();
         if (fmt->formatIndex >= m_nextCustomNumFmtId)
@@ -606,7 +606,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("font"))
             return false;
-        QSharedPointer<FontData> font(new FontData);
+        QSharedPointer<XlsxFormatFontData> font(new XlsxFormatFontData);
         while((reader.readNextStartElement(),true)) { //read until font endelement.
             if (reader.tokenType() == QXmlStreamReader::StartElement) {
                 if (reader.name() == QLatin1String("b")) {
@@ -712,7 +712,7 @@ bool Styles::readFill(XmlStreamReader &reader)
         patternValues[QStringLiteral("lightGrid")] = Format::PatternLightGrid;
     }
 
-    QSharedPointer<FillData> fill(new FillData);
+    QSharedPointer<XlsxFormatFillData> fill(new XlsxFormatFillData);
     while((reader.readNextStartElement(), true)) { //read until fill endelement
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("patternFill")) {
@@ -783,7 +783,7 @@ bool Styles::readBorders(XmlStreamReader &reader)
 bool Styles::readBorder(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("border"));
-    QSharedPointer<BorderData> border(new BorderData);
+    QSharedPointer<XlsxFormatBorderData> border(new XlsxFormatBorderData);
 
     QXmlStreamAttributes attributes = reader.attributes();
     bool isUp = attributes.hasAttribute(QLatin1String("diagonalUp"));

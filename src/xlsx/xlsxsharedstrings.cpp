@@ -130,7 +130,7 @@ void SharedStrings::writeRichStringPart_rPr(XmlStreamWriter &writer, Format *for
     if (!format)
         return;
 
-    FontData *font = &format->d_ptr->fontData;
+    XlsxFormatFontData *font = &format->d_ptr->fontData;
 
     if (font->bold)
         writer.writeEmptyElement(QStringLiteral("b"));

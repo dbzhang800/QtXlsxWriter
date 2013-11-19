@@ -28,9 +28,9 @@
 
 namespace QXlsx {
 
-struct NumberData
+struct XlsxFormatNumberData
 {
-    NumberData() : formatIndex(0), _valid(true) {}
+    XlsxFormatNumberData() : formatIndex(0), _valid(true) {}
 
     int formatIndex;
     QString formatString;
@@ -38,9 +38,9 @@ struct NumberData
     bool _valid;
 };
 
-struct FontData
+struct XlsxFormatFontData
 {
-    FontData() :
+    XlsxFormatFontData() :
         size(11), italic(false), strikeOut(false), color(QColor()), bold(false)
       , scirpt(Format::FontScriptNormal), underline(Format::FontUnderlineNone)
       , outline(false), shadow(false), name(QStringLiteral("Calibri")), family(2), charset(0)
@@ -76,9 +76,9 @@ struct FontData
                 <<outline<<scheme<<scirpt<<shadow
                <<size<<strikeOut<<underline;
 
-            const_cast<FontData*>(this)->_key = key;
-            const_cast<FontData*>(this)->_dirty = false;
-            const_cast<FontData*>(this)->_indexValid = false;//dirty flag can not be simply cleared.
+            const_cast<XlsxFormatFontData*>(this)->_key = key;
+            const_cast<XlsxFormatFontData*>(this)->_dirty = false;
+            const_cast<XlsxFormatFontData*>(this)->_indexValid = false;//dirty flag can not be simply cleared.
         }
         return _key;
     }
@@ -108,9 +108,9 @@ private:
     int _index; //index in the Font list
 };
 
-struct AlignmentData
+struct XlsxFormatAlignmentData
 {
-    AlignmentData() :
+    XlsxFormatAlignmentData() :
         alignH(Format::AlignHGeneral), alignV(Format::AlignBottom)
       , wrap(false), rotation(0), indent(0), shinkToFit(false)
     {}
@@ -123,9 +123,9 @@ struct AlignmentData
     bool shinkToFit;
 };
 
-struct BorderData
+struct XlsxFormatBorderData
 {
-    BorderData() :
+    XlsxFormatBorderData() :
         left(Format::BorderNone), right(Format::BorderNone), top(Format::BorderNone)
       ,bottom(Format::BorderNone), diagonal(Format::BorderNone)
       ,diagonalType(Format::DiagonalBorderNone)
@@ -157,9 +157,9 @@ struct BorderData
             stream << bottom << bottomColor << bottomThemeColor << top << topColor << topThemeColor
                  << diagonal << diagonalColor << diagonalThemeColor << diagonalType
                 << left << leftColor << leftThemeColor << right << rightColor << rightThemeColor;
-            const_cast<BorderData*>(this)->_key = key;
-            const_cast<BorderData*>(this)->_dirty = false;
-            const_cast<BorderData*>(this)->_indexValid = false;
+            const_cast<XlsxFormatBorderData*>(this)->_key = key;
+            const_cast<XlsxFormatBorderData*>(this)->_dirty = false;
+            const_cast<XlsxFormatBorderData*>(this)->_indexValid = false;
         }
         return _key;
     }
@@ -189,8 +189,8 @@ private:
     int _index; //index in the border list
 };
 
-struct FillData {
-    FillData() :
+struct XlsxFormatFillData {
+    XlsxFormatFillData() :
         pattern(Format::PatternNone)
       ,_dirty(true), _indexValid(false), _index(-1)
     {}
@@ -209,9 +209,9 @@ struct FillData {
             stream<< bgColor << bgThemeColor
                   << fgColor << fgThemeColor
                   << pattern;
-            const_cast<FillData*>(this)->_key = key;
-            const_cast<FillData*>(this)->_dirty = false;
-            const_cast<FillData*>(this)->_indexValid = false;
+            const_cast<XlsxFormatFillData*>(this)->_key = key;
+            const_cast<XlsxFormatFillData*>(this)->_dirty = false;
+            const_cast<XlsxFormatFillData*>(this)->_indexValid = false;
         }
         return _key;
     }
@@ -241,8 +241,8 @@ private:
     int _index; //index in the border list
 };
 
-struct ProtectionData {
-    ProtectionData() :
+struct XlsxFormatProtectionData {
+    XlsxFormatProtectionData() :
         locked(false), hidden(false)
     {}
 
@@ -256,12 +256,12 @@ class FormatPrivate
 public:
     FormatPrivate(Format *p);
 
-    NumberData numberData;
-    FontData fontData;
-    AlignmentData alignmentData;
-    BorderData borderData;
-    FillData fillData;
-    ProtectionData protectionData;
+    XlsxFormatNumberData numberData;
+    XlsxFormatFontData fontData;
+    XlsxFormatAlignmentData alignmentData;
+    XlsxFormatBorderData borderData;
+    XlsxFormatFillData fillData;
+    XlsxFormatProtectionData protectionData;
 
     bool dirty; //The key re-generation is need.
     QByteArray formatKey;
