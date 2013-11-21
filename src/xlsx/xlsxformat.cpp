@@ -50,7 +50,7 @@ FormatPrivate::FormatPrivate(const FormatPrivate &other)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
     , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
     , theme(other.theme)
-    , property(property)
+    , property(other.property)
 {
 
 }
@@ -373,6 +373,15 @@ QByteArray Format::fontKey() const
     }
 
     return d->font_key;
+}
+
+bool Format::hasFontData() const
+{
+    for (int i=FormatPrivate::P_Font_STARTID; i<FormatPrivate::P_Font_ENDID; ++i) {
+        if (hasProperty(i))
+            return true;
+    }
+    return false;
 }
 
 /*!
@@ -774,6 +783,14 @@ bool Format::locked() const
 void Format::setLocked(bool locked)
 {
     setProperty(FormatPrivate::P_Protection_Locked, locked);
+}
+
+/*!
+    Returns true if the format is valid; otherwise returns false.
+ */
+bool Format::isValid() const
+{
+    return !d->property.isEmpty();
 }
 
 QByteArray Format::formatKey() const

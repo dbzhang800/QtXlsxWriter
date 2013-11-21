@@ -46,11 +46,10 @@ public:
     QString toPlainString() const;
 
     int fragmentCount() const;
-    void addFragment(const QString &text, Format *format);
+    void addFragment(const QString &text, const Format &format);
     QString fragmentText(int index) const;
-    Format *fragmentFormat(int index) const;
+    Format fragmentFormat(int index) const;
 
-    Format *createFormat();
 private:
     friend XLSX_AUTOTEST_EXPORT uint qHash(const RichString &rs, uint seed) Q_DECL_NOTHROW;
     friend XLSX_AUTOTEST_EXPORT bool operator==(const RichString &rs1, const RichString &rs2);
@@ -60,10 +59,9 @@ private:
     QByteArray idKey() const;
 
     QStringList m_fragmentTexts;
-    QList<Format *> m_fragmentFormats;
+    QList<Format> m_fragmentFormats;
     QByteArray m_idKey;
     bool m_dirty;
-    QList<QSharedPointer<Format> > m_createdFormats;
 };
 
 
@@ -77,6 +75,6 @@ XLSX_AUTOTEST_EXPORT bool operator!=(const QString &rs1, const RichString &rs2);
 
 QT_END_NAMESPACE_XLSX
 
-Q_DECLARE_METATYPE(QXlsx::RichString);
+Q_DECLARE_METATYPE(QXlsx::RichString)
 
 #endif // XLSXRICHSTRING_P_H

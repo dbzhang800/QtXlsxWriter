@@ -213,6 +213,8 @@ public:
     bool hidden() const;
     void setHidden(bool hidden);
 
+    bool isValid() const;
+
     bool operator == (const Format &format) const;
     bool operator != (const Format &format) const;
 
@@ -232,6 +234,7 @@ private:
     friend class Worksheet;
     friend class WorksheetPrivate;
     friend class RichString;
+    friend class SharedStrings;
     friend class ::FormatTest;
 
     bool fontIndexValid() const;
@@ -239,6 +242,7 @@ private:
     void setFontIndex(int index);
     QByteArray fontKey() const;
 
+    bool hasFontData() const;
     bool hasAlignmentData() const;
 
     bool borderIndexValid() const;

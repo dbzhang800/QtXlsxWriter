@@ -35,7 +35,7 @@ RichString::RichString()
 RichString::RichString(const QString text)
     :m_dirty(true)
 {
-    addFragment(text, 0);
+    addFragment(text, Format());
 }
 
 bool RichString::isRichString() const
@@ -65,7 +65,7 @@ int RichString::fragmentCount() const
     return m_fragmentTexts.size();
 }
 
-void RichString::addFragment(const QString &text, Format *format)
+void RichString::addFragment(const QString &text, const Format &format)
 {
     m_fragmentTexts.append(text);
     m_fragmentFormats.append(format);
@@ -80,23 +80,12 @@ QString RichString::fragmentText(int index) const
     return m_fragmentTexts[index];
 }
 
-Format *RichString::fragmentFormat(int index) const
+Format RichString::fragmentFormat(int index) const
 {
     if (index < 0 || index >= fragmentCount())
-        return 0;
+        return Format();
 
     return m_fragmentFormats[index];
-}
-
-/*!
- * \internal
- */
-Format *RichString::createFormat()
-{
-    Format *format = new Format();
-    m_createdFormats.append(QSharedPointer<Format>(format));
-
-    return format;
 }
 
 /*!
@@ -116,8 +105,8 @@ QByteArray RichString::idKey() const
                 bytes.append("@Text");
                 bytes.append(m_fragmentTexts[i].toUtf8());
                 bytes.append("@Format");
-                if (m_fragmentFormats[i])
-                    bytes.append(m_fragmentFormats[i]->fontKey());
+                if (m_fragmentFormats[i].hasFontData())
+                    bytes.append(m_fragmentFormats[i].fontKey());
             }
         }
         rs->m_idKey = bytes;

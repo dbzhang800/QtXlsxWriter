@@ -1175,7 +1175,7 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
             RichString string = cell->d_ptr->richString;
             for (int i=0; i<string.fragmentCount(); ++i) {
                 writer.writeStartElement(QStringLiteral("r"));
-                if (string.fragmentFormat(i)) {
+                if (string.fragmentFormat(i).hasFontData()) {
                     writer.writeStartElement(QStringLiteral("rPr"));
                     //:Todo
                     writer.writeEndElement();// rPr

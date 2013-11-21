@@ -32,14 +32,14 @@ void SharedStringsTest::testAddSharedString()
     sst.addSharedString("Xlsx Writer");
 
     QXlsx::RichString rs;
-    rs.addFragment("Hello", 0);
-    rs.addFragment(" RichText", 0);
+    rs.addFragment("Hello", QXlsx::Format());
+    rs.addFragment(" RichText", QXlsx::Format());
     sst.addSharedString(rs);
 
     for (int i=0; i<3; ++i) {
         QXlsx::RichString rs2;
-        rs2.addFragment("Hello", 0);
-        rs2.addFragment(" Qt!", 0);
+        rs2.addFragment("Hello", QXlsx::Format());
+        rs2.addFragment(" Qt!", QXlsx::Format());
         sst.addSharedString(rs2);
     }
 
@@ -106,13 +106,13 @@ void SharedStringsTest::testLoadXmlData()
     sst.addSharedString("Xlsx Writer");
 
     QXlsx::RichString rs;
-    rs.addFragment("Hello", 0);
-    rs.addFragment(" RichText", 0);
+    rs.addFragment("Hello", QXlsx::Format());
+    rs.addFragment(" RichText", QXlsx::Format());
     sst.addSharedString(rs);
     for (int i=0; i<3; ++i) {
         QXlsx::RichString rs2;
-        rs2.addFragment("Hello", 0);
-        rs2.addFragment(" Qt!", 0);
+        rs2.addFragment("Hello", QXlsx::Format());
+        rs2.addFragment(" Qt!", QXlsx::Format());
         sst.addSharedString(rs2);
     }
     sst.addSharedString("Hello World");
@@ -152,12 +152,11 @@ void SharedStringsTest::testLoadRichStringXmlData()
     QXlsx::RichString rs = sst->getSharedString(0);
     QVERIFY(rs.fragmentText(0) == "e=mc");
     QVERIFY(rs.fragmentText(1) == "2");
-    QVERIFY(rs.fragmentFormat(0) == 0);
-    QXlsx::Format *format = rs.fragmentFormat(1);
-    QCOMPARE(format->fontName(), QString("MyFontName"));
-//    QCOMPARE(format->fontFamily(), 3);
-    QCOMPARE(format->fontScript(), QXlsx::Format::FontScriptSuper);
-    QCOMPARE(format->fontSize(), 11);
+    QVERIFY(rs.fragmentFormat(0) == QXlsx::Format());
+    QXlsx::Format format = rs.fragmentFormat(1);
+    QCOMPARE(format.fontName(), QString("MyFontName"));
+    QCOMPARE(format.fontScript(), QXlsx::Format::FontScriptSuper);
+    QCOMPARE(format.fontSize(), 11);
 }
 
 QTEST_APPLESS_MAIN(SharedStringsTest)

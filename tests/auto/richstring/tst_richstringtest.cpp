@@ -20,16 +20,16 @@ RichstringTest::RichstringTest()
 void RichstringTest::testEqual()
 {
     QXlsx::RichString rs;
-    rs.addFragment("Hello", 0);
-    rs.addFragment(" RichText", 0);
+    rs.addFragment("Hello", QXlsx::Format());
+    rs.addFragment(" RichText", QXlsx::Format());
 
     QXlsx::RichString rs2;
-    rs2.addFragment("Hello", 0);
-    rs2.addFragment(" Qt!", 0);
+    rs2.addFragment("Hello", QXlsx::Format());
+    rs2.addFragment(" Qt!", QXlsx::Format());
 
     QXlsx::RichString rs3;
-    rs3.addFragment("Hello", 0);
-    rs3.addFragment(" Qt!", 0);
+    rs3.addFragment("Hello", QXlsx::Format());
+    rs3.addFragment(" Qt!", QXlsx::Format());
 
     QVERIFY2(rs2 != rs, "Failure");
     QVERIFY2(rs2 == rs3, "Failure");
