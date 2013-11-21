@@ -18,6 +18,8 @@ private Q_SLOTS:
     void testAddFormat2();
     void testSolidFillBackgroundColor();
 
+    void testWriteBorders();
+
     void testReadNumFmts();
     void testReadFonts();
     void testReadFills();
@@ -79,6 +81,18 @@ void StylesTest::testSolidFillBackgroundColor()
     QByteArray xmlData = styles.saveToXmlData();
 
     QVERIFY(xmlData.contains("<patternFill patternType=\"solid\"><fgColor rgb=\"FFff0000\"/>"));
+}
+
+void StylesTest::testWriteBorders()
+{
+    QXlsx::Styles styles;
+    QXlsx::Format *format = styles.createFormat();
+    format->setRightBorderStyle(QXlsx::Format::BorderThin);
+    styles.addFormat(format);
+
+    QByteArray xmlData = styles.saveToXmlData();
+
+    QVERIFY(xmlData.contains("<border><right style=\"thin\">"));
 }
 
 void StylesTest::testReadFonts()

@@ -173,12 +173,12 @@ void Styles::addFormat(Format *format, bool force)
     //Border
     if (!format->borderIndexValid()) {
         if (!m_bordersHash.contains(format->borderKey())) {
-            QSharedPointer<XlsxFormatBorderData> border = QSharedPointer<XlsxFormatBorderData>(new XlsxFormatBorderData(format->d->borderData));
-            border->setIndex(m_bordersList.size()); //Assign proper index
-            m_bordersList.append(border);
-            m_bordersHash[border->key()] = border;
+            format->setBorderIndex(m_bordersList.size()); //Assign proper index
+            m_bordersList.append(format);
+            m_bordersHash[format->borderKey()] = format;
+        } else {
+            format->setBorderIndex(m_bordersHash[format->borderKey()]->borderIndex());
         }
-        format->setBorderIndex(m_bordersHash[format->borderKey()]->index());
     }
 
     //Format
@@ -444,24 +444,32 @@ void Styles::writeBorders(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("borders"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_bordersList.count()));
     for (int i=0; i<m_bordersList.size(); ++i) {
-        QSharedPointer<XlsxFormatBorderData> border = m_bordersList[i];
+        Format *border = m_bordersList[i];
 
         writer.writeStartElement(QStringLiteral("border"));
-        if (border->diagonalType == Format::DiagonalBorderUp) {
-            writer.writeAttribute(QStringLiteral("diagonalUp"), QStringLiteral("1"));
-        } else if (border->diagonalType == Format::DiagonalBorderDown) {
-            writer.writeAttribute(QStringLiteral("diagonalDown"), QStringLiteral("1"));
-        } else if (border->diagonalType == Format::DiagnoalBorderBoth) {
-            writer.writeAttribute(QStringLiteral("diagonalUp"), QStringLiteral("1"));
-            writer.writeAttribute(QStringLiteral("diagonalDown"), QStringLiteral("1"));
+        if (border->hasProperty(FormatPrivate::P_Border_DiagonalType)) {
+            Format::DiagonalBorderType t = border->diagonalBorderType();
+            if (t == Format::DiagonalBorderUp) {
+                writer.writeAttribute(QStringLiteral("diagonalUp"), QStringLiteral("1"));
+            } else if (t == Format::DiagonalBorderDown) {
+                writer.writeAttribute(QStringLiteral("diagonalDown"), QStringLiteral("1"));
+            } else if (t == Format::DiagnoalBorderBoth) {
+                writer.writeAttribute(QStringLiteral("diagonalUp"), QStringLiteral("1"));
+                writer.writeAttribute(QStringLiteral("diagonalDown"), QStringLiteral("1"));
+            }
         }
-        writeSubBorder(writer, QStringLiteral("left"), border->left, border->leftColor, border->leftThemeColor);
-        writeSubBorder(writer, QStringLiteral("right"), border->right, border->rightColor, border->rightThemeColor);
-        writeSubBorder(writer, QStringLiteral("top"), border->top, border->topColor, border->topThemeColor);
-        writeSubBorder(writer, QStringLiteral("bottom"), border->bottom, border->bottomColor, border->bottomThemeColor);
+        if (border->hasProperty(FormatPrivate::P_Border_LeftStyle))
+            writeSubBorder(writer, QStringLiteral("left"), border->leftBorderStyle(), border->leftBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeLeftColor));
+        if (border->hasProperty(FormatPrivate::P_Border_RightStyle))
+            writeSubBorder(writer, QStringLiteral("right"), border->rightBorderStyle(), border->rightBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeRightColor));
+        if (border->hasProperty(FormatPrivate::P_Border_TopStyle))
+            writeSubBorder(writer, QStringLiteral("top"), border->topBorderStyle(), border->topBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeTopColor));
+        if (border->hasProperty(FormatPrivate::P_Border_BottomStyle))
+            writeSubBorder(writer, QStringLiteral("bottom"), border->bottomBorderStyle(), border->bottomBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeBottomColor));
 
 //        if (!format->isDxfFormat()) {
-        writeSubBorder(writer, QStringLiteral("diagonal"), border->diagonal, border->diagonalColor, border->diagonalThemeColor);
+        if (border->hasProperty(FormatPrivate::P_Border_DiagonalStyle))
+            writeSubBorder(writer, QStringLiteral("diagonal"), border->diagonalBorderStyle(), border->diagonalBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeDiagonalColor));
 //        }
         writer.writeEndElement();//border
     }
@@ -787,30 +795,60 @@ bool Styles::readBorders(XmlStreamReader &reader)
 bool Styles::readBorder(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("border"));
-    QSharedPointer<XlsxFormatBorderData> border(new XlsxFormatBorderData);
+    Format *border = createFormat();
 
     QXmlStreamAttributes attributes = reader.attributes();
     bool isUp = attributes.hasAttribute(QLatin1String("diagonalUp"));
     bool isDown = attributes.hasAttribute(QLatin1String("diagonalUp"));
     if (isUp && isDown)
-        border->diagonalType = Format::DiagnoalBorderBoth;
+        border->setDiagonalBorderType(Format::DiagnoalBorderBoth);
     else if (isUp)
-        border->diagonalType = Format::DiagonalBorderUp;
+        border->setDiagonalBorderType(Format::DiagonalBorderUp);
     else if (isDown)
-        border->diagonalType = Format::DiagonalBorderDown;
+        border->setDiagonalBorderType(Format::DiagonalBorderDown);
 
     while((reader.readNextStartElement(), true)) { //read until border endelement
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
-            if (reader.name() == QLatin1String("left"))
-                readSubBorder(reader, reader.name().toString(), border->left, border->leftColor, border->leftThemeColor);
-            else if (reader.name() == QLatin1String("right"))
-                readSubBorder(reader, reader.name().toString(), border->right, border->rightColor, border->rightThemeColor);
-            else if (reader.name() == QLatin1String("top"))
-                readSubBorder(reader, reader.name().toString(), border->top, border->topColor, border->topThemeColor);
-            else if (reader.name() == QLatin1String("bottom"))
-                readSubBorder(reader, reader.name().toString(), border->bottom, border->bottomColor, border->bottomThemeColor);
-            else if (reader.name() == QLatin1String("diagonal"))
-                readSubBorder(reader, reader.name().toString(), border->diagonal, border->diagonalColor, border->diagonalThemeColor);
+            if (reader.name() == QLatin1String("left") || reader.name() == QLatin1String("right")
+                    || reader.name() == QLatin1String("top") || reader.name() == QLatin1String("bottom")
+                    || reader.name() == QLatin1String("diagonal") ) {
+                Format::BorderStyle style(Format::BorderNone);
+                QColor color;
+                QString themeColor;
+                readSubBorder(reader, reader.name().toString(), style, color, themeColor);
+
+                if (reader.name() == QLatin1String("left")) {
+                    border->setLeftBorderStyle(style);
+                    if (color.isValid())
+                        border->setLeftBorderColor(color);
+                    else if (!themeColor.isEmpty())
+                        border->setProperty(FormatPrivate::P_Border_ThemeLeftColor, themeColor);
+                } else if (reader.name() == QLatin1String("right")) {
+                    border->setRightBorderStyle(style);
+                    if (color.isValid())
+                        border->setRightBorderColor(color);
+                    else if (!themeColor.isEmpty())
+                        border->setProperty(FormatPrivate::P_Border_ThemeRightColor, themeColor);
+                } else if (reader.name() == QLatin1String("top")) {
+                    border->setTopBorderStyle(style);
+                    if (color.isValid())
+                        border->setTopBorderColor(color);
+                    else if (!themeColor.isEmpty())
+                        border->setProperty(FormatPrivate::P_Border_ThemeTopColor, themeColor);
+                } else if (reader.name() == QLatin1String("bottom")) {
+                    border->setBottomBorderStyle(style);
+                    if (color.isValid())
+                        border->setBottomBorderColor(color);
+                    else if (!themeColor.isEmpty())
+                        border->setProperty(FormatPrivate::P_Border_ThemeBottomColor, themeColor);
+                } else if (reader.name() == QLatin1String("diagonal")) {
+                    border->setDiagonalBorderStyle(style);
+                    if (color.isValid())
+                        border->setDiagonalBorderColor(color);
+                    else if (!themeColor.isEmpty())
+                        border->setProperty(FormatPrivate::P_Border_ThemeDiagonalColor, themeColor);
+                }
+            }
         }
 
         if (reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QLatin1String("border"))
@@ -818,8 +856,8 @@ bool Styles::readBorder(XmlStreamReader &reader)
     }
 
     m_bordersList.append(border);
-    m_bordersHash.insert(border->key(), border);
-    border->setIndex(m_bordersList.size()-1);//first call key(), then setIndex()
+    m_bordersHash.insert(border->borderKey(), border);
+    border->setBorderIndex(m_bordersList.size()-1);//first call key(), then setIndex()
 
     return true;
 }
@@ -931,7 +969,11 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (id >= m_bordersList.size()) {
                 qDebug("Error read styles.xml, cellXfs borderId");
             } else {
-                format->d->borderData = *m_bordersList[id];
+                Format *borderFormat = m_bordersList[id];
+                for (int i=FormatPrivate::P_Border_STARTID; i<FormatPrivate::P_Border_ENDID; ++i) {
+                    if (borderFormat->hasProperty(i))
+                        format->setProperty(i, borderFormat->property(i));
+                }
             }
         }
 

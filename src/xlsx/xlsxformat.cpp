@@ -33,6 +33,7 @@ QT_BEGIN_NAMESPACE_XLSX
 FormatPrivate::FormatPrivate()
     : dirty(true)
     , font_dirty(true), font_index_valid(false), font_index(-1)
+    , border_dirty(true), border_index_valid(false), border_index(-1)
     , xf_index(-1), xf_indexValid(false)
     , is_dxf_fomat(false), dxf_index(-1), dxf_indexValid(false)
     , theme(0)
@@ -42,9 +43,9 @@ FormatPrivate::FormatPrivate()
 FormatPrivate::FormatPrivate(const FormatPrivate &other)
     : QSharedData(other)
     , alignmentData(other.alignmentData)
-    , borderData(other.borderData), fillData(other.fillData), protectionData(other.protectionData)
     , dirty(other.dirty), formatKey(other.formatKey)
-    , font_dirty(other.dirty), font_index_valid(other.font_index_valid), font_key(other.font_key), font_index(other.font_index)
+    , font_dirty(other.font_dirty), font_index_valid(other.font_index_valid), font_key(other.font_key), font_index(other.font_index)
+    , border_dirty(other.border_dirty), border_index_valid(other.border_index_valid), border_key(other.border_key), border_index(other.border_index)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
     , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
     , theme(other.theme)
@@ -594,7 +595,7 @@ void Format::setBorderColor(const QColor &color)
  */
 Format::BorderStyle Format::leftBorderStyle() const
 {
-    return d->borderData.left;
+    return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_LeftStyle));
 }
 
 /*!
@@ -602,8 +603,7 @@ Format::BorderStyle Format::leftBorderStyle() const
  */
 void Format::setLeftBorderStyle(BorderStyle style)
 {
-    d->borderData.left = style;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_LeftStyle, style);
 }
 
 /*!
@@ -611,137 +611,136 @@ void Format::setLeftBorderStyle(BorderStyle style)
  */
 QColor Format::leftBorderColor() const
 {
-    return d->borderData.leftColor;
+    return colorProperty(FormatPrivate::P_Border_LeftColor);
 }
 
 void Format::setLeftBorderColor(const QColor &color)
 {
-    d->borderData.leftColor = color;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_LeftColor, color);
 }
 
 Format::BorderStyle Format::rightBorderStyle() const
 {
-    return d->borderData.right;
+    return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_RightStyle));
 }
 
 void Format::setRightBorderStyle(BorderStyle style)
 {
-    d->borderData.right = style;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_RightStyle, style);
 }
 
 QColor Format::rightBorderColor() const
 {
-    return d->borderData.rightColor;
+    return colorProperty(FormatPrivate::P_Border_RightColor);
 }
 
 void Format::setRightBorderColor(const QColor &color)
 {
-    d->borderData.rightColor = color;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_RightColor, color);
 }
 
 Format::BorderStyle Format::topBorderStyle() const
 {
-    return d->borderData.top;
+    return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_TopStyle));
 }
 
 void Format::setTopBorderStyle(BorderStyle style)
 {
-    d->borderData.top = style;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_TopStyle, style);
 }
 
 QColor Format::topBorderColor() const
 {
-    return d->borderData.topColor;
+    return colorProperty(FormatPrivate::P_Border_TopColor);
 }
 
 void Format::setTopBorderColor(const QColor &color)
 {
-    d->borderData.topColor = color;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_TopColor, color);
 }
 
 Format::BorderStyle Format::bottomBorderStyle() const
 {
-    return d->borderData.bottom;
+    return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_BottomStyle));
 }
 
 void Format::setBottomBorderStyle(BorderStyle style)
 {
-    d->borderData.bottom = style;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_BottomStyle, style);
 }
 
 QColor Format::bottomBorderColor() const
 {
-    return d->borderData.bottomColor;
+    return colorProperty(FormatPrivate::P_Border_BottomColor);
 }
 
 void Format::setBottomBorderColor(const QColor &color)
 {
-    d->borderData.bottomColor = color;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_BottomColor, color);
 }
 
 Format::BorderStyle Format::diagonalBorderStyle() const
 {
-    return d->borderData.diagonal;
+    return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_DiagonalStyle));
 }
 
 void Format::setDiagonalBorderStyle(BorderStyle style)
 {
-    d->borderData.diagonal = style;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_DiagonalStyle, style);
 }
 
 Format::DiagonalBorderType Format::diagonalBorderType() const
 {
-    return d->borderData.diagonalType;
+    return static_cast<DiagonalBorderType>(intProperty(FormatPrivate::P_Border_DiagonalType));
 }
 
 void Format::setDiagonalBorderType(DiagonalBorderType style)
 {
-    d->borderData.diagonalType = style;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_DiagonalType, style);
 }
 
 QColor Format::diagonalBorderColor() const
 {
-    return d->borderData.diagonalColor;
+    return colorProperty(FormatPrivate::P_Border_DiagonalColor);
 }
 
 void Format::setDiagonalBorderColor(const QColor &color)
 {
-    d->borderData.diagonalColor = color;
-    d->borderData._dirty = true;
+    setProperty(FormatPrivate::P_Border_DiagonalColor, color);
 }
 
 bool Format::borderIndexValid() const
 {
-    return d->borderData.indexValid();
+    return d->border_index_valid;
 }
 
 int Format::borderIndex() const
 {
-    return d->borderData.index();
+    return d->border_index;
 }
 
 void Format::setBorderIndex(int index)
 {
-    d->borderData.setIndex(index);
+    d->border_index = index;
 }
 
 /* Internal
  */
 QByteArray Format::borderKey() const
 {
-    if (d->borderData._dirty)
-        d->dirty = true; //Make sure formatKey() will be re-generated.
+    if (d->border_dirty) {
+        QByteArray key;
+        QDataStream stream(&key, QIODevice::WriteOnly);
+        for (int i=FormatPrivate::P_Border_STARTID; i<FormatPrivate::P_Border_ENDID; ++i) {
+            if (d->property.contains(i))
+                stream << i << d->property[i];
+        };
 
-    return d->borderData.key();
+        const_cast<Format*>(this)->d->border_key = key;
+        const_cast<Format*>(this)->d->border_dirty = false;
+    }
+
+    return d->border_key;
 }
 
 Format::FillPattern Format::fillPattern() const
@@ -830,7 +829,7 @@ void Format::setLocked(bool locked)
 
 QByteArray Format::formatKey() const
 {
-    if (d->dirty || d->borderData._dirty || d->fillData._dirty) {
+    if (d->dirty || d->fillData._dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         stream<<fontKey()<<borderKey()<<fillKey()
@@ -932,6 +931,11 @@ void Format::setProperty(int propertyId, const QVariant &value)
     if (propertyId >= FormatPrivate::P_Font_STARTID && propertyId < FormatPrivate::P_Font_ENDID) {
         d->font_dirty = true;
         d->font_index_valid = false;
+    }
+
+    if (propertyId >= FormatPrivate::P_Border_STARTID && propertyId < FormatPrivate::P_Border_ENDID) {
+        d->border_dirty = true;
+        d->border_index_valid = false;
     }
 }
 

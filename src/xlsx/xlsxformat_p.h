@@ -45,72 +45,6 @@ struct XlsxFormatAlignmentData
     bool shinkToFit;
 };
 
-struct XlsxFormatBorderData
-{
-    XlsxFormatBorderData() :
-        left(Format::BorderNone), right(Format::BorderNone), top(Format::BorderNone)
-      ,bottom(Format::BorderNone), diagonal(Format::BorderNone)
-      ,diagonalType(Format::DiagonalBorderNone)
-      ,_dirty(true), _indexValid(false), _index(-1)
-    {}
-
-    Format::BorderStyle left;
-    Format::BorderStyle right;
-    Format::BorderStyle top;
-    Format::BorderStyle bottom;
-    Format::BorderStyle diagonal;
-    QColor leftColor;
-    QColor rightColor;
-    QColor topColor;
-    QColor bottomColor;
-    QColor diagonalColor;
-    QString leftThemeColor;
-    QString rightThemeColor;
-    QString topThemeColor;
-    QString bottomThemeColor;
-    QString diagonalThemeColor;
-    Format::DiagonalBorderType diagonalType;
-
-    QByteArray key() const
-    {
-        if (_dirty) {
-            QByteArray key;
-            QDataStream stream(&key, QIODevice::WriteOnly);
-            stream << bottom << bottomColor << bottomThemeColor << top << topColor << topThemeColor
-                 << diagonal << diagonalColor << diagonalThemeColor << diagonalType
-                << left << leftColor << leftThemeColor << right << rightColor << rightThemeColor;
-            const_cast<XlsxFormatBorderData*>(this)->_key = key;
-            const_cast<XlsxFormatBorderData*>(this)->_dirty = false;
-            const_cast<XlsxFormatBorderData*>(this)->_indexValid = false;
-        }
-        return _key;
-    }
-
-    bool indexValid() const
-    {
-        return !_dirty && _indexValid;
-    }
-
-    int index() const
-    {
-        return _index;
-    }
-
-    void setIndex(int index)
-    {
-        _index = index;
-        _indexValid = true;
-    }
-
-    //helper member
-    bool _dirty; //key re-generated and proper index assign is need.
-
-private:
-    QByteArray _key;
-    bool _indexValid;  //has a valid index, so no need to assign a new one
-    int _index; //index in the border list
-};
-
 struct XlsxFormatFillData {
     XlsxFormatFillData() :
         pattern(Format::PatternNone)
@@ -212,7 +146,24 @@ public:
         P_Font_ENDID,
 
         //border
-        P_Border_,
+        P_Border_STARTID,
+        P_Border_LeftStyle = P_Border_STARTID,
+        P_Border_RightStyle,
+        P_Border_TopStyle,
+        P_Border_BottomStyle,
+        P_Border_DiagonalStyle,
+        P_Border_LeftColor,
+        P_Border_RightColor,
+        P_Border_TopColor,
+        P_Border_BottomColor,
+        P_Border_DiagonalColor,
+        P_Border_DiagonalType,
+        P_Border_ThemeLeftColor,
+        P_Border_ThemeRightColor,
+        P_Border_ThemeTopColor,
+        P_Border_ThemeBottomColor,
+        P_Border_ThemeDiagonalColor,
+        P_Border_ENDID,
 
         //fill
         P_Fill_,
@@ -229,7 +180,6 @@ public:
     ~FormatPrivate();
 
     XlsxFormatAlignmentData alignmentData;
-    XlsxFormatBorderData borderData;
     XlsxFormatFillData fillData;
     XlsxFormatProtectionData protectionData;
 
@@ -240,6 +190,11 @@ public:
     bool font_index_valid;
     QByteArray font_key;
     int font_index;
+
+    bool border_dirty;
+    bool border_index_valid;
+    QByteArray border_key;
+    int border_index;
 
     int xf_index;
     bool xf_indexValid;

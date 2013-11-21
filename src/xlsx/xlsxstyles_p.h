@@ -41,7 +41,6 @@ namespace QXlsx {
 
 class Format;
 struct XlsxFormatFillData;
-struct XlsxFormatBorderData;
 class XmlStreamWriter;
 class XmlStreamReader;
 
@@ -99,10 +98,10 @@ private:
     int m_nextCustomNumFmtId;
     QList<Format *> m_fontsList;
     QList<QSharedPointer<XlsxFormatFillData> > m_fillsList; //Keep a copy of unique fills
-    QList<QSharedPointer<XlsxFormatBorderData> > m_bordersList; //Keep a copy of unique borders
+    QList<Format *> m_bordersList; //Keep a copy of unique borders
     QHash<QByteArray, Format *> m_fontsHash;
     QHash<QByteArray, QSharedPointer<XlsxFormatFillData> > m_fillsHash;
-    QHash<QByteArray, QSharedPointer<XlsxFormatBorderData> > m_bordersHash;
+    QHash<QByteArray, Format *> m_bordersHash;
 
     QVector<QColor> m_indexedColors;
 
