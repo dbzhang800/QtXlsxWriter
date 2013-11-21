@@ -30,30 +30,6 @@
 
 namespace QXlsx {
 
-struct XlsxFormatAlignmentData
-{
-    XlsxFormatAlignmentData() :
-        alignH(Format::AlignHGeneral), alignV(Format::AlignBottom)
-      , wrap(false), rotation(0), indent(0), shinkToFit(false)
-    {}
-
-    Format::HorizontalAlignment alignH;
-    Format::VerticalAlignment alignV;
-    bool wrap;
-    int rotation;
-    int indent;
-    bool shinkToFit;
-};
-
-struct XlsxFormatProtectionData {
-    XlsxFormatProtectionData() :
-        locked(false), hidden(false)
-    {}
-
-    bool locked;
-    bool hidden;
-};
-
 class FormatPrivate : public QSharedData
 {
 public:
@@ -122,19 +98,27 @@ public:
         P_Fill_FgThemeColor,
         P_Fill_ENDID,
 
+        P_OTHER_STARTID,
         //alignment
-        P_Alignment_,
+        P_Alignment_STARTID,
+        P_Alignment_AlignH = P_Alignment_STARTID,
+        P_Alignment_AlignV,
+        P_Alignment_Wrap,
+        P_Alignment_Rotation,
+        P_Alignment_Indent,
+        P_Alignment_ShinkToFit,
+        P_Alignment_ENDID,
 
         //protection
-        P_Protection_,
+        P_Protection_Locked,
+        P_Protection_Hidden,
+
+        P_OTHER_ENDID
     };
 
     FormatPrivate();
     FormatPrivate(const FormatPrivate &other);
     ~FormatPrivate();
-
-    XlsxFormatAlignmentData alignmentData;
-    XlsxFormatProtectionData protectionData;
 
     bool dirty; //The key re-generation is need.
     QByteArray formatKey;

@@ -239,9 +239,7 @@ private:
     void setFontIndex(int index);
     QByteArray fontKey() const;
 
-    bool alignmentChanged() const;
-    QString horizontalAlignmentString() const;
-    QString verticalAlignmentString() const;
+    bool hasAlignmentData() const;
 
     bool borderIndexValid() const;
     QByteArray borderKey() const;

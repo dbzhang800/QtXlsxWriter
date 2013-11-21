@@ -542,24 +542,64 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
             writer.writeAttribute(QStringLiteral("applyBorder"), QStringLiteral("1"));
         if (format->fillIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyFill"), QStringLiteral("1"));
-        if (format->alignmentChanged())
+        if (format->hasAlignmentData())
             writer.writeAttribute(QStringLiteral("applyAlignment"), QStringLiteral("1"));
 
-        if (format->alignmentChanged()) {
+        if (format->hasAlignmentData()) {
             writer.writeEmptyElement(QStringLiteral("alignment"));
-            QString alignH = format->horizontalAlignmentString();
-            if (!alignH.isEmpty())
-                writer.writeAttribute(QStringLiteral("horizontal"), alignH);
-            QString alignV = format->verticalAlignmentString();
-            if (!alignV.isEmpty())
-                writer.writeAttribute(QStringLiteral("vertical"), alignV);
-            if (format->indent())
+            if (format->hasProperty(FormatPrivate::P_Alignment_AlignH)) {
+                switch (format->horizontalAlignment()) {
+                case Format::AlignLeft:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("left"));
+                    break;
+                case Format::AlignHCenter:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("center"));
+                    break;
+                case Format::AlignRight:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("right"));
+                    break;
+                case Format::AlignHFill:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("fill"));
+                    break;
+                case Format::AlignHJustify:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("justify"));
+                    break;
+                case Format::AlignHMerge:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("centerContinuous"));
+                    break;
+                case Format::AlignHDistributed:
+                    writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("distributed"));
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            if (format->hasProperty(FormatPrivate::P_Alignment_AlignV)) {
+                switch (format->verticalAlignment()) {
+                case Format::AlignTop:
+                    writer.writeAttribute(QStringLiteral("vertical"), QStringLiteral("top"));
+                    break;
+                case Format::AlignVCenter:
+                    writer.writeAttribute(QStringLiteral("vertical"), QStringLiteral("center"));
+                    break;
+                case Format::AlignVJustify:
+                    writer.writeAttribute(QStringLiteral("vertical"), QStringLiteral("justify"));
+                    break;
+                case Format::AlignVDistributed:
+                    writer.writeAttribute(QStringLiteral("vertical"), QStringLiteral("distributed"));
+                    break;
+                default:
+                    break;
+                }
+            }
+            if (format->hasProperty(FormatPrivate::P_Alignment_Indent))
                 writer.writeAttribute(QStringLiteral("indent"), QString::number(format->indent()));
-            if (format->textWrap())
+            if (format->hasProperty(FormatPrivate::P_Alignment_Wrap) && format->textWrap())
                 writer.writeAttribute(QStringLiteral("wrapText"), QStringLiteral("1"));
-            if (format->shrinkToFit())
+            if (format->hasProperty(FormatPrivate::P_Alignment_ShinkToFit) && format->shrinkToFit())
                 writer.writeAttribute(QStringLiteral("shrinkToFit"), QStringLiteral("1"));
-            if (format->rotation())
+            if (format->hasProperty(FormatPrivate::P_Alignment_Rotation))
                 writer.writeAttribute(QStringLiteral("textRotation"), QString::number(format->rotation()));
         }
 

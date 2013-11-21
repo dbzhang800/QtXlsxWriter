@@ -43,7 +43,6 @@ FormatPrivate::FormatPrivate()
 
 FormatPrivate::FormatPrivate(const FormatPrivate &other)
     : QSharedData(other)
-    , alignmentData(other.alignmentData) ,protectionData(other.protectionData)
     , dirty(other.dirty), formatKey(other.formatKey)
     , font_dirty(other.font_dirty), font_index_valid(other.font_index_valid), font_key(other.font_key), font_index(other.font_index)
     , fill_dirty(other.fill_dirty), fill_index_valid(other.fill_index_valid), fill_key(other.fill_key), fill_index(other.fill_index)
@@ -51,6 +50,7 @@ FormatPrivate::FormatPrivate(const FormatPrivate &other)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
     , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
     , theme(other.theme)
+    , property(property)
 {
 
 }
@@ -380,7 +380,7 @@ QByteArray Format::fontKey() const
  */
 Format::HorizontalAlignment Format::horizontalAlignment() const
 {
-    return d->alignmentData.alignH;
+    return static_cast<Format::HorizontalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignH));
 }
 
 /*!
@@ -388,18 +388,17 @@ Format::HorizontalAlignment Format::horizontalAlignment() const
  */
 void Format::setHorizontalAlignment(HorizontalAlignment align)
 {
-    if (d->alignmentData.indent &&(align != AlignHGeneral && align != AlignLeft &&
-                              align != AlignRight && align != AlignHDistributed)) {
-        d->alignmentData.indent = 0;
+    if (hasProperty(FormatPrivate::P_Alignment_Indent)
+            &&(align != AlignHGeneral && align != AlignLeft && align != AlignRight && align != AlignHDistributed)) {
+        clearProperty(FormatPrivate::P_Alignment_Indent);
     }
 
-    if (d->alignmentData.shinkToFit && (align == AlignHFill || align == AlignHJustify
-                                   || align == AlignHDistributed)) {
-        d->alignmentData.shinkToFit = false;
+    if (hasProperty(FormatPrivate::P_Alignment_ShinkToFit)
+            && (align == AlignHFill || align == AlignHJustify || align == AlignHDistributed)) {
+        clearProperty(FormatPrivate::P_Alignment_ShinkToFit);
     }
 
-    d->alignmentData.alignH = align;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Alignment_AlignH, align);
 }
 
 /*!
@@ -407,7 +406,7 @@ void Format::setHorizontalAlignment(HorizontalAlignment align)
  */
 Format::VerticalAlignment Format::verticalAlignment() const
 {
-    return d->alignmentData.alignV;
+    return static_cast<Format::VerticalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignV));
 }
 
 /*!
@@ -415,8 +414,7 @@ Format::VerticalAlignment Format::verticalAlignment() const
  */
 void Format::setVerticalAlignment(VerticalAlignment align)
 {
-    d->alignmentData.alignV = align;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Alignment_AlignV, align);
 }
 
 /*!
@@ -424,7 +422,7 @@ void Format::setVerticalAlignment(VerticalAlignment align)
  */
 bool Format::textWrap() const
 {
-    return d->alignmentData.wrap;
+    return boolProperty(FormatPrivate::P_Alignment_Wrap);
 }
 
 /*!
@@ -432,11 +430,10 @@ bool Format::textWrap() const
  */
 void Format::setTextWarp(bool wrap)
 {
-    if (wrap && d->alignmentData.shinkToFit)
-        d->alignmentData.shinkToFit = false;
+    if (wrap && hasProperty(FormatPrivate::P_Alignment_ShinkToFit))
+        clearProperty(FormatPrivate::P_Alignment_ShinkToFit);
 
-    d->alignmentData.wrap = wrap;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Alignment_Wrap, wrap);
 }
 
 /*!
@@ -444,7 +441,7 @@ void Format::setTextWarp(bool wrap)
  */
 int Format::rotation() const
 {
-    return d->alignmentData.rotation;
+    return intProperty(FormatPrivate::P_Alignment_Rotation);
 }
 
 /*!
@@ -452,8 +449,7 @@ int Format::rotation() const
  */
 void Format::setRotation(int rotation)
 {
-    d->alignmentData.rotation = rotation;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Alignment_Rotation, rotation);
 }
 
 /*!
@@ -461,7 +457,7 @@ void Format::setRotation(int rotation)
  */
 int Format::indent() const
 {
-    return d->alignmentData.indent;
+    return intProperty(FormatPrivate::P_Alignment_Indent);
 }
 
 /*!
@@ -469,14 +465,15 @@ int Format::indent() const
  */
 void Format::setIndent(int indent)
 {
-    if (indent && (d->alignmentData.alignH != AlignHGeneral
-                   && d->alignmentData.alignH != AlignLeft
-                   && d->alignmentData.alignH != AlignRight
-                   && d->alignmentData.alignH != AlignHJustify)) {
-        d->alignmentData.alignH = AlignLeft;
+    if (indent && hasProperty(FormatPrivate::P_Alignment_AlignH)) {
+        HorizontalAlignment hl = horizontalAlignment();
+
+        if (hl != AlignHGeneral && hl != AlignLeft && hl!= AlignRight && hl!= AlignHJustify) {
+            setHorizontalAlignment(AlignLeft);
+        }
     }
-    d->alignmentData.indent = indent;
-    d->dirty = true;
+
+    setProperty(FormatPrivate::P_Alignment_Indent, indent);
 }
 
 /*!
@@ -484,7 +481,7 @@ void Format::setIndent(int indent)
  */
 bool Format::shrinkToFit() const
 {
-    return d->alignmentData.shinkToFit;
+    return boolProperty(FormatPrivate::P_Alignment_ShinkToFit);
 }
 
 /*!
@@ -492,82 +489,28 @@ bool Format::shrinkToFit() const
  */
 void Format::setShrinkToFit(bool shink)
 {
-    if (shink && d->alignmentData.wrap)
-        d->alignmentData.wrap = false;
-    if (shink && (d->alignmentData.alignH == AlignHFill
-                  || d->alignmentData.alignH == AlignHJustify
-                  || d->alignmentData.alignH == AlignHDistributed)) {
-        d->alignmentData.alignH = AlignLeft;
+    if (shink && hasProperty(FormatPrivate::P_Alignment_Wrap))
+        clearProperty(FormatPrivate::P_Alignment_Wrap);
+
+    if (shink && hasProperty(FormatPrivate::P_Alignment_AlignH)) {
+        HorizontalAlignment hl = horizontalAlignment();
+        if (hl == AlignHFill || hl == AlignHJustify || hl == AlignHDistributed)
+            setHorizontalAlignment(AlignLeft);
     }
 
-    d->alignmentData.shinkToFit = shink;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Alignment_ShinkToFit, shink);
 }
 
 /*!
  * \internal
  */
-bool Format::alignmentChanged() const
+bool Format::hasAlignmentData() const
 {
-    return d->alignmentData.alignH != AlignHGeneral
-            || d->alignmentData.alignV != AlignBottom
-            || d->alignmentData.indent != 0
-            || d->alignmentData.wrap
-            || d->alignmentData.rotation != 0
-            || d->alignmentData.shinkToFit;
-}
-
-QString Format::horizontalAlignmentString() const
-{
-    QString alignH;
-    switch (d->alignmentData.alignH) {
-    case Format::AlignLeft:
-        alignH = QStringLiteral("left");
-        break;
-    case Format::AlignHCenter:
-        alignH = QStringLiteral("center");
-        break;
-    case Format::AlignRight:
-        alignH = QStringLiteral("right");
-        break;
-    case Format::AlignHFill:
-        alignH = QStringLiteral("fill");
-        break;
-    case Format::AlignHJustify:
-        alignH = QStringLiteral("justify");
-        break;
-    case Format::AlignHMerge:
-        alignH = QStringLiteral("centerContinuous");
-        break;
-    case Format::AlignHDistributed:
-        alignH = QStringLiteral("distributed");
-        break;
-    default:
-        break;
+    for (int i=FormatPrivate::P_Alignment_STARTID; i<FormatPrivate::P_Alignment_ENDID; ++i) {
+        if (hasProperty(i))
+            return true;
     }
-    return alignH;
-}
-
-QString Format::verticalAlignmentString() const
-{
-    QString align;
-    switch (d->alignmentData.alignV) {
-    case AlignTop:
-        align = QStringLiteral("top");
-        break;
-    case AlignVCenter:
-        align = QStringLiteral("center");
-        break;
-    case AlignVJustify:
-        align = QStringLiteral("justify");
-        break;
-    case AlignVDistributed:
-        align = QStringLiteral("distributed");
-        break;
-    default:
-        break;
-    }
-    return align;
+    return false;
 }
 
 /*!
@@ -815,24 +758,22 @@ QByteArray Format::fillKey() const
 
 bool Format::hidden() const
 {
-    return d->protectionData.hidden;
+    return boolProperty(FormatPrivate::P_Protection_Hidden);
 }
 
 void Format::setHidden(bool hidden)
 {
-    d->protectionData.hidden = hidden;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Protection_Hidden, hidden);
 }
 
 bool Format::locked() const
 {
-    return d->protectionData.locked;
+    return boolProperty(FormatPrivate::P_Protection_Locked);
 }
 
 void Format::setLocked(bool locked)
 {
-    d->protectionData.locked = locked;
-    d->dirty = true;
+    setProperty(FormatPrivate::P_Protection_Locked, locked);
 }
 
 QByteArray Format::formatKey() const
@@ -840,15 +781,13 @@ QByteArray Format::formatKey() const
     if (d->dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
-        stream<<fontKey()<<borderKey()<<fillKey()
-             <<numberFormatIndex()
-            <<d->alignmentData.alignH<<d->alignmentData.alignV<<d->alignmentData.indent
-           <<d->alignmentData.rotation<<d->alignmentData.shinkToFit<<d->alignmentData.wrap
-          <<d->protectionData.hidden<<d->protectionData.locked;
+        stream<<fontKey()<<borderKey()<<fillKey()<<numberFormatIndex();
+        for (int i=FormatPrivate::P_OTHER_STARTID; i<FormatPrivate::P_OTHER_ENDID; ++i) {
+            if (d->property.contains(i))
+                stream<<i<<d->property[i];
+        }
         d->formatKey = key;
         d->dirty = false;
-        d->xf_indexValid = false;
-        d->dxf_indexValid = false;
     }
 
     return d->formatKey;
@@ -935,6 +874,7 @@ void Format::setProperty(int propertyId, const QVariant &value)
 
     d->dirty = true;
     d->xf_indexValid = false;
+    d->dxf_indexValid = false;
 
     if (propertyId >= FormatPrivate::P_Font_STARTID && propertyId < FormatPrivate::P_Font_ENDID) {
         d->font_dirty = true;
