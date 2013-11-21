@@ -34,7 +34,6 @@ void StylesTest::testEmptyStyle()
 {
     QXlsx::Styles styles;
     QByteArray xmlData = styles.saveToXmlData();
-    qDebug()<<xmlData;
 
     QVERIFY2(xmlData.contains("<cellXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/></cellXfs>"), "Must have one cell style");
 }
@@ -128,8 +127,8 @@ void StylesTest::testReadFills()
     styles.readFills(reader);
 
     QCOMPARE(styles.m_fillsList.size(), 4);
-    QCOMPARE(styles.m_fillsList[3]->pattern, QXlsx::Format::PatternSolid);
-    QCOMPARE(styles.m_fillsList[3]->bgColor, QColor(Qt::gray));//for solid pattern, bg vs. fg color!
+    QCOMPARE(styles.m_fillsList[3]->fillPattern(), QXlsx::Format::PatternSolid);
+    QCOMPARE(styles.m_fillsList[3]->patternBackgroundColor(), QColor(Qt::gray));//for solid pattern, bg vs. fg color!
 }
 
 void StylesTest::testReadBorders()

@@ -48,10 +48,11 @@ Styles::Styles(bool createEmpty)
         //Add default Format
         addFormat(createFormat());
         //Add another fill format
-        QSharedPointer<XlsxFormatFillData> fill = QSharedPointer<XlsxFormatFillData>(new XlsxFormatFillData);
-        fill->pattern = Format::PatternGray125;
-        m_fillsList.append(fill);
-        m_fillsHash[fill->key()] = fill;
+        Format *format = createFormat();
+        format->setFillPattern(Format::PatternGray125);
+
+        m_fillsList.append(format);
+        m_fillsHash.insert(format->fillKey(), format);
     }
 }
 
@@ -162,12 +163,12 @@ void Styles::addFormat(Format *format, bool force)
     //Fill
     if (!format->fillIndexValid()) {
         if (!m_fillsHash.contains(format->fillKey())) {
-            QSharedPointer<XlsxFormatFillData> fill = QSharedPointer<XlsxFormatFillData>(new XlsxFormatFillData(format->d->fillData));
-            fill->setIndex(m_fillsList.size()); //Assign proper index
-            m_fillsList.append(fill);
-            m_fillsHash[fill->key()] = fill;
+            format->setFillIndex(m_fillsList.size()); //Assign proper index
+            m_fillsList.append(format);
+            m_fillsHash[format->fillKey()] = format;
+        } else {
+            format->setFillIndex(m_fillsHash[format->fillKey()]->fillIndex());
         }
-        format->setFillIndex(m_fillsHash[format->fillKey()]->index());
     }
 
     //Border
@@ -379,13 +380,13 @@ void Styles::writeFills(XmlStreamWriter &writer)
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fillsList.size()));
 
     for (int i=0; i<m_fillsList.size(); ++i) {
-        QSharedPointer<XlsxFormatFillData> fill = m_fillsList[i];
-        writeFill(writer, fill.data());
+        Format *fill = m_fillsList[i];
+        writeFill(writer, fill);
     }
     writer.writeEndElement(); //fills
 }
 
-void Styles::writeFill(XmlStreamWriter &writer, XlsxFormatFillData *fill)
+void Styles::writeFill(XmlStreamWriter &writer, Format *fill)
 {
     static QMap<int, QString> patternStrings;
     if (patternStrings.isEmpty()) {
@@ -412,24 +413,24 @@ void Styles::writeFill(XmlStreamWriter &writer, XlsxFormatFillData *fill)
 
     writer.writeStartElement(QStringLiteral("fill"));
     writer.writeStartElement(QStringLiteral("patternFill"));
-    writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill->pattern]);
+    writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill->fillPattern()]);
     // For a solid fill, Excel reverses the role of foreground and background colours
-    if (fill->fgColor.isValid()) {
-        writer.writeEmptyElement(fill->pattern == Format::PatternSolid ? QStringLiteral("bgColor") : QStringLiteral("fgColor"));
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->fgColor.name().mid(1));
-    } else if (!fill->fgThemeColor.isEmpty()) {
+    if (fill->patternForegroundColor().isValid()) {
+        writer.writeEmptyElement(fill->fillPattern() == Format::PatternSolid ? QStringLiteral("bgColor") : QStringLiteral("fgColor"));
+        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->patternForegroundColor().name().mid(1));
+    } else if (!fill->stringProperty(FormatPrivate::P_Fill_FgThemeColor).isEmpty()) {
         writer.writeEmptyElement(QStringLiteral("fgColor"));
-        QStringList themes = fill->fgThemeColor.split(QLatin1Char(':'));
+        QStringList themes = fill->stringProperty(FormatPrivate::P_Fill_FgThemeColor).split(QLatin1Char(':'));
         writer.writeAttribute(QStringLiteral("theme"), themes[0]);
         if (!themes[1].isEmpty())
             writer.writeAttribute(QStringLiteral("tint"), themes[1]);
     }
-    if (fill->bgColor.isValid()) {
-        writer.writeEmptyElement(fill->pattern == Format::PatternSolid ? QStringLiteral("fgColor") : QStringLiteral("bgColor"));
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->bgColor.name().mid(1));
-    } else if (!fill->bgThemeColor.isEmpty()) {
+    if (fill->patternBackgroundColor().isValid()) {
+        writer.writeEmptyElement(fill->fillPattern() == Format::PatternSolid ? QStringLiteral("fgColor") : QStringLiteral("bgColor"));
+        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->patternBackgroundColor().name().mid(1));
+    } else if (!fill->stringProperty(FormatPrivate::P_Fill_BgThemeColor).isEmpty()) {
         writer.writeEmptyElement(QStringLiteral("bgColor"));
-        QStringList themes = fill->bgThemeColor.split(QLatin1Char(':'));
+        QStringList themes = fill->stringProperty(FormatPrivate::P_Fill_BgThemeColor).split(QLatin1Char(':'));
         writer.writeAttribute(QStringLiteral("theme"), themes[0]);
         if (!themes[1].isEmpty())
             writer.writeAttribute(QStringLiteral("tint"), themes[1]);
@@ -724,13 +725,15 @@ bool Styles::readFill(XmlStreamReader &reader)
         patternValues[QStringLiteral("lightGrid")] = Format::PatternLightGrid;
     }
 
-    QSharedPointer<XlsxFormatFillData> fill(new XlsxFormatFillData);
+    Format *fill = createFormat();
     while((reader.readNextStartElement(), true)) { //read until fill endelement
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("patternFill")) {
                 QXmlStreamAttributes attributes = reader.attributes();
-                QString pattern = attributes.value(QLatin1String("patternType")).toString();
-                fill->pattern = patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone;
+                if (attributes.hasAttribute(QLatin1String("patternType"))) {
+                    QString pattern = attributes.value(QLatin1String("patternType")).toString();
+                    fill->setFillPattern(patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone);
+                }
             } else if (reader.name() == QLatin1String("fgColor")) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 QColor c;
@@ -741,12 +744,12 @@ bool Styles::readFill(XmlStreamReader &reader)
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
-                    fill->fgThemeColor = theme + QLatin1Char(':') + tint;
+                    fill->setProperty(FormatPrivate::P_Fill_FgThemeColor, QString(theme + QLatin1Char(':') + tint));
                 }
-                if (fill->pattern == Format::PatternSolid)
-                    fill->bgColor = c;
+                if (fill->fillPattern() == Format::PatternSolid)
+                    fill->setPatternBackgroundColor(c);
                 else
-                    fill->fgColor = c;
+                    fill->setPatternForegroundColor(c);
             } else if (reader.name() == QLatin1String("bgColor")) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 QColor c;
@@ -757,12 +760,12 @@ bool Styles::readFill(XmlStreamReader &reader)
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
-                    fill->bgThemeColor = theme + QLatin1Char(':') + tint;
+                    fill->setProperty(FormatPrivate::P_Fill_BgThemeColor, QString(theme + QLatin1Char(':') + tint));
                 }
-                if (fill->pattern == Format::PatternSolid)
-                    fill->fgColor = c;
+                if (fill->fillPattern() == Format::PatternSolid)
+                    fill->setPatternForegroundColor(c);
                 else
-                    fill->bgColor = c;
+                    fill->setPatternBackgroundColor(c);
             }
         }
 
@@ -771,8 +774,8 @@ bool Styles::readFill(XmlStreamReader &reader)
     }
 
     m_fillsList.append(fill);
-    m_fillsHash.insert(fill->key(), fill);
-    fill->setIndex(m_fillsList.size()-1);//first call key(), then setIndex()
+    m_fillsHash.insert(fill->fillKey(), fill);
+    fill->setFillIndex(m_fillsList.size()-1);//first call key(), then setIndex()
 
     return true;
 }
@@ -960,7 +963,11 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (id >= m_fillsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fillId");
             } else {
-                format->d->fillData = *m_fillsList[id];
+                Format *fillFormat = m_fillsList[id];
+                for (int i=FormatPrivate::P_Fill_STARTID; i<FormatPrivate::P_Fill_ENDID; ++i) {
+                    if (fillFormat->hasProperty(i))
+                        format->setProperty(i, fillFormat->property(i));
+                }
             }
         }
 

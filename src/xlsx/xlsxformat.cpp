@@ -33,6 +33,7 @@ QT_BEGIN_NAMESPACE_XLSX
 FormatPrivate::FormatPrivate()
     : dirty(true)
     , font_dirty(true), font_index_valid(false), font_index(-1)
+    , fill_dirty(true), fill_index_valid(false), fill_index(-1)
     , border_dirty(true), border_index_valid(false), border_index(-1)
     , xf_index(-1), xf_indexValid(false)
     , is_dxf_fomat(false), dxf_index(-1), dxf_indexValid(false)
@@ -42,9 +43,10 @@ FormatPrivate::FormatPrivate()
 
 FormatPrivate::FormatPrivate(const FormatPrivate &other)
     : QSharedData(other)
-    , alignmentData(other.alignmentData)
+    , alignmentData(other.alignmentData) ,protectionData(other.protectionData)
     , dirty(other.dirty), formatKey(other.formatKey)
     , font_dirty(other.font_dirty), font_index_valid(other.font_index_valid), font_key(other.font_key), font_index(other.font_index)
+    , fill_dirty(other.fill_dirty), fill_index_valid(other.fill_index_valid), fill_key(other.fill_key), fill_index(other.fill_index)
     , border_dirty(other.border_dirty), border_index_valid(other.border_index_valid), border_key(other.border_key), border_index(other.border_index)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
     , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
@@ -745,64 +747,70 @@ QByteArray Format::borderKey() const
 
 Format::FillPattern Format::fillPattern() const
 {
-    return d->fillData.pattern;
+    return static_cast<FillPattern>(intProperty(FormatPrivate::P_Fill_Pattern));
 }
 
 void Format::setFillPattern(FillPattern pattern)
 {
-    d->fillData.pattern = pattern;
-    d->fillData._dirty = true;
+    setProperty(FormatPrivate::P_Fill_Pattern, pattern);
 }
 
 QColor Format::patternForegroundColor() const
 {
-    return d->fillData.fgColor;
+    return colorProperty(FormatPrivate::P_Fill_FgColor);
 }
 
 void Format::setPatternForegroundColor(const QColor &color)
 {
-    if (color.isValid() && d->fillData.pattern == PatternNone)
-        d->fillData.pattern = PatternSolid;
-    d->fillData.fgColor = color;
-    d->fillData._dirty = true;
+    if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
+        setFillPattern(PatternSolid);
+    setProperty(FormatPrivate::P_Fill_FgColor, color);
 }
 
 QColor Format::patternBackgroundColor() const
 {
-    return d->fillData.bgColor;
+    return colorProperty(FormatPrivate::P_Fill_BgColor);
 }
 
 void Format::setPatternBackgroundColor(const QColor &color)
 {
-    if (color.isValid() && d->fillData.pattern == PatternNone)
-        d->fillData.pattern = PatternSolid;
-    d->fillData.bgColor = color;
-    d->fillData._dirty = true;
+    if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
+        setFillPattern(PatternSolid);
+    setProperty(FormatPrivate::P_Fill_BgColor, color);
 }
 
 bool Format::fillIndexValid() const
 {
-    return d->fillData.indexValid();
+    return d->fill_index_valid;
 }
 
 int Format::fillIndex() const
 {
-    return d->fillData.index();
+    return d->fill_index;
 }
 
 void Format::setFillIndex(int index)
 {
-    d->fillData.setIndex(index);
+    d->fill_index = index;
 }
 
 /* Internal
  */
 QByteArray Format::fillKey() const
 {
-    if (d->fillData._dirty)
-        d->dirty = true; //Make sure formatKey() will be re-generated.
+    if (d->fill_dirty) {
+        QByteArray key;
+        QDataStream stream(&key, QIODevice::WriteOnly);
+        for (int i=FormatPrivate::P_Fill_STARTID; i<FormatPrivate::P_Fill_ENDID; ++i) {
+            if (d->property.contains(i))
+                stream << i << d->property[i];
+        };
 
-    return d->fillData.key();
+        const_cast<Format*>(this)->d->fill_key = key;
+        const_cast<Format*>(this)->d->fill_dirty = false;
+    }
+
+    return d->fill_key;
 }
 
 bool Format::hidden() const
@@ -829,7 +837,7 @@ void Format::setLocked(bool locked)
 
 QByteArray Format::formatKey() const
 {
-    if (d->dirty || d->fillData._dirty) {
+    if (d->dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         stream<<fontKey()<<borderKey()<<fillKey()
@@ -931,11 +939,12 @@ void Format::setProperty(int propertyId, const QVariant &value)
     if (propertyId >= FormatPrivate::P_Font_STARTID && propertyId < FormatPrivate::P_Font_ENDID) {
         d->font_dirty = true;
         d->font_index_valid = false;
-    }
-
-    if (propertyId >= FormatPrivate::P_Border_STARTID && propertyId < FormatPrivate::P_Border_ENDID) {
+    } else if (propertyId >= FormatPrivate::P_Border_STARTID && propertyId < FormatPrivate::P_Border_ENDID) {
         d->border_dirty = true;
         d->border_index_valid = false;
+    } else if (propertyId >= FormatPrivate::P_Fill_STARTID && propertyId < FormatPrivate::P_Fill_ENDID) {
+        d->fill_dirty = true;
+        d->fill_index_valid = false;
     }
 }
 

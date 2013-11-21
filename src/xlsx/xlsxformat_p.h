@@ -45,58 +45,6 @@ struct XlsxFormatAlignmentData
     bool shinkToFit;
 };
 
-struct XlsxFormatFillData {
-    XlsxFormatFillData() :
-        pattern(Format::PatternNone)
-      ,_dirty(true), _indexValid(false), _index(-1)
-    {}
-
-    Format::FillPattern pattern;
-    QColor bgColor;
-    QColor fgColor;
-    QString bgThemeColor;
-    QString fgThemeColor;
-
-    QByteArray key() const
-    {
-        if (_dirty) {
-            QByteArray key;
-            QDataStream stream(&key, QIODevice::WriteOnly);
-            stream<< bgColor << bgThemeColor
-                  << fgColor << fgThemeColor
-                  << pattern;
-            const_cast<XlsxFormatFillData*>(this)->_key = key;
-            const_cast<XlsxFormatFillData*>(this)->_dirty = false;
-            const_cast<XlsxFormatFillData*>(this)->_indexValid = false;
-        }
-        return _key;
-    }
-
-    bool indexValid() const
-    {
-        return !_dirty && _indexValid;
-    }
-
-    int index() const
-    {
-        return _index;
-    }
-
-    void setIndex(int index)
-    {
-        _index = index;
-        _indexValid = true;
-    }
-
-    //helper member
-    bool _dirty; //key re-generated and proper index assign is need.
-
-private:
-    QByteArray _key;
-    bool _indexValid;  //has a valid index, so no need to assign a new one
-    int _index; //index in the border list
-};
-
 struct XlsxFormatProtectionData {
     XlsxFormatProtectionData() :
         locked(false), hidden(false)
@@ -166,7 +114,13 @@ public:
         P_Border_ENDID,
 
         //fill
-        P_Fill_,
+        P_Fill_STARTID,
+        P_Fill_Pattern = P_Fill_STARTID,
+        P_Fill_BgColor,
+        P_Fill_FgColor,
+        P_Fill_BgThemeColor,
+        P_Fill_FgThemeColor,
+        P_Fill_ENDID,
 
         //alignment
         P_Alignment_,
@@ -180,7 +134,6 @@ public:
     ~FormatPrivate();
 
     XlsxFormatAlignmentData alignmentData;
-    XlsxFormatFillData fillData;
     XlsxFormatProtectionData protectionData;
 
     bool dirty; //The key re-generation is need.
@@ -190,6 +143,11 @@ public:
     bool font_index_valid;
     QByteArray font_key;
     int font_index;
+
+    bool fill_dirty;
+    bool fill_index_valid;
+    QByteArray fill_key;
+    int fill_index;
 
     bool border_dirty;
     bool border_index_valid;
