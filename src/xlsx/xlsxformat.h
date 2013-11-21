@@ -30,7 +30,7 @@
 #include <QColor>
 #include <QByteArray>
 #include <QList>
-#include <QSharedDataPointer>
+#include <QExplicitlySharedDataPointer>
 
 class FormatTest;
 
@@ -232,16 +232,12 @@ private:
     friend class Worksheet;
     friend class WorksheetPrivate;
     friend class RichString;
-    friend class SharedStrings;
     friend class ::FormatTest;
 
     bool fontIndexValid() const;
     int fontIndex() const;
     void setFontIndex(int index);
     QByteArray fontKey() const;
-    int fontFamily() const;
-    bool fontShadow() const;
-    QString fontScheme() const;
 
     bool alignmentChanged() const;
     QString horizontalAlignmentString() const;
@@ -268,7 +264,7 @@ private:
 
     int theme() const;
 
-    QSharedDataPointer<FormatPrivate> d;
+    QExplicitlySharedDataPointer<FormatPrivate> d;
 };
 
 QT_END_NAMESPACE_XLSX

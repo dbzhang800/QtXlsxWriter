@@ -31,23 +31,20 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 FormatPrivate::FormatPrivate()
+    : dirty(true)
+    , font_dirty(true), font_index_valid(false), font_index(-1)
+    , xf_index(-1), xf_indexValid(false)
+    , is_dxf_fomat(false), dxf_index(-1), dxf_indexValid(false)
+    , theme(0)
 {
-    dirty = true;
-
-    is_dxf_fomat = false;
-    xf_index = -1;
-    dxf_index = -1;
-    xf_indexValid = false;
-    dxf_indexValid = false;
-
-    theme = 0;
 }
 
 FormatPrivate::FormatPrivate(const FormatPrivate &other)
     : QSharedData(other)
-    , fontData(other.fontData), alignmentData(other.alignmentData)
+    , alignmentData(other.alignmentData)
     , borderData(other.borderData), fillData(other.fillData), protectionData(other.protectionData)
     , dirty(other.dirty), formatKey(other.formatKey)
+    , font_dirty(other.dirty), font_index_valid(other.font_index_valid), font_key(other.font_key), font_index(other.font_index)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
     , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
     , theme(other.theme)
@@ -181,7 +178,7 @@ void Format::setNumberFormat(int id, const QString &format)
  */
 int Format::fontSize() const
 {
-    return d->fontData.size;
+    return intProperty(FormatPrivate::P_Font_Size);
 }
 
 /*!
@@ -189,8 +186,7 @@ int Format::fontSize() const
  */
 void Format::setFontSize(int size)
 {
-    d->fontData.size = size;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Size, size);
 }
 
 /*!
@@ -198,7 +194,7 @@ void Format::setFontSize(int size)
  */
 bool Format::fontItalic() const
 {
-    return d->fontData.italic;
+    return boolProperty(FormatPrivate::P_Font_Italic);
 }
 
 /*!
@@ -206,8 +202,7 @@ bool Format::fontItalic() const
  */
 void Format::setFontItalic(bool italic)
 {
-    d->fontData.italic = italic;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Italic, italic);
 }
 
 /*!
@@ -215,7 +210,7 @@ void Format::setFontItalic(bool italic)
  */
 bool Format::fontStrikeOut() const
 {
-    return d->fontData.strikeOut;
+    return boolProperty(FormatPrivate::P_Font_StrikeOut);
 }
 
 /*!
@@ -223,8 +218,7 @@ bool Format::fontStrikeOut() const
  */
 void Format::setFontStrikeOut(bool strikeOut)
 {
-    d->fontData.strikeOut = strikeOut;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_StrikeOut, strikeOut);
 }
 
 /*!
@@ -232,12 +226,15 @@ void Format::setFontStrikeOut(bool strikeOut)
  */
 QColor Format::fontColor() const
 {
-    if (!d->fontData.color.isValid() && !d->fontData.themeColor.isEmpty()) {
+    if (hasProperty(FormatPrivate::P_Font_Color))
+        return colorProperty(FormatPrivate::P_Font_Color);
+
+    if (hasProperty(FormatPrivate::P_Font_ThemeColor)) {
         //!Todo, get the real color from the theme{1}.xml file
         //The same is ture for border and fill colord
         return QColor();
     }
-    return d->fontData.color;
+    return QColor();
 }
 
 /*!
@@ -245,8 +242,7 @@ QColor Format::fontColor() const
  */
 void Format::setFontColor(const QColor &color)
 {
-    d->fontData.color = color;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Color, color);
 }
 
 /*!
@@ -254,7 +250,7 @@ void Format::setFontColor(const QColor &color)
  */
 bool Format::fontBold() const
 {
-    return d->fontData.bold;
+    return boolProperty(FormatPrivate::P_Font_Bold);
 }
 
 /*!
@@ -262,8 +258,7 @@ bool Format::fontBold() const
  */
 void Format::setFontBold(bool bold)
 {
-    d->fontData.bold = bold;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Bold, bold);
 }
 
 /*!
@@ -271,7 +266,7 @@ void Format::setFontBold(bool bold)
  */
 Format::FontScript Format::fontScript() const
 {
-    return d->fontData.scirpt;
+    return static_cast<Format::FontScript>(intProperty(FormatPrivate::P_Font_Script));
 }
 
 /*!
@@ -279,8 +274,7 @@ Format::FontScript Format::fontScript() const
  */
 void Format::setFontScript(FontScript script)
 {
-    d->fontData.scirpt = script;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Script, script);
 }
 
 /*!
@@ -288,7 +282,7 @@ void Format::setFontScript(FontScript script)
  */
 Format::FontUnderline Format::fontUnderline() const
 {
-    return d->fontData.underline;
+    return static_cast<Format::FontUnderline>(intProperty(FormatPrivate::P_Font_Underline));
 }
 
 /*!
@@ -296,8 +290,7 @@ Format::FontUnderline Format::fontUnderline() const
  */
 void Format::setFontUnderline(FontUnderline underline)
 {
-    d->fontData.underline = underline;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Underline, underline);
 }
 
 /*!
@@ -305,7 +298,7 @@ void Format::setFontUnderline(FontUnderline underline)
  */
 bool Format::fontOutline() const
 {
-    return d->fontData.outline;
+    return boolProperty(FormatPrivate::P_Font_Outline);
 }
 
 /*!
@@ -313,8 +306,7 @@ bool Format::fontOutline() const
  */
 void Format::setFontOutline(bool outline)
 {
-    d->fontData.outline = outline;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Outline, outline);
 }
 
 /*!
@@ -322,7 +314,7 @@ void Format::setFontOutline(bool outline)
  */
 QString Format::fontName() const
 {
-    return d->fontData.name;
+    return stringProperty(FormatPrivate::P_Font_Name);
 }
 
 /*!
@@ -330,8 +322,7 @@ QString Format::fontName() const
  */
 void Format::setFontName(const QString &name)
 {
-    d->fontData.name = name;
-    d->fontData._dirty = true;
+    setProperty(FormatPrivate::P_Font_Name, name);
 }
 
 /*!
@@ -339,7 +330,7 @@ void Format::setFontName(const QString &name)
  */
 bool Format::fontIndexValid() const
 {
-    return d->fontData.indexValid();
+    return d->font_index_valid;
 }
 
 /*!
@@ -347,7 +338,10 @@ bool Format::fontIndexValid() const
  */
 int Format::fontIndex() const
 {
-    return d->fontData.index();
+    if (fontIndexValid())
+        return d->font_index;
+
+    return -1;
 }
 
 /*!
@@ -355,40 +349,27 @@ int Format::fontIndex() const
  */
 void Format::setFontIndex(int index)
 {
-    d->fontData.setIndex(index);
-}
-
-/*!
- * \internal
- */
-int Format::fontFamily() const
-{
-    return d->fontData.family;
-}
-
-/*!
- * \internal
- */
-bool Format::fontShadow() const
-{
-    return d->fontData.shadow;
-}
-
-/*!
- * \internal
- */
-QString Format::fontScheme() const
-{
-    return d->fontData.scheme;
+    d->font_index = index;
+    d->font_index_valid = true;
 }
 
 /* Internal
  */
 QByteArray Format::fontKey() const
 {
-    if (d->fontData._dirty)
-        d->dirty = true; //Make sure formatKey() will be re-generated.
-    return d->fontData.key();
+    if (d->font_dirty) {
+        QByteArray key;
+        QDataStream stream(&key, QIODevice::WriteOnly);
+        for (int i=FormatPrivate::P_Font_STARTID; i<FormatPrivate::P_Font_ENDID; ++i) {
+            if (d->property.contains(i))
+                stream << i << d->property[i];
+        };
+
+        const_cast<Format*>(this)->d->font_key = key;
+        const_cast<Format*>(this)->d->font_dirty = false;
+    }
+
+    return d->font_key;
 }
 
 /*!
@@ -849,7 +830,7 @@ void Format::setLocked(bool locked)
 
 QByteArray Format::formatKey() const
 {
-    if (d->dirty || d->fontData._dirty || d->borderData._dirty || d->fillData._dirty) {
+    if (d->dirty || d->borderData._dirty || d->fillData._dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         stream<<fontKey()<<borderKey()<<fillKey()
@@ -933,11 +914,25 @@ QVariant Format::property(int propertyId) const
  */
 void Format::setProperty(int propertyId, const QVariant &value)
 {
-    if (value.isValid())
+    if (value.isValid()) {
+        if (d->property.contains(propertyId) && d->property[propertyId] == value)
+            return;
+        d.detach();
         d->property[propertyId] = value;
-    else
+    } else {
+        if (!d->property.contains(propertyId))
+            return;
+        d.detach();
         d->property.remove(propertyId);
+    }
+
     d->dirty = true;
+    d->xf_indexValid = false;
+
+    if (propertyId >= FormatPrivate::P_Font_STARTID && propertyId < FormatPrivate::P_Font_ENDID) {
+        d->font_dirty = true;
+        d->font_index_valid = false;
+    }
 }
 
 /*!
@@ -945,8 +940,7 @@ void Format::setProperty(int propertyId, const QVariant &value)
  */
 void Format::clearProperty(int propertyId)
 {
-    d->property.remove(propertyId);
-    d->dirty = true;
+    setProperty(propertyId, QVariant());
 }
 
 /*!

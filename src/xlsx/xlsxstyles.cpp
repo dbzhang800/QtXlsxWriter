@@ -151,12 +151,12 @@ void Styles::addFormat(Format *format, bool force)
     //Font
     if (!format->fontIndexValid()) {
         if (!m_fontsHash.contains(format->fontKey())) {
-            QSharedPointer<XlsxFormatFontData> font = QSharedPointer<XlsxFormatFontData>(new XlsxFormatFontData(format->d->fontData));
-            font->setIndex(m_fontsList.size()); //Assign proper index
-            m_fontsList.append(font);
-            m_fontsHash[font->key()] = font;
+            format->setFontIndex(m_fontsList.size()); //Assign proper index
+            m_fontsList.append(format);
+            m_fontsHash[format->fontKey()] = format;
+        } else {
+            format->setFontIndex(m_fontsHash[format->fontKey()]->fontIndex());
         }
-        format->setFontIndex(m_fontsHash[format->fontKey()]->index());
     }
 
     //Fill
@@ -287,81 +287,77 @@ void Styles::writeFonts(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("fonts"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fontsList.count()));
     for (int i=0; i<m_fontsList.size(); ++i) {
-        QSharedPointer<XlsxFormatFontData> font = m_fontsList[i];
-
+        Format *format = m_fontsList[i];
         writer.writeStartElement(QStringLiteral("font"));
-        if (font->bold)
+
+        if (format->fontBold())
             writer.writeEmptyElement(QStringLiteral("b"));
-        if (font->italic)
+        if (format->fontItalic())
             writer.writeEmptyElement(QStringLiteral("i"));
-        if (font->strikeOut)
+        if (format->fontStrikeOut())
             writer.writeEmptyElement(QStringLiteral("strike"));
-        if (font->outline)
+        if (format->fontOutline())
             writer.writeEmptyElement(QStringLiteral("outline"));
-        if (font->shadow)
+        if (format->boolProperty(FormatPrivate::P_Font_Shadow))
             writer.writeEmptyElement(QStringLiteral("shadow"));
-        if (font->underline != Format::FontUnderlineNone) {
-            writer.writeEmptyElement(QStringLiteral("u"));
-            if (font->underline == Format::FontUnderlineDouble)
-                writer.writeAttribute(QStringLiteral("val"), QStringLiteral("double"));
-            else if (font->underline == Format::FontUnderlineSingleAccounting)
-                writer.writeAttribute(QStringLiteral("val"), QStringLiteral("singleAccounting"));
-            else if (font->underline == Format::FontUnderlineDoubleAccounting)
-                writer.writeAttribute(QStringLiteral("val"), QStringLiteral("doubleAccounting"));
+        if (format->hasProperty(FormatPrivate::P_Font_Underline)) {
+            Format::FontUnderline u = format->fontUnderline();
+            if (u != Format::FontUnderlineNone) {
+                writer.writeEmptyElement(QStringLiteral("u"));
+                if (u== Format::FontUnderlineDouble)
+                    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("double"));
+                else if (u == Format::FontUnderlineSingleAccounting)
+                    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("singleAccounting"));
+                else if (u == Format::FontUnderlineDoubleAccounting)
+                    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("doubleAccounting"));
+            }
         }
-        if (font->scirpt != Format::FontScriptNormal) {
-            writer.writeEmptyElement(QStringLiteral("vertAligh"));
-            if (font->scirpt == Format::FontScriptSuper)
-                writer.writeAttribute(QStringLiteral("val"), QStringLiteral("superscript"));
-            else
-                writer.writeAttribute(QStringLiteral("val"), QStringLiteral("subscript"));
+        if (format->hasProperty(FormatPrivate::P_Font_Script)) {
+            Format::FontScript s = format->fontScript();
+            if (s != Format::FontScriptNormal) {
+                writer.writeEmptyElement(QStringLiteral("vertAlign"));
+                if (s == Format::FontScriptSuper)
+                    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("superscript"));
+                else
+                    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("subscript"));
+            }
         }
 
-        writer.writeEmptyElement(QStringLiteral("sz"));
-        writer.writeAttribute(QStringLiteral("val"), QString::number(font->size));
+        if (format->hasProperty(FormatPrivate::P_Font_Size)) {
+            writer.writeEmptyElement(QStringLiteral("sz"));
+            writer.writeAttribute(QStringLiteral("val"), QString::number(format->fontSize()));
+        }
 
-        if (font->color.isValid()) {
+        if (format->fontColor().isValid()) {
             writer.writeEmptyElement(QStringLiteral("color"));
-            QString color = font->color.name();
+            QString color = format->fontColor().name();
             writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.mid(1));//remove #
-        } else if (!font->themeColor.isEmpty()) {
+        } else if (format->hasProperty(FormatPrivate::P_Font_ThemeColor)) {
             writer.writeEmptyElement(QStringLiteral("color"));
-            QStringList themes = font->themeColor.split(QLatin1Char(':'));
+            QStringList themes = format->stringProperty(FormatPrivate::P_Font_ThemeColor).split(QLatin1Char(':'));
             writer.writeAttribute(QStringLiteral("theme"), themes[0]);
             if (!themes[1].isEmpty())
                 writer.writeAttribute(QStringLiteral("tint"), themes[1]);
         }
 
-        writer.writeEmptyElement(QStringLiteral("name"));
-        writer.writeAttribute(QStringLiteral("val"), font->name);
-        writer.writeEmptyElement(QStringLiteral("family"));
-        writer.writeAttribute(QStringLiteral("val"), QString::number(font->family));
-        if (font->name == QLatin1String("Calibri")) {
+        if (!format->fontName().isEmpty()) {
+            writer.writeEmptyElement(QStringLiteral("name"));
+            writer.writeAttribute(QStringLiteral("val"), format->fontName());
+        }
+        if (format->hasProperty(FormatPrivate::P_Font_Family)) {
+            writer.writeEmptyElement(QStringLiteral("family"));
+            writer.writeAttribute(QStringLiteral("val"), QString::number(format->intProperty(FormatPrivate::P_Font_Family)));
+        }
+
+        if (format->hasProperty(FormatPrivate::P_Font_Scheme)) {
             writer.writeEmptyElement(QStringLiteral("scheme"));
-            writer.writeAttribute(QStringLiteral("val"), font->scheme);
+            writer.writeAttribute(QStringLiteral("val"), format->stringProperty(FormatPrivate::P_Font_Scheme));
         }
 
 //        if (!format->isDxfFormat()) {
 //            writer.writeEmptyElement(QStringLiteral("sz"));
 //            writer.writeAttribute(QStringLiteral("val"), QString::number(format->fontSize()));
 //        }
-//
-//        //font color
-//        if (format->theme()) {
-//            writer.writeEmptyElement(QStringLiteral("color"));
-//            writer.writeAttribute(QStringLiteral("theme"), QString::number(format->theme()));
-//        } else if (format->colorIndexed()) {
-//            writer.writeEmptyElement(QStringLiteral("color"));
-//            writer.writeAttribute(QStringLiteral("indexed"), QString::number(format->colorIndexed()));
-//        } else if (format->fontColor().isValid()) {
-//            writer.writeEmptyElement(QStringLiteral("color"));
-//            QString color = format->fontColor().name();
-//            writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.mid(1));//remove #
-//        } else if (!format->isDxfFormat()) {
-//            writer.writeEmptyElement(QStringLiteral("color"));
-//            writer.writeAttribute(QStringLiteral("theme"), QStringLiteral("1"));
-//        }
-
 //        if (!format->isDxfFormat()) {
 //            writer.writeEmptyElement(QStringLiteral("name"));
 //            writer.writeAttribute(QStringLiteral("val"), format->fontName());
@@ -602,72 +598,78 @@ bool Styles::readNumFmts(XmlStreamReader &reader)
 bool Styles::readFonts(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("fonts"));
-    QXmlStreamAttributes attributes = reader.attributes();
-    int count = attributes.value(QLatin1String("count")).toString().toInt();
+    QXmlStreamAttributes attrs = reader.attributes();
+    int count = attrs.value(QLatin1String("count")).toString().toInt();
     for (int i=0; i<count; ++i) {
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("font"))
             return false;
-        QSharedPointer<XlsxFormatFontData> font(new XlsxFormatFontData);
+        Format *format = createFormat();
         while((reader.readNextStartElement(),true)) { //read until font endelement.
             if (reader.tokenType() == QXmlStreamReader::StartElement) {
-                if (reader.name() == QLatin1String("b")) {
-                    font->bold = true;
+                QXmlStreamAttributes attributes = reader.attributes();
+                if (reader.name() == QLatin1String("name")) {
+                    format->setFontName(attributes.value(QLatin1String("val")).toString());
+                } else if (reader.name() == QLatin1String("charset")) {
+                    format->setProperty(FormatPrivate::P_Font_Charset, attributes.value(QLatin1String("val")).toString().toInt());
+                } else if (reader.name() == QLatin1String("family")) {
+                    format->setProperty(FormatPrivate::P_Font_Family, attributes.value(QLatin1String("val")).toString().toInt());
+                } else if (reader.name() == QLatin1String("b")) {
+                    format->setFontBold(true);
                 } else if (reader.name() == QLatin1String("i")) {
-                    font->italic = true;
+                    format->setFontItalic(true);
                 } else if (reader.name() == QLatin1String("strike")) {
-                    font->strikeOut = true;
+                    format->setFontStrikeOut(true);
                 } else if (reader.name() == QLatin1String("outline")) {
-                    font->outline = true;
+                    format->setFontOutline(true);
                 } else if (reader.name() == QLatin1String("shadow")) {
-                    font->shadow = true;
-                } else if (reader.name() == QLatin1String("u")) {
-                    QXmlStreamAttributes attributes = reader.attributes();
-                    QString value = attributes.value(QLatin1String("val")).toString();
-                    if (value == QLatin1String("double"))
-                        font->underline = Format::FontUnderlineDouble;
-                    else if (value == QLatin1String("doubleAccounting"))
-                        font->underline = Format::FontUnderlineDoubleAccounting;
-                    else if (value == QLatin1String("singleAccounting"))
-                        font->underline = Format::FontUnderlineSingleAccounting;
-                    else
-                        font->underline = Format::FontUnderlineSingle;
-                } else if (reader.name() == QLatin1String("vertAligh")) {
-                    QXmlStreamAttributes attributes = reader.attributes();
-                    QString value = attributes.value(QLatin1String("val")).toString();
-                    if (value == QLatin1String("superscript"))
-                        font->scirpt = Format::FontScriptSuper;
-                    else
-                        font->scirpt = Format::FontScriptSub;
-                } else if (reader.name() == QLatin1String("sz")) {
-                    font->size = reader.attributes().value(QLatin1String("val")).toString().toInt();
+                    format->setProperty(FormatPrivate::P_Font_Shadow, true);
+                } else if (reader.name() == QLatin1String("condense")) {
+                    format->setProperty(FormatPrivate::P_Font_Condense, attributes.value(QLatin1String("val")).toString().toInt());
+                } else if (reader.name() == QLatin1String("extend")) {
+                    format->setProperty(FormatPrivate::P_Font_Extend, attributes.value(QLatin1String("val")).toString().toInt());
                 } else if (reader.name() == QLatin1String("color")) {
-                    QXmlStreamAttributes attributes = reader.attributes();
                     if (attributes.hasAttribute(QLatin1String("rgb"))) {
                         QString colorString = attributes.value(QLatin1String("rgb")).toString();
-                        font->color = fromARGBString(colorString);
+                        format->setFontColor(fromARGBString(colorString));
                     } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                        font->color = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
+                        QColor color = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
+                        format->setFontColor(color);
                     } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                         QString theme = attributes.value(QLatin1String("theme")).toString();
                         QString tint = attributes.value(QLatin1String("tint")).toString();
-                        font->themeColor = theme + QLatin1Char(':') + tint;
+                        format->setProperty(FormatPrivate::P_Font_ThemeColor, QString(theme + QLatin1Char(':') + tint));
                     }
-                } else if (reader.name() == QLatin1String("name")) {
-                    font->name = reader.attributes().value(QLatin1String("val")).toString();
-                } else if (reader.name() == QLatin1String("family")) {
-                    font->family = reader.attributes().value(QLatin1String("val")).toString().toInt();
+                } else if (reader.name() == QLatin1String("sz")) {
+                    int sz = attributes.value(QLatin1String("val")).toString().toInt();
+                    format->setFontSize(sz);
+                } else if (reader.name() == QLatin1String("u")) {
+                    QString value = attributes.value(QLatin1String("val")).toString();
+                    if (value == QLatin1String("double"))
+                        format->setFontUnderline(Format::FontUnderlineDouble);
+                    else if (value == QLatin1String("doubleAccounting"))
+                        format->setFontUnderline(Format::FontUnderlineDoubleAccounting);
+                    else if (value == QLatin1String("singleAccounting"))
+                        format->setFontUnderline(Format::FontUnderlineSingleAccounting);
+                    else
+                        format->setFontUnderline(Format::FontUnderlineSingle);
+                } else if (reader.name() == QLatin1String("vertAlign")) {
+                    QString value = attributes.value(QLatin1String("val")).toString();
+                    if (value == QLatin1String("superscript"))
+                        format->setFontScript(Format::FontScriptSuper);
+                    else if (value == QLatin1String("subscript"))
+                        format->setFontScript(Format::FontScriptSub);
                 } else if (reader.name() == QLatin1String("scheme")) {
-                    font->scheme = reader.attributes().value(QLatin1String("val")).toString();
+                    format->setProperty(FormatPrivate::P_Font_Scheme, attributes.value(QLatin1String("val")).toString());
                 }
             }
 
             if (reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QLatin1String("font"))
                 break;
         }
-        m_fontsList.append(font);
-        m_fontsHash.insert(font->key(), font);
-        font->setIndex(m_fontsList.size()-1);//first call key(), then setIndex()
+        m_fontsList.append(format);
+        m_fontsHash.insert(format->fontKey(), format);
+        format->setFontIndex(m_fontsList.size()-1);
     }
     return true;
 }
@@ -907,7 +909,11 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (fontIndex >= m_fontsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fontId");
             } else {
-                format->d->fontData = *m_fontsList[fontIndex];
+                Format *fontFormat = m_fontsList[fontIndex];
+                for (int i=FormatPrivate::P_Font_STARTID; i<FormatPrivate::P_Font_ENDID; ++i) {
+                    if (fontFormat->hasProperty(i))
+                        format->setProperty(i, fontFormat->property(i));
+                }
             }
         }
 

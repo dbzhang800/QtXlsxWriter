@@ -40,7 +40,6 @@ class StylesTest;
 namespace QXlsx {
 
 class Format;
-struct XlsxFormatFontData;
 struct XlsxFormatFillData;
 struct XlsxFormatBorderData;
 class XmlStreamWriter;
@@ -98,10 +97,10 @@ private:
     QMap<int, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtIdMap;
     QHash<QString, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtsHash;
     int m_nextCustomNumFmtId;
-    QList<QSharedPointer<XlsxFormatFontData> > m_fontsList; //Keep a copy of unique fonts
+    QList<Format *> m_fontsList;
     QList<QSharedPointer<XlsxFormatFillData> > m_fillsList; //Keep a copy of unique fills
     QList<QSharedPointer<XlsxFormatBorderData> > m_bordersList; //Keep a copy of unique borders
-    QHash<QByteArray, QSharedPointer<XlsxFormatFontData> > m_fontsHash;
+    QHash<QByteArray, Format *> m_fontsHash;
     QHash<QByteArray, QSharedPointer<XlsxFormatFillData> > m_fillsHash;
     QHash<QByteArray, QSharedPointer<XlsxFormatBorderData> > m_bordersHash;
 

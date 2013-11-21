@@ -30,76 +30,6 @@
 
 namespace QXlsx {
 
-struct XlsxFormatFontData
-{
-    XlsxFormatFontData() :
-        size(11), italic(false), strikeOut(false), color(QColor()), bold(false)
-      , scirpt(Format::FontScriptNormal), underline(Format::FontUnderlineNone)
-      , outline(false), shadow(false), name(QStringLiteral("Calibri")), family(2), charset(0)
-      , scheme(QStringLiteral("minor")), condense(0), extend(0)
-      , _dirty(true), _indexValid(false), _index(-1)
-
-    {}
-
-    int size;
-    bool italic;
-    bool strikeOut;
-    QColor color;
-    QString themeColor;
-    bool bold;
-    Format::FontScript scirpt;
-    Format::FontUnderline underline;
-    bool outline;
-    bool shadow;
-    QString name;
-    int family;
-    int charset;
-    QString scheme;
-    int condense;
-    int extend;
-
-    QByteArray key() const
-    {
-        if (_dirty) {
-            QByteArray key;
-            QDataStream stream(&key, QIODevice::WriteOnly);
-            stream<<bold<<charset<<color<<themeColor<<condense
-                 <<extend<<family<<italic<<name
-                <<outline<<scheme<<scirpt<<shadow
-               <<size<<strikeOut<<underline;
-
-            const_cast<XlsxFormatFontData*>(this)->_key = key;
-            const_cast<XlsxFormatFontData*>(this)->_dirty = false;
-            const_cast<XlsxFormatFontData*>(this)->_indexValid = false;//dirty flag can not be simply cleared.
-        }
-        return _key;
-    }
-
-    bool indexValid() const
-    {
-        return !_dirty && _indexValid;
-    }
-
-    int index() const
-    {
-        return _index;
-    }
-
-    void setIndex(int index)
-    {
-        _index = index;
-        _indexValid = true;
-    }
-
-    //helper member
-    bool _dirty; //key re-generated and proper index assign is need.
-
-private:
-    QByteArray _key;
-    bool _indexValid;  //has a valid index, so no need to assign a new one
-    int _index; //index in the Font list
-};
-
 struct XlsxFormatAlignmentData
 {
     XlsxFormatAlignmentData() :
@@ -262,16 +192,33 @@ public:
         P_NumFmt_FormatCode,
 
         //font
-        P_Font_,
-
-        //alignment
-        P_Alignment_,
+        P_Font_STARTID,
+        P_Font_Size = P_Font_STARTID,
+        P_Font_Italic,
+        P_Font_StrikeOut,
+        P_Font_Color,
+        P_Font_ThemeColor,
+        P_Font_Bold,
+        P_Font_Script,
+        P_Font_Underline,
+        P_Font_Outline,
+        P_Font_Shadow,
+        P_Font_Name,
+        P_Font_Family,
+        P_Font_Charset,
+        P_Font_Scheme,
+        P_Font_Condense,
+        P_Font_Extend,
+        P_Font_ENDID,
 
         //border
         P_Border_,
 
         //fill
         P_Fill_,
+
+        //alignment
+        P_Alignment_,
 
         //protection
         P_Protection_,
@@ -281,21 +228,25 @@ public:
     FormatPrivate(const FormatPrivate &other);
     ~FormatPrivate();
 
-    XlsxFormatFontData fontData;
     XlsxFormatAlignmentData alignmentData;
     XlsxFormatBorderData borderData;
     XlsxFormatFillData fillData;
     XlsxFormatProtectionData protectionData;
 
-    mutable bool dirty; //The key re-generation is need.
-    mutable QByteArray formatKey;
+    bool dirty; //The key re-generation is need.
+    QByteArray formatKey;
+
+    bool font_dirty;
+    bool font_index_valid;
+    QByteArray font_key;
+    int font_index;
 
     int xf_index;
-    mutable bool xf_indexValid;
+    bool xf_indexValid;
 
     bool is_dxf_fomat;
     int dxf_index;
-    mutable bool dxf_indexValid;
+    bool dxf_indexValid;
 
     int theme;
 

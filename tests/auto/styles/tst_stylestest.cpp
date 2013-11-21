@@ -95,6 +95,9 @@ void StylesTest::testReadFonts()
     styles.readFonts(reader);
 
     QCOMPARE(styles.m_fontsList.size(), 3);
+    QXlsx::Format *font0 = styles.m_fontsList[0];
+    QCOMPARE(font0->fontSize(), 11);
+    QCOMPARE(font0->fontName(), QString("Calibri"));
 }
 
 void StylesTest::testReadFills()
