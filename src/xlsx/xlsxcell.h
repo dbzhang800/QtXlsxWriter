@@ -26,6 +26,7 @@
 #define QXLSX_XLSXCELL_H
 
 #include "xlsxglobal.h"
+#include "xlsxformat.h"
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -52,7 +53,7 @@ public:
 
     DataType dataType() const;
     QVariant value() const;
-    Format * format() const;
+    Format format() const;
     QString formula() const;
 
     bool isDateTime() const;
@@ -65,7 +66,7 @@ private:
     friend class Worksheet;
     friend class WorksheetPrivate;
 
-    Cell(const QVariant &data=QVariant(), DataType type=Blank, Format *format=0, Worksheet *parent=0);
+    Cell(const QVariant &data=QVariant(), DataType type=Blank, const Format &format=Format(), Worksheet *parent=0);
     CellPrivate * const d_ptr;
 };
 

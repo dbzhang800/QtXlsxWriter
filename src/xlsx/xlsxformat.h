@@ -214,6 +214,7 @@ public:
     void setHidden(bool hidden);
 
     bool isValid() const;
+    bool isEmpty() const;
 
     bool operator == (const Format &format) const;
     bool operator != (const Format &format) const;

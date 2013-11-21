@@ -56,9 +56,8 @@ class XLSX_AUTOTEST_EXPORT Styles
 public:
     Styles(bool createEmpty=false);
     ~Styles();
-    Format *createFormat();
-    void addFormat(Format *format, bool force=false);
-    Format *xfFormat(int idx) const;
+    void addFormat(const Format &format, bool force=false);
+    Format xfFormat(int idx) const;
 
     QByteArray saveToXmlData();
     void saveToXmlFile(QIODevice *device);
@@ -72,7 +71,7 @@ private:
     void writeNumFmts(XmlStreamWriter &writer);
     void writeFonts(XmlStreamWriter &writer);
     void writeFills(XmlStreamWriter &writer);
-    void writeFill(XmlStreamWriter &writer, Format *fill);
+    void writeFill(XmlStreamWriter &writer, const Format &fill);
     void writeBorders(XmlStreamWriter &writer);
     void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
     void writeCellXfs(XmlStreamWriter &writer);
@@ -95,22 +94,20 @@ private:
     QMap<int, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtIdMap;
     QHash<QString, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtsHash;
     int m_nextCustomNumFmtId;
-    QList<Format *> m_fontsList;
-    QList<Format *> m_fillsList;
-    QList<Format *> m_bordersList;
-    QHash<QByteArray, Format *> m_fontsHash;
-    QHash<QByteArray, Format *> m_fillsHash;
-    QHash<QByteArray, Format *> m_bordersHash;
+    QList<Format> m_fontsList;
+    QList<Format> m_fillsList;
+    QList<Format> m_bordersList;
+    QHash<QByteArray, Format> m_fontsHash;
+    QHash<QByteArray, Format> m_fillsHash;
+    QHash<QByteArray, Format> m_bordersHash;
 
     QVector<QColor> m_indexedColors;
 
-    QList<QSharedPointer<Format> > m_createdFormatsList; //All created formats
+    QList<Format> m_xf_formatsList;
+    QHash<QByteArray, Format> m_xf_formatsHash;
 
-    QList<Format *> m_xf_formatsList;
-    QHash<QByteArray, Format *> m_xf_formatsHash;
-
-    QList<Format *> m_dxf_formatsList;
-    QHash<QByteArray, Format *> m_dxf_formatsHash;
+    QList<Format> m_dxf_formatsList;
+    QHash<QByteArray, Format> m_dxf_formatsHash;
 };
 
 }

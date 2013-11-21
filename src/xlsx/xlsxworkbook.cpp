@@ -225,12 +225,6 @@ void Workbook::setActiveWorksheet(int index)
     d->activesheet = index;
 }
 
-Format *Workbook::createFormat()
-{
-    Q_D(Workbook);
-    return d->styles->createFormat();
-}
-
 QList<QSharedPointer<Worksheet> > Workbook::worksheets() const
 {
     Q_D(const Workbook);

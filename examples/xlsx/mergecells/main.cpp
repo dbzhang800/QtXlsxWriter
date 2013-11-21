@@ -7,9 +7,9 @@ int main()
 {
     Document xlsx;
     //![0]
-    Format *format = xlsx.createFormat();
-    format->setHorizontalAlignment(Format::AlignHCenter);
-    format->setVerticalAlignment(Format::AlignVCenter);
+    Format format;
+    format.setHorizontalAlignment(Format::AlignHCenter);
+    format.setVerticalAlignment(Format::AlignVCenter);
     //![0]
     //![1]
     xlsx.write("B4", "Hello Qt!");

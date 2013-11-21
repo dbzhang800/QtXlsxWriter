@@ -9,9 +9,9 @@ int main(int argc, char** argv)
     QXlsx::Document xlsx;
     xlsx.setColumn(1, 4, 20.0);
 
-    QXlsx::Format *header = xlsx.createFormat();
-    header->setFontBold(true);
-    header->setFontSize(20);
+    QXlsx::Format header;
+    header.setFontBold(true);
+    header.setFontSize(20);
 
     //Custom number formats
     QStringList numFormats;
@@ -26,8 +26,8 @@ int main(int argc, char** argv)
         int row = i+2;
         xlsx.write(row, 1, 100.0);
         xlsx.write(row, 2, numFormats[i]);
-        QXlsx::Format *format = xlsx.createFormat();
-        format->setNumberFormat(numFormats[i]);
+        QXlsx::Format format;
+        format.setNumberFormat(numFormats[i]);
         xlsx.write(row, 3, 100.0, format);
     }
 
@@ -42,8 +42,8 @@ int main(int argc, char** argv)
         int numFmt = i;
         xlsx.write(row, 1, 100.0);
         xlsx.write(row, 2, numFmt);
-        QXlsx::Format *format = xlsx.createFormat();
-        format->setNumberFormatIndex(numFmt);
+        QXlsx::Format format;
+        format.setNumberFormatIndex(numFmt);
         xlsx.write(row, 3, 100.0, format);
     }
 

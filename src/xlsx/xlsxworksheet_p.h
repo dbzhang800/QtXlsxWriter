@@ -122,7 +122,7 @@ struct XlsxObjectPositionData
 
 struct XlsxRowInfo
 {
-    XlsxRowInfo(double height=0, Format *format=0, bool hidden=false) :
+    XlsxRowInfo(double height=0, const Format &format=Format(), bool hidden=false) :
         height(height), format(format), hidden(hidden), outlineLevel(0)
       , collapsed(false)
     {
@@ -130,7 +130,7 @@ struct XlsxRowInfo
     }
 
     double height;
-    Format *format;
+    Format format;
     bool hidden;
     int outlineLevel;
     bool collapsed;
@@ -138,7 +138,7 @@ struct XlsxRowInfo
 
 struct XlsxColumnInfo
 {
-    XlsxColumnInfo(int firstColumn=0, int lastColumn=1, double width=0, Format *format=0, bool hidden=false) :
+    XlsxColumnInfo(int firstColumn=0, int lastColumn=1, double width=0, const Format &format=Format(), bool hidden=false) :
         firstColumn(firstColumn), lastColumn(lastColumn), width(width), format(format), hidden(hidden)
       , outlineLevel(0), collapsed(false)
     {
@@ -147,7 +147,7 @@ struct XlsxColumnInfo
     int firstColumn;
     int lastColumn;
     double width;
-    Format *format;
+    Format format;
     bool hidden;
     int outlineLevel;
     bool collapsed;
@@ -160,7 +160,7 @@ public:
     WorksheetPrivate(Worksheet *p);
     ~WorksheetPrivate();
     int checkDimensions(int row, int col, bool ignore_row=false, bool ignore_col=false);
-    Format *cellFormat(int row, int col) const;
+    Format cellFormat(int row, int col) const;
     QString generateDimensionString();
     void calculateSpans();
     void splitColsInfo(int colFirst, int colLast);

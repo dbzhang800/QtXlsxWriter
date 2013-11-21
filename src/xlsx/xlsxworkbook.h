@@ -35,7 +35,6 @@ class QIODevice;
 QT_BEGIN_NAMESPACE_XLSX
 
 class Worksheet;
-class Format;
 class SharedStrings;
 class Styles;
 class Package;
@@ -57,7 +56,6 @@ public:
     int activeWorksheet() const;
     void setActiveWorksheet(int index);
 
-    Format *createFormat();
 //    void addChart();
     bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());
     bool isDate1904() const;

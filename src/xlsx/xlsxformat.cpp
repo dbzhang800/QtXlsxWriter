@@ -790,7 +790,19 @@ void Format::setLocked(bool locked)
  */
 bool Format::isValid() const
 {
-    return !d->property.isEmpty();
+    if (!d->property.isEmpty())
+        return true;
+    if (d->xf_indexValid || d->font_index_valid || d->fill_index_valid || d->border_index_valid)
+        return true;
+    return false;
+}
+
+/*!
+    Returns true if the format is empty; otherwise returns false.
+ */
+bool Format::isEmpty() const
+{
+    return d->property.isEmpty();
 }
 
 QByteArray Format::formatKey() const
@@ -823,7 +835,7 @@ int Format::xfIndex() const
 
 bool Format::xfIndexValid() const
 {
-    return !d->dirty && d->xf_indexValid;
+    return d->xf_indexValid;
 }
 
 void Format::setDxfIndex(int index)
@@ -839,7 +851,7 @@ int Format::dxfIndex() const
 
 bool Format::dxfIndexValid() const
 {
-    return !d->dirty && d->dxf_indexValid;
+    return d->dxf_indexValid;
 }
 
 bool Format::operator ==(const Format &format) const

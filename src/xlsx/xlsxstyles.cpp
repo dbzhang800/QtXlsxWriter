@@ -46,13 +46,14 @@ Styles::Styles(bool createEmpty)
 
     if (!createEmpty) {
         //Add default Format
-        addFormat(createFormat());
-        //Add another fill format
-        Format *format = createFormat();
-        format->setFillPattern(Format::PatternGray125);
+        Format defaultFmt;
+        addFormat(defaultFmt);
 
-        m_fillsList.append(format);
-        m_fillsHash.insert(format->fillKey(), format);
+        //Add another fill format
+        Format fillFmt;
+        fillFmt.setFillPattern(Format::PatternGray125);
+        m_fillsList.append(fillFmt);
+        m_fillsHash.insert(fillFmt.fillKey(), fillFmt);
     }
 }
 
@@ -60,18 +61,10 @@ Styles::~Styles()
 {
 }
 
-Format *Styles::createFormat()
-{
-    Format *format = new Format();
-    m_createdFormatsList.append(QSharedPointer<Format>(format));
-
-    return format;
-}
-
-Format *Styles::xfFormat(int idx) const
+Format Styles::xfFormat(int idx) const
 {
     if (idx <0 || idx >= m_xf_formatsList.size())
-        return 0;
+        return Format();
 
     return m_xf_formatsList[idx];
 }
@@ -83,13 +76,10 @@ Format *Styles::xfFormat(int idx) const
    the same key have been in.
    This is useful when reading existing .xlsx files which may contains duplicated formats.
 */
-void Styles::addFormat(Format *format, bool force)
+void Styles::addFormat(const Format &format, bool force)
 {
-    if (!format)
-        return;
-
     //numFmt
-    if (format->hasProperty(FormatPrivate::P_NumFmt_FormatCode) && !format->hasProperty(FormatPrivate::P_NumFmt_Id)) {
+    if (format.hasProperty(FormatPrivate::P_NumFmt_FormatCode) && !format.hasProperty(FormatPrivate::P_NumFmt_Id)) {
         if (m_builtinNumFmtsHash.isEmpty()) {
             m_builtinNumFmtsHash.insert(QStringLiteral("General"), 0);
             m_builtinNumFmtsHash.insert(QStringLiteral("0"), 1);
@@ -129,15 +119,15 @@ void Styles::addFormat(Format *format, bool force)
             m_builtinNumFmtsHash.insert(QStringLiteral("##0.0E+0"), 48);
             m_builtinNumFmtsHash.insert(QStringLiteral("@"), 49);
         }
-        const QString str = format->numberFormat();
+        const QString str = format.numberFormat();
         //Assign proper number format index
         if (m_builtinNumFmtsHash.contains(str)) {
-            format->setNumberFormat(m_builtinNumFmtsHash[str], str);
+            const_cast<Format *>(&format)->setNumberFormat(m_builtinNumFmtsHash[str], str);
         } else if (m_customNumFmtsHash.contains(str)) {
-            format->setNumberFormat(m_customNumFmtsHash[str]->formatIndex, str);
+            const_cast<Format *>(&format)->setNumberFormat(m_customNumFmtsHash[str]->formatIndex, str);
         } else {
             //Assign a new fmt Id.
-            format->setNumberFormat(m_nextCustomNumFmtId, str);
+            const_cast<Format *>(&format)->setNumberFormat(m_nextCustomNumFmtId, str);
 
             QSharedPointer<XlsxFormatNumberData> fmt(new XlsxFormatNumberData);
             fmt->formatIndex = m_nextCustomNumFmtId;
@@ -150,57 +140,57 @@ void Styles::addFormat(Format *format, bool force)
     }
 
     //Font
-    if (!format->fontIndexValid()) {
-        if (!m_fontsHash.contains(format->fontKey())) {
-            format->setFontIndex(m_fontsList.size()); //Assign proper index
+    if (!format.fontIndexValid()) {
+        if (!m_fontsHash.contains(format.fontKey())) {
+            const_cast<Format *>(&format)->setFontIndex(m_fontsList.size()); //Assign proper index
             m_fontsList.append(format);
-            m_fontsHash[format->fontKey()] = format;
+            m_fontsHash[format.fontKey()] = format;
         } else {
-            format->setFontIndex(m_fontsHash[format->fontKey()]->fontIndex());
+            const_cast<Format *>(&format)->setFontIndex(m_fontsHash[format.fontKey()].fontIndex());
         }
     }
 
     //Fill
-    if (!format->fillIndexValid()) {
-        if (!m_fillsHash.contains(format->fillKey())) {
-            format->setFillIndex(m_fillsList.size()); //Assign proper index
+    if (!format.fillIndexValid()) {
+        if (!m_fillsHash.contains(format.fillKey())) {
+            const_cast<Format *>(&format)->setFillIndex(m_fillsList.size()); //Assign proper index
             m_fillsList.append(format);
-            m_fillsHash[format->fillKey()] = format;
+            m_fillsHash[format.fillKey()] = format;
         } else {
-            format->setFillIndex(m_fillsHash[format->fillKey()]->fillIndex());
+            const_cast<Format *>(&format)->setFillIndex(m_fillsHash[format.fillKey()].fillIndex());
         }
     }
 
     //Border
-    if (!format->borderIndexValid()) {
-        if (!m_bordersHash.contains(format->borderKey())) {
-            format->setBorderIndex(m_bordersList.size()); //Assign proper index
+    if (!format.borderIndexValid()) {
+        if (!m_bordersHash.contains(format.borderKey())) {
+            const_cast<Format *>(&format)->setBorderIndex(m_bordersList.size()); //Assign proper index
             m_bordersList.append(format);
-            m_bordersHash[format->borderKey()] = format;
+            m_bordersHash[format.borderKey()] = format;
         } else {
-            format->setBorderIndex(m_bordersHash[format->borderKey()]->borderIndex());
+            const_cast<Format *>(&format)->setBorderIndex(m_bordersHash[format.borderKey()].borderIndex());
         }
     }
 
     //Format
-    if (format->isDxfFormat()) {
-        if (!format->dxfIndexValid()) {
-            if (!m_dxf_formatsHash.contains(format->formatKey())) {
-                format->setDxfIndex(m_dxf_formatsList.size());
+    if (format.isDxfFormat()) {
+        if (!format.dxfIndexValid()) {
+            if (!m_dxf_formatsHash.contains(format.formatKey())) {
+                const_cast<Format *>(&format)->setDxfIndex(m_dxf_formatsList.size());
                 m_dxf_formatsList.append(format);
-                m_dxf_formatsHash[format->formatKey()] = format;
+                m_dxf_formatsHash[format.formatKey()] = format;
             } else {
-                format->setDxfIndex(m_dxf_formatsHash[format->formatKey()]->dxfIndex());
+                const_cast<Format *>(&format)->setDxfIndex(m_dxf_formatsHash[format.formatKey()].dxfIndex());
             }
         }
     } else {
-        if (!format->xfIndexValid()) {
-            if (!m_xf_formatsHash.contains(format->formatKey()) || force) {
-                format->setXfIndex(m_xf_formatsList.size());
+        if (!format.xfIndexValid()) {
+            if (!m_xf_formatsHash.contains(format.formatKey()) || force) {
+                const_cast<Format *>(&format)->setXfIndex(m_xf_formatsList.size());
                 m_xf_formatsList.append(format);
-                m_xf_formatsHash[format->formatKey()] = format;
+                m_xf_formatsHash[format.formatKey()] = format;
             } else {
-                format->setXfIndex(m_xf_formatsHash[format->formatKey()]->xfIndex());
+                const_cast<Format *>(&format)->setXfIndex(m_xf_formatsHash[format.formatKey()].xfIndex());
             }
         }
     }
@@ -288,21 +278,21 @@ void Styles::writeFonts(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("fonts"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fontsList.count()));
     for (int i=0; i<m_fontsList.size(); ++i) {
-        Format *format = m_fontsList[i];
+        const Format &format = m_fontsList[i];
         writer.writeStartElement(QStringLiteral("font"));
 
-        if (format->fontBold())
+        if (format.fontBold())
             writer.writeEmptyElement(QStringLiteral("b"));
-        if (format->fontItalic())
+        if (format.fontItalic())
             writer.writeEmptyElement(QStringLiteral("i"));
-        if (format->fontStrikeOut())
+        if (format.fontStrikeOut())
             writer.writeEmptyElement(QStringLiteral("strike"));
-        if (format->fontOutline())
+        if (format.fontOutline())
             writer.writeEmptyElement(QStringLiteral("outline"));
-        if (format->boolProperty(FormatPrivate::P_Font_Shadow))
+        if (format.boolProperty(FormatPrivate::P_Font_Shadow))
             writer.writeEmptyElement(QStringLiteral("shadow"));
-        if (format->hasProperty(FormatPrivate::P_Font_Underline)) {
-            Format::FontUnderline u = format->fontUnderline();
+        if (format.hasProperty(FormatPrivate::P_Font_Underline)) {
+            Format::FontUnderline u = format.fontUnderline();
             if (u != Format::FontUnderlineNone) {
                 writer.writeEmptyElement(QStringLiteral("u"));
                 if (u== Format::FontUnderlineDouble)
@@ -313,8 +303,8 @@ void Styles::writeFonts(XmlStreamWriter &writer)
                     writer.writeAttribute(QStringLiteral("val"), QStringLiteral("doubleAccounting"));
             }
         }
-        if (format->hasProperty(FormatPrivate::P_Font_Script)) {
-            Format::FontScript s = format->fontScript();
+        if (format.hasProperty(FormatPrivate::P_Font_Script)) {
+            Format::FontScript s = format.fontScript();
             if (s != Format::FontScriptNormal) {
                 writer.writeEmptyElement(QStringLiteral("vertAlign"));
                 if (s == Format::FontScriptSuper)
@@ -324,49 +314,49 @@ void Styles::writeFonts(XmlStreamWriter &writer)
             }
         }
 
-        if (format->hasProperty(FormatPrivate::P_Font_Size)) {
+        if (format.hasProperty(FormatPrivate::P_Font_Size)) {
             writer.writeEmptyElement(QStringLiteral("sz"));
-            writer.writeAttribute(QStringLiteral("val"), QString::number(format->fontSize()));
+            writer.writeAttribute(QStringLiteral("val"), QString::number(format.fontSize()));
         }
 
-        if (format->fontColor().isValid()) {
+        if (format.fontColor().isValid()) {
             writer.writeEmptyElement(QStringLiteral("color"));
-            QString color = format->fontColor().name();
+            QString color = format.fontColor().name();
             writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.mid(1));//remove #
-        } else if (format->hasProperty(FormatPrivate::P_Font_ThemeColor)) {
+        } else if (format.hasProperty(FormatPrivate::P_Font_ThemeColor)) {
             writer.writeEmptyElement(QStringLiteral("color"));
-            QStringList themes = format->stringProperty(FormatPrivate::P_Font_ThemeColor).split(QLatin1Char(':'));
+            QStringList themes = format.stringProperty(FormatPrivate::P_Font_ThemeColor).split(QLatin1Char(':'));
             writer.writeAttribute(QStringLiteral("theme"), themes[0]);
             if (!themes[1].isEmpty())
                 writer.writeAttribute(QStringLiteral("tint"), themes[1]);
         }
 
-        if (!format->fontName().isEmpty()) {
+        if (!format.fontName().isEmpty()) {
             writer.writeEmptyElement(QStringLiteral("name"));
-            writer.writeAttribute(QStringLiteral("val"), format->fontName());
+            writer.writeAttribute(QStringLiteral("val"), format.fontName());
         }
-        if (format->hasProperty(FormatPrivate::P_Font_Family)) {
+        if (format.hasProperty(FormatPrivate::P_Font_Family)) {
             writer.writeEmptyElement(QStringLiteral("family"));
-            writer.writeAttribute(QStringLiteral("val"), QString::number(format->intProperty(FormatPrivate::P_Font_Family)));
+            writer.writeAttribute(QStringLiteral("val"), QString::number(format.intProperty(FormatPrivate::P_Font_Family)));
         }
 
-        if (format->hasProperty(FormatPrivate::P_Font_Scheme)) {
+        if (format.hasProperty(FormatPrivate::P_Font_Scheme)) {
             writer.writeEmptyElement(QStringLiteral("scheme"));
-            writer.writeAttribute(QStringLiteral("val"), format->stringProperty(FormatPrivate::P_Font_Scheme));
+            writer.writeAttribute(QStringLiteral("val"), format.stringProperty(FormatPrivate::P_Font_Scheme));
         }
 
-//        if (!format->isDxfFormat()) {
+//        if (!format.isDxfFormat()) {
 //            writer.writeEmptyElement(QStringLiteral("sz"));
-//            writer.writeAttribute(QStringLiteral("val"), QString::number(format->fontSize()));
+//            writer.writeAttribute(QStringLiteral("val"), QString::number(format.fontSize()));
 //        }
-//        if (!format->isDxfFormat()) {
+//        if (!format.isDxfFormat()) {
 //            writer.writeEmptyElement(QStringLiteral("name"));
-//            writer.writeAttribute(QStringLiteral("val"), format->fontName());
+//            writer.writeAttribute(QStringLiteral("val"), format.fontName());
 //            writer.writeEmptyElement(QStringLiteral("family"));
-//            writer.writeAttribute(QStringLiteral("val"), QString::number(format->fontFamily()));
-//            if (format->fontName() == QLatin1String("Calibri")) {
+//            writer.writeAttribute(QStringLiteral("val"), QString::number(format.fontFamily()));
+//            if (format.fontName() == QLatin1String("Calibri")) {
 //                writer.writeEmptyElement(QStringLiteral("scheme"));
-//                writer.writeAttribute(QStringLiteral("val"), format->fontScheme());
+//                writer.writeAttribute(QStringLiteral("val"), format.fontScheme());
 //            }
 //        }
         writer.writeEndElement(); //font
@@ -379,14 +369,13 @@ void Styles::writeFills(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("fills"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fillsList.size()));
 
-    for (int i=0; i<m_fillsList.size(); ++i) {
-        Format *fill = m_fillsList[i];
-        writeFill(writer, fill);
-    }
+    for (int i=0; i<m_fillsList.size(); ++i)
+        writeFill(writer, m_fillsList[i]);
+
     writer.writeEndElement(); //fills
 }
 
-void Styles::writeFill(XmlStreamWriter &writer, Format *fill)
+void Styles::writeFill(XmlStreamWriter &writer, const Format &fill)
 {
     static QMap<int, QString> patternStrings;
     if (patternStrings.isEmpty()) {
@@ -413,24 +402,24 @@ void Styles::writeFill(XmlStreamWriter &writer, Format *fill)
 
     writer.writeStartElement(QStringLiteral("fill"));
     writer.writeStartElement(QStringLiteral("patternFill"));
-    writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill->fillPattern()]);
+    writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill.fillPattern()]);
     // For a solid fill, Excel reverses the role of foreground and background colours
-    if (fill->patternForegroundColor().isValid()) {
-        writer.writeEmptyElement(fill->fillPattern() == Format::PatternSolid ? QStringLiteral("bgColor") : QStringLiteral("fgColor"));
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->patternForegroundColor().name().mid(1));
-    } else if (!fill->stringProperty(FormatPrivate::P_Fill_FgThemeColor).isEmpty()) {
+    if (fill.patternForegroundColor().isValid()) {
+        writer.writeEmptyElement(fill.fillPattern() == Format::PatternSolid ? QStringLiteral("bgColor") : QStringLiteral("fgColor"));
+        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill.patternForegroundColor().name().mid(1));
+    } else if (!fill.stringProperty(FormatPrivate::P_Fill_FgThemeColor).isEmpty()) {
         writer.writeEmptyElement(QStringLiteral("fgColor"));
-        QStringList themes = fill->stringProperty(FormatPrivate::P_Fill_FgThemeColor).split(QLatin1Char(':'));
+        QStringList themes = fill.stringProperty(FormatPrivate::P_Fill_FgThemeColor).split(QLatin1Char(':'));
         writer.writeAttribute(QStringLiteral("theme"), themes[0]);
         if (!themes[1].isEmpty())
             writer.writeAttribute(QStringLiteral("tint"), themes[1]);
     }
-    if (fill->patternBackgroundColor().isValid()) {
-        writer.writeEmptyElement(fill->fillPattern() == Format::PatternSolid ? QStringLiteral("fgColor") : QStringLiteral("bgColor"));
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill->patternBackgroundColor().name().mid(1));
-    } else if (!fill->stringProperty(FormatPrivate::P_Fill_BgThemeColor).isEmpty()) {
+    if (fill.patternBackgroundColor().isValid()) {
+        writer.writeEmptyElement(fill.fillPattern() == Format::PatternSolid ? QStringLiteral("fgColor") : QStringLiteral("bgColor"));
+        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill.patternBackgroundColor().name().mid(1));
+    } else if (!fill.stringProperty(FormatPrivate::P_Fill_BgThemeColor).isEmpty()) {
         writer.writeEmptyElement(QStringLiteral("bgColor"));
-        QStringList themes = fill->stringProperty(FormatPrivate::P_Fill_BgThemeColor).split(QLatin1Char(':'));
+        QStringList themes = fill.stringProperty(FormatPrivate::P_Fill_BgThemeColor).split(QLatin1Char(':'));
         writer.writeAttribute(QStringLiteral("theme"), themes[0]);
         if (!themes[1].isEmpty())
             writer.writeAttribute(QStringLiteral("tint"), themes[1]);
@@ -445,11 +434,11 @@ void Styles::writeBorders(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("borders"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_bordersList.count()));
     for (int i=0; i<m_bordersList.size(); ++i) {
-        Format *border = m_bordersList[i];
+        const Format &border = m_bordersList[i];
 
         writer.writeStartElement(QStringLiteral("border"));
-        if (border->hasProperty(FormatPrivate::P_Border_DiagonalType)) {
-            Format::DiagonalBorderType t = border->diagonalBorderType();
+        if (border.hasProperty(FormatPrivate::P_Border_DiagonalType)) {
+            Format::DiagonalBorderType t = border.diagonalBorderType();
             if (t == Format::DiagonalBorderUp) {
                 writer.writeAttribute(QStringLiteral("diagonalUp"), QStringLiteral("1"));
             } else if (t == Format::DiagonalBorderDown) {
@@ -459,18 +448,18 @@ void Styles::writeBorders(XmlStreamWriter &writer)
                 writer.writeAttribute(QStringLiteral("diagonalDown"), QStringLiteral("1"));
             }
         }
-        if (border->hasProperty(FormatPrivate::P_Border_LeftStyle))
-            writeSubBorder(writer, QStringLiteral("left"), border->leftBorderStyle(), border->leftBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeLeftColor));
-        if (border->hasProperty(FormatPrivate::P_Border_RightStyle))
-            writeSubBorder(writer, QStringLiteral("right"), border->rightBorderStyle(), border->rightBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeRightColor));
-        if (border->hasProperty(FormatPrivate::P_Border_TopStyle))
-            writeSubBorder(writer, QStringLiteral("top"), border->topBorderStyle(), border->topBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeTopColor));
-        if (border->hasProperty(FormatPrivate::P_Border_BottomStyle))
-            writeSubBorder(writer, QStringLiteral("bottom"), border->bottomBorderStyle(), border->bottomBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeBottomColor));
+        if (border.hasProperty(FormatPrivate::P_Border_LeftStyle))
+            writeSubBorder(writer, QStringLiteral("left"), border.leftBorderStyle(), border.leftBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeLeftColor));
+        if (border.hasProperty(FormatPrivate::P_Border_RightStyle))
+            writeSubBorder(writer, QStringLiteral("right"), border.rightBorderStyle(), border.rightBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeRightColor));
+        if (border.hasProperty(FormatPrivate::P_Border_TopStyle))
+            writeSubBorder(writer, QStringLiteral("top"), border.topBorderStyle(), border.topBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeTopColor));
+        if (border.hasProperty(FormatPrivate::P_Border_BottomStyle))
+            writeSubBorder(writer, QStringLiteral("bottom"), border.bottomBorderStyle(), border.bottomBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeBottomColor));
 
-//        if (!format->isDxfFormat()) {
-        if (border->hasProperty(FormatPrivate::P_Border_DiagonalStyle))
-            writeSubBorder(writer, QStringLiteral("diagonal"), border->diagonalBorderStyle(), border->diagonalBorderColor(), border->stringProperty(FormatPrivate::P_Border_ThemeDiagonalColor));
+//        if (!format.isDxfFormat()) {
+        if (border.hasProperty(FormatPrivate::P_Border_DiagonalStyle))
+            writeSubBorder(writer, QStringLiteral("diagonal"), border.diagonalBorderStyle(), border.diagonalBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeDiagonalColor));
 //        }
         writer.writeEndElement();//border
     }
@@ -522,11 +511,11 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("cellXfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_xf_formatsList.size()));
-    foreach (Format *format, m_xf_formatsList) {
-        int num_fmt_id = format->numberFormatIndex();
-        int font_id = format->fontIndex();
-        int fill_id = format->fillIndex();
-        int border_id = format->borderIndex();
+    foreach (const Format &format, m_xf_formatsList) {
+        int num_fmt_id = format.numberFormatIndex();
+        int font_id = format.fontIndex();
+        int fill_id = format.fillIndex();
+        int border_id = format.borderIndex();
         int xf_id = 0;
         writer.writeStartElement(QStringLiteral("xf"));
         writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(num_fmt_id));
@@ -534,21 +523,21 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
         writer.writeAttribute(QStringLiteral("fillId"), QString::number(fill_id));
         writer.writeAttribute(QStringLiteral("borderId"), QString::number(border_id));
         writer.writeAttribute(QStringLiteral("xfId"), QString::number(xf_id));
-        if (format->numberFormatIndex() > 0)
+        if (format.numberFormatIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyNumberFormat"), QStringLiteral("1"));
-        if (format->fontIndex() > 0)
+        if (format.fontIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyFont"), QStringLiteral("1"));
-        if (format->borderIndex() > 0)
+        if (format.borderIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyBorder"), QStringLiteral("1"));
-        if (format->fillIndex() > 0)
+        if (format.fillIndex() > 0)
             writer.writeAttribute(QStringLiteral("applyFill"), QStringLiteral("1"));
-        if (format->hasAlignmentData())
+        if (format.hasAlignmentData())
             writer.writeAttribute(QStringLiteral("applyAlignment"), QStringLiteral("1"));
 
-        if (format->hasAlignmentData()) {
+        if (format.hasAlignmentData()) {
             writer.writeEmptyElement(QStringLiteral("alignment"));
-            if (format->hasProperty(FormatPrivate::P_Alignment_AlignH)) {
-                switch (format->horizontalAlignment()) {
+            if (format.hasProperty(FormatPrivate::P_Alignment_AlignH)) {
+                switch (format.horizontalAlignment()) {
                 case Format::AlignLeft:
                     writer.writeAttribute(QStringLiteral("horizontal"), QStringLiteral("left"));
                     break;
@@ -575,8 +564,8 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
                 }
             }
 
-            if (format->hasProperty(FormatPrivate::P_Alignment_AlignV)) {
-                switch (format->verticalAlignment()) {
+            if (format.hasProperty(FormatPrivate::P_Alignment_AlignV)) {
+                switch (format.verticalAlignment()) {
                 case Format::AlignTop:
                     writer.writeAttribute(QStringLiteral("vertical"), QStringLiteral("top"));
                     break;
@@ -593,14 +582,14 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
                     break;
                 }
             }
-            if (format->hasProperty(FormatPrivate::P_Alignment_Indent))
-                writer.writeAttribute(QStringLiteral("indent"), QString::number(format->indent()));
-            if (format->hasProperty(FormatPrivate::P_Alignment_Wrap) && format->textWrap())
+            if (format.hasProperty(FormatPrivate::P_Alignment_Indent))
+                writer.writeAttribute(QStringLiteral("indent"), QString::number(format.indent()));
+            if (format.hasProperty(FormatPrivate::P_Alignment_Wrap) && format.textWrap())
                 writer.writeAttribute(QStringLiteral("wrapText"), QStringLiteral("1"));
-            if (format->hasProperty(FormatPrivate::P_Alignment_ShinkToFit) && format->shrinkToFit())
+            if (format.hasProperty(FormatPrivate::P_Alignment_ShinkToFit) && format.shrinkToFit())
                 writer.writeAttribute(QStringLiteral("shrinkToFit"), QStringLiteral("1"));
-            if (format->hasProperty(FormatPrivate::P_Alignment_Rotation))
-                writer.writeAttribute(QStringLiteral("textRotation"), QString::number(format->rotation()));
+            if (format.hasProperty(FormatPrivate::P_Alignment_Rotation))
+                writer.writeAttribute(QStringLiteral("textRotation"), QString::number(format.rotation()));
         }
 
         writer.writeEndElement();//xf
@@ -612,7 +601,7 @@ void Styles::writeDxfs(XmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("dxfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_dxf_formatsList.size()));
-    foreach (Format *format, m_dxf_formatsList) {
+    foreach (const Format &format, m_dxf_formatsList) {
         writer.writeStartElement(QStringLiteral("dxf"));
         Q_UNUSED(format)
         writer.writeEndElement();//dxf
@@ -653,63 +642,63 @@ bool Styles::readFonts(XmlStreamReader &reader)
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("font"))
             return false;
-        Format *format = createFormat();
+        Format format;
         while((reader.readNextStartElement(),true)) { //read until font endelement.
             if (reader.tokenType() == QXmlStreamReader::StartElement) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 if (reader.name() == QLatin1String("name")) {
-                    format->setFontName(attributes.value(QLatin1String("val")).toString());
+                    format.setFontName(attributes.value(QLatin1String("val")).toString());
                 } else if (reader.name() == QLatin1String("charset")) {
-                    format->setProperty(FormatPrivate::P_Font_Charset, attributes.value(QLatin1String("val")).toString().toInt());
+                    format.setProperty(FormatPrivate::P_Font_Charset, attributes.value(QLatin1String("val")).toString().toInt());
                 } else if (reader.name() == QLatin1String("family")) {
-                    format->setProperty(FormatPrivate::P_Font_Family, attributes.value(QLatin1String("val")).toString().toInt());
+                    format.setProperty(FormatPrivate::P_Font_Family, attributes.value(QLatin1String("val")).toString().toInt());
                 } else if (reader.name() == QLatin1String("b")) {
-                    format->setFontBold(true);
+                    format.setFontBold(true);
                 } else if (reader.name() == QLatin1String("i")) {
-                    format->setFontItalic(true);
+                    format.setFontItalic(true);
                 } else if (reader.name() == QLatin1String("strike")) {
-                    format->setFontStrikeOut(true);
+                    format.setFontStrikeOut(true);
                 } else if (reader.name() == QLatin1String("outline")) {
-                    format->setFontOutline(true);
+                    format.setFontOutline(true);
                 } else if (reader.name() == QLatin1String("shadow")) {
-                    format->setProperty(FormatPrivate::P_Font_Shadow, true);
+                    format.setProperty(FormatPrivate::P_Font_Shadow, true);
                 } else if (reader.name() == QLatin1String("condense")) {
-                    format->setProperty(FormatPrivate::P_Font_Condense, attributes.value(QLatin1String("val")).toString().toInt());
+                    format.setProperty(FormatPrivate::P_Font_Condense, attributes.value(QLatin1String("val")).toString().toInt());
                 } else if (reader.name() == QLatin1String("extend")) {
-                    format->setProperty(FormatPrivate::P_Font_Extend, attributes.value(QLatin1String("val")).toString().toInt());
+                    format.setProperty(FormatPrivate::P_Font_Extend, attributes.value(QLatin1String("val")).toString().toInt());
                 } else if (reader.name() == QLatin1String("color")) {
                     if (attributes.hasAttribute(QLatin1String("rgb"))) {
                         QString colorString = attributes.value(QLatin1String("rgb")).toString();
-                        format->setFontColor(fromARGBString(colorString));
+                        format.setFontColor(fromARGBString(colorString));
                     } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
                         QColor color = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
-                        format->setFontColor(color);
+                        format.setFontColor(color);
                     } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                         QString theme = attributes.value(QLatin1String("theme")).toString();
                         QString tint = attributes.value(QLatin1String("tint")).toString();
-                        format->setProperty(FormatPrivate::P_Font_ThemeColor, QString(theme + QLatin1Char(':') + tint));
+                        format.setProperty(FormatPrivate::P_Font_ThemeColor, QString(theme + QLatin1Char(':') + tint));
                     }
                 } else if (reader.name() == QLatin1String("sz")) {
                     int sz = attributes.value(QLatin1String("val")).toString().toInt();
-                    format->setFontSize(sz);
+                    format.setFontSize(sz);
                 } else if (reader.name() == QLatin1String("u")) {
                     QString value = attributes.value(QLatin1String("val")).toString();
                     if (value == QLatin1String("double"))
-                        format->setFontUnderline(Format::FontUnderlineDouble);
+                        format.setFontUnderline(Format::FontUnderlineDouble);
                     else if (value == QLatin1String("doubleAccounting"))
-                        format->setFontUnderline(Format::FontUnderlineDoubleAccounting);
+                        format.setFontUnderline(Format::FontUnderlineDoubleAccounting);
                     else if (value == QLatin1String("singleAccounting"))
-                        format->setFontUnderline(Format::FontUnderlineSingleAccounting);
+                        format.setFontUnderline(Format::FontUnderlineSingleAccounting);
                     else
-                        format->setFontUnderline(Format::FontUnderlineSingle);
+                        format.setFontUnderline(Format::FontUnderlineSingle);
                 } else if (reader.name() == QLatin1String("vertAlign")) {
                     QString value = attributes.value(QLatin1String("val")).toString();
                     if (value == QLatin1String("superscript"))
-                        format->setFontScript(Format::FontScriptSuper);
+                        format.setFontScript(Format::FontScriptSuper);
                     else if (value == QLatin1String("subscript"))
-                        format->setFontScript(Format::FontScriptSub);
+                        format.setFontScript(Format::FontScriptSub);
                 } else if (reader.name() == QLatin1String("scheme")) {
-                    format->setProperty(FormatPrivate::P_Font_Scheme, attributes.value(QLatin1String("val")).toString());
+                    format.setProperty(FormatPrivate::P_Font_Scheme, attributes.value(QLatin1String("val")).toString());
                 }
             }
 
@@ -717,8 +706,8 @@ bool Styles::readFonts(XmlStreamReader &reader)
                 break;
         }
         m_fontsList.append(format);
-        m_fontsHash.insert(format->fontKey(), format);
-        format->setFontIndex(m_fontsList.size()-1);
+        m_fontsHash.insert(format.fontKey(), format);
+        format.setFontIndex(m_fontsList.size()-1);
     }
     return true;
 }
@@ -765,14 +754,14 @@ bool Styles::readFill(XmlStreamReader &reader)
         patternValues[QStringLiteral("lightGrid")] = Format::PatternLightGrid;
     }
 
-    Format *fill = createFormat();
+    Format fill;
     while((reader.readNextStartElement(), true)) { //read until fill endelement
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("patternFill")) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 if (attributes.hasAttribute(QLatin1String("patternType"))) {
                     QString pattern = attributes.value(QLatin1String("patternType")).toString();
-                    fill->setFillPattern(patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone);
+                    fill.setFillPattern(patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone);
                 }
             } else if (reader.name() == QLatin1String("fgColor")) {
                 QXmlStreamAttributes attributes = reader.attributes();
@@ -784,12 +773,12 @@ bool Styles::readFill(XmlStreamReader &reader)
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
-                    fill->setProperty(FormatPrivate::P_Fill_FgThemeColor, QString(theme + QLatin1Char(':') + tint));
+                    fill.setProperty(FormatPrivate::P_Fill_FgThemeColor, QString(theme + QLatin1Char(':') + tint));
                 }
-                if (fill->fillPattern() == Format::PatternSolid)
-                    fill->setPatternBackgroundColor(c);
+                if (fill.fillPattern() == Format::PatternSolid)
+                    fill.setPatternBackgroundColor(c);
                 else
-                    fill->setPatternForegroundColor(c);
+                    fill.setPatternForegroundColor(c);
             } else if (reader.name() == QLatin1String("bgColor")) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 QColor c;
@@ -800,12 +789,12 @@ bool Styles::readFill(XmlStreamReader &reader)
                 } else if (attributes.hasAttribute(QLatin1String("theme"))) {
                     QString theme = attributes.value(QLatin1String("theme")).toString();
                     QString tint = attributes.value(QLatin1String("tint")).toString();
-                    fill->setProperty(FormatPrivate::P_Fill_BgThemeColor, QString(theme + QLatin1Char(':') + tint));
+                    fill.setProperty(FormatPrivate::P_Fill_BgThemeColor, QString(theme + QLatin1Char(':') + tint));
                 }
-                if (fill->fillPattern() == Format::PatternSolid)
-                    fill->setPatternForegroundColor(c);
+                if (fill.fillPattern() == Format::PatternSolid)
+                    fill.setPatternForegroundColor(c);
                 else
-                    fill->setPatternBackgroundColor(c);
+                    fill.setPatternBackgroundColor(c);
             }
         }
 
@@ -814,8 +803,8 @@ bool Styles::readFill(XmlStreamReader &reader)
     }
 
     m_fillsList.append(fill);
-    m_fillsHash.insert(fill->fillKey(), fill);
-    fill->setFillIndex(m_fillsList.size()-1);//first call key(), then setIndex()
+    m_fillsHash.insert(fill.fillKey(), fill);
+    fill.setFillIndex(m_fillsList.size()-1);//first call key(), then setIndex()
 
     return true;
 }
@@ -838,17 +827,17 @@ bool Styles::readBorders(XmlStreamReader &reader)
 bool Styles::readBorder(XmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("border"));
-    Format *border = createFormat();
+    Format border;
 
     QXmlStreamAttributes attributes = reader.attributes();
     bool isUp = attributes.hasAttribute(QLatin1String("diagonalUp"));
     bool isDown = attributes.hasAttribute(QLatin1String("diagonalUp"));
     if (isUp && isDown)
-        border->setDiagonalBorderType(Format::DiagnoalBorderBoth);
+        border.setDiagonalBorderType(Format::DiagnoalBorderBoth);
     else if (isUp)
-        border->setDiagonalBorderType(Format::DiagonalBorderUp);
+        border.setDiagonalBorderType(Format::DiagonalBorderUp);
     else if (isDown)
-        border->setDiagonalBorderType(Format::DiagonalBorderDown);
+        border.setDiagonalBorderType(Format::DiagonalBorderDown);
 
     while((reader.readNextStartElement(), true)) { //read until border endelement
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
@@ -861,35 +850,35 @@ bool Styles::readBorder(XmlStreamReader &reader)
                 readSubBorder(reader, reader.name().toString(), style, color, themeColor);
 
                 if (reader.name() == QLatin1String("left")) {
-                    border->setLeftBorderStyle(style);
+                    border.setLeftBorderStyle(style);
                     if (color.isValid())
-                        border->setLeftBorderColor(color);
+                        border.setLeftBorderColor(color);
                     else if (!themeColor.isEmpty())
-                        border->setProperty(FormatPrivate::P_Border_ThemeLeftColor, themeColor);
+                        border.setProperty(FormatPrivate::P_Border_ThemeLeftColor, themeColor);
                 } else if (reader.name() == QLatin1String("right")) {
-                    border->setRightBorderStyle(style);
+                    border.setRightBorderStyle(style);
                     if (color.isValid())
-                        border->setRightBorderColor(color);
+                        border.setRightBorderColor(color);
                     else if (!themeColor.isEmpty())
-                        border->setProperty(FormatPrivate::P_Border_ThemeRightColor, themeColor);
+                        border.setProperty(FormatPrivate::P_Border_ThemeRightColor, themeColor);
                 } else if (reader.name() == QLatin1String("top")) {
-                    border->setTopBorderStyle(style);
+                    border.setTopBorderStyle(style);
                     if (color.isValid())
-                        border->setTopBorderColor(color);
+                        border.setTopBorderColor(color);
                     else if (!themeColor.isEmpty())
-                        border->setProperty(FormatPrivate::P_Border_ThemeTopColor, themeColor);
+                        border.setProperty(FormatPrivate::P_Border_ThemeTopColor, themeColor);
                 } else if (reader.name() == QLatin1String("bottom")) {
-                    border->setBottomBorderStyle(style);
+                    border.setBottomBorderStyle(style);
                     if (color.isValid())
-                        border->setBottomBorderColor(color);
+                        border.setBottomBorderColor(color);
                     else if (!themeColor.isEmpty())
-                        border->setProperty(FormatPrivate::P_Border_ThemeBottomColor, themeColor);
+                        border.setProperty(FormatPrivate::P_Border_ThemeBottomColor, themeColor);
                 } else if (reader.name() == QLatin1String("diagonal")) {
-                    border->setDiagonalBorderStyle(style);
+                    border.setDiagonalBorderStyle(style);
                     if (color.isValid())
-                        border->setDiagonalBorderColor(color);
+                        border.setDiagonalBorderColor(color);
                     else if (!themeColor.isEmpty())
-                        border->setProperty(FormatPrivate::P_Border_ThemeDiagonalColor, themeColor);
+                        border.setProperty(FormatPrivate::P_Border_ThemeDiagonalColor, themeColor);
                 }
             }
         }
@@ -899,8 +888,8 @@ bool Styles::readBorder(XmlStreamReader &reader)
     }
 
     m_bordersList.append(border);
-    m_bordersHash.insert(border->borderKey(), border);
-    border->setBorderIndex(m_bordersList.size()-1);//first call key(), then setIndex()
+    m_bordersHash.insert(border.borderKey(), border);
+    border.setBorderIndex(m_bordersList.size()-1);//first call key(), then setIndex()
 
     return true;
 }
@@ -970,7 +959,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
         reader.readNextStartElement();
         if (reader.name() != QLatin1String("xf"))
             return false;
-        Format *format = createFormat();
+        Format format;
         QXmlStreamAttributes xfAttrs = reader.attributes();
 
 //        qDebug()<<reader.name()<<reader.tokenString()<<" .........";
@@ -980,9 +969,9 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
         if (xfAttrs.hasAttribute(QLatin1String("applyNumberFormat"))) {
             int numFmtIndex = xfAttrs.value(QLatin1String("numFmtId")).toString().toInt();
             if (!m_customNumFmtIdMap.contains(numFmtIndex))
-                format->setNumberFormatIndex(numFmtIndex);
+                format.setNumberFormatIndex(numFmtIndex);
             else
-                format->setNumberFormat(numFmtIndex, m_customNumFmtIdMap[numFmtIndex]->formatString);
+                format.setNumberFormat(numFmtIndex, m_customNumFmtIdMap[numFmtIndex]->formatString);
         }
 
         if (xfAttrs.hasAttribute(QLatin1String("applyFont"))) {
@@ -990,10 +979,10 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (fontIndex >= m_fontsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fontId");
             } else {
-                Format *fontFormat = m_fontsList[fontIndex];
+                Format fontFormat = m_fontsList[fontIndex];
                 for (int i=FormatPrivate::P_Font_STARTID; i<FormatPrivate::P_Font_ENDID; ++i) {
-                    if (fontFormat->hasProperty(i))
-                        format->setProperty(i, fontFormat->property(i));
+                    if (fontFormat.hasProperty(i))
+                        format.setProperty(i, fontFormat.property(i));
                 }
             }
         }
@@ -1003,10 +992,10 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (id >= m_fillsList.size()) {
                 qDebug("Error read styles.xml, cellXfs fillId");
             } else {
-                Format *fillFormat = m_fillsList[id];
+                Format fillFormat = m_fillsList[id];
                 for (int i=FormatPrivate::P_Fill_STARTID; i<FormatPrivate::P_Fill_ENDID; ++i) {
-                    if (fillFormat->hasProperty(i))
-                        format->setProperty(i, fillFormat->property(i));
+                    if (fillFormat.hasProperty(i))
+                        format.setProperty(i, fillFormat.property(i));
                 }
             }
         }
@@ -1016,10 +1005,10 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
             if (id >= m_bordersList.size()) {
                 qDebug("Error read styles.xml, cellXfs borderId");
             } else {
-                Format *borderFormat = m_bordersList[id];
+                Format borderFormat = m_bordersList[id];
                 for (int i=FormatPrivate::P_Border_STARTID; i<FormatPrivate::P_Border_ENDID; ++i) {
-                    if (borderFormat->hasProperty(i))
-                        format->setProperty(i, borderFormat->property(i));
+                    if (borderFormat.hasProperty(i))
+                        format.setProperty(i, borderFormat.property(i));
                 }
             }
         }
@@ -1041,7 +1030,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
                     }
                     QString str = alignAttrs.value(QLatin1String("horizontal")).toString();
                     if (alignStringMap.contains(str))
-                        format->setHorizontalAlignment(alignStringMap[str]);
+                        format.setHorizontalAlignment(alignStringMap[str]);
                 }
 
                 if (alignAttrs.hasAttribute(QLatin1String("vertical"))) {
@@ -1054,24 +1043,24 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
                     }
                     QString str = alignAttrs.value(QLatin1String("vertical")).toString();
                     if (alignStringMap.contains(str))
-                        format->setVerticalAlignment(alignStringMap[str]);
+                        format.setVerticalAlignment(alignStringMap[str]);
                 }
 
                 if (alignAttrs.hasAttribute(QLatin1String("indent"))) {
                     int indent = alignAttrs.value(QLatin1String("indent")).toString().toInt();
-                    format->setIndent(indent);
+                    format.setIndent(indent);
                 }
 
                 if (alignAttrs.hasAttribute(QLatin1String("textRotation"))) {
                     int rotation = alignAttrs.value(QLatin1String("textRotation")).toString().toInt();
-                    format->setRotation(rotation);
+                    format.setRotation(rotation);
                 }
 
                 if (alignAttrs.hasAttribute(QLatin1String("wrapText")))
-                    format->setTextWarp(true);
+                    format.setTextWarp(true);
 
                 if (alignAttrs.hasAttribute(QLatin1String("shrinkToFit")))
-                    format->setShrinkToFit(true);
+                    format.setShrinkToFit(true);
             }
         }
 

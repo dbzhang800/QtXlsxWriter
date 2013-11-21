@@ -43,7 +43,7 @@ public:
     QVariant value;
     QString formula;
     Cell::DataType dataType;
-    Format *format;
+    Format format;
     CellRange range; //used for arrayFormula
 
     RichString richString;

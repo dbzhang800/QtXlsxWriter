@@ -14,18 +14,18 @@ int main()
     xlsx.setColumn(3, 3, 40.0);
 
     //Set style for the row 11th.
-    QXlsx::Format *format1 = xlsx.createFormat();
-    format1->setFontBold(true);
-    format1->setFontColor(QColor(Qt::blue));
-    format1->setFontSize(20);
+    QXlsx::Format format1;
+    format1.setFontBold(true);
+    format1.setFontColor(QColor(Qt::blue));
+    format1.setFontSize(20);
     xlsx.write(11, 1, "Hello Row Style");
     xlsx.write(11, 6, "Blue Color");
     xlsx.setRow(11, 41, format1);
 
     //Set style for the col [9th, 16th)
-    QXlsx::Format *format2 = xlsx.createFormat();
-    format2->setFontBold(true);
-    format2->setFontColor(QColor(Qt::magenta));
+    QXlsx::Format format2;
+    format2.setFontBold(true);
+    format2.setFontColor(QColor(Qt::magenta));
     for (int row=12; row<=30; row++)
         for (int col=9; col<=15; col++)
             xlsx.write(row, col, row+col);

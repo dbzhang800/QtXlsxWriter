@@ -8,17 +8,17 @@ QTXLSX_USE_NAMESPACE
 
 void writeHorizontalAlignCell(Document &xlsx, const QString &cell, const QString &text, Format::HorizontalAlignment align)
 {
-   Format *format = xlsx.createFormat();
-   format->setHorizontalAlignment(align);
-   format->setBorderStyle(Format::BorderThin);
+   Format format;
+   format.setHorizontalAlignment(align);
+   format.setBorderStyle(Format::BorderThin);
    xlsx.write(cell, text, format);
 }
 
 void writeVerticalAlignCell(Document &xlsx, const QString &range, const QString &text, Format::VerticalAlignment align)
 {
-   Format *format = xlsx.createFormat();
-   format->setVerticalAlignment(align);
-   format->setBorderStyle(Format::BorderThin);
+   Format format;
+   format.setVerticalAlignment(align);
+   format.setBorderStyle(Format::BorderThin);
    CellRange r(range);
    xlsx.write(r.firstRow(), r.firstColumn(), text);
    xlsx.mergeCells(r, format);
@@ -26,54 +26,54 @@ void writeVerticalAlignCell(Document &xlsx, const QString &range, const QString 
 
 void writeBorderStyleCell(Document &xlsx, const QString &cell, const QString &text, Format::BorderStyle bs)
 {
-   Format *format = xlsx.createFormat();
-   format->setBorderStyle(bs);
+   Format format;
+   format.setBorderStyle(bs);
    xlsx.write(cell, text, format);
 }
 
 void writeSolidFillCell(Document &xlsx, const QString &cell, const QColor &color)
 {
-   Format *format = xlsx.createFormat();
-   format->setPatternBackgroundColor(color);
+   Format format;
+   format.setPatternBackgroundColor(color);
    xlsx.write(cell, QVariant(), format);
 }
 
 void writePatternFillCell(Document &xlsx, const QString &cell, Format::FillPattern pattern, const QColor &color)
 {
-   Format *format = xlsx.createFormat();
-   format->setPatternForegroundColor(color);
-   format->setFillPattern(pattern);
+   Format format;
+   format.setPatternForegroundColor(color);
+   format.setFillPattern(pattern);
    xlsx.write(cell, QVariant(), format);
 }
 
 void writeBorderAndFontColorCell(Document &xlsx, const QString &cell, const QString &text, const QColor &color)
 {
-   Format *format = xlsx.createFormat();
-   format->setBorderStyle(Format::BorderThin);
-   format->setBorderColor(color);
-   format->setFontColor(color);
+   Format format;
+   format.setBorderStyle(Format::BorderThin);
+   format.setBorderColor(color);
+   format.setFontColor(color);
    xlsx.write(cell, text, format);
 }
 
 void writeFontNameCell(Document &xlsx, const QString &cell, const QString &text)
 {
-    Format *format = xlsx.createFormat();
-    format->setFontName(text);
-    format->setFontSize(16);
+    Format format;
+    format.setFontName(text);
+    format.setFontSize(16);
     xlsx.write(cell, text, format);
 }
 
 void writeFontSizeCell(Document &xlsx, const QString &cell, int size)
 {
-    Format *format = xlsx.createFormat();
-    format->setFontSize(size);
+    Format format;
+    format.setFontSize(size);
     xlsx.write(cell, "Qt Xlsx", format);
 }
 
 void writeInternalNumFormatsCell(Document &xlsx, int row, double value, int numFmt)
 {
-    Format *format = xlsx.createFormat();
-    format->setNumberFormatIndex(numFmt);
+    Format format;
+    format.setNumberFormatIndex(numFmt);
     xlsx.write(row, 1, value);
     xlsx.write(row, 2, QString("Builtin NumFmt %1").arg(numFmt));
     xlsx.write(row, 3, value, format);
@@ -81,8 +81,8 @@ void writeInternalNumFormatsCell(Document &xlsx, int row, double value, int numF
 
 void writeCustomNumFormatsCell(Document &xlsx, int row, double value, const QString &numFmt)
 {
-    Format *format = xlsx.createFormat();
-    format->setNumberFormat(numFmt);
+    Format format;
+    format.setNumberFormat(numFmt);
     xlsx.write(row, 1, value);
     xlsx.write(row, 2, numFmt);
     xlsx.write(row, 3, value, format);
@@ -141,17 +141,17 @@ int main()
     xlsx.addWorksheet("Fonts");
 
     xlsx.write("B3", "Normal");
-    Format *font_bold = xlsx.createFormat();
-    font_bold->setFontBold(true);
+    Format font_bold;
+    font_bold.setFontBold(true);
     xlsx.write("B4", "Bold", font_bold);
-    Format *font_italic = xlsx.createFormat();
-    font_italic->setFontItalic(true);
+    Format font_italic;
+    font_italic.setFontItalic(true);
     xlsx.write("B5", "Italic", font_italic);
-    Format *font_underline = xlsx.createFormat();
-    font_underline->setFontUnderline(Format::FontUnderlineSingle);
+    Format font_underline;
+    font_underline.setFontUnderline(Format::FontUnderlineSingle);
     xlsx.write("B6", "Underline", font_underline);
-    Format *font_strikeout = xlsx.createFormat();
-    font_strikeout->setFontStrikeOut(true);
+    Format font_strikeout;
+    font_strikeout.setFontStrikeOut(true);
     xlsx.write("B7", "StrikeOut", font_strikeout);
 
     writeFontNameCell(xlsx, "D3", "Arial");
@@ -170,9 +170,9 @@ int main()
     writeFontSizeCell(xlsx, "G8", 20);
     writeFontSizeCell(xlsx, "G9", 25);
 
-    Format *font_vertical = xlsx.createFormat();
-    font_vertical->setRotation(255);
-    font_vertical->setFontSize(16);
+    Format font_vertical;
+    font_vertical.setRotation(255);
+    font_vertical.setFontSize(16);
     xlsx.write("J3", "vertical", font_vertical);
     xlsx.mergeCells("J3:J9");
 
@@ -180,10 +180,10 @@ int main()
     //Create the third sheet.
     xlsx.addWorksheet("Formulas");
     xlsx.setColumn("A", "B", 40);
-    Format *rAlign = xlsx.createFormat();
-    rAlign->setHorizontalAlignment(Format::AlignRight);
-    Format *lAlign = xlsx.createFormat();
-    lAlign->setHorizontalAlignment(Format::AlignLeft);
+    Format rAlign;
+    rAlign.setHorizontalAlignment(Format::AlignRight);
+    Format lAlign;
+    lAlign.setHorizontalAlignment(Format::AlignLeft);
     xlsx.write("B3", 40, lAlign);
     xlsx.write("B4", 30, lAlign);
     xlsx.write("B5", 50, lAlign);
@@ -215,9 +215,9 @@ int main()
     xlsx.write("A21", "LEN(\"Hello Qt!\")=", rAlign);
     xlsx.write("B21", "=LEN(\"Hello Qt!\")", lAlign);
 
-    Format *dateFormat = xlsx.createFormat();
-    dateFormat->setHorizontalAlignment(Format::AlignLeft);
-    dateFormat->setNumberFormat("yyyy-mm-dd");
+    Format dateFormat;
+    dateFormat.setHorizontalAlignment(Format::AlignLeft);
+    dateFormat.setNumberFormat("yyyy-mm-dd");
     xlsx.write("A23", "DATE(2013,8,13)=", rAlign);
     xlsx.write("B23", "=DATE(2013,8,13)", dateFormat);
     xlsx.write("A24", "DAY(B23)=", rAlign);
@@ -260,9 +260,9 @@ int main()
     //---------------------------------------------------------------
     //Create the fifth sheet.
     xlsx.addWorksheet("Merging");
-    Format *centerAlign = xlsx.createFormat();
-    centerAlign->setHorizontalAlignment(Format::AlignHCenter);
-    centerAlign->setVerticalAlignment(Format::AlignVCenter);
+    Format centerAlign;
+    centerAlign.setHorizontalAlignment(Format::AlignHCenter);
+    centerAlign.setVerticalAlignment(Format::AlignVCenter);
     xlsx.write("B4", "Hello Qt!");
     xlsx.mergeCells("B4:F6", centerAlign);
     xlsx.write("B8", 1);

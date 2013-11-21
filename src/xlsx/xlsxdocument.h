@@ -27,6 +27,7 @@
 #define QXLSX_XLSXDOCUMENT_H
 
 #include "xlsxglobal.h"
+#include "xlsxformat.h"
 #include <QObject>
 #include <QVariant>
 class QIODevice;
@@ -37,7 +38,6 @@ QT_BEGIN_NAMESPACE_XLSX
 class Workbook;
 class Worksheet;
 class Package;
-class Format;
 class Cell;
 class CellRange;
 class DataValidation;
@@ -54,19 +54,18 @@ public:
     Document(QIODevice *device, QObject *parent=0);
     ~Document();
 
-    Format *createFormat();
-    int write(const QString &cell, const QVariant &value, Format *format=0);
-    int write(int row, int col, const QVariant &value, Format *format=0);
+    int write(const QString &cell, const QVariant &value, const Format &format=Format());
+    int write(int row, int col, const QVariant &value, const Format &format=Format());
     QVariant read(const QString &cell) const;
     QVariant read(int row, int col) const;
     int insertImage(int row, int column, const QImage &image, double xOffset=0, double yOffset=0, double xScale=1, double yScale=1);
-    int mergeCells(const CellRange &range, Format *format=0);
-    int mergeCells(const QString &range, Format *format=0);
+    int mergeCells(const CellRange &range, const Format &format=Format());
+    int mergeCells(const QString &range, const Format &format=Format());
     int unmergeCells(const CellRange &range);
     int unmergeCells(const QString &range);
-    bool setRow(int row, double height, Format* format=0, bool hidden=false);
-    bool setColumn(int colFirst, int colLast, double width, Format* format=0, bool hidden=false);
-    bool setColumn(const QString &colFirst, const QString &colLast, double width, Format* format=0, bool hidden=false);
+    bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
+    bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
+    bool setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format=Format(), bool hidden=false);
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
     bool addDataValidation(const DataValidation &validation);

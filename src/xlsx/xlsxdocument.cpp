@@ -102,20 +102,11 @@ Document::Document(QIODevice *device, QObject *parent) :
 }
 
 /*!
- * Create a new format used by sheet cells.
- */
-Format *Document::createFormat()
-{
-    Q_D(Document);
-    return d->workbook->createFormat();
-}
-
-/*!
     \overload
 
     Write \a value to cell \a row_column with the \a format.
  */
-int Document::write(const QString &row_column, const QVariant &value, Format *format)
+int Document::write(const QString &row_column, const QVariant &value, const Format &format)
 {
     return currentWorksheet()->write(row_column, value, format);
 }
@@ -123,7 +114,7 @@ int Document::write(const QString &row_column, const QVariant &value, Format *fo
 /*!
  * Write \a value to cell (\a row, \a col) with the \a format.
  */
-int Document::write(int row, int col, const QVariant &value, Format *format)
+int Document::write(int row, int col, const QVariant &value, const Format &format)
 {
     return currentWorksheet()->write(row, col, value, format);
 }
@@ -165,7 +156,7 @@ int Document::insertImage(int row, int column, const QImage &image, double xOffs
 
     \note All cells except the top-left one will be cleared.
  */
-int Document::mergeCells(const CellRange &range, Format *format)
+int Document::mergeCells(const CellRange &range, const Format &format)
 {
     return currentWorksheet()->mergeCells(range, format);
 }
@@ -177,7 +168,7 @@ int Document::mergeCells(const CellRange &range, Format *format)
 
     \note All cells except the top-left one will be cleared.
  */
-int Document::mergeCells(const QString &range, Format *format)
+int Document::mergeCells(const QString &range, const Format &format)
 {
     return currentWorksheet()->mergeCells(range, format);
 }
@@ -202,7 +193,7 @@ int Document::unmergeCells(const CellRange &range)
   Sets row \a height and \a format. Row height measured in point size. If format
   equals 0 then format is ignored. \a row is 1-indexed.
  */
-bool Document::setRow(int row, double height, Format *format, bool hidden)
+bool Document::setRow(int row, double height, const Format &format, bool hidden)
 {
     return currentWorksheet()->setRow(row, height, format, hidden);
 }
@@ -213,7 +204,7 @@ bool Document::setRow(int row, double height, Format *format, bool hidden)
   numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
   equals 0 then format is ignored. \a colFirst and \a colLast are all 1-indexed.
  */
-bool Document::setColumn(int colFirst, int colLast, double width, Format *format, bool hidden)
+bool Document::setColumn(int colFirst, int colLast, double width, const Format &format, bool hidden)
 {
     return currentWorksheet()->setColumn(colFirst, colLast, width, format, hidden);
 }
@@ -224,7 +215,7 @@ bool Document::setColumn(int colFirst, int colLast, double width, Format *format
   numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
   equals 0 then format is ignored. \a colFirst and \a colLast should be "A", "B", "C", ...
  */
-bool Document::setColumn(const QString &colFirst, const QString &colLast, double width, Format *format, bool hidden)
+bool Document::setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format, bool hidden)
 {
     return currentWorksheet()->setColumn(colFirst, colLast, width, format, hidden);
 }

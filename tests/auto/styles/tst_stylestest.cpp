@@ -43,8 +43,8 @@ void StylesTest::testAddFormat()
     QXlsx::Styles styles;
 
     for (int i=0; i<10; ++i) {
-        QXlsx::Format *format = styles.createFormat();
-        format->setFontBold(true);
+        QXlsx::Format format;
+        format.setFontBold(true);
         styles.addFormat(format);
     }
 
@@ -56,25 +56,25 @@ void StylesTest::testAddFormat2()
 {
     QXlsx::Styles styles;
 
-    QXlsx::Format *format = styles.createFormat();
-    format->setNumberFormat("h:mm:ss AM/PM"); //builtin 19
+    QXlsx::Format format;
+    format.setNumberFormat("h:mm:ss AM/PM"); //builtin 19
     styles.addFormat(format);
 
-    QCOMPARE(format->numberFormatIndex(), 19);
+    QCOMPARE(format.numberFormatIndex(), 19);
 
-    QXlsx::Format *format2 = styles.createFormat();
-    format2->setNumberFormat("aaaaa h:mm:ss AM/PM"); //custom
+    QXlsx::Format format2;
+    format2.setNumberFormat("aaaaa h:mm:ss AM/PM"); //custom
     styles.addFormat(format2);
 
-    QCOMPARE(format2->numberFormatIndex(), 176);
+    QCOMPARE(format2.numberFormatIndex(), 176);
 }
 
 // For a solid fill, Excel reverses the role of foreground and background colours
 void StylesTest::testSolidFillBackgroundColor()
 {
     QXlsx::Styles styles;
-    QXlsx::Format *format = styles.createFormat();
-    format->setPatternBackgroundColor(QColor(Qt::red));
+    QXlsx::Format format;
+    format.setPatternBackgroundColor(QColor(Qt::red));
     styles.addFormat(format);
 
     QByteArray xmlData = styles.saveToXmlData();
@@ -85,8 +85,8 @@ void StylesTest::testSolidFillBackgroundColor()
 void StylesTest::testWriteBorders()
 {
     QXlsx::Styles styles;
-    QXlsx::Format *format = styles.createFormat();
-    format->setRightBorderStyle(QXlsx::Format::BorderThin);
+    QXlsx::Format format;
+    format.setRightBorderStyle(QXlsx::Format::BorderThin);
     styles.addFormat(format);
 
     QByteArray xmlData = styles.saveToXmlData();
@@ -108,9 +108,9 @@ void StylesTest::testReadFonts()
     styles.readFonts(reader);
 
     QCOMPARE(styles.m_fontsList.size(), 3);
-    QXlsx::Format *font0 = styles.m_fontsList[0];
-    QCOMPARE(font0->fontSize(), 11);
-    QCOMPARE(font0->fontName(), QString("Calibri"));
+    QXlsx::Format font0 = styles.m_fontsList[0];
+    QCOMPARE(font0.fontSize(), 11);
+    QCOMPARE(font0.fontName(), QString("Calibri"));
 }
 
 void StylesTest::testReadFills()
@@ -127,8 +127,8 @@ void StylesTest::testReadFills()
     styles.readFills(reader);
 
     QCOMPARE(styles.m_fillsList.size(), 4);
-    QCOMPARE(styles.m_fillsList[3]->fillPattern(), QXlsx::Format::PatternSolid);
-    QCOMPARE(styles.m_fillsList[3]->patternBackgroundColor(), QColor(Qt::gray));//for solid pattern, bg vs. fg color!
+    QCOMPARE(styles.m_fillsList[3].fillPattern(), QXlsx::Format::PatternSolid);
+    QCOMPARE(styles.m_fillsList[3].patternBackgroundColor(), QColor(Qt::gray));//for solid pattern, bg vs. fg color!
 }
 
 void StylesTest::testReadBorders()

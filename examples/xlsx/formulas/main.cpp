@@ -13,10 +13,10 @@ int main()
 
     //![1]
     xlsx.setColumn("A", "B", 40);
-    Format *rAlign = xlsx.createFormat();
-    rAlign->setHorizontalAlignment(Format::AlignRight);
-    Format *lAlign = xlsx.createFormat();
-    lAlign->setHorizontalAlignment(Format::AlignLeft);
+    Format rAlign;
+    rAlign.setHorizontalAlignment(Format::AlignRight);
+    Format lAlign;
+    lAlign.setHorizontalAlignment(Format::AlignLeft);
     xlsx.write("B3", 40, lAlign);
     xlsx.write("B4", 30, lAlign);
     xlsx.write("B5", 50, lAlign);

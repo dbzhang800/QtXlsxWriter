@@ -106,7 +106,7 @@ void WorksheetTest::testWriteCells()
     sheet.writeInlineString(3, 1, "Hello inline"); //A3
     sheet.write("A4", true);
     sheet.write("A5", "=44+33");
-    sheet.writeFormula(5, 2, "44+33", 0, 77);
+    sheet.writeFormula(5, 2, "44+33", QXlsx::Format(), 77);
 
     QByteArray xmldata = sheet.saveToXmlData();
 

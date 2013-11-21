@@ -50,7 +50,7 @@ CellPrivate::CellPrivate(Cell *p) :
  * \internal
  * Created by Worksheet only.
  */
-Cell::Cell(const QVariant &data, DataType type, Format *format, Worksheet *parent) :
+Cell::Cell(const QVariant &data, DataType type, const Format &format, Worksheet *parent) :
     d_ptr(new CellPrivate(this))
 {
     d_ptr->value = data;
@@ -88,7 +88,7 @@ QVariant Cell::value() const
 /*!
  * Return the style used by this Cell. If no style used, 0 will be returned.
  */
-Format *Cell::format() const
+Format Cell::format() const
 {
     Q_D(const Cell);
     return d->format;
@@ -109,7 +109,7 @@ QString Cell::formula() const
 bool Cell::isDateTime() const
 {
     Q_D(const Cell);
-    if (d->dataType == Numeric && d->format && d->format->isDateTimeFormat())
+    if (d->dataType == Numeric && d->format.isValid() && d->format.isDateTimeFormat())
         return true;
     return false;
 }
