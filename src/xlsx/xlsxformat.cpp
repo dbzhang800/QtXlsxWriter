@@ -68,12 +68,11 @@ FormatPrivate::~FormatPrivate()
 
 
 /*!
- *  Creates a new format.
+ *  Creates a new invalid format.
  */
-Format::Format() :
-    d(new FormatPrivate)
+Format::Format()
 {
-
+    //The d pointer is initialized with a null pointer
 }
 
 /*!
@@ -168,12 +167,29 @@ bool Format::isDateTimeFormat() const
 }
 
 /*!
- * Set a custom num \a format with the given \a id.
+    \internal
+    Set a custom num \a format with the given \a id.
  */
 void Format::setNumberFormat(int id, const QString &format)
 {
     setProperty(FormatPrivate::P_NumFmt_Id, id);
     setProperty(FormatPrivate::P_NumFmt_FormatCode, format);
+}
+
+/*!
+    \internal
+    Return true if the format has number format.
+ */
+bool Format::hasNumFmtData() const
+{
+    if (!d)
+        return false;
+
+    if (hasProperty(FormatPrivate::P_NumFmt_Id)
+            || hasProperty(FormatPrivate::P_NumFmt_FormatCode)) {
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -330,9 +346,13 @@ void Format::setFontName(const QString &name)
 
 /*!
  * \internal
+ * When the format has font data, when need to assign a valid index for it.
+ * The index value is depend on the order <fonts > in styles.xml
  */
 bool Format::fontIndexValid() const
 {
+    if (!hasFontData())
+        return false;
     return d->font_index_valid;
 }
 
@@ -360,6 +380,9 @@ void Format::setFontIndex(int index)
  */
 QByteArray Format::fontKey() const
 {
+    if (isEmpty())
+        return QByteArray();
+
     if (d->font_dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
@@ -375,8 +398,15 @@ QByteArray Format::fontKey() const
     return d->font_key;
 }
 
+/*!
+    \internal
+    Return true if the format has font format, otherwise return false.
+ */
 bool Format::hasFontData() const
 {
+    if (!d)
+        return false;
+
     for (int i=FormatPrivate::P_Font_STARTID; i<FormatPrivate::P_Font_ENDID; ++i) {
         if (hasProperty(i))
             return true;
@@ -515,6 +545,9 @@ void Format::setShrinkToFit(bool shink)
  */
 bool Format::hasAlignmentData() const
 {
+    if (!d)
+        return false;
+
     for (int i=FormatPrivate::P_Alignment_STARTID; i<FormatPrivate::P_Alignment_ENDID; ++i) {
         if (hasProperty(i))
             return true;
@@ -665,6 +698,8 @@ void Format::setDiagonalBorderColor(const QColor &color)
 
 bool Format::borderIndexValid() const
 {
+    if (!hasBorderData())
+        return false;
     return d->border_index_valid;
 }
 
@@ -682,6 +717,9 @@ void Format::setBorderIndex(int index)
  */
 QByteArray Format::borderKey() const
 {
+    if (isEmpty())
+        return QByteArray();
+
     if (d->border_dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
@@ -695,6 +733,22 @@ QByteArray Format::borderKey() const
     }
 
     return d->border_key;
+}
+
+/*!
+    \internal
+    Return true if the format has border format, otherwise return false.
+ */
+bool Format::hasBorderData() const
+{
+    if (!d)
+        return false;
+
+    for (int i=FormatPrivate::P_Border_STARTID; i<FormatPrivate::P_Border_ENDID; ++i) {
+        if (hasProperty(i))
+            return true;
+    }
+    return false;
 }
 
 Format::FillPattern Format::fillPattern() const
@@ -733,11 +787,15 @@ void Format::setPatternBackgroundColor(const QColor &color)
 
 bool Format::fillIndexValid() const
 {
+    if (!hasFillData())
+        return false;
     return d->fill_index_valid;
 }
 
 int Format::fillIndex() const
 {
+    if (!d)
+        return 0;
     return d->fill_index;
 }
 
@@ -750,6 +808,9 @@ void Format::setFillIndex(int index)
  */
 QByteArray Format::fillKey() const
 {
+    if (isEmpty())
+        return QByteArray();
+
     if (d->fill_dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
@@ -763,6 +824,22 @@ QByteArray Format::fillKey() const
     }
 
     return d->fill_key;
+}
+
+/*!
+    \internal
+    Return true if the format has fill format, otherwise return false.
+ */
+bool Format::hasFillData() const
+{
+    if (!d)
+        return false;
+
+    for (int i=FormatPrivate::P_Fill_STARTID; i<FormatPrivate::P_Fill_ENDID; ++i) {
+        if (hasProperty(i))
+            return true;
+    }
+    return false;
 }
 
 bool Format::hidden() const
@@ -785,14 +862,24 @@ void Format::setLocked(bool locked)
     setProperty(FormatPrivate::P_Protection_Locked, locked);
 }
 
+bool Format::hasProtectionData() const
+{
+    if (!d)
+        return false;
+
+    if (hasProperty(FormatPrivate::P_Protection_Hidden)
+            || FormatPrivate::P_Protection_Locked) {
+        return true;
+    }
+    return false;
+}
+
 /*!
     Returns true if the format is valid; otherwise returns false.
  */
 bool Format::isValid() const
 {
-    if (!d->property.isEmpty())
-        return true;
-    if (d->xf_indexValid || d->font_index_valid || d->fill_index_valid || d->border_index_valid)
+    if (d)
         return true;
     return false;
 }
@@ -802,19 +889,26 @@ bool Format::isValid() const
  */
 bool Format::isEmpty() const
 {
+    if (!d)
+        return true;
     return d->property.isEmpty();
 }
 
 QByteArray Format::formatKey() const
 {
+    if (isEmpty())
+        return QByteArray();
+
     if (d->dirty) {
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
-        stream<<fontKey()<<borderKey()<<fillKey()<<numberFormatIndex();
-        for (int i=FormatPrivate::P_OTHER_STARTID; i<FormatPrivate::P_OTHER_ENDID; ++i) {
-            if (d->property.contains(i))
-                stream<<i<<d->property[i];
+
+        QHashIterator<int, QVariant> i(d->property);
+        while (i.hasNext()) {
+            i.next();
+            stream<<i.key()<<i.value();
         }
+
         d->formatKey = key;
         d->dirty = false;
     }
@@ -835,6 +929,8 @@ int Format::xfIndex() const
 
 bool Format::xfIndexValid() const
 {
+    if (!d)
+        return false;
     return d->xf_indexValid;
 }
 
@@ -851,6 +947,8 @@ int Format::dxfIndex() const
 
 bool Format::dxfIndexValid() const
 {
+    if (!d)
+        return false;
     return d->dxf_indexValid;
 }
 
@@ -866,6 +964,8 @@ bool Format::operator !=(const Format &format) const
 
 bool Format::isDxfFormat() const
 {
+    if (!d)
+        return false;
     return d->is_dxf_fomat;
 }
 
@@ -889,6 +989,9 @@ QVariant Format::property(int propertyId) const
  */
 void Format::setProperty(int propertyId, const QVariant &value)
 {
+    if (!d)
+        d = new FormatPrivate;
+
     if (value.isValid()) {
         if (d->property.contains(propertyId) && d->property[propertyId] == value)
             return;
@@ -930,6 +1033,8 @@ void Format::clearProperty(int propertyId)
  */
 bool Format::hasProperty(int propertyId) const
 {
+    if (!d)
+        return false;
     return d->property.contains(propertyId);
 }
 

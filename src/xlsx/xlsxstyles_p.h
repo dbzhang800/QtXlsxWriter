@@ -108,6 +108,8 @@ private:
 
     QList<Format> m_dxf_formatsList;
     QHash<QByteArray, Format> m_dxf_formatsHash;
+
+    bool m_emptyFormatAdded;
 };
 
 }

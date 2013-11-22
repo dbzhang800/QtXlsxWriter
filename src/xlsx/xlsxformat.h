@@ -243,8 +243,12 @@ private:
     void setFontIndex(int index);
     QByteArray fontKey() const;
 
+    bool hasNumFmtData() const;
     bool hasFontData() const;
+    bool hasFillData() const;
+    bool hasBorderData() const;
     bool hasAlignmentData() const;
+    bool hasProtectionData() const;
 
     bool borderIndexValid() const;
     QByteArray borderKey() const;

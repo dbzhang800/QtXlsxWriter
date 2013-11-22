@@ -45,6 +45,8 @@ public:
     };
 
     enum Property {
+        P_STARTID,
+
         //numFmt
         P_NumFmt_Id,
         P_NumFmt_FormatCode,
@@ -98,7 +100,6 @@ public:
         P_Fill_FgThemeColor,
         P_Fill_ENDID,
 
-        P_OTHER_STARTID,
         //alignment
         P_Alignment_STARTID,
         P_Alignment_AlignH = P_Alignment_STARTID,
@@ -113,7 +114,7 @@ public:
         P_Protection_Locked,
         P_Protection_Hidden,
 
-        P_OTHER_ENDID
+        P_ENDID
     };
 
     FormatPrivate();

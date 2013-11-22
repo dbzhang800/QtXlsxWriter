@@ -38,11 +38,12 @@ namespace QXlsx {
 /*
   When loading from existing .xlsx file. we should create a clean styles object.
   otherwise, default formats should be added.
+
 */
 Styles::Styles(bool createEmpty)
+    : m_nextCustomNumFmtId(176), m_emptyFormatAdded(false)
 {
     //!Fix me. Should the custom num fmt Id starts with 164 or 176 or others??
-    m_nextCustomNumFmtId = 176;
 
     if (!createEmpty) {
         //Add default Format
@@ -78,8 +79,15 @@ Format Styles::xfFormat(int idx) const
 */
 void Styles::addFormat(const Format &format, bool force)
 {
+    if (format.isEmpty()) {
+        //Try do something for empty Format.
+        if (m_emptyFormatAdded)
+            return;
+        m_emptyFormatAdded = true;
+    }
+
     //numFmt
-    if (format.hasProperty(FormatPrivate::P_NumFmt_FormatCode) && !format.hasProperty(FormatPrivate::P_NumFmt_Id)) {
+    if (format.hasNumFmtData() && !format.hasProperty(FormatPrivate::P_NumFmt_Id)) {
         if (m_builtinNumFmtsHash.isEmpty()) {
             m_builtinNumFmtsHash.insert(QStringLiteral("General"), 0);
             m_builtinNumFmtsHash.insert(QStringLiteral("0"), 1);
@@ -140,60 +148,70 @@ void Styles::addFormat(const Format &format, bool force)
     }
 
     //Font
-    if (!format.fontIndexValid()) {
-        if (!m_fontsHash.contains(format.fontKey())) {
-            const_cast<Format *>(&format)->setFontIndex(m_fontsList.size()); //Assign proper index
-            m_fontsList.append(format);
-            m_fontsHash[format.fontKey()] = format;
-        } else {
+    if (format.hasFontData() && !format.fontIndexValid()) {
+        //Assign proper font index, if has font data.
+        if (!m_fontsHash.contains(format.fontKey()))
+            const_cast<Format *>(&format)->setFontIndex(m_fontsList.size());
+        else
             const_cast<Format *>(&format)->setFontIndex(m_fontsHash[format.fontKey()].fontIndex());
-        }
+    }
+    if (!m_fontsHash.contains(format.fontKey())) {
+        //Still a valid font if the format has no fontData. (All font properties are default)
+        m_fontsList.append(format);
+        m_fontsHash[format.fontKey()] = format;
     }
 
     //Fill
-    if (!format.fillIndexValid()) {
-        if (!m_fillsHash.contains(format.fillKey())) {
-            const_cast<Format *>(&format)->setFillIndex(m_fillsList.size()); //Assign proper index
-            m_fillsList.append(format);
-            m_fillsHash[format.fillKey()] = format;
-        } else {
+    if (format.hasFillData() && !format.fillIndexValid()) {
+        //Assign proper fill index, if has fill data.
+        if (!m_fillsHash.contains(format.fillKey()))
+            const_cast<Format *>(&format)->setFillIndex(m_fillsList.size());
+        else
             const_cast<Format *>(&format)->setFillIndex(m_fillsHash[format.fillKey()].fillIndex());
-        }
+    }
+    if (!m_fillsHash.contains(format.fillKey())) {
+        //Still a valid fill if the format has no fillData. (All fill properties are default)
+        m_fillsList.append(format);
+        m_fillsHash[format.fillKey()] = format;
     }
 
     //Border
-    if (!format.borderIndexValid()) {
-        if (!m_bordersHash.contains(format.borderKey())) {
-            const_cast<Format *>(&format)->setBorderIndex(m_bordersList.size()); //Assign proper index
-            m_bordersList.append(format);
-            m_bordersHash[format.borderKey()] = format;
-        } else {
+    if (format.hasBorderData() && !format.borderIndexValid()) {
+        //Assign proper border index, if has border data.
+        if (!m_bordersHash.contains(format.borderKey()))
+            const_cast<Format *>(&format)->setBorderIndex(m_bordersList.size());
+        else
             const_cast<Format *>(&format)->setBorderIndex(m_bordersHash[format.borderKey()].borderIndex());
-        }
+    }
+    if (!m_bordersHash.contains(format.borderKey())) {
+        //Still a valid border if the format has no borderData. (All border properties are default)
+        m_bordersList.append(format);
+        m_bordersHash[format.borderKey()] = format;
     }
 
     //Format
-    if (format.isDxfFormat()) {
-        if (!format.dxfIndexValid()) {
-            if (!m_dxf_formatsHash.contains(format.formatKey())) {
-                const_cast<Format *>(&format)->setDxfIndex(m_dxf_formatsList.size());
-                m_dxf_formatsList.append(format);
-                m_dxf_formatsHash[format.formatKey()] = format;
-            } else {
-                const_cast<Format *>(&format)->setDxfIndex(m_dxf_formatsHash[format.formatKey()].dxfIndex());
-            }
-        }
-    } else {
-        if (!format.xfIndexValid()) {
-            if (!m_xf_formatsHash.contains(format.formatKey()) || force) {
-                const_cast<Format *>(&format)->setXfIndex(m_xf_formatsList.size());
-                m_xf_formatsList.append(format);
-                m_xf_formatsHash[format.formatKey()] = format;
-            } else {
-                const_cast<Format *>(&format)->setXfIndex(m_xf_formatsHash[format.formatKey()].xfIndex());
-            }
-        }
+//    if (format.isDxfFormat()) {
+//        if (!format.dxfIndexValid()) {
+//            if (!m_dxf_formatsHash.contains(format.formatKey())) {
+//                const_cast<Format *>(&format)->setDxfIndex(m_dxf_formatsList.size());
+//                m_dxf_formatsList.append(format);
+//                m_dxf_formatsHash[format.formatKey()] = format;
+//            } else {
+//                const_cast<Format *>(&format)->setDxfIndex(m_dxf_formatsHash[format.formatKey()].dxfIndex());
+//            }
+//        }
+//    } else {
+    if (!format.isEmpty() && !format.xfIndexValid()) {
+        if (m_xf_formatsHash.contains(format.formatKey()))
+            const_cast<Format *>(&format)->setXfIndex(m_xf_formatsHash[format.formatKey()].xfIndex());
+        else
+            const_cast<Format *>(&format)->setXfIndex(m_xf_formatsList.size());
     }
+    if (!m_xf_formatsHash.contains(format.formatKey()) || force) {
+        m_xf_formatsList.append(format);
+        m_xf_formatsHash[format.formatKey()] = format;
+    }
+//    }
 }
 
 QByteArray Styles::saveToXmlData()
@@ -512,24 +530,24 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
     writer.writeStartElement(QStringLiteral("cellXfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_xf_formatsList.size()));
     foreach (const Format &format, m_xf_formatsList) {
-        int num_fmt_id = format.numberFormatIndex();
-        int font_id = format.fontIndex();
-        int fill_id = format.fillIndex();
-        int border_id = format.borderIndex();
         int xf_id = 0;
         writer.writeStartElement(QStringLiteral("xf"));
-        writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(num_fmt_id));
-        writer.writeAttribute(QStringLiteral("fontId"), QString::number(font_id));
-        writer.writeAttribute(QStringLiteral("fillId"), QString::number(fill_id));
-        writer.writeAttribute(QStringLiteral("borderId"), QString::number(border_id));
+        if (format.hasNumFmtData())
+            writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(format.numberFormatIndex()));
+        if (format.hasFontData())
+            writer.writeAttribute(QStringLiteral("fontId"), QString::number(format.fontIndex()));
+        if (format.hasFillData())
+            writer.writeAttribute(QStringLiteral("fillId"), QString::number(format.fillIndex()));
+        if (format.hasBorderData())
+            writer.writeAttribute(QStringLiteral("borderId"), QString::number(format.borderIndex()));
         writer.writeAttribute(QStringLiteral("xfId"), QString::number(xf_id));
-        if (format.numberFormatIndex() > 0)
+        if (format.hasNumFmtData())
             writer.writeAttribute(QStringLiteral("applyNumberFormat"), QStringLiteral("1"));
-        if (format.fontIndex() > 0)
+        if (format.hasFontData())
             writer.writeAttribute(QStringLiteral("applyFont"), QStringLiteral("1"));
-        if (format.borderIndex() > 0)
+        if (format.hasBorderData())
             writer.writeAttribute(QStringLiteral("applyBorder"), QStringLiteral("1"));
-        if (format.fillIndex() > 0)
+        if (format.hasFillData())
             writer.writeAttribute(QStringLiteral("applyFill"), QStringLiteral("1"));
         if (format.hasAlignmentData())
             writer.writeAttribute(QStringLiteral("applyAlignment"), QStringLiteral("1"));
@@ -707,7 +725,8 @@ bool Styles::readFonts(XmlStreamReader &reader)
         }
         m_fontsList.append(format);
         m_fontsHash.insert(format.fontKey(), format);
-        format.setFontIndex(m_fontsList.size()-1);
+        if (format.isValid())
+            format.setFontIndex(m_fontsList.size()-1);
     }
     return true;
 }
@@ -804,7 +823,8 @@ bool Styles::readFill(XmlStreamReader &reader)
 
     m_fillsList.append(fill);
     m_fillsHash.insert(fill.fillKey(), fill);
-    fill.setFillIndex(m_fillsList.size()-1);//first call key(), then setIndex()
+    if (fill.isValid())
+        fill.setFillIndex(m_fillsList.size()-1);
 
     return true;
 }
@@ -889,7 +909,8 @@ bool Styles::readBorder(XmlStreamReader &reader)
 
     m_bordersList.append(border);
     m_bordersHash.insert(border.borderKey(), border);
-    border.setBorderIndex(m_bordersList.size()-1);//first call key(), then setIndex()
+    if (border.isValid())
+        border.setBorderIndex(m_bordersList.size()-1);
 
     return true;
 }
