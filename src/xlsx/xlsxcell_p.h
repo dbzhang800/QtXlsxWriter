@@ -28,7 +28,7 @@
 #include "xlsxglobal.h"
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
-#include "xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 #include <QList>
 #include <QSharedPointer>
 

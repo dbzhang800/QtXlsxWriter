@@ -39,7 +39,7 @@ QT_BEGIN_NAMESPACE_XLSX
 class Styles;
 class Worksheet;
 class WorksheetPrivate;
-class RichString;
+class RichStringPrivate;
 class SharedStrings;
 
 class FormatPrivate;
@@ -234,7 +234,7 @@ private:
     friend class Styles;
     friend class Worksheet;
     friend class WorksheetPrivate;
-    friend class RichString;
+    friend class RichStringPrivate;
     friend class SharedStrings;
     friend class ::FormatTest;
 

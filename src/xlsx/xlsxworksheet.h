@@ -47,6 +47,7 @@ class Drawing;
 class DataValidation;
 class CellRange;
 struct XlsxImageData;
+class RichString;
 
 class WorksheetPrivate;
 class Q_XLSX_EXPORT Worksheet
@@ -59,6 +60,8 @@ public:
     QVariant read(int row, int column) const;
     int writeString(const QString &row_column, const QString &value, const Format &format=Format());
     int writeString(int row, int column, const QString &value, const Format &format=Format());
+    int writeString(const QString &row_column, const RichString &value, const Format &format=Format());
+    int writeString(int row, int column, const RichString &value, const Format &format=Format());
     int writeInlineString(const QString &row_column, const QString &value, const Format &format=Format());
     int writeInlineString(int row, int column, const QString &value, const Format &format=Format());
     int writeNumeric(const QString &row_column, double value, const Format &format=Format());

@@ -22,7 +22,7 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#include "xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxxmlwriter_p.h"
 #include "xlsxxmlreader_p.h"

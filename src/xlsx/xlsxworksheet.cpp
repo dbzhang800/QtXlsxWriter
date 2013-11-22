@@ -22,7 +22,7 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#include "xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 #include "xlsxworksheet.h"
 #include "xlsxworksheet_p.h"
 #include "xlsxworkbook.h"
@@ -441,6 +441,8 @@ int Worksheet::write(int row, int column, const QVariant &value, const Format &f
 
     if (value.isNull()) { //blank
         ret = writeBlank(row, column, format);
+    } else if (value.userType() == qMetaTypeId<RichString>()) {
+        ret = writeString(row, column, value.value<RichString>(), format);
     } else if (value.userType() == QMetaType::Bool) { //Bool
         ret = writeBool(row,column, value.toBool(), format);
     } else if (value.toDateTime().isValid()) { //DateTime
@@ -540,6 +542,44 @@ Format WorksheetPrivate::cellFormat(int row, int col) const
     if (!cellTable[row].contains(col))
         return Format();
     return cellTable[row][col]->format();
+}
+
+/*!
+    \overload
+ */
+int Worksheet::writeString(const QString &row_column, const RichString &value, const Format &format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeString(pos.x(), pos.y(), value, format);
+}
+
+/*!
+    Write string \a value to the cell (\a row, \a column) with the \a format
+*/
+int Worksheet::writeString(int row, int column, const RichString &value, const Format &format)
+{
+    Q_D(Worksheet);
+    int error = 0;
+//    QString content = value.toPlainString();
+    if (d->checkDimensions(row, column))
+        return -1;
+
+//    if (content.size() > d->xls_strmax) {
+//        content = content.left(d->xls_strmax);
+//        error = -2;
+//    }
+
+    d->sharedStrings()->addSharedString(value);
+    Format fmt = format.isValid() ? format : d->cellFormat(row, column);
+    d->workbook->styles()->addFormat(fmt);
+    QSharedPointer<Cell> cell = QSharedPointer<Cell>(new Cell(QString(), Cell::String, fmt, this));
+    cell->d_ptr->richString = value;
+    d->cellTable[row][column] = cell;
+    return error;
 }
 
 /*!

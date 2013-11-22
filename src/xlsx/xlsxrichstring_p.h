@@ -25,56 +25,25 @@
 #ifndef XLSXRICHSTRING_P_H
 #define XLSXRICHSTRING_P_H
 
-#include "xlsxglobal.h"
-#include "xlsxformat.h"
-#include <QStringList>
-#include <QSharedPointer>
+#include "xlsxrichstring.h"
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class RichString;
-// qHash is a friend, but we can't use default arguments for friends (§8.3.6.4)
-XLSX_AUTOTEST_EXPORT uint qHash(const RichString &rs, uint seed = 0) Q_DECL_NOTHROW;
-
-class XLSX_AUTOTEST_EXPORT RichString
+class RichStringPrivate : public QSharedData
 {
 public:
-    RichString();
-    explicit RichString(const QString text);
-    bool isRichString() const;
-    bool isEmtpy() const;
-    QString toPlainString() const;
-
-    int fragmentCount() const;
-    void addFragment(const QString &text, const Format &format);
-    QString fragmentText(int index) const;
-    Format fragmentFormat(int index) const;
-
-private:
-    friend XLSX_AUTOTEST_EXPORT uint qHash(const RichString &rs, uint seed) Q_DECL_NOTHROW;
-    friend XLSX_AUTOTEST_EXPORT bool operator==(const RichString &rs1, const RichString &rs2);
-    friend XLSX_AUTOTEST_EXPORT bool operator!=(const RichString &rs1, const RichString &rs2);
-    friend XLSX_AUTOTEST_EXPORT bool operator<(const RichString &rs1, const RichString &rs2);
+    RichStringPrivate();
+    RichStringPrivate(const RichStringPrivate &other);
+    ~RichStringPrivate();
 
     QByteArray idKey() const;
 
-    QStringList m_fragmentTexts;
-    QList<Format> m_fragmentFormats;
-    QByteArray m_idKey;
-    bool m_dirty;
+    QStringList fragmentTexts;
+    QList<Format> fragmentFormats;
+    QByteArray _idKey;
+    bool _dirty;
 };
 
-
-XLSX_AUTOTEST_EXPORT bool operator==(const RichString &rs1, const RichString &rs2);
-XLSX_AUTOTEST_EXPORT bool operator!=(const RichString &rs1, const RichString &rs2);
-XLSX_AUTOTEST_EXPORT bool operator<(const RichString &rs1, const RichString &rs2);
-XLSX_AUTOTEST_EXPORT bool operator==(const RichString &rs1, const QString &rs2);
-XLSX_AUTOTEST_EXPORT bool operator==(const QString &rs1, const RichString &rs2);
-XLSX_AUTOTEST_EXPORT bool operator!=(const RichString &rs1, const QString &rs2);
-XLSX_AUTOTEST_EXPORT bool operator!=(const QString &rs1, const RichString &rs2);
-
 QT_END_NAMESPACE_XLSX
-
-Q_DECLARE_METATYPE(QXlsx::RichString)
 
 #endif // XLSXRICHSTRING_P_H

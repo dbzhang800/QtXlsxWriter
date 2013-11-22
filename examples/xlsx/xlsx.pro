@@ -10,5 +10,6 @@ SUBDIRS = hello \
     datavalidation \
     definename \
     formulas \
+    richtext \
     demo
 

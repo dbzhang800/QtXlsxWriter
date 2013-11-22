@@ -8,7 +8,7 @@
 #include "private/xlsxworksheet_p.h"
 #include "private/xlsxxmlreader_p.h"
 #include "private/xlsxsharedstrings_p.h"
-#include "private/xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 
 class WorksheetTest : public QObject
 {

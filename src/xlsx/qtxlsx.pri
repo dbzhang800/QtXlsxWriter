@@ -32,7 +32,8 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxdatavalidation.h \
     $$PWD/xlsxdatavalidation_p.h \
     $$PWD/xlsxcellrange.h \
-    $$PWD/xlsxrichstring_p.h
+    $$PWD/xlsxrichstring_p.h \
+    $$PWD/xlsxrichstring.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \

@@ -1,0 +1,11 @@
+/*!
+    \example richtext
+    \title Rich Text Example
+    \brief This is a simplest Qt Xlsx example.
+    \ingroup qtxlsx-examples
+
+    This example demonstrates how to create a new
+     .xlsx file containing some basic data and calculations
+    with Qt Xlsx Library. So lets see how this is achieved.
+    \image richtext.png
+*/

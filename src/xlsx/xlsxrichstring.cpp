@@ -22,20 +22,70 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
+#include "xlsxrichstring.h"
 #include "xlsxrichstring_p.h"
 #include "xlsxformat_p.h"
 
 QT_BEGIN_NAMESPACE_XLSX
 
+RichStringPrivate::RichStringPrivate()
+    :_dirty(true)
+{
+
+}
+
+RichStringPrivate::RichStringPrivate(const RichStringPrivate &other)
+    :QSharedData(other), fragmentTexts(other.fragmentTexts)
+    ,fragmentFormats(other.fragmentFormats)
+    , _idKey(other.idKey()), _dirty(other._dirty)
+{
+
+}
+
+RichStringPrivate::~RichStringPrivate()
+{
+
+}
+
+/*!
+    \class RichString
+
+*/
+
 RichString::RichString()
-    :m_dirty(true)
+    :d(new RichStringPrivate)
 {
 }
 
 RichString::RichString(const QString text)
-    :m_dirty(true)
+    :d(new RichStringPrivate)
 {
     addFragment(text, Format());
+}
+
+RichString::RichString(const RichString &other)
+    :d(other.d)
+{
+
+}
+
+RichString::~RichString()
+{
+
+}
+
+RichString &RichString::operator =(const RichString &other)
+{
+    this->d = other.d;
+    return *this;
+}
+
+/*!
+    Returns the rich string as a QVariant
+*/
+RichString::operator QVariant() const
+{
+    return QVariant(qMetaTypeId<RichString>(), this);
 }
 
 bool RichString::isRichString() const
@@ -47,29 +97,29 @@ bool RichString::isRichString() const
 
 bool RichString::isEmtpy() const
 {
-    return m_fragmentTexts.size() == 0;
+    return d->fragmentTexts.size() == 0;
 }
 
 QString RichString::toPlainString() const
 {
     if (isEmtpy())
         return QString();
-    if (m_fragmentTexts.size() == 1)
-        return m_fragmentTexts[0];
+    if (d->fragmentTexts.size() == 1)
+        return d->fragmentTexts[0];
 
-    return m_fragmentTexts.join(QString());
+    return d->fragmentTexts.join(QString());
 }
 
 int RichString::fragmentCount() const
 {
-    return m_fragmentTexts.size();
+    return d->fragmentTexts.size();
 }
 
 void RichString::addFragment(const QString &text, const Format &format)
 {
-    m_fragmentTexts.append(text);
-    m_fragmentFormats.append(format);
-    m_dirty = true;
+    d->fragmentTexts.append(text);
+    d->fragmentFormats.append(format);
+    d->_dirty = true;
 }
 
 QString RichString::fragmentText(int index) const
@@ -77,7 +127,7 @@ QString RichString::fragmentText(int index) const
     if (index < 0 || index >= fragmentCount())
         return QString();
 
-    return m_fragmentTexts[index];
+    return d->fragmentTexts[index];
 }
 
 Format RichString::fragmentFormat(int index) const
@@ -85,35 +135,35 @@ Format RichString::fragmentFormat(int index) const
     if (index < 0 || index >= fragmentCount())
         return Format();
 
-    return m_fragmentFormats[index];
+    return d->fragmentFormats[index];
 }
 
 /*!
  * \internal
  */
-QByteArray RichString::idKey() const
+QByteArray RichStringPrivate::idKey() const
 {
-    if (m_dirty) {
-        RichString *rs = const_cast<RichString *>(this);
+    if (_dirty) {
+        RichStringPrivate *rs = const_cast<RichStringPrivate *>(this);
         QByteArray bytes;
-        if (!isRichString()) {
-            bytes = toPlainString().toUtf8();
+        if (fragmentTexts.size() == 1) {
+            bytes = fragmentTexts[0].toUtf8();
         } else {
             //Generate a hash value base on QByteArray ?
             bytes.append("@@QtXlsxRichString=");
-            for (int i=0; i<fragmentCount(); ++i) {
+            for (int i=0; i<fragmentTexts.size(); ++i) {
                 bytes.append("@Text");
-                bytes.append(m_fragmentTexts[i].toUtf8());
+                bytes.append(fragmentTexts[i].toUtf8());
                 bytes.append("@Format");
-                if (m_fragmentFormats[i].hasFontData())
-                    bytes.append(m_fragmentFormats[i].fontKey());
+                if (fragmentFormats[i].hasFontData())
+                    bytes.append(fragmentFormats[i].fontKey());
             }
         }
-        rs->m_idKey = bytes;
-        rs->m_dirty = false;
+        rs->_idKey = bytes;
+        rs->_dirty = false;
     }
 
-    return m_idKey;
+    return _idKey;
 }
 
 bool operator==(const RichString &rs1, const RichString &rs2)
@@ -121,7 +171,7 @@ bool operator==(const RichString &rs1, const RichString &rs2)
     if (rs1.fragmentCount() != rs2.fragmentCount())
         return false;
 
-    return rs1.idKey() == rs2.idKey();
+    return rs1.d->idKey() == rs2.d->idKey();
 }
 
 bool operator!=(const RichString &rs1, const RichString &rs2)
@@ -129,7 +179,7 @@ bool operator!=(const RichString &rs1, const RichString &rs2)
     if (rs1.fragmentCount() != rs2.fragmentCount())
         return true;
 
-    return rs1.idKey() != rs2.idKey();
+    return rs1.d->idKey() != rs2.d->idKey();
 }
 
 /*!
@@ -137,7 +187,7 @@ bool operator!=(const RichString &rs1, const RichString &rs2)
  */
 bool operator<(const RichString &rs1, const RichString &rs2)
 {
-    return rs1.idKey() < rs2.idKey();
+    return rs1.d->idKey() < rs2.d->idKey();
 }
 
 bool operator ==(const RichString &rs1, const QString &rs2)
@@ -168,7 +218,7 @@ bool operator !=(const QString &rs1, const RichString &rs2)
 
 uint qHash(const RichString &rs, uint seed) Q_DECL_NOTHROW
 {
-    return qHash(rs.idKey(), seed);
+    return qHash(rs.d->idKey(), seed);
 }
 
 QT_END_NAMESPACE_XLSX

@@ -1,5 +1,5 @@
 #include "private/xlsxsharedstrings_p.h"
-#include "private/xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 #include "xlsxformat.h"
 #include <QString>
 #include <QtTest>

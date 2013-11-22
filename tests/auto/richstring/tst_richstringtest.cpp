@@ -1,4 +1,4 @@
-#include "private/xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 #include <QtTest>
 #include <QDebug>
 

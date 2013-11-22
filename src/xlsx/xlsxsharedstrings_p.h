@@ -26,7 +26,7 @@
 #define XLSXSHAREDSTRINGS_H
 
 #include "xlsxglobal.h"
-#include "xlsxrichstring_p.h"
+#include "xlsxrichstring.h"
 #include <QHash>
 #include <QStringList>
 #include <QSharedPointer>
