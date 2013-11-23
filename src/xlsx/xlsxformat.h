@@ -237,6 +237,7 @@ private:
     friend class RichStringPrivate;
     friend class SharedStrings;
     friend class ::FormatTest;
+    friend Q_XLSX_EXPORT QDebug operator<<(QDebug, const Format &f);
 
     bool fontIndexValid() const;
     int fontIndex() const;
@@ -273,6 +274,10 @@ private:
 
     QExplicitlySharedDataPointer<FormatPrivate> d;
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+Q_XLSX_EXPORT QDebug operator<<(QDebug dbg, const Format &f);
+#endif
 
 QT_END_NAMESPACE_XLSX
 

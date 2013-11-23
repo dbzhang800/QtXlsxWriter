@@ -26,7 +26,7 @@
 #define XLSXFORMAT_P_H
 #include "xlsxformat.h"
 #include <QSharedData>
-#include <QHash>
+#include <QMap>
 
 namespace QXlsx {
 
@@ -148,7 +148,7 @@ public:
 
     int theme;
 
-    QHash<int, QVariant> property;
+    QMap<int, QVariant> property;
 };
 
 }

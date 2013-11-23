@@ -903,7 +903,7 @@ QByteArray Format::formatKey() const
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
 
-        QHashIterator<int, QVariant> i(d->property);
+        QMapIterator<int, QVariant> i(d->property);
         while (i.hasNext()) {
             i.next();
             stream<<i.key()<<i.value();
@@ -1107,5 +1107,13 @@ QColor Format::colorProperty(int propertyId) const
         return QColor();
     return qvariant_cast<QColor>(prop);
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug dbg, const Format &f)
+{
+    dbg.nospace() << "QXlsx::Format(" << f.d->property << ")";
+    return dbg.space();
+}
+#endif
 
 QT_END_NAMESPACE_XLSX
