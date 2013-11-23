@@ -285,6 +285,16 @@ void Format::setNumberFormat(int id, const QString &format)
 
 /*!
     \internal
+    Called by styles to fix the numFmt
+ */
+void Format::fixNumberFormat(int id, const QString &format)
+{
+    setProperty(FormatPrivate::P_NumFmt_Id, id, false);
+    setProperty(FormatPrivate::P_NumFmt_FormatCode, format, false);
+}
+
+/*!
+    \internal
     Return true if the format has number format.
  */
 bool Format::hasNumFmtData() const
@@ -1170,13 +1180,6 @@ bool Format::operator !=(const Format &format) const
     return this->formatKey() != format.formatKey();
 }
 
-bool Format::isDxfFormat() const
-{
-    if (!d)
-        return false;
-    return d->is_dxf_fomat;
-}
-
 int Format::theme() const
 {
     return d->theme;
@@ -1195,7 +1198,7 @@ QVariant Format::property(int propertyId) const
 /*!
  * \internal
  */
-void Format::setProperty(int propertyId, const QVariant &value)
+void Format::setProperty(int propertyId, const QVariant &value, bool detach)
 {
     if (!d)
         d = new FormatPrivate;
@@ -1203,12 +1206,14 @@ void Format::setProperty(int propertyId, const QVariant &value)
     if (value.isValid()) {
         if (d->property.contains(propertyId) && d->property[propertyId] == value)
             return;
-        d.detach();
+        if (detach)
+            d.detach();
         d->property[propertyId] = value;
     } else {
         if (!d->property.contains(propertyId))
             return;
-        d.detach();
+        if (detach)
+            d.detach();
         d->property.remove(propertyId);
     }
 

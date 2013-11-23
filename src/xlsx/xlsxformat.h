@@ -220,7 +220,7 @@ public:
     bool operator != (const Format &format) const;
 
     QVariant property(int propertyId) const;
-    void setProperty(int propertyId, const QVariant &value);
+    void setProperty(int propertyId, const QVariant &value, bool detach=true);
     void clearProperty(int propertyId);
     bool hasProperty(int propertyId) const;
 
@@ -238,6 +238,8 @@ private:
     friend class SharedStrings;
     friend class ::FormatTest;
     friend Q_XLSX_EXPORT QDebug operator<<(QDebug, const Format &f);
+
+    void fixNumberFormat(int id, const QString &format);
 
     bool fontIndexValid() const;
     int fontIndex() const;
@@ -265,7 +267,6 @@ private:
     bool xfIndexValid() const;
     int xfIndex() const;
     void setXfIndex(int index);
-    bool isDxfFormat() const;
     bool dxfIndexValid() const;
     int dxfIndex() const;
     void setDxfIndex(int index);

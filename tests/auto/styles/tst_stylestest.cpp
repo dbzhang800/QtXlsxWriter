@@ -14,8 +14,8 @@ public:
 
 private Q_SLOTS:
     void testEmptyStyle();
-    void testAddFormat();
-    void testAddFormat2();
+    void testAddXfFormat();
+    void testAddXfFormat2();
     void testSolidFillBackgroundColor();
 
     void testWriteBorders();
@@ -39,33 +39,33 @@ void StylesTest::testEmptyStyle()
     QVERIFY2(xmlData.contains("<cellXfs count=\"1\"><xf xfId=\"0\"/></cellXfs>"), "Must have one cell style");
 }
 
-void StylesTest::testAddFormat()
+void StylesTest::testAddXfFormat()
 {
     QXlsx::Styles styles;
 
     for (int i=0; i<10; ++i) {
         QXlsx::Format format;
         format.setFontBold(true);
-        styles.addFormat(format);
+        styles.addXfFormat(format);
     }
 
     QByteArray xmlData = styles.saveToXmlData();
     QVERIFY2(xmlData.contains("<cellXfs count=\"2\">"), ""); //Note we have a default one
 }
 
-void StylesTest::testAddFormat2()
+void StylesTest::testAddXfFormat2()
 {
     QXlsx::Styles styles;
 
     QXlsx::Format format;
     format.setNumberFormat("h:mm:ss AM/PM"); //builtin 19
-    styles.addFormat(format);
+    styles.addXfFormat(format);
 
     QCOMPARE(format.numberFormatIndex(), 19);
 
     QXlsx::Format format2;
     format2.setNumberFormat("aaaaa h:mm:ss AM/PM"); //custom
-    styles.addFormat(format2);
+    styles.addXfFormat(format2);
 
     QCOMPARE(format2.numberFormatIndex(), 176);
 }
@@ -76,7 +76,7 @@ void StylesTest::testSolidFillBackgroundColor()
     QXlsx::Styles styles;
     QXlsx::Format format;
     format.setPatternBackgroundColor(QColor(Qt::red));
-    styles.addFormat(format);
+    styles.addXfFormat(format);
 
     QByteArray xmlData = styles.saveToXmlData();
 
@@ -88,7 +88,7 @@ void StylesTest::testWriteBorders()
     QXlsx::Styles styles;
     QXlsx::Format format;
     format.setRightBorderStyle(QXlsx::Format::BorderThin);
-    styles.addFormat(format);
+    styles.addXfFormat(format);
 
     QByteArray xmlData = styles.saveToXmlData();
 

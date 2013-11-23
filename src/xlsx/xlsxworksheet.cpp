@@ -575,7 +575,7 @@ int Worksheet::writeString(int row, int column, const RichString &value, const F
 
     d->sharedStrings()->addSharedString(value);
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
     QSharedPointer<Cell> cell = QSharedPointer<Cell>(new Cell(QString(), Cell::String, fmt, this));
     cell->d_ptr->richString = value;
     d->cellTable[row][column] = cell;
@@ -613,7 +613,7 @@ int Worksheet::writeString(int row, int column, const QString &value, const Form
 
     d->sharedStrings()->addSharedString(content);
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(content, Cell::String, fmt, this));
     return error;
 }
@@ -648,7 +648,7 @@ int Worksheet::writeInlineString(int row, int column, const QString &value, cons
     }
 
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::InlineString, fmt, this));
     return error;
 }
@@ -676,7 +676,7 @@ int Worksheet::writeNumeric(int row, int column, double value, const Format &for
         return -1;
 
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, fmt, this));
     return 0;
 }
@@ -710,7 +710,7 @@ int Worksheet::writeFormula(int row, int column, const QString &formula, const F
         _formula.remove(0,1);
 
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
     Cell *data = new Cell(result, Cell::Formula, fmt, this);
     data->d_ptr->formula = _formula;
     d->cellTable[row][column] = QSharedPointer<Cell>(data);
@@ -740,7 +740,7 @@ int Worksheet::writeArrayFormula(const CellRange &range, const QString &formula,
     for (int row=range.firstRow(); row<=range.lastRow(); ++row) {
         for (int column=range.firstColumn(); column<=range.lastColumn(); ++column) {
             Format _format = format.isValid() ? format : d->cellFormat(row, column);
-            d->workbook->styles()->addFormat(_format);
+            d->workbook->styles()->addXfFormat(_format);
             if (row == range.firstRow() && column == range.firstColumn()) {
                 QSharedPointer<Cell> data(new Cell(0, Cell::ArrayFormula, _format, this));
                 data->d_ptr->formula = _formula;
@@ -786,7 +786,7 @@ int Worksheet::writeBlank(int row, int column, const Format &format)
         return -1;
 
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
 
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(QVariant(), Cell::Blank, fmt, this));
 
@@ -815,7 +815,7 @@ int Worksheet::writeBool(int row, int column, bool value, const Format &format)
         return -1;
 
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Boolean, fmt, this));
 
     return 0;
@@ -845,7 +845,7 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const For
     Format fmt = format;
     if (!fmt.isValid())
         fmt.setNumberFormat(d->workbook->defaultDateFormat());
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
 
     double value = datetimeToNumber(dt, d->workbook->isDate1904());
 
@@ -909,7 +909,7 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format
         fmt.setFontColor(Qt::blue);
         fmt.setFontUnderline(Format::FontUnderlineSingle);
     }
-    d->workbook->styles()->addFormat(fmt);
+    d->workbook->styles()->addXfFormat(fmt);
 
     //Write the hyperlink string as normal string.
     d->sharedStrings()->addSharedString(displayString);
@@ -955,7 +955,7 @@ int Worksheet::mergeCells(const CellRange &range, const Format &format)
         return -1;
 
     if (format.isValid())
-        d->workbook->styles()->addFormat(format);
+        d->workbook->styles()->addXfFormat(format);
 
     for (int row = range.firstRow(); row <= range.lastRow(); ++row) {
         for (int col = range.firstColumn(); col <= range.lastColumn(); ++col) {
@@ -1415,7 +1415,7 @@ bool Worksheet::setRow(int row, double height, const Format &format, bool hidden
         return false;
 
     d->rowsInfo[row] = QSharedPointer<XlsxRowInfo>(new XlsxRowInfo(height, format, hidden));
-    d->workbook->styles()->addFormat(format);
+    d->workbook->styles()->addXfFormat(format);
     return true;
 }
 
@@ -1510,7 +1510,7 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, const Format 
                 d->colsInfoHelper[c] = info;
         }
     }
-    d->workbook->styles()->addFormat(format);
+    d->workbook->styles()->addXfFormat(format);
 
     return true;
 }

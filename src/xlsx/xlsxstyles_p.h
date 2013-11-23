@@ -56,8 +56,10 @@ class XLSX_AUTOTEST_EXPORT Styles
 public:
     Styles(bool createEmpty=false);
     ~Styles();
-    void addFormat(const Format &format, bool force=false);
+    void addXfFormat(const Format &format, bool force=false);
     Format xfFormat(int idx) const;
+    void addDxfFormat(const Format &format, bool force=false);
+    Format dxfFormat(int idx) const;
 
     QByteArray saveToXmlData();
     void saveToXmlFile(QIODevice *device);
@@ -68,23 +70,31 @@ private:
     friend class Format;
     friend class ::StylesTest;
 
+    void fixNumFmt(const Format &format);
+
     void writeNumFmts(XmlStreamWriter &writer);
     void writeFonts(XmlStreamWriter &writer);
+    void writeFont(XmlStreamWriter &writer, const Format &font, bool isDxf = false);
     void writeFills(XmlStreamWriter &writer);
-    void writeFill(XmlStreamWriter &writer, const Format &fill);
+    void writeFill(XmlStreamWriter &writer, const Format &fill, bool isDxf = false);
     void writeBorders(XmlStreamWriter &writer);
+    void writeBorder(XmlStreamWriter &writer, const Format &border, bool isDxf = false);
     void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
     void writeCellXfs(XmlStreamWriter &writer);
     void writeDxfs(XmlStreamWriter &writer);
+    void writeDxf(XmlStreamWriter &writer, const Format &format);
 
     bool readNumFmts(XmlStreamReader &reader);
     bool readFonts(XmlStreamReader &reader);
+    bool readFont(XmlStreamReader &reader, Format &format);
     bool readFills(XmlStreamReader &reader);
-    bool readFill(XmlStreamReader &reader);
+    bool readFill(XmlStreamReader &reader, Format &format);
     bool readBorders(XmlStreamReader &reader);
-    bool readBorder(XmlStreamReader &reader);
+    bool readBorder(XmlStreamReader &reader, Format &format);
     bool readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor);
     bool readCellXfs(XmlStreamReader &reader);
+    bool readDxfs(XmlStreamReader &reader);
+    bool readDxf(XmlStreamReader &reader);
     bool readColors(XmlStreamReader &reader);
     bool readIndexedColors(XmlStreamReader &reader);
 
