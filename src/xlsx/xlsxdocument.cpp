@@ -121,6 +121,7 @@ int Document::write(int row, int col, const QVariant &value, const Format &forma
 
 /*!
     \overload
+    Returns the contents of the cell \a cell.
 */
 QVariant Document::read(const QString &cell) const
 {
@@ -128,7 +129,7 @@ QVariant Document::read(const QString &cell) const
 }
 
 /*!
-    Return the contents of the cell (\a row, \a column).
+    Returns the contents of the cell (\a row, \a col).
  */
 QVariant Document::read(int row, int col) const
 {
@@ -136,14 +137,8 @@ QVariant Document::read(int row, int col) const
 }
 
 /*!
- * \brief Insert an image to current active worksheet.
- * \param row
- * \param column
- * \param image
- * \param xOffset
- * \param yOffset
- * \param xScale
- * \param yScale
+ * \brief Insert an \a image to current active worksheet to the position \a row, \a column with the given
+ * \a xOffset, \a yOffset, \a xScale and \a yScale.
  */
 int Document::insertImage(int row, int column, const QImage &image, double xOffset, double yOffset, double xScale, double yScale)
 {
@@ -190,8 +185,10 @@ int Document::unmergeCells(const CellRange &range)
 }
 
 /*!
-  Sets row \a height and \a format. Row height measured in point size. If format
-  equals 0 then format is ignored. \a row is 1-indexed.
+  Sets the properties of \a row with the given \a height, \a format and \a hidden.
+  \a row is 1-indexed.
+
+  Returns false if failed.
  */
 bool Document::setRow(int row, double height, const Format &format, bool hidden)
 {
@@ -199,10 +196,13 @@ bool Document::setRow(int row, double height, const Format &format, bool hidden)
 }
 
 /*!
-  Sets column width and format for all columns from colFirst to colLast. Column
+  Sets the column properties for all columns from \a colFirst to \a colLast with
+  the given \a width, \a format and \a hidden. Column
   width measured as the number of characters of the maximum digit width of the
-  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
-  equals 0 then format is ignored. \a colFirst and \a colLast are all 1-indexed.
+  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font.
+  \a colFirst and \a colLast are all 1-indexed.
+
+  Return false if failed.
  */
 bool Document::setColumn(int colFirst, int colLast, double width, const Format &format, bool hidden)
 {
@@ -210,10 +210,13 @@ bool Document::setColumn(int colFirst, int colLast, double width, const Format &
 }
 
 /*!
-  Sets column width and format for all columns from colFirst to colLast. Column
-  width measured as the number of characters of the maximum digit width of the
-  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
-  equals 0 then format is ignored. \a colFirst and \a colLast should be "A", "B", "C", ...
+  \overload
+
+  Sets column width and format for all columns from \a colFirst to \a colLast with
+  the given \a width and \a format. Column
+  \a width measured as the number of characters of the maximum digit width of the
+  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font.
+  \a colFirst and \a colLast should be "A", "B", "C", ...
  */
 bool Document::setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format, bool hidden)
 {
@@ -221,7 +224,8 @@ bool Document::setColumn(const QString &colFirst, const QString &colLast, double
 }
 
 /*!
-   Groups rows from rowFirst to rowLast. Returns false if error occurs.
+   Groups rows from \a rowFirst to \a rowLast with the given \a collapsed.
+   Returns false if error occurs.
  */
 bool Document::groupRows(int rowFirst, int rowLast, bool collapsed)
 {
@@ -229,7 +233,8 @@ bool Document::groupRows(int rowFirst, int rowLast, bool collapsed)
 }
 
 /*!
-   Groups columns from colFirst to colLast. Returns false if error occurs.
+   Groups columns from \a colFirst to \a colLast with the given \a collapsed.
+   Returns false if error occurs.
  */
 bool Document::groupColumns(int colFirst, int colLast, bool collapsed)
 {
@@ -237,9 +242,7 @@ bool Document::groupColumns(int colFirst, int colLast, bool collapsed)
 }
 
 /*!
- * \brief Add a data validation rule for current worksheet
- * \param validation
- * \return
+ *  Add a data \a validation rule for current worksheet. Returns true if successful.
  */
 bool Document::addDataValidation(const DataValidation &validation)
 {
@@ -247,7 +250,7 @@ bool Document::addDataValidation(const DataValidation &validation)
 }
 
 /*!
- * Returns a Cell object based on the given \a pos.
+ * Returns a Cell object based on the given \a pos. 0 will be returned if the cell doesn't exist.
  */
 Cell *Document::cellAt(const QString &pos) const
 {
@@ -263,10 +266,11 @@ Cell *Document::cellAt(int row, int col) const
 }
 
 /*!
- * \brief Create a defined name in the workbook.
- * \param name The defined name
+ * \brief Create a defined name in the workbook with the given \a name, \a formula, \a comment
+ *  and \a scope.
+ *
+ * \param name The defined name.
  * \param formula The cell or range that the defined name refers to.
- * \param comment
  * \param scope The name of one worksheet, or empty which means golbal scope.
  * \return Return false if the name invalid.
  */
@@ -305,7 +309,7 @@ QString Document::documentProperty(const QString &key) const
     Office Button -> Prepare -> Properties option in Excel and are also
     available to external applications that read or index windows files.
 
-    The properties \a key that can be set are:
+    The \a property \a key that can be set are:
 
     \list
     \li title
@@ -345,6 +349,7 @@ Workbook *Document::workbook() const
 
 /*!
  * Creates and append an document with name \a name.
+ * Return true if success.
  */
 bool Document::addWorksheet(const QString &name)
 {
@@ -363,7 +368,8 @@ bool Document::insertWorkSheet(int index, const QString &name)
 }
 
 /*!
- * \brief Rename current worksheet to new \a name.
+   Rename current worksheet to new \a name.
+   Returns true if the name defined successful.
  */
 bool Document::setSheetName(const QString &name)
 {
@@ -412,6 +418,7 @@ void Document::setCurrentWorksheet(const QString &name)
 /*!
  * Save current document to the filesystem. If no name specified when
  * the document constructed, a default name "book1.xlsx" will be used.
+ * Returns true if saved successfully.
  */
 bool Document::save()
 {
@@ -423,6 +430,7 @@ bool Document::save()
 
 /*!
  * Saves the document to the file with the given \a name.
+ * Returns true if saved successfully.
  */
 bool Document::saveAs(const QString &name)
 {

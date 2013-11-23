@@ -116,6 +116,9 @@ QString CellRange::toString() const
     return cell_1 + QLatin1String(":") + cell_2;
 }
 
+/*!
+ * Returns true if the Range is valid.
+ */
 bool CellRange::isValid() const
 {
     return left <= right && top <= bottom;

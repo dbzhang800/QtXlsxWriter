@@ -66,6 +66,113 @@ FormatPrivate::~FormatPrivate()
  * \brief Providing the methods and properties that are available for formatting cells in Excel.
  */
 
+/*!
+ * \enum Format::FontScript
+ *
+ * The enum type defines the type of font script.
+ *
+ * \value FontScriptNormal normal
+ * \value FontScriptSuper super script
+ * \value FontScriptSub sub script
+ */
+
+
+/*!
+ * \enum Format::FontUnderline
+ *
+ * The enum type defines the type of font underline.
+ *
+ * \value FontUnderlineNone
+ * \value FontUnderlineSingle
+ * \value FontUnderlineDouble
+ * \value FontUnderlineSingleAccounting
+ * \value FontUnderlineDoubleAccounting
+ */
+
+/*!
+ * \enum Format::HorizontalAlignment
+ *
+ * The enum type defines the type of horizontal alignment.
+ *
+ * \value AlignHGeneral
+ * \value AlignLeft
+ * \value AlignHCenter
+ * \value AlignRight
+ * \value AlignHFill
+ * \value AlignHJustify
+ * \value AlignHMerge
+ * \value AlignHDistributed
+ */
+
+/*!
+ * \enum Format::VerticalAlignment
+ *
+ * The enum type defines the type of vertical alignment.
+ *
+ * \value AlignTop,
+ * \value AlignVCenter,
+ * \value AlignBottom,
+ * \value AlignVJustify,
+ * \value AlignVDistributed
+ */
+
+/*!
+ * \enum Format::BorderStyle
+ *
+ * The enum type defines the type of font underline.
+ *
+ * \value BorderNone
+ * \value BorderThin
+ * \value BorderMedium
+ * \value BorderDashed
+ * \value BorderDotted
+ * \value BorderThick
+ * \value BorderDouble
+ * \value BorderHair
+ * \value BorderMediumDashed
+ * \value BorderDashDot
+ * \value BorderMediumDashDot
+ * \value BorderDashDotDot
+ * \value BorderMediumDashDotDot
+ * \value BorderSlantDashDot
+*/
+
+/*!
+ * \enum Format::DiagonalBorderType
+ *
+ * The enum type defines the type of diagonal border.
+ *
+ * \value DiagonalBorderNone
+ * \value DiagonalBorderDown
+ * \value DiagonalBorderUp
+ * \value DiagnoalBorderBoth
+ */
+
+/*!
+ * \enum Format::FillPattern
+ *
+ * The enum type defines the type of fill.
+ *
+ * \value PatternNone
+ * \value PatternSolid
+ * \value PatternMediumGray
+ * \value PatternDarkGray
+ * \value PatternLightGray
+ * \value PatternDarkHorizontal
+ * \value PatternDarkVertical
+ * \value PatternDarkDown
+ * \value PatternDarkUp
+ * \value PatternDarkGrid
+ * \value PatternDarkTrellis
+ * \value PatternLightHorizontal
+ * \value PatternLightVertical
+ * \value PatternLightDown
+ * \value PatternLightUp
+ * \value PatternLightTrellis
+ * \value PatternGray125
+ * \value PatternGray0625
+ * \value PatternLightGrid
+ */
 
 /*!
  *  Creates a new invalid format.
@@ -217,7 +324,7 @@ bool Format::fontItalic() const
 }
 
 /*!
- * Turn on/off the italic font.
+ * Turn on/off the italic font based on \a italic.
  */
 void Format::setFontItalic(bool italic)
 {
@@ -233,7 +340,7 @@ bool Format::fontStrikeOut() const
 }
 
 /*!
- * Turn on/off the strikeOut font.
+ * Turn on/off the strikeOut font based on \a strikeOut.
  */
 void Format::setFontStrikeOut(bool strikeOut)
 {
@@ -273,7 +380,7 @@ bool Format::fontBold() const
 }
 
 /*!
- * Turn on/off the bold font.
+ * Turn on/off the bold font based on the given \a bold.
  */
 void Format::setFontBold(bool bold)
 {
@@ -289,7 +396,7 @@ Format::FontScript Format::fontScript() const
 }
 
 /*!
- * Set the script style of the font.
+ * Set the script style of the font to \a script.
  */
 void Format::setFontScript(FontScript script)
 {
@@ -305,7 +412,7 @@ Format::FontUnderline Format::fontUnderline() const
 }
 
 /*!
- * Set the underline style of the font.
+ * Set the underline style of the font to \a underline.
  */
 void Format::setFontUnderline(FontUnderline underline)
 {
@@ -321,7 +428,7 @@ bool Format::fontOutline() const
 }
 
 /*!
- * Turn on/off the outline font.
+ * Turn on/off the outline font based on \a outline.
  */
 void Format::setFontOutline(bool outline)
 {
@@ -337,7 +444,7 @@ QString Format::fontName() const
 }
 
 /*!
- * Set the name of the font.
+ * Set the name of the font to \a name.
  */
 void Format::setFontName(const QString &name)
 {
@@ -423,7 +530,7 @@ Format::HorizontalAlignment Format::horizontalAlignment() const
 }
 
 /*!
- * Set the horizontal alignment.
+ * Set the horizontal alignment with the given \a align.
  */
 void Format::setHorizontalAlignment(HorizontalAlignment align)
 {
@@ -449,7 +556,7 @@ Format::VerticalAlignment Format::verticalAlignment() const
 }
 
 /*!
- * Set the vertical alignment.
+ * Set the vertical alignment with the given \a align.
  */
 void Format::setVerticalAlignment(VerticalAlignment align)
 {
@@ -465,7 +572,7 @@ bool Format::textWrap() const
 }
 
 /*!
- * Enable the text wrap
+ * Enable the text wrap if \a wrap is true.
  */
 void Format::setTextWarp(bool wrap)
 {
@@ -484,7 +591,7 @@ int Format::rotation() const
 }
 
 /*!
- * Set the text roation. Must be in the range [0, 180] or 255.
+ * Set the text roation with the given \a rotation. Must be in the range [0, 180] or 255.
  */
 void Format::setRotation(int rotation)
 {
@@ -500,7 +607,7 @@ int Format::indent() const
 }
 
 /*!
- * Set the text indentation level. Must be less than or equal to 15.
+ * Set the text indentation level with the given \a indent. Must be less than or equal to 15.
  */
 void Format::setIndent(int indent)
 {
@@ -524,7 +631,7 @@ bool Format::shrinkToFit() const
 }
 
 /*!
- * Turn on/off shrink to fit.
+ * Turn on/off shrink to fit base on \a shink.
  */
 void Format::setShrinkToFit(bool shink)
 {
@@ -556,7 +663,7 @@ bool Format::hasAlignmentData() const
 }
 
 /*!
- * Set the border style.
+ * Set the border style with the given \a style.
  */
 void Format::setBorderStyle(BorderStyle style)
 {
@@ -567,7 +674,7 @@ void Format::setBorderStyle(BorderStyle style)
 }
 
 /*!
- * Set the border color.
+ * Sets the border color with the given \a color.
  */
 void Format::setBorderColor(const QColor &color)
 {
@@ -578,7 +685,7 @@ void Format::setBorderColor(const QColor &color)
 }
 
 /*!
- * Return the left border style
+ * Returns the left border style
  */
 Format::BorderStyle Format::leftBorderStyle() const
 {
@@ -586,7 +693,7 @@ Format::BorderStyle Format::leftBorderStyle() const
 }
 
 /*!
- * Set the left border style
+ * Sets the left border style to \a style
  */
 void Format::setLeftBorderStyle(BorderStyle style)
 {
@@ -594,108 +701,169 @@ void Format::setLeftBorderStyle(BorderStyle style)
 }
 
 /*!
- * Return the left border color
+ * Returns the left border color
  */
 QColor Format::leftBorderColor() const
 {
     return colorProperty(FormatPrivate::P_Border_LeftColor);
 }
 
+/*!
+    Sets the left border color to the given \a color
+*/
 void Format::setLeftBorderColor(const QColor &color)
 {
     setProperty(FormatPrivate::P_Border_LeftColor, color);
 }
 
+/*!
+    Returns the right border style.
+*/
 Format::BorderStyle Format::rightBorderStyle() const
 {
     return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_RightStyle));
 }
 
+/*!
+    Sets the right border style to the given \a style.
+*/
 void Format::setRightBorderStyle(BorderStyle style)
 {
     setProperty(FormatPrivate::P_Border_RightStyle, style);
 }
 
+/*!
+    Returns the right border color.
+*/
 QColor Format::rightBorderColor() const
 {
     return colorProperty(FormatPrivate::P_Border_RightColor);
 }
 
+/*!
+    Sets the right border color to the given \a color
+*/
 void Format::setRightBorderColor(const QColor &color)
 {
     setProperty(FormatPrivate::P_Border_RightColor, color);
 }
 
+/*!
+    Returns the top border style.
+*/
 Format::BorderStyle Format::topBorderStyle() const
 {
     return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_TopStyle));
 }
 
+/*!
+    Sets the top border style to the given \a style.
+*/
 void Format::setTopBorderStyle(BorderStyle style)
 {
     setProperty(FormatPrivate::P_Border_TopStyle, style);
 }
 
+/*!
+    Returns the top border color.
+*/
 QColor Format::topBorderColor() const
 {
     return colorProperty(FormatPrivate::P_Border_TopColor);
 }
 
+/*!
+    Sets the top border color to the given \a color.
+*/
 void Format::setTopBorderColor(const QColor &color)
 {
     setProperty(FormatPrivate::P_Border_TopColor, color);
 }
 
+/*!
+    Returns the bottom border style.
+*/
 Format::BorderStyle Format::bottomBorderStyle() const
 {
     return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_BottomStyle));
 }
 
+/*!
+    Sets the bottom border style to the given \a style.
+*/
 void Format::setBottomBorderStyle(BorderStyle style)
 {
     setProperty(FormatPrivate::P_Border_BottomStyle, style);
 }
 
+/*!
+    Returns the bottom border color.
+*/
 QColor Format::bottomBorderColor() const
 {
     return colorProperty(FormatPrivate::P_Border_BottomColor);
 }
 
+/*!
+    Sets the bottom border color to the given \a color.
+*/
 void Format::setBottomBorderColor(const QColor &color)
 {
     setProperty(FormatPrivate::P_Border_BottomColor, color);
 }
 
+/*!
+    Return the diagonla border style.
+*/
 Format::BorderStyle Format::diagonalBorderStyle() const
 {
     return static_cast<BorderStyle>(intProperty(FormatPrivate::P_Border_DiagonalStyle));
 }
 
+/*!
+    Sets the diagonal border style to the given \a style.
+*/
 void Format::setDiagonalBorderStyle(BorderStyle style)
 {
     setProperty(FormatPrivate::P_Border_DiagonalStyle, style);
 }
 
+/*!
+    Returns the diagonal border type.
+*/
 Format::DiagonalBorderType Format::diagonalBorderType() const
 {
     return static_cast<DiagonalBorderType>(intProperty(FormatPrivate::P_Border_DiagonalType));
 }
 
+/*!
+    Sets the diagonal border type to the given \a style
+*/
 void Format::setDiagonalBorderType(DiagonalBorderType style)
 {
     setProperty(FormatPrivate::P_Border_DiagonalType, style);
 }
 
+/*!
+    Returns the diagonal border color.
+*/
 QColor Format::diagonalBorderColor() const
 {
     return colorProperty(FormatPrivate::P_Border_DiagonalColor);
 }
 
+/*!
+    Sets the diagonal border color to the given \a color
+*/
 void Format::setDiagonalBorderColor(const QColor &color)
 {
     setProperty(FormatPrivate::P_Border_DiagonalColor, color);
 }
 
+/*!
+    \internal
+    Returns whether this format has been set valid border index.
+*/
 bool Format::borderIndexValid() const
 {
     if (!hasBorderData())
@@ -703,6 +871,10 @@ bool Format::borderIndexValid() const
     return d->border_index_valid;
 }
 
+/*!
+    \internal
+    Returns the border index.
+*/
 int Format::borderIndex() const
 {
     return d->border_index;
@@ -751,21 +923,33 @@ bool Format::hasBorderData() const
     return false;
 }
 
+/*!
+    Return the fill pattern.
+*/
 Format::FillPattern Format::fillPattern() const
 {
     return static_cast<FillPattern>(intProperty(FormatPrivate::P_Fill_Pattern));
 }
 
+/*!
+    Sets the fill pattern to the given \a pattern.
+*/
 void Format::setFillPattern(FillPattern pattern)
 {
     setProperty(FormatPrivate::P_Fill_Pattern, pattern);
 }
 
+/*!
+    Returns the foreground color of the pattern.
+*/
 QColor Format::patternForegroundColor() const
 {
     return colorProperty(FormatPrivate::P_Fill_FgColor);
 }
 
+/*!
+    Sets the foreground color of the pattern with the given \a color.
+*/
 void Format::setPatternForegroundColor(const QColor &color)
 {
     if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
@@ -773,11 +957,17 @@ void Format::setPatternForegroundColor(const QColor &color)
     setProperty(FormatPrivate::P_Fill_FgColor, color);
 }
 
+/*!
+    Returns the background color of the pattern.
+*/
 QColor Format::patternBackgroundColor() const
 {
     return colorProperty(FormatPrivate::P_Fill_BgColor);
 }
 
+/*!
+    Sets the background color of the pattern with the given \a color.
+*/
 void Format::setPatternBackgroundColor(const QColor &color)
 {
     if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
@@ -842,21 +1032,33 @@ bool Format::hasFillData() const
     return false;
 }
 
+/*!
+    Returns whether the hidden protection property is set to true.
+*/
 bool Format::hidden() const
 {
     return boolProperty(FormatPrivate::P_Protection_Hidden);
 }
 
+/*!
+    Sets the hidden protection property with the given \a hidden.
+*/
 void Format::setHidden(bool hidden)
 {
     setProperty(FormatPrivate::P_Protection_Hidden, hidden);
 }
 
+/*!
+    Returns whether the locked protection property is set to true.
+*/
 bool Format::locked() const
 {
     return boolProperty(FormatPrivate::P_Protection_Locked);
 }
 
+/*!
+    Sets the locked protection property with the given \a locked.
+*/
 void Format::setLocked(bool locked)
 {
     setProperty(FormatPrivate::P_Protection_Locked, locked);
@@ -952,11 +1154,17 @@ bool Format::dxfIndexValid() const
     return d->dxf_indexValid;
 }
 
+/*!
+    Returns ture if the \a format is equal to this format.
+*/
 bool Format::operator ==(const Format &format) const
 {
     return this->formatKey() == format.formatKey();
 }
 
+/*!
+    Returns ture if the \a format is not equal to this format.
+*/
 bool Format::operator !=(const Format &format) const
 {
     return this->formatKey() != format.formatKey();

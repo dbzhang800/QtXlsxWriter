@@ -46,6 +46,7 @@ public:
     ~RichString();
 
     bool isRichString() const;
+    bool isNull() const;
     bool isEmtpy() const;
     QString toPlainString() const;
 
@@ -62,6 +63,7 @@ private:
     friend Q_XLSX_EXPORT bool operator==(const RichString &rs1, const RichString &rs2);
     friend Q_XLSX_EXPORT bool operator!=(const RichString &rs1, const RichString &rs2);
     friend Q_XLSX_EXPORT bool operator<(const RichString &rs1, const RichString &rs2);
+    friend Q_XLSX_EXPORT QDebug operator<<(QDebug dbg, const RichString &rs);
 
     QSharedDataPointer<RichStringPrivate> d;
 };
@@ -73,6 +75,10 @@ Q_XLSX_EXPORT bool operator==(const RichString &rs1, const QString &rs2);
 Q_XLSX_EXPORT bool operator==(const QString &rs1, const RichString &rs2);
 Q_XLSX_EXPORT bool operator!=(const RichString &rs1, const QString &rs2);
 Q_XLSX_EXPORT bool operator!=(const QString &rs1, const RichString &rs2);
+
+#ifndef QT_NO_DEBUG_STREAM
+Q_XLSX_EXPORT QDebug operator<<(QDebug dbg, const RichString &rs);
+#endif
 
 QT_END_NAMESPACE_XLSX
 

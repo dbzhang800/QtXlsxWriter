@@ -47,6 +47,19 @@ CellPrivate::CellPrivate(Cell *p) :
 */
 
 /*!
+  \enum Cell::DataType
+
+  \value Blank,
+  \value String,
+  \value Numeric,
+  \value Formula,
+  \value Boolean,
+  \value Error,
+  \value InlineString,
+  \value ArrayFormula
+  */
+
+/*!
  * \internal
  * Created by Worksheet only.
  */
@@ -114,6 +127,9 @@ bool Cell::isDateTime() const
     return false;
 }
 
+/*!
+ * Return the data time value.
+ */
 QDateTime Cell::dateTime() const
 {
     Q_D(const Cell);
