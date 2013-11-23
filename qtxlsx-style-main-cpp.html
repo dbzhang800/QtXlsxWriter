@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (style/main.cpp) | QtXlsx 0.1</title>
+  <title>main.cpp Example File (style/main.cpp) | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -12,10 +12,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.1</li>
+<li>Qt 0.2</li>
 <li>main.cpp Example File (style/main.cpp)</li>
 <li id="buildversion">
-Qt 0.1.0 Reference Documentation</li>
+Qt 0.2.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -33,32 +33,32 @@ Qt 0.1.0 Reference Documentation</li>
 <span class="type">int</span> main()
 {
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
-    <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format1 <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-    format1<span class="operator">-</span><span class="operator">&gt;</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>red));
-    format1<span class="operator">-</span><span class="operator">&gt;</span>setFontSize(<span class="number">15</span>);
-    format1<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>AlignHCenter);
-    format1<span class="operator">-</span><span class="operator">&gt;</span>setBorderStyle(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>BorderDashDotDot);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format format1;
+    format1<span class="operator">.</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>red));
+    format1<span class="operator">.</span>setFontSize(<span class="number">15</span>);
+    format1<span class="operator">.</span>setHorizontalAlignment(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>AlignHCenter);
+    format1<span class="operator">.</span>setBorderStyle(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>BorderDashDotDot);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span><span class="operator">,</span> format1);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;B3&quot;</span><span class="operator">,</span> <span class="number">12345</span><span class="operator">,</span> format1);
 
-    <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format2 <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-    format2<span class="operator">-</span><span class="operator">&gt;</span>setFontBold(<span class="keyword">true</span>);
-    format2<span class="operator">-</span><span class="operator">&gt;</span>setFontUnderline(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>FontUnderlineDouble);
-    format2<span class="operator">-</span><span class="operator">&gt;</span>setFillPattern(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>PatternLightUp);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format format2;
+    format2<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
+    format2<span class="operator">.</span>setFontUnderline(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>FontUnderlineDouble);
+    format2<span class="operator">.</span>setFillPattern(<span class="type">QXlsx</span><span class="operator">::</span>Format<span class="operator">::</span>PatternLightUp);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;C5&quot;</span><span class="operator">,</span> <span class="string">&quot;=44+33&quot;</span><span class="operator">,</span> format2);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;D7&quot;</span><span class="operator">,</span> <span class="keyword">true</span><span class="operator">,</span> format2);
 
-    <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format3 <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-    format3<span class="operator">-</span><span class="operator">&gt;</span>setFontBold(<span class="keyword">true</span>);
-    format3<span class="operator">-</span><span class="operator">&gt;</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>blue));
-    format3<span class="operator">-</span><span class="operator">&gt;</span>setFontSize(<span class="number">20</span>);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format format3;
+    format3<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
+    format3<span class="operator">.</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>blue));
+    format3<span class="operator">.</span>setFontSize(<span class="number">20</span>);
     xlsx<span class="operator">.</span>write(<span class="number">11</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="string">&quot;Hello Row Style&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="number">11</span><span class="operator">,</span> <span class="number">6</span><span class="operator">,</span> <span class="string">&quot;Blue Color&quot;</span>);
     xlsx<span class="operator">.</span>setRow(<span class="number">11</span><span class="operator">,</span> <span class="number">41</span><span class="operator">,</span> format3);
 
-    <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format4 <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-    format4<span class="operator">-</span><span class="operator">&gt;</span>setFontBold(<span class="keyword">true</span>);
-    format4<span class="operator">-</span><span class="operator">&gt;</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>magenta));
+    <span class="type">QXlsx</span><span class="operator">::</span>Format format4;
+    format4<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
+    format4<span class="operator">.</span>setFontColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>magenta));
     <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">21</span>; row<span class="operator">&lt;</span><span class="operator">=</span><span class="number">40</span>; row<span class="operator">+</span><span class="operator">+</span>)
         <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span><span class="number">9</span>; col<span class="operator">&lt;</span><span class="number">16</span>; col<span class="operator">+</span><span class="operator">+</span>)
             xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> row<span class="operator">+</span>col);
@@ -66,8 +66,8 @@ Qt 0.1.0 Reference Documentation</li>
 
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="type">QDate</span>(<span class="number">2013</span><span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="number">29</span>));
 
-    <span class="type">QXlsx</span><span class="operator">::</span>Format <span class="operator">*</span>format6 <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-    format6<span class="operator">-</span><span class="operator">&gt;</span>setPatternBackgroundColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>green));
+    <span class="type">QXlsx</span><span class="operator">::</span>Format format6;
+    format6<span class="operator">.</span>setPatternBackgroundColor(<span class="type">QColor</span>(<span class="type">Qt</span><span class="operator">::</span>green));
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A6&quot;</span><span class="operator">,</span> <span class="string">&quot;Background color: green&quot;</span><span class="operator">,</span> format6);
 
     xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;book1.xlsx&quot;</span>);

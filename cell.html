@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxcell.cpp -->
-  <title>Cell Class | QtXlsx 0.1</title>
+  <title>Cell Class | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.1</li>
+<li>Qt 0.2</li>
 <li>Cell</li>
 <li id="buildversion">
-Qt 0.1.0 Reference Documentation</li>
+Qt 0.2.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -51,9 +51,10 @@ Qt 0.1.0 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dtor.Cell">~Cell</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> DataType </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dataType">dataType</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="cell.html#dateTime">dateTime</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> Format * </td><td class="memItemRight bottomAlign"><b><a href="cell.html#format">format</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Format </td><td class="memItemRight bottomAlign"><b><a href="cell.html#format">format</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="cell.html#formula">formula</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="cell.html#isDateTime">isDateTime</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="cell.html#isRichString">isRichString</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QVariant </td><td class="memItemRight bottomAlign"><b><a href="cell.html#value">value</a></b>() const</td></tr>
 </table>
 <a name="details"></a>
@@ -67,6 +68,16 @@ Qt 0.1.0 Reference Documentation</li>
 <h2>Member Type Documentation</h2>
 <!-- $$$DataType$$$Blank$$$String$$$Numeric$$$Formula$$$Boolean$$$Error$$$InlineString$$$ArrayFormula -->
 <h3 class="fn"><a name="DataType-enum"></a>enum Cell::<span class="name">DataType</span></h3>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>Cell::Blank</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::String</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::Numeric</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::Formula</tt></td><td class="topAlign"><tt>3</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::Boolean</tt></td><td class="topAlign"><tt>4</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::Error</tt></td><td class="topAlign"><tt>5</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::InlineString</tt></td><td class="topAlign"><tt>6</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Cell::ArrayFormula</tt></td><td class="topAlign"><tt>7</tt></td><td class="topAlign">&nbsp;</td></tr>
+</table>
 <!-- @@@DataType -->
 </div>
 <div class="func">
@@ -81,9 +92,10 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@dataType -->
 <!-- $$$dateTime[overload1]$$$dateTime -->
 <h3 class="fn"><a name="dateTime"></a><span class="type">QDateTime</span> Cell::<span class="name">dateTime</span>() const</h3>
+<p>Return the data time value.</p>
 <!-- @@@dateTime -->
 <!-- $$$format[overload1]$$$format -->
-<h3 class="fn"><a name="format"></a><span class="type"><a href="format.html">Format</a></span> * Cell::<span class="name">format</span>() const</h3>
+<h3 class="fn"><a name="format"></a><span class="type"><a href="format.html">Format</a></span> Cell::<span class="name">format</span>() const</h3>
 <p>Return the style used by this Cell. If no style used, 0 will be returned.</p>
 <!-- @@@format -->
 <!-- $$$formula[overload1]$$$formula -->
@@ -94,6 +106,10 @@ Qt 0.1.0 Reference Documentation</li>
 <h3 class="fn"><a name="isDateTime"></a><span class="type">bool</span> Cell::<span class="name">isDateTime</span>() const</h3>
 <p>Returns whether the value is probably a dateTime or not</p>
 <!-- @@@isDateTime -->
+<!-- $$$isRichString[overload1]$$$isRichString -->
+<h3 class="fn"><a name="isRichString"></a><span class="type">bool</span> Cell::<span class="name">isRichString</span>() const</h3>
+<p>Returns whether the cell is probably a rich string or not</p>
+<!-- @@@isRichString -->
 <!-- $$$value[overload1]$$$value -->
 <h3 class="fn"><a name="value"></a><span class="type">QVariant</span> Cell::<span class="name">value</span>() const</h3>
 <p>Return the data content of this Cell</p>

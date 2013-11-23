@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- mergecells.qdoc -->
-  <title>Merge Cells Example | QtXlsx 0.1</title>
+  <title>Merge Cells Example | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.1</li>
+<li>Qt 0.2</li>
 <li>Merge Cells Example</li>
 <li id="buildversion">
-Qt 0.1.0 Reference Documentation</li>
+Qt 0.2.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -29,9 +29,9 @@ Qt 0.1.0 Reference Documentation</li>
 <div class="descr"> <a name="details"></a>
 <p>Demonstrates how to merge cells<p>This example demonstrates how to generate a simplest .xlsx file which contians merged cells with Qt Xlsx Library.</p>
 <p class="centerAlign"><img src="images/xlsx-mergecells.png" alt="" /></p><p>Create an format which will be applied to the merged cells:</p>
-<pre class="cpp">Format <span class="operator">*</span>format <span class="operator">=</span> xlsx<span class="operator">.</span>createFormat();
-format<span class="operator">-</span><span class="operator">&gt;</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignHCenter);
-format<span class="operator">-</span><span class="operator">&gt;</span>setVerticalAlignment(Format<span class="operator">::</span>AlignVCenter);</pre>
+<pre class="cpp">Format format;
+format<span class="operator">.</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignHCenter);
+format<span class="operator">.</span>setVerticalAlignment(Format<span class="operator">::</span>AlignVCenter);</pre>
 <p>Merge cells.</p>
 <pre class="cpp">xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
 xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B4:F6&quot;</span><span class="operator">,</span> format);

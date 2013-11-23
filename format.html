@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxformat.cpp -->
-  <title>Format Class | QtXlsx 0.1</title>
+  <title>Format Class | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.1</li>
+<li>Qt 0.2</li>
 <li>Format</li>
 <li id="buildversion">
-Qt 0.1.0 Reference Documentation</li>
+Qt 0.2.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -54,6 +54,9 @@ Qt 0.1.0 Reference Documentation</li>
 <a name="public-functions"></a>
 <h2>Public Functions</h2>
 <table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="format.html#Formatx">Format</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="format.html#Format-2">Format</a></b>(const Format &amp;<i> other</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="format.html#dtor.Format">~Format</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#bottomBorderColor">bottomBorderColor</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> BorderStyle </td><td class="memItemRight bottomAlign"><b><a href="format.html#bottomBorderStyle">bottomBorderStyle</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#diagonalBorderColor">diagonalBorderColor</a></b>() const</td></tr>
@@ -73,6 +76,8 @@ Qt 0.1.0 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> HorizontalAlignment </td><td class="memItemRight bottomAlign"><b><a href="format.html#horizontalAlignment">horizontalAlignment</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="format.html#indent">indent</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#isDateTimeFormat">isDateTimeFormat</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#isEmpty">isEmpty</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#isValid">isValid</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#leftBorderColor">leftBorderColor</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> BorderStyle </td><td class="memItemRight bottomAlign"><b><a href="format.html#leftBorderStyle">leftBorderStyle</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#locked">locked</a></b>() const</td></tr>
@@ -124,6 +129,7 @@ Qt 0.1.0 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> BorderStyle </td><td class="memItemRight bottomAlign"><b><a href="format.html#topBorderStyle">topBorderStyle</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> VerticalAlignment </td><td class="memItemRight bottomAlign"><b><a href="format.html#verticalAlignment">verticalAlignment</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#operator-not-eq">operator!=</a></b>(const Format &amp;<i> format</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Format &amp; </td><td class="memItemRight bottomAlign"><b><a href="format.html#operator-eq">operator=</a></b>(const Format &amp;<i> other</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#operator-eq-eq">operator==</a></b>(const Format &amp;<i> format</i>) const</td></tr>
 </table>
 <a name="details"></a>
@@ -137,50 +143,147 @@ Qt 0.1.0 Reference Documentation</li>
 <h2>Member Type Documentation</h2>
 <!-- $$$BorderStyle$$$BorderNone$$$BorderThin$$$BorderMedium$$$BorderDashed$$$BorderDotted$$$BorderThick$$$BorderDouble$$$BorderHair$$$BorderMediumDashed$$$BorderDashDot$$$BorderMediumDashDot$$$BorderDashDotDot$$$BorderMediumDashDotDot$$$BorderSlantDashDot -->
 <h3 class="fn"><a name="BorderStyle-enum"></a>enum Format::<span class="name">BorderStyle</span></h3>
+<p>* * * The enum type defines the type of font underline. * *</p>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>Format::BorderNone</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderThin</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderMedium</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderDashed</tt></td><td class="topAlign"><tt>3</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderDotted</tt></td><td class="topAlign"><tt>4</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderThick</tt></td><td class="topAlign"><tt>5</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderDouble</tt></td><td class="topAlign"><tt>6</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderHair</tt></td><td class="topAlign"><tt>7</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderMediumDashed</tt></td><td class="topAlign"><tt>8</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderDashDot</tt></td><td class="topAlign"><tt>9</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderMediumDashDot</tt></td><td class="topAlign"><tt>10</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderDashDotDot</tt></td><td class="topAlign"><tt>11</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderMediumDashDotDot</tt></td><td class="topAlign"><tt>12</tt></td><td class="topAlign">*</td></tr>
+<tr><td class="topAlign"><tt>Format::BorderSlantDashDot</tt></td><td class="topAlign"><tt>13</tt></td><td class="topAlign">&nbsp;</td></tr>
+</table>
 <!-- @@@BorderStyle -->
 <!-- $$$DiagonalBorderType$$$DiagonalBorderNone$$$DiagonalBorderDown$$$DiagonalBorderUp$$$DiagnoalBorderBoth -->
 <h3 class="fn"><a name="DiagonalBorderType-enum"></a>enum Format::<span class="name">DiagonalBorderType</span></h3>
+<p>The enum type defines the type of diagonal border.</p>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>Format::DiagonalBorderNone</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::DiagonalBorderDown</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::DiagonalBorderUp</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::DiagnoalBorderBoth</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+</table>
 <!-- @@@DiagonalBorderType -->
 <!-- $$$FillPattern$$$PatternNone$$$PatternSolid$$$PatternMediumGray$$$PatternDarkGray$$$PatternLightGray$$$PatternDarkHorizontal$$$PatternDarkVertical$$$PatternDarkDown$$$PatternDarkUp$$$PatternDarkGrid$$$PatternDarkTrellis$$$PatternLightHorizontal$$$PatternLightVertical$$$PatternLightDown$$$PatternLightUp$$$PatternLightTrellis$$$PatternGray125$$$PatternGray0625$$$PatternLightGrid -->
 <h3 class="fn"><a name="FillPattern-enum"></a>enum Format::<span class="name">FillPattern</span></h3>
+<p>The enum type defines the type of fill.</p>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>Format::PatternNone</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternSolid</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternMediumGray</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkGray</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightGray</tt></td><td class="topAlign"><tt>4</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkHorizontal</tt></td><td class="topAlign"><tt>5</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkVertical</tt></td><td class="topAlign"><tt>6</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkDown</tt></td><td class="topAlign"><tt>7</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkUp</tt></td><td class="topAlign"><tt>8</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkGrid</tt></td><td class="topAlign"><tt>9</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternDarkTrellis</tt></td><td class="topAlign"><tt>10</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightHorizontal</tt></td><td class="topAlign"><tt>11</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightVertical</tt></td><td class="topAlign"><tt>12</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightDown</tt></td><td class="topAlign"><tt>13</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightUp</tt></td><td class="topAlign"><tt>14</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightTrellis</tt></td><td class="topAlign"><tt>15</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternGray125</tt></td><td class="topAlign"><tt>16</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternGray0625</tt></td><td class="topAlign"><tt>17</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::PatternLightGrid</tt></td><td class="topAlign"><tt>18</tt></td></tr>
+</table>
 <!-- @@@FillPattern -->
 <!-- $$$FontScript$$$FontScriptNormal$$$FontScriptSuper$$$FontScriptSub -->
 <h3 class="fn"><a name="FontScript-enum"></a>enum Format::<span class="name">FontScript</span></h3>
+<p>The enum type defines the type of font script.</p>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>Format::FontScriptNormal</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">normal</td></tr>
+<tr><td class="topAlign"><tt>Format::FontScriptSuper</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">super script</td></tr>
+<tr><td class="topAlign"><tt>Format::FontScriptSub</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">sub script</td></tr>
+</table>
 <!-- @@@FontScript -->
 <!-- $$$FontUnderline$$$FontUnderlineNone$$$FontUnderlineSingle$$$FontUnderlineDouble$$$FontUnderlineSingleAccounting$$$FontUnderlineDoubleAccounting -->
 <h3 class="fn"><a name="FontUnderline-enum"></a>enum Format::<span class="name">FontUnderline</span></h3>
+<p>The enum type defines the type of font underline.</p>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>Format::FontUnderlineNone</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::FontUnderlineSingle</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::FontUnderlineDouble</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::FontUnderlineSingleAccounting</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::FontUnderlineDoubleAccounting</tt></td><td class="topAlign"><tt>4</tt></td></tr>
+</table>
 <!-- @@@FontUnderline -->
 <!-- $$$HorizontalAlignment$$$AlignHGeneral$$$AlignLeft$$$AlignHCenter$$$AlignRight$$$AlignHFill$$$AlignHJustify$$$AlignHMerge$$$AlignHDistributed -->
 <h3 class="fn"><a name="HorizontalAlignment-enum"></a>enum Format::<span class="name">HorizontalAlignment</span></h3>
+<p>The enum type defines the type of horizontal alignment.</p>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>Format::AlignHGeneral</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignLeft</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignHCenter</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignRight</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignHFill</tt></td><td class="topAlign"><tt>4</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignHJustify</tt></td><td class="topAlign"><tt>5</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignHMerge</tt></td><td class="topAlign"><tt>6</tt></td></tr>
+<tr><td class="topAlign"><tt>Format::AlignHDistributed</tt></td><td class="topAlign"><tt>7</tt></td></tr>
+</table>
 <!-- @@@HorizontalAlignment -->
 <!-- $$$VerticalAlignment$$$AlignTop$$$AlignVCenter$$$AlignBottom$$$AlignVJustify$$$AlignVDistributed -->
 <h3 class="fn"><a name="VerticalAlignment-enum"></a>enum Format::<span class="name">VerticalAlignment</span></h3>
+<p>The enum type defines the type of vertical alignment.</p>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>Format::AlignTop</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Format::AlignVCenter</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Format::AlignBottom</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Format::AlignVJustify</tt></td><td class="topAlign"><tt>3</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Format::AlignVDistributed</tt></td><td class="topAlign"><tt>4</tt></td><td class="topAlign">&nbsp;</td></tr>
+</table>
 <!-- @@@VerticalAlignment -->
 </div>
 <div class="func">
 <h2>Member Function Documentation</h2>
+<!-- $$$Format[overload1]$$$Format -->
+<h3 class="fn"><a name="Formatx"></a>Format::<span class="name">Format</span>()</h3>
+<p>Creates a new invalid format.</p>
+<!-- @@@Format -->
+<!-- $$$Format$$$FormatconstFormat& -->
+<h3 class="fn"><a name="Format-2"></a>Format::<span class="name">Format</span>(const <span class="type">Format</span> &amp;<i> other</i>)</h3>
+<p>Creates a new format with the same attributes as the <i>other</i> format.</p>
+<!-- @@@Format -->
+<!-- $$$~Format[overload1]$$$~Format -->
+<h3 class="fn"><a name="dtor.Format"></a>Format::<span class="name">~Format</span>()</h3>
+<p>Destroys this format.</p>
+<!-- @@@~Format -->
 <!-- $$$bottomBorderColor[overload1]$$$bottomBorderColor -->
 <h3 class="fn"><a name="bottomBorderColor"></a><span class="type">QColor</span> Format::<span class="name">bottomBorderColor</span>() const</h3>
+<p>Returns the bottom border color.</p>
 <p><b>See also </b><a href="format.html#setBottomBorderColor">setBottomBorderColor</a>().</p>
 <!-- @@@bottomBorderColor -->
 <!-- $$$bottomBorderStyle[overload1]$$$bottomBorderStyle -->
 <h3 class="fn"><a name="bottomBorderStyle"></a><span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span> Format::<span class="name">bottomBorderStyle</span>() const</h3>
+<p>Returns the bottom border style.</p>
 <p><b>See also </b><a href="format.html#setBottomBorderStyle">setBottomBorderStyle</a>().</p>
 <!-- @@@bottomBorderStyle -->
 <!-- $$$diagonalBorderColor[overload1]$$$diagonalBorderColor -->
 <h3 class="fn"><a name="diagonalBorderColor"></a><span class="type">QColor</span> Format::<span class="name">diagonalBorderColor</span>() const</h3>
+<p>Returns the diagonal border color.</p>
 <p><b>See also </b><a href="format.html#setDiagonalBorderColor">setDiagonalBorderColor</a>().</p>
 <!-- @@@diagonalBorderColor -->
 <!-- $$$diagonalBorderStyle[overload1]$$$diagonalBorderStyle -->
 <h3 class="fn"><a name="diagonalBorderStyle"></a><span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span> Format::<span class="name">diagonalBorderStyle</span>() const</h3>
+<p>Return the diagonla border style.</p>
 <p><b>See also </b><a href="format.html#setDiagonalBorderStyle">setDiagonalBorderStyle</a>().</p>
 <!-- @@@diagonalBorderStyle -->
 <!-- $$$diagonalBorderType[overload1]$$$diagonalBorderType -->
 <h3 class="fn"><a name="diagonalBorderType"></a><span class="type"><a href="format.html#DiagonalBorderType-enum">DiagonalBorderType</a></span> Format::<span class="name">diagonalBorderType</span>() const</h3>
+<p>Returns the diagonal border type.</p>
 <p><b>See also </b><a href="format.html#setDiagonalBorderType">setDiagonalBorderType</a>().</p>
 <!-- @@@diagonalBorderType -->
 <!-- $$$fillPattern[overload1]$$$fillPattern -->
 <h3 class="fn"><a name="fillPattern"></a><span class="type"><a href="format.html#FillPattern-enum">FillPattern</a></span> Format::<span class="name">fillPattern</span>() const</h3>
+<p>Return the fill pattern.</p>
 <p><b>See also </b><a href="format.html#setFillPattern">setFillPattern</a>().</p>
 <!-- @@@fillPattern -->
 <!-- $$$fontBold[overload1]$$$fontBold -->
@@ -230,6 +333,7 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@fontUnderline -->
 <!-- $$$hidden[overload1]$$$hidden -->
 <h3 class="fn"><a name="hidden"></a><span class="type">bool</span> Format::<span class="name">hidden</span>() const</h3>
+<p>Returns whether the hidden protection property is set to true.</p>
 <p><b>See also </b><a href="format.html#setHidden">setHidden</a>().</p>
 <!-- @@@hidden -->
 <!-- $$$horizontalAlignment[overload1]$$$horizontalAlignment -->
@@ -246,18 +350,27 @@ Qt 0.1.0 Reference Documentation</li>
 <h3 class="fn"><a name="isDateTimeFormat"></a><span class="type">bool</span> Format::<span class="name">isDateTimeFormat</span>() const</h3>
 <p>Returns whether the number format is probably a dateTime or not</p>
 <!-- @@@isDateTimeFormat -->
+<!-- $$$isEmpty[overload1]$$$isEmpty -->
+<h3 class="fn"><a name="isEmpty"></a><span class="type">bool</span> Format::<span class="name">isEmpty</span>() const</h3>
+<p>Returns true if the format is empty; otherwise returns false.</p>
+<!-- @@@isEmpty -->
+<!-- $$$isValid[overload1]$$$isValid -->
+<h3 class="fn"><a name="isValid"></a><span class="type">bool</span> Format::<span class="name">isValid</span>() const</h3>
+<p>Returns true if the format is valid; otherwise returns false.</p>
+<!-- @@@isValid -->
 <!-- $$$leftBorderColor[overload1]$$$leftBorderColor -->
 <h3 class="fn"><a name="leftBorderColor"></a><span class="type">QColor</span> Format::<span class="name">leftBorderColor</span>() const</h3>
-<p>Return the left border color</p>
+<p>Returns the left border color</p>
 <p><b>See also </b><a href="format.html#setLeftBorderColor">setLeftBorderColor</a>().</p>
 <!-- @@@leftBorderColor -->
 <!-- $$$leftBorderStyle[overload1]$$$leftBorderStyle -->
 <h3 class="fn"><a name="leftBorderStyle"></a><span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span> Format::<span class="name">leftBorderStyle</span>() const</h3>
-<p>Return the left border style</p>
+<p>Returns the left border style</p>
 <p><b>See also </b><a href="format.html#setLeftBorderStyle">setLeftBorderStyle</a>().</p>
 <!-- @@@leftBorderStyle -->
 <!-- $$$locked[overload1]$$$locked -->
 <h3 class="fn"><a name="locked"></a><span class="type">bool</span> Format::<span class="name">locked</span>() const</h3>
+<p>Returns whether the locked protection property is set to true.</p>
 <p><b>See also </b><a href="format.html#setLocked">setLocked</a>().</p>
 <!-- @@@locked -->
 <!-- $$$numberFormat[overload1]$$$numberFormat -->
@@ -272,18 +385,22 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@numberFormatIndex -->
 <!-- $$$patternBackgroundColor[overload1]$$$patternBackgroundColor -->
 <h3 class="fn"><a name="patternBackgroundColor"></a><span class="type">QColor</span> Format::<span class="name">patternBackgroundColor</span>() const</h3>
+<p>Returns the background color of the pattern.</p>
 <p><b>See also </b><a href="format.html#setPatternBackgroundColor">setPatternBackgroundColor</a>().</p>
 <!-- @@@patternBackgroundColor -->
 <!-- $$$patternForegroundColor[overload1]$$$patternForegroundColor -->
 <h3 class="fn"><a name="patternForegroundColor"></a><span class="type">QColor</span> Format::<span class="name">patternForegroundColor</span>() const</h3>
+<p>Returns the foreground color of the pattern.</p>
 <p><b>See also </b><a href="format.html#setPatternForegroundColor">setPatternForegroundColor</a>().</p>
 <!-- @@@patternForegroundColor -->
 <!-- $$$rightBorderColor[overload1]$$$rightBorderColor -->
 <h3 class="fn"><a name="rightBorderColor"></a><span class="type">QColor</span> Format::<span class="name">rightBorderColor</span>() const</h3>
+<p>Returns the right border color.</p>
 <p><b>See also </b><a href="format.html#setRightBorderColor">setRightBorderColor</a>().</p>
 <!-- @@@rightBorderColor -->
 <!-- $$$rightBorderStyle[overload1]$$$rightBorderStyle -->
 <h3 class="fn"><a name="rightBorderStyle"></a><span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span> Format::<span class="name">rightBorderStyle</span>() const</h3>
+<p>Returns the right border style.</p>
 <p><b>See also </b><a href="format.html#setRightBorderStyle">setRightBorderStyle</a>().</p>
 <!-- @@@rightBorderStyle -->
 <!-- $$$rotation[overload1]$$$rotation -->
@@ -293,39 +410,45 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@rotation -->
 <!-- $$$setBorderColor[overload1]$$$setBorderColorconstQColor& -->
 <h3 class="fn"><a name="setBorderColor"></a><span class="type">void</span> Format::<span class="name">setBorderColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
-<p>Set the border color.</p>
+<p>Sets the border color with the given <i>color</i>.</p>
 <!-- @@@setBorderColor -->
 <!-- $$$setBorderStyle[overload1]$$$setBorderStyleBorderStyle -->
 <h3 class="fn"><a name="setBorderStyle"></a><span class="type">void</span> Format::<span class="name">setBorderStyle</span>(<span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span><i> style</i>)</h3>
-<p>Set the border style.</p>
+<p>Set the border style with the given <i>style</i>.</p>
 <!-- @@@setBorderStyle -->
 <!-- $$$setBottomBorderColor[overload1]$$$setBottomBorderColorconstQColor& -->
 <h3 class="fn"><a name="setBottomBorderColor"></a><span class="type">void</span> Format::<span class="name">setBottomBorderColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the bottom border color to the given <i>color</i>.</p>
 <p><b>See also </b><a href="format.html#bottomBorderColor">bottomBorderColor</a>().</p>
 <!-- @@@setBottomBorderColor -->
 <!-- $$$setBottomBorderStyle[overload1]$$$setBottomBorderStyleBorderStyle -->
 <h3 class="fn"><a name="setBottomBorderStyle"></a><span class="type">void</span> Format::<span class="name">setBottomBorderStyle</span>(<span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span><i> style</i>)</h3>
+<p>Sets the bottom border style to the given <i>style</i>.</p>
 <p><b>See also </b><a href="format.html#bottomBorderStyle">bottomBorderStyle</a>().</p>
 <!-- @@@setBottomBorderStyle -->
 <!-- $$$setDiagonalBorderColor[overload1]$$$setDiagonalBorderColorconstQColor& -->
 <h3 class="fn"><a name="setDiagonalBorderColor"></a><span class="type">void</span> Format::<span class="name">setDiagonalBorderColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the diagonal border color to the given <i>color</i></p>
 <p><b>See also </b><a href="format.html#diagonalBorderColor">diagonalBorderColor</a>().</p>
 <!-- @@@setDiagonalBorderColor -->
 <!-- $$$setDiagonalBorderStyle[overload1]$$$setDiagonalBorderStyleBorderStyle -->
 <h3 class="fn"><a name="setDiagonalBorderStyle"></a><span class="type">void</span> Format::<span class="name">setDiagonalBorderStyle</span>(<span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span><i> style</i>)</h3>
+<p>Sets the diagonal border style to the given <i>style</i>.</p>
 <p><b>See also </b><a href="format.html#diagonalBorderStyle">diagonalBorderStyle</a>().</p>
 <!-- @@@setDiagonalBorderStyle -->
 <!-- $$$setDiagonalBorderType[overload1]$$$setDiagonalBorderTypeDiagonalBorderType -->
 <h3 class="fn"><a name="setDiagonalBorderType"></a><span class="type">void</span> Format::<span class="name">setDiagonalBorderType</span>(<span class="type"><a href="format.html#DiagonalBorderType-enum">DiagonalBorderType</a></span><i> style</i>)</h3>
+<p>Sets the diagonal border type to the given <i>style</i></p>
 <p><b>See also </b><a href="format.html#diagonalBorderType">diagonalBorderType</a>().</p>
 <!-- @@@setDiagonalBorderType -->
 <!-- $$$setFillPattern[overload1]$$$setFillPatternFillPattern -->
 <h3 class="fn"><a name="setFillPattern"></a><span class="type">void</span> Format::<span class="name">setFillPattern</span>(<span class="type"><a href="format.html#FillPattern-enum">FillPattern</a></span><i> pattern</i>)</h3>
+<p>Sets the fill pattern to the given <i>pattern</i>.</p>
 <p><b>See also </b><a href="format.html#fillPattern">fillPattern</a>().</p>
 <!-- @@@setFillPattern -->
 <!-- $$$setFontBold[overload1]$$$setFontBoldbool -->
 <h3 class="fn"><a name="setFontBold"></a><span class="type">void</span> Format::<span class="name">setFontBold</span>(<span class="type">bool</span><i> bold</i>)</h3>
-<p>Turn on/off the bold font.</p>
+<p>Turn on/off the bold font based on the given <i>bold</i>.</p>
 <p><b>See also </b><a href="format.html#fontBold">fontBold</a>().</p>
 <!-- @@@setFontBold -->
 <!-- $$$setFontColor[overload1]$$$setFontColorconstQColor& -->
@@ -335,22 +458,22 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@setFontColor -->
 <!-- $$$setFontItalic[overload1]$$$setFontItalicbool -->
 <h3 class="fn"><a name="setFontItalic"></a><span class="type">void</span> Format::<span class="name">setFontItalic</span>(<span class="type">bool</span><i> italic</i>)</h3>
-<p>Turn on/off the italic font.</p>
+<p>Turn on/off the italic font based on <i>italic</i>.</p>
 <p><b>See also </b><a href="format.html#fontItalic">fontItalic</a>().</p>
 <!-- @@@setFontItalic -->
 <!-- $$$setFontName[overload1]$$$setFontNameconstQString& -->
 <h3 class="fn"><a name="setFontName"></a><span class="type">void</span> Format::<span class="name">setFontName</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>
-<p>Set the name of the font.</p>
+<p>Set the name of the font to <i>name</i>.</p>
 <p><b>See also </b><a href="format.html#fontName">fontName</a>().</p>
 <!-- @@@setFontName -->
 <!-- $$$setFontOutline[overload1]$$$setFontOutlinebool -->
 <h3 class="fn"><a name="setFontOutline"></a><span class="type">void</span> Format::<span class="name">setFontOutline</span>(<span class="type">bool</span><i> outline</i>)</h3>
-<p>Turn on/off the outline font.</p>
+<p>Turn on/off the outline font based on <i>outline</i>.</p>
 <p><b>See also </b><a href="format.html#fontOutline">fontOutline</a>().</p>
 <!-- @@@setFontOutline -->
 <!-- $$$setFontScript[overload1]$$$setFontScriptFontScript -->
 <h3 class="fn"><a name="setFontScript"></a><span class="type">void</span> Format::<span class="name">setFontScript</span>(<span class="type"><a href="format.html#FontScript-enum">FontScript</a></span><i> script</i>)</h3>
-<p>Set the script style of the font.</p>
+<p>Set the script style of the font to <i>script</i>.</p>
 <p><b>See also </b><a href="format.html#fontScript">fontScript</a>().</p>
 <!-- @@@setFontScript -->
 <!-- $$$setFontSize[overload1]$$$setFontSizeint -->
@@ -360,39 +483,42 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@setFontSize -->
 <!-- $$$setFontStrikeOut[overload1]$$$setFontStrikeOutbool -->
 <h3 class="fn"><a name="setFontStrikeOut"></a><span class="type">void</span> Format::<span class="name">setFontStrikeOut</span>(<span class="type">bool</span><i> strikeOut</i>)</h3>
-<p>Turn on/off the strikeOut font.</p>
+<p>Turn on/off the strikeOut font based on <i>strikeOut</i>.</p>
 <p><b>See also </b><a href="format.html#fontStrikeOut">fontStrikeOut</a>().</p>
 <!-- @@@setFontStrikeOut -->
 <!-- $$$setFontUnderline[overload1]$$$setFontUnderlineFontUnderline -->
 <h3 class="fn"><a name="setFontUnderline"></a><span class="type">void</span> Format::<span class="name">setFontUnderline</span>(<span class="type"><a href="format.html#FontUnderline-enum">FontUnderline</a></span><i> underline</i>)</h3>
-<p>Set the underline style of the font.</p>
+<p>Set the underline style of the font to <i>underline</i>.</p>
 <p><b>See also </b><a href="format.html#fontUnderline">fontUnderline</a>().</p>
 <!-- @@@setFontUnderline -->
 <!-- $$$setHidden[overload1]$$$setHiddenbool -->
 <h3 class="fn"><a name="setHidden"></a><span class="type">void</span> Format::<span class="name">setHidden</span>(<span class="type">bool</span><i> hidden</i>)</h3>
+<p>Sets the hidden protection property with the given <i>hidden</i>.</p>
 <p><b>See also </b><a href="format.html#hidden">hidden</a>().</p>
 <!-- @@@setHidden -->
 <!-- $$$setHorizontalAlignment[overload1]$$$setHorizontalAlignmentHorizontalAlignment -->
 <h3 class="fn"><a name="setHorizontalAlignment"></a><span class="type">void</span> Format::<span class="name">setHorizontalAlignment</span>(<span class="type"><a href="format.html#HorizontalAlignment-enum">HorizontalAlignment</a></span><i> align</i>)</h3>
-<p>Set the horizontal alignment.</p>
+<p>Set the horizontal alignment with the given <i>align</i>.</p>
 <p><b>See also </b><a href="format.html#horizontalAlignment">horizontalAlignment</a>().</p>
 <!-- @@@setHorizontalAlignment -->
 <!-- $$$setIndent[overload1]$$$setIndentint -->
 <h3 class="fn"><a name="setIndent"></a><span class="type">void</span> Format::<span class="name">setIndent</span>(<span class="type">int</span><i> indent</i>)</h3>
-<p>Set the text indentation level. Must be less than or equal to 15.</p>
+<p>Set the text indentation level with the given <i>indent</i>. Must be less than or equal to 15.</p>
 <p><b>See also </b><a href="format.html#indent">indent</a>().</p>
 <!-- @@@setIndent -->
 <!-- $$$setLeftBorderColor[overload1]$$$setLeftBorderColorconstQColor& -->
 <h3 class="fn"><a name="setLeftBorderColor"></a><span class="type">void</span> Format::<span class="name">setLeftBorderColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the left border color to the given <i>color</i></p>
 <p><b>See also </b><a href="format.html#leftBorderColor">leftBorderColor</a>().</p>
 <!-- @@@setLeftBorderColor -->
 <!-- $$$setLeftBorderStyle[overload1]$$$setLeftBorderStyleBorderStyle -->
 <h3 class="fn"><a name="setLeftBorderStyle"></a><span class="type">void</span> Format::<span class="name">setLeftBorderStyle</span>(<span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span><i> style</i>)</h3>
-<p>Set the left border style</p>
+<p>Sets the left border style to <i>style</i></p>
 <p><b>See also </b><a href="format.html#leftBorderStyle">leftBorderStyle</a>().</p>
 <!-- @@@setLeftBorderStyle -->
 <!-- $$$setLocked[overload1]$$$setLockedbool -->
 <h3 class="fn"><a name="setLocked"></a><span class="type">void</span> Format::<span class="name">setLocked</span>(<span class="type">bool</span><i> locked</i>)</h3>
+<p>Sets the locked protection property with the given <i>locked</i>.</p>
 <p><b>See also </b><a href="format.html#locked">locked</a>().</p>
 <!-- @@@setLocked -->
 <!-- $$$setNumberFormat[overload1]$$$setNumberFormatconstQString& -->
@@ -407,45 +533,51 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@setNumberFormatIndex -->
 <!-- $$$setPatternBackgroundColor[overload1]$$$setPatternBackgroundColorconstQColor& -->
 <h3 class="fn"><a name="setPatternBackgroundColor"></a><span class="type">void</span> Format::<span class="name">setPatternBackgroundColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the background color of the pattern with the given <i>color</i>.</p>
 <p><b>See also </b><a href="format.html#patternBackgroundColor">patternBackgroundColor</a>().</p>
 <!-- @@@setPatternBackgroundColor -->
 <!-- $$$setPatternForegroundColor[overload1]$$$setPatternForegroundColorconstQColor& -->
 <h3 class="fn"><a name="setPatternForegroundColor"></a><span class="type">void</span> Format::<span class="name">setPatternForegroundColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the foreground color of the pattern with the given <i>color</i>.</p>
 <p><b>See also </b><a href="format.html#patternForegroundColor">patternForegroundColor</a>().</p>
 <!-- @@@setPatternForegroundColor -->
 <!-- $$$setRightBorderColor[overload1]$$$setRightBorderColorconstQColor& -->
 <h3 class="fn"><a name="setRightBorderColor"></a><span class="type">void</span> Format::<span class="name">setRightBorderColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the right border color to the given <i>color</i></p>
 <p><b>See also </b><a href="format.html#rightBorderColor">rightBorderColor</a>().</p>
 <!-- @@@setRightBorderColor -->
 <!-- $$$setRightBorderStyle[overload1]$$$setRightBorderStyleBorderStyle -->
 <h3 class="fn"><a name="setRightBorderStyle"></a><span class="type">void</span> Format::<span class="name">setRightBorderStyle</span>(<span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span><i> style</i>)</h3>
+<p>Sets the right border style to the given <i>style</i>.</p>
 <p><b>See also </b><a href="format.html#rightBorderStyle">rightBorderStyle</a>().</p>
 <!-- @@@setRightBorderStyle -->
 <!-- $$$setRotation[overload1]$$$setRotationint -->
 <h3 class="fn"><a name="setRotation"></a><span class="type">void</span> Format::<span class="name">setRotation</span>(<span class="type">int</span><i> rotation</i>)</h3>
-<p>Set the text roation. Must be in the range [0, 180] or 255.</p>
+<p>Set the text roation with the given <i>rotation</i>. Must be in the range [0, 180] or 255.</p>
 <p><b>See also </b><a href="format.html#rotation">rotation</a>().</p>
 <!-- @@@setRotation -->
 <!-- $$$setShrinkToFit[overload1]$$$setShrinkToFitbool -->
 <h3 class="fn"><a name="setShrinkToFit"></a><span class="type">void</span> Format::<span class="name">setShrinkToFit</span>(<span class="type">bool</span><i> shink</i>)</h3>
-<p>Turn on/off shrink to fit.</p>
+<p>Turn on/off shrink to fit base on <i>shink</i>.</p>
 <p><b>See also </b><a href="format.html#shrinkToFit">shrinkToFit</a>().</p>
 <!-- @@@setShrinkToFit -->
 <!-- $$$setTextWarp[overload1]$$$setTextWarpbool -->
 <h3 class="fn"><a name="setTextWarp"></a><span class="type">void</span> Format::<span class="name">setTextWarp</span>(<span class="type">bool</span><i> wrap</i>)</h3>
-<p>Enable the text wrap</p>
+<p>Enable the text wrap if <i>wrap</i> is true.</p>
 <!-- @@@setTextWarp -->
 <!-- $$$setTopBorderColor[overload1]$$$setTopBorderColorconstQColor& -->
 <h3 class="fn"><a name="setTopBorderColor"></a><span class="type">void</span> Format::<span class="name">setTopBorderColor</span>(const <span class="type">QColor</span> &amp;<i> color</i>)</h3>
+<p>Sets the top border color to the given <i>color</i>.</p>
 <p><b>See also </b><a href="format.html#topBorderColor">topBorderColor</a>().</p>
 <!-- @@@setTopBorderColor -->
 <!-- $$$setTopBorderStyle[overload1]$$$setTopBorderStyleBorderStyle -->
 <h3 class="fn"><a name="setTopBorderStyle"></a><span class="type">void</span> Format::<span class="name">setTopBorderStyle</span>(<span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span><i> style</i>)</h3>
+<p>Sets the top border style to the given <i>style</i>.</p>
 <p><b>See also </b><a href="format.html#topBorderStyle">topBorderStyle</a>().</p>
 <!-- @@@setTopBorderStyle -->
 <!-- $$$setVerticalAlignment[overload1]$$$setVerticalAlignmentVerticalAlignment -->
 <h3 class="fn"><a name="setVerticalAlignment"></a><span class="type">void</span> Format::<span class="name">setVerticalAlignment</span>(<span class="type"><a href="format.html#VerticalAlignment-enum">VerticalAlignment</a></span><i> align</i>)</h3>
-<p>Set the vertical alignment.</p>
+<p>Set the vertical alignment with the given <i>align</i>.</p>
 <p><b>See also </b><a href="format.html#verticalAlignment">verticalAlignment</a>().</p>
 <!-- @@@setVerticalAlignment -->
 <!-- $$$shrinkToFit[overload1]$$$shrinkToFit -->
@@ -459,10 +591,12 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@textWrap -->
 <!-- $$$topBorderColor[overload1]$$$topBorderColor -->
 <h3 class="fn"><a name="topBorderColor"></a><span class="type">QColor</span> Format::<span class="name">topBorderColor</span>() const</h3>
+<p>Returns the top border color.</p>
 <p><b>See also </b><a href="format.html#setTopBorderColor">setTopBorderColor</a>().</p>
 <!-- @@@topBorderColor -->
 <!-- $$$topBorderStyle[overload1]$$$topBorderStyle -->
 <h3 class="fn"><a name="topBorderStyle"></a><span class="type"><a href="format.html#BorderStyle-enum">BorderStyle</a></span> Format::<span class="name">topBorderStyle</span>() const</h3>
+<p>Returns the top border style.</p>
 <p><b>See also </b><a href="format.html#setTopBorderStyle">setTopBorderStyle</a>().</p>
 <!-- @@@topBorderStyle -->
 <!-- $$$verticalAlignment[overload1]$$$verticalAlignment -->
@@ -472,9 +606,15 @@ Qt 0.1.0 Reference Documentation</li>
 <!-- @@@verticalAlignment -->
 <!-- $$$operator!=[overload1]$$$operator!=constFormat& -->
 <h3 class="fn"><a name="operator-not-eq"></a><span class="type">bool</span> Format::<span class="name">operator!=</span>(const <span class="type">Format</span> &amp;<i> format</i>) const</h3>
+<p>Returns ture if the <i>format</i> is not equal to this format.</p>
 <!-- @@@operator!= -->
+<!-- $$$operator=[overload1]$$$operator=constFormat& -->
+<h3 class="fn"><a name="operator-eq"></a><span class="type">Format</span> &amp; Format::<span class="name">operator=</span>(const <span class="type">Format</span> &amp;<i> other</i>)</h3>
+<p>Assigns the <i>other</i> format to this format, and returns a reference to this format.</p>
+<!-- @@@operator= -->
 <!-- $$$operator==[overload1]$$$operator==constFormat& -->
 <h3 class="fn"><a name="operator-eq-eq"></a><span class="type">bool</span> Format::<span class="name">operator==</span>(const <span class="type">Format</span> &amp;<i> format</i>) const</h3>
+<p>Returns ture if the <i>format</i> is equal to this format.</p>
 <!-- @@@operator== -->
 </div>
         </div>

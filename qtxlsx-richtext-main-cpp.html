@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (documentproperty/main.cpp) | QtXlsx 0.2</title>
+  <title>main.cpp Example File (richtext/main.cpp) | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.2</li>
-<li>main.cpp Example File (documentproperty/main.cpp)</li>
+<li>main.cpp Example File (richtext/main.cpp)</li>
 <li id="buildversion">
 Qt 0.2.0 Reference Documentation</li>
     </ul>
@@ -23,31 +23,40 @@ Qt 0.2.0 Reference Documentation</li>
 <div class="line">
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">documentproperty/main.cpp</span>
-<!-- $$$documentproperty/main.cpp-description -->
+<span class="small-subtitle">richtext/main.cpp</span>
+<!-- $$$richtext/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
 <span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
-
+<span class="preprocessor">#include &quot;xlsxrichstring.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
 <span class="type">int</span> main()
 {
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;View the properties through:&quot;</span>);
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="string">&quot;Office Button -&gt; Prepare -&gt; Properties option in Excel&quot;</span>);
 
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;title&quot;</span><span class="operator">,</span> <span class="string">&quot;This is an example spreadsheet&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;subject&quot;</span><span class="operator">,</span> <span class="string">&quot;With document properties&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;creator&quot;</span><span class="operator">,</span> <span class="string">&quot;Debao Zhang&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;company&quot;</span><span class="operator">,</span> <span class="string">&quot;HMICN&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;category&quot;</span><span class="operator">,</span> <span class="string">&quot;Example spreadsheets&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;keywords&quot;</span><span class="operator">,</span> <span class="string">&quot;Sample, Example, Properties&quot;</span>);
-    xlsx<span class="operator">.</span>setDocumentProperty(<span class="string">&quot;description&quot;</span><span class="operator">,</span> <span class="string">&quot;Created with Qt Xlsx&quot;</span>);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format blue;
+    blue<span class="operator">.</span>setFontColor(<span class="type">Qt</span><span class="operator">::</span>blue);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format red;
+    red<span class="operator">.</span>setFontColor(<span class="type">Qt</span><span class="operator">::</span>red);
+    red<span class="operator">.</span>setFontSize(<span class="number">15</span>);
+    <span class="type">QXlsx</span><span class="operator">::</span>Format bold;
+    bold<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
 
-    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Test.xlsx&quot;</span>);
+    <span class="type">QXlsx</span><span class="operator">::</span>RichString rich;
+    rich<span class="operator">.</span>addFragment(<span class="string">&quot;Hello &quot;</span><span class="operator">,</span> blue);
+    rich<span class="operator">.</span>addFragment(<span class="string">&quot;Qt &quot;</span><span class="operator">,</span> red);
+    rich<span class="operator">.</span>addFragment(<span class="string">&quot;Xlsx&quot;</span><span class="operator">,</span> bold);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B2&quot;</span><span class="operator">,</span> rich);
+
+    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Test1.xlsx&quot;</span>);
+
+    <span class="type">QXlsx</span><span class="operator">::</span>Document(<span class="string">&quot;Test1.xlsx&quot;</span>);
+    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Test2.xlsx&quot;</span>);
+
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>
 </div>
-<!-- @@@documentproperty/main.cpp -->
+<!-- @@@richtext/main.cpp -->
         </div>
        </div>
    </div>
