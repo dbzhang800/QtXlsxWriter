@@ -26,6 +26,17 @@
 #ifndef QXLSX_DRAWING_H
 #define QXLSX_DRAWING_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt Xlsx API.  It exists for the convenience
+// of the Qt Xlsx.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <QList>
 #include <QString>
 

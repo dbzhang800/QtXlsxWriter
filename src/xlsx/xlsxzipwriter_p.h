@@ -25,6 +25,17 @@
 #ifndef QXLSX_ZIPWRITER_H
 #define QXLSX_ZIPWRITER_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt Xlsx API.  It exists for the convenience
+// of the Qt Xlsx.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <QString>
 class QIODevice;
 class QZipWriter;

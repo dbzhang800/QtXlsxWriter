@@ -25,6 +25,17 @@
 #ifndef XLSXSHAREDSTRINGS_H
 #define XLSXSHAREDSTRINGS_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt Xlsx API.  It exists for the convenience
+// of the Qt Xlsx.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include "xlsxglobal.h"
 #include "xlsxrichstring.h"
 #include <QHash>
