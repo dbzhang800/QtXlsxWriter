@@ -23,10 +23,10 @@
 **
 ****************************************************************************/
 #include "xlsxstyles_p.h"
-#include "xlsxxmlwriter_p.h"
-#include "xlsxxmlreader_p.h"
 #include "xlsxformat_p.h"
 #include "xlsxutility_p.h"
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QFile>
 #include <QMap>
 #include <QDataStream>
@@ -276,7 +276,7 @@ QByteArray Styles::saveToXmlData()
 
 void Styles::saveToXmlFile(QIODevice *device)
 {
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("styleSheet"));
@@ -320,7 +320,7 @@ void Styles::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void Styles::writeNumFmts(XmlStreamWriter &writer)
+void Styles::writeNumFmts(QXmlStreamWriter &writer)
 {
     if (m_customNumFmtIdMap.size() == 0)
         return;
@@ -340,7 +340,7 @@ void Styles::writeNumFmts(XmlStreamWriter &writer)
 
 /*
 */
-void Styles::writeFonts(XmlStreamWriter &writer)
+void Styles::writeFonts(QXmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("fonts"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fontsList.count()));
@@ -349,7 +349,7 @@ void Styles::writeFonts(XmlStreamWriter &writer)
     writer.writeEndElement();//fonts
 }
 
-void Styles::writeFont(XmlStreamWriter &writer, const Format &format, bool isDxf)
+void Styles::writeFont(QXmlStreamWriter &writer, const Format &format, bool isDxf)
 {
     writer.writeStartElement(QStringLiteral("font"));
 
@@ -433,7 +433,7 @@ void Styles::writeFont(XmlStreamWriter &writer, const Format &format, bool isDxf
     writer.writeEndElement(); //font
 }
 
-void Styles::writeFills(XmlStreamWriter &writer)
+void Styles::writeFills(QXmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("fills"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fillsList.size()));
@@ -444,7 +444,7 @@ void Styles::writeFills(XmlStreamWriter &writer)
     writer.writeEndElement(); //fills
 }
 
-void Styles::writeFill(XmlStreamWriter &writer, const Format &fill, bool /*isDxf*/)
+void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool /*isDxf*/)
 {
     static QMap<int, QString> patternStrings;
     if (patternStrings.isEmpty()) {
@@ -498,7 +498,7 @@ void Styles::writeFill(XmlStreamWriter &writer, const Format &fill, bool /*isDxf
     writer.writeEndElement();//fill
 }
 
-void Styles::writeBorders(XmlStreamWriter &writer)
+void Styles::writeBorders(QXmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("borders"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_bordersList.count()));
@@ -507,7 +507,7 @@ void Styles::writeBorders(XmlStreamWriter &writer)
     writer.writeEndElement();//borders
 }
 
-void Styles::writeBorder(XmlStreamWriter &writer, const Format &border, bool isDxf)
+void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool isDxf)
 {
     writer.writeStartElement(QStringLiteral("border"));
     if (border.hasProperty(FormatPrivate::P_Border_DiagonalType)) {
@@ -542,7 +542,7 @@ void Styles::writeBorder(XmlStreamWriter &writer, const Format &border, bool isD
     writer.writeEndElement();//border
 }
 
-void Styles::writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor)
+void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor)
 {
     if (style == Format::BorderNone) {
         writer.writeEmptyElement(type);
@@ -583,7 +583,7 @@ void Styles::writeSubBorder(XmlStreamWriter &writer, const QString &type, int st
     writer.writeEndElement();//type
 }
 
-void Styles::writeCellXfs(XmlStreamWriter &writer)
+void Styles::writeCellXfs(QXmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("cellXfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_xf_formatsList.size()));
@@ -673,7 +673,7 @@ void Styles::writeCellXfs(XmlStreamWriter &writer)
     writer.writeEndElement();//cellXfs
 }
 
-void Styles::writeDxfs(XmlStreamWriter &writer)
+void Styles::writeDxfs(QXmlStreamWriter &writer)
 {
     writer.writeStartElement(QStringLiteral("dxfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_dxf_formatsList.size()));
@@ -682,7 +682,7 @@ void Styles::writeDxfs(XmlStreamWriter &writer)
     writer.writeEndElement(); //dxfs
 }
 
-void Styles::writeDxf(XmlStreamWriter &writer, const Format &format)
+void Styles::writeDxf(QXmlStreamWriter &writer, const Format &format)
 {
     writer.writeStartElement(QStringLiteral("dxf"));
 
@@ -704,7 +704,7 @@ void Styles::writeDxf(XmlStreamWriter &writer, const Format &format)
     writer.writeEndElement();//dxf
 }
 
-bool Styles::readNumFmts(XmlStreamReader &reader)
+bool Styles::readNumFmts(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("numFmts"));
     QXmlStreamAttributes attributes = reader.attributes();
@@ -738,7 +738,7 @@ bool Styles::readNumFmts(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readFonts(XmlStreamReader &reader)
+bool Styles::readFonts(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("fonts"));
     QXmlStreamAttributes attributes = reader.attributes();
@@ -766,7 +766,7 @@ bool Styles::readFonts(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readFont(XmlStreamReader &reader, Format &format)
+bool Styles::readFont(QXmlStreamReader &reader, Format &format)
 {
     Q_ASSERT(reader.name() == QLatin1String("font"));
     while((reader.readNextStartElement(), true)) { //read until font endelement.
@@ -834,7 +834,7 @@ bool Styles::readFont(XmlStreamReader &reader, Format &format)
     return true;
 }
 
-bool Styles::readFills(XmlStreamReader &reader)
+bool Styles::readFills(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("fills"));
 
@@ -863,7 +863,7 @@ bool Styles::readFills(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readFill(XmlStreamReader &reader, Format &fill)
+bool Styles::readFill(QXmlStreamReader &reader, Format &fill)
 {
     Q_ASSERT(reader.name() == QLatin1String("fill"));
 
@@ -940,7 +940,7 @@ bool Styles::readFill(XmlStreamReader &reader, Format &fill)
     return true;
 }
 
-bool Styles::readBorders(XmlStreamReader &reader)
+bool Styles::readBorders(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("borders"));
 
@@ -971,7 +971,7 @@ bool Styles::readBorders(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readBorder(XmlStreamReader &reader, Format &border)
+bool Styles::readBorder(QXmlStreamReader &reader, Format &border)
 {
     Q_ASSERT(reader.name() == QLatin1String("border"));
 
@@ -1036,7 +1036,7 @@ bool Styles::readBorder(XmlStreamReader &reader, Format &border)
     return true;
 }
 
-bool Styles::readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor)
+bool Styles::readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor)
 {
     Q_ASSERT(reader.name() == name);
 
@@ -1092,7 +1092,7 @@ bool Styles::readSubBorder(XmlStreamReader &reader, const QString &name, Format:
     return true;
 }
 
-bool Styles::readCellXfs(XmlStreamReader &reader)
+bool Styles::readCellXfs(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("cellXfs"));
     QXmlStreamAttributes attributes = reader.attributes();
@@ -1223,7 +1223,7 @@ bool Styles::readCellXfs(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readDxfs(XmlStreamReader &reader)
+bool Styles::readDxfs(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("dxfs"));
     QXmlStreamAttributes attributes = reader.attributes();
@@ -1246,7 +1246,7 @@ bool Styles::readDxfs(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readDxf(XmlStreamReader &reader)
+bool Styles::readDxf(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("dxf"));
     Format format;
@@ -1271,7 +1271,7 @@ bool Styles::readDxf(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readColors(XmlStreamReader &reader)
+bool Styles::readColors(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("colors"));
     while (!(reader.name() == QLatin1String("colors") && reader.tokenType() == QXmlStreamReader::EndElement)) {
@@ -1287,7 +1287,7 @@ bool Styles::readColors(XmlStreamReader &reader)
     return true;
 }
 
-bool Styles::readIndexedColors(XmlStreamReader &reader)
+bool Styles::readIndexedColors(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("indexedColors"));
     while (!(reader.name() == QLatin1String("indexedColors") && reader.tokenType() == QXmlStreamReader::EndElement)) {
@@ -1306,7 +1306,7 @@ bool Styles::loadFromXmlFile(QIODevice *device)
 {
     {
         //Try load colors part first!
-        XmlStreamReader reader(device);
+        QXmlStreamReader reader(device);
         while(!reader.atEnd()) {
             QXmlStreamReader::TokenType token = reader.readNext();
             if (token == QXmlStreamReader::StartElement) {
@@ -1318,7 +1318,7 @@ bool Styles::loadFromXmlFile(QIODevice *device)
         device->seek(0);
     }
 
-    XmlStreamReader reader(device);
+    QXmlStreamReader reader(device);
     while(!reader.atEnd()) {
         QXmlStreamReader::TokenType token = reader.readNext();
         if (token == QXmlStreamReader::StartElement) {

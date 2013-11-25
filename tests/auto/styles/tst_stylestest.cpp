@@ -1,9 +1,9 @@
 #include "private/xlsxstyles_p.h"
-#include "private/xlsxxmlreader_p.h"
 #include "xlsxformat.h"
 #include "private/xlsxformat_p.h"
 #include <QString>
 #include <QtTest>
+#include <QXmlStreamReader>
 
 class StylesTest : public QObject
 {
@@ -104,7 +104,7 @@ void StylesTest::testReadFonts()
             "<font><b/><u val=\"double\"/><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/><scheme val=\"minor\"/></font>"
             "</fonts>";
     QXlsx::Styles styles(true);
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is fonts
     styles.readFonts(reader);
 
@@ -123,7 +123,7 @@ void StylesTest::testReadFills()
             "<fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFa0a0a4\"/></patternFill></fill>"
             "</fills>";
     QXlsx::Styles styles(true);
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is fills
     styles.readFills(reader);
 
@@ -140,7 +140,7 @@ void StylesTest::testReadBorders()
             "</borders>";
 
     QXlsx::Styles styles(true);
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is borders
     styles.readBorders(reader);
 
@@ -155,7 +155,7 @@ void StylesTest::testReadNumFmts()
             "</numFmts>";
 
     QXlsx::Styles styles(true);
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is numFmts
     styles.readNumFmts(reader);
 

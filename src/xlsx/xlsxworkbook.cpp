@@ -29,11 +29,11 @@
 #include "xlsxstyles_p.h"
 #include "xlsxformat.h"
 #include "xlsxpackage_p.h"
-#include "xlsxxmlwriter_p.h"
-#include "xlsxxmlreader_p.h"
 #include "xlsxworksheet_p.h"
 #include "xlsxformat_p.h"
 
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QFile>
 #include <QBuffer>
 
@@ -291,7 +291,7 @@ void Workbook::prepareDrawings()
 void Workbook::saveToXmlFile(QIODevice *device)
 {
     Q_D(Workbook);
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("workbook"));
@@ -381,7 +381,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Workbook);
 
-    XmlStreamReader reader(device);
+    QXmlStreamReader reader(device);
     while(!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {

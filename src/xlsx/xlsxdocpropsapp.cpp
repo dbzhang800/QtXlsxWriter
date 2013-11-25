@@ -23,9 +23,9 @@
 **
 ****************************************************************************/
 #include "xlsxdocpropsapp_p.h"
-#include "xlsxxmlwriter_p.h"
-#include "xlsxxmlreader_p.h"
 
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QDir>
 #include <QFile>
 #include <QDateTime>
@@ -81,7 +81,7 @@ QStringList DocPropsApp::propertyNames() const
 
 void DocPropsApp::saveToXmlFile(QIODevice *device)
 {
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("Properties"));
@@ -142,7 +142,7 @@ QByteArray DocPropsApp::saveToXmlData()
 DocPropsApp DocPropsApp::loadFromXmlFile(QIODevice *device)
 {
     DocPropsApp props;
-    XmlStreamReader reader(device);
+    QXmlStreamReader reader(device);
     while(!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {

@@ -30,8 +30,6 @@
 #include "xlsxformat_p.h"
 #include "xlsxutility_p.h"
 #include "xlsxsharedstrings_p.h"
-#include "xlsxxmlwriter_p.h"
-#include "xlsxxmlreader_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxstyles_p.h"
 #include "xlsxcell.h"
@@ -46,6 +44,8 @@
 #include <QRegularExpression>
 #include <QDebug>
 #include <QBuffer>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 #include <stdint.h>
 
@@ -1032,7 +1032,7 @@ int Worksheet::unmergeCells(const QString &range)
 void Worksheet::saveToXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("worksheet"));
@@ -1128,7 +1128,7 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
+void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer)
 {
     calculateSpans();
     for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
@@ -1181,7 +1181,7 @@ void WorksheetPrivate::writeSheetData(XmlStreamWriter &writer)
     }
 }
 
-void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell)
+void WorksheetPrivate::writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell)
 {
     //This is the innermost loop so efficiency is important.
     QString cell_pos = xl_rowcol_to_cell_fast(row, col);
@@ -1255,7 +1255,7 @@ void WorksheetPrivate::writeCellData(XmlStreamWriter &writer, int row, int col, 
     writer.writeEndElement(); //c
 }
 
-void WorksheetPrivate::writeMergeCells(XmlStreamWriter &writer)
+void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer)
 {
     if (merges.isEmpty())
         return;
@@ -1273,7 +1273,7 @@ void WorksheetPrivate::writeMergeCells(XmlStreamWriter &writer)
     writer.writeEndElement(); //mergeCells
 }
 
-void WorksheetPrivate::writeDataValidation(XmlStreamWriter &writer)
+void WorksheetPrivate::writeDataValidation(QXmlStreamWriter &writer)
 {
     if (dataValidationsList.isEmpty())
         return;
@@ -1349,7 +1349,7 @@ void WorksheetPrivate::writeDataValidation(XmlStreamWriter &writer)
     writer.writeEndElement(); //dataValidations
 }
 
-void WorksheetPrivate::writeHyperlinks(XmlStreamWriter &writer)
+void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer)
 {
     if (urlTable.isEmpty())
         return;
@@ -1392,7 +1392,7 @@ void WorksheetPrivate::writeHyperlinks(XmlStreamWriter &writer)
     writer.writeEndElement();//hyperlinks
 }
 
-void WorksheetPrivate::writeDrawings(XmlStreamWriter &writer)
+void WorksheetPrivate::writeDrawings(QXmlStreamWriter &writer)
 {
     if (!drawing)
         return;
@@ -1835,7 +1835,7 @@ QByteArray Worksheet::saveToXmlData()
     return data;
 }
 
-QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(XmlStreamReader &reader)
+QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("c"));
 
@@ -1875,7 +1875,7 @@ QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(XmlStreamReader &read
     return cell;
 }
 
-void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
+void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
 {
     Q_Q(Worksheet);
     Q_ASSERT(reader.name() == QLatin1String("sheetData"));
@@ -2006,7 +2006,7 @@ void WorksheetPrivate::readSheetData(XmlStreamReader &reader)
     }
 }
 
-void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
+void WorksheetPrivate::readColumnsInfo(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("cols"));
 
@@ -2047,7 +2047,7 @@ void WorksheetPrivate::readColumnsInfo(XmlStreamReader &reader)
     }
 }
 
-void WorksheetPrivate::readMergeCells(XmlStreamReader &reader)
+void WorksheetPrivate::readMergeCells(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("mergeCells"));
 
@@ -2077,7 +2077,7 @@ void WorksheetPrivate::readMergeCells(XmlStreamReader &reader)
         qDebug("read merge cells error");
 }
 
-void WorksheetPrivate::readDataValidations(XmlStreamReader &reader)
+void WorksheetPrivate::readDataValidations(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("dataValidations"));
     QXmlStreamAttributes attributes = reader.attributes();
@@ -2096,7 +2096,7 @@ void WorksheetPrivate::readDataValidations(XmlStreamReader &reader)
         qDebug("read data validation error");
 }
 
-void WorksheetPrivate::readDataValidation(XmlStreamReader &reader)
+void WorksheetPrivate::readDataValidation(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("dataValidation"));
 
@@ -2187,7 +2187,7 @@ void WorksheetPrivate::readDataValidation(XmlStreamReader &reader)
     dataValidationsList.append(validation);
 }
 
-void WorksheetPrivate::readSheetViews(XmlStreamReader &reader)
+void WorksheetPrivate::readSheetViews(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("sheetViews"));
 
@@ -2216,7 +2216,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
 
-    XmlStreamReader reader(device);
+    QXmlStreamReader reader(device);
     while(!reader.atEnd()) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {

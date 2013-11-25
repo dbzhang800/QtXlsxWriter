@@ -1,12 +1,12 @@
 #include <QBuffer>
 #include <QtTest>
+#include <QXmlStreamReader>
 
 #include "xlsxworksheet.h"
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
 #include "xlsxdatavalidation.h"
 #include "private/xlsxworksheet_p.h"
-#include "private/xlsxxmlreader_p.h"
 #include "private/xlsxsharedstrings_p.h"
 #include "xlsxrichstring.h"
 
@@ -194,7 +194,7 @@ void WorksheetTest::testReadSheetData()
             "<c r=\"E3\" t=\"e\"><f>1/0</f><v>#DIV/0!</v></c>"
             "</row>"
             "</sheetData>";
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is sheetData
 
     QXlsx::Worksheet sheet("", 1, 0);
@@ -235,7 +235,7 @@ void WorksheetTest::testReadColsInfo()
     const QByteArray xmlData = "<cols>"
             "<col min=\"9\" max=\"15\" width=\"5\" style=\"4\" customWidth=\"1\"/>"
             "</cols>";
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is cols
 
     QXlsx::Worksheet sheet("", 1, 0);
@@ -255,7 +255,7 @@ void WorksheetTest::testReadRowsInfo()
             "<c r=\"B3\" s=\"3\"><v>12345</v></c>"
             "</row>"
             "</sheetData>";
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is sheetData
 
     QXlsx::Worksheet sheet("", 1, 0);
@@ -269,7 +269,7 @@ void WorksheetTest::testReadMergeCells()
 {
     const QByteArray xmlData = "<mergeCells count=\"2\"><mergeCell ref=\"B1:B5\"/><mergeCell ref=\"E2:G4\"/></mergeCells>";
 
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is mergeCells
 
     QXlsx::Worksheet sheet("", 1, 0);
@@ -286,7 +286,7 @@ void WorksheetTest::testReadDataValidations()
             "<dataValidation type=\"whole\" showInputMessage=\"1\" showErrorMessage=\"1\" sqref=\"A1 C2:C4\"><formula1>10</formula1><formula2>100</formula2></dataValidation>"
             "</dataValidations>";
 
-    QXlsx::XmlStreamReader reader(xmlData);
+    QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//current node is dataValidations
 
     QXlsx::Worksheet sheet("", 1, 0);

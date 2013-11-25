@@ -32,10 +32,11 @@
 #include <QImage>
 #include <QSharedPointer>
 
+class QXmlStreamWriter;
+class QXmlStreamReader;
+
 namespace QXlsx {
 
-class XmlStreamWriter;
-class XmlStreamReader;
 class SharedStrings;
 
 struct XlsxUrlData
@@ -165,24 +166,24 @@ public:
     void calculateSpans();
     void splitColsInfo(int colFirst, int colLast);
 
-    void writeSheetData(XmlStreamWriter &writer);
-    void writeCellData(XmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell);
-    void writeMergeCells(XmlStreamWriter &writer);
-    void writeHyperlinks(XmlStreamWriter &writer);
-    void writeDrawings(XmlStreamWriter &writer);
-    void writeDataValidation(XmlStreamWriter &writer);
+    void writeSheetData(QXmlStreamWriter &writer);
+    void writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell);
+    void writeMergeCells(QXmlStreamWriter &writer);
+    void writeHyperlinks(QXmlStreamWriter &writer);
+    void writeDrawings(QXmlStreamWriter &writer);
+    void writeDataValidation(QXmlStreamWriter &writer);
     int rowPixelsSize(int row);
     int colPixelsSize(int col);
     XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
     XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data);
 
-    QSharedPointer<Cell> readNumericCellData(XmlStreamReader &reader);
-    void readSheetData(XmlStreamReader &reader);
-    void readColumnsInfo(XmlStreamReader &reader);
-    void readMergeCells(XmlStreamReader &reader);
-    void readDataValidations(XmlStreamReader &reader);
-    void readDataValidation(XmlStreamReader &reader);
-    void readSheetViews(XmlStreamReader &reader);
+    QSharedPointer<Cell> readNumericCellData(QXmlStreamReader &reader);
+    void readSheetData(QXmlStreamReader &reader);
+    void readColumnsInfo(QXmlStreamReader &reader);
+    void readMergeCells(QXmlStreamReader &reader);
+    void readDataValidations(QXmlStreamReader &reader);
+    void readDataValidation(QXmlStreamReader &reader);
+    void readSheetViews(QXmlStreamReader &reader);
 
     SharedStrings *sharedStrings() const;
 

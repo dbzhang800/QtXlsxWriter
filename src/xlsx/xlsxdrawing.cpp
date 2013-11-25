@@ -24,7 +24,9 @@
 ****************************************************************************/
 
 #include "xlsxdrawing_p.h"
-#include "xlsxxmlwriter_p.h"
+
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 namespace QXlsx {
 
@@ -36,7 +38,7 @@ Drawing::Drawing()
 
 void Drawing::saveToXmlFile(QIODevice *device)
 {
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("xdr:wsDr"));
@@ -58,7 +60,7 @@ void Drawing::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void Drawing::writeTwoCellAnchor(XmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data)
+void Drawing::writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data)
 {
     writer.writeStartElement(QStringLiteral("xdr:twoCellAnchor"));
     if (data->drawing_type == 2)
@@ -94,7 +96,7 @@ void Drawing::writeTwoCellAnchor(XmlStreamWriter &writer, int index, XlsxDrawing
     writer.writeEndElement(); //xdr:twoCellAnchor
 }
 
-void Drawing::writeAbsoluteAnchor(XmlStreamWriter &writer, int index)
+void Drawing::writeAbsoluteAnchor(QXmlStreamWriter &writer, int index)
 {
     writer.writeStartElement(QStringLiteral("xdr:absoluteAnchor"));
     if (orientation == 0) {
@@ -111,21 +113,21 @@ void Drawing::writeAbsoluteAnchor(XmlStreamWriter &writer, int index)
     writer.writeEndElement(); //xdr:absoluteAnchor
 }
 
-void Drawing::writePos(XmlStreamWriter &writer, int x, int y)
+void Drawing::writePos(QXmlStreamWriter &writer, int x, int y)
 {
     writer.writeEmptyElement(QStringLiteral("xdr:pos"));
     writer.writeAttribute(QStringLiteral("x"), QString::number(x));
     writer.writeAttribute(QStringLiteral("y"), QString::number(y));
 }
 
-void Drawing::writeExt(XmlStreamWriter &writer, int cx, int cy)
+void Drawing::writeExt(QXmlStreamWriter &writer, int cx, int cy)
 {
     writer.writeStartElement(QStringLiteral("xdr:ext"));
     writer.writeAttribute(QStringLiteral("cx"), QString::number(cx));
     writer.writeAttribute(QStringLiteral("cy"), QString::number(cy));
 }
 
-void Drawing::writeGraphicFrame(XmlStreamWriter &writer, int index, const QString &name)
+void Drawing::writeGraphicFrame(QXmlStreamWriter &writer, int index, const QString &name)
 {
     writer.writeStartElement(QStringLiteral("xdr:graphicFrame"));
     writer.writeAttribute(QStringLiteral("macro"), QString());
@@ -147,7 +149,7 @@ void Drawing::writeGraphicFrame(XmlStreamWriter &writer, int index, const QStrin
     writer.writeEndElement(); //xdr:graphicFrame
 }
 
-void Drawing::writePicture(XmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description)
+void Drawing::writePicture(QXmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description)
 {
     writer.writeStartElement(QStringLiteral("xdr:pic"));
 

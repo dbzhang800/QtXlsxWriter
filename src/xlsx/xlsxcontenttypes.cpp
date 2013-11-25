@@ -23,7 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxcontenttypes_p.h"
-#include "xlsxxmlwriter_p.h"
+#include <QXmlStreamWriter>
 #include <QFile>
 #include <QMapIterator>
 
@@ -113,7 +113,7 @@ void ContentTypes::addVbaProject()
 
 void ContentTypes::saveToXmlFile(QIODevice *device)
 {
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("Types"));

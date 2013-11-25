@@ -24,10 +24,10 @@
 ****************************************************************************/
 #include "xlsxrichstring.h"
 #include "xlsxsharedstrings_p.h"
-#include "xlsxxmlwriter_p.h"
-#include "xlsxxmlreader_p.h"
 #include "xlsxutility_p.h"
 #include "xlsxformat_p.h"
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QDir>
 #include <QFile>
 #include <QRegularExpression>
@@ -125,7 +125,7 @@ QList<RichString> SharedStrings::getSharedStrings() const
     return m_stringList;
 }
 
-void SharedStrings::writeRichStringPart_rPr(XmlStreamWriter &writer, const Format &format) const
+void SharedStrings::writeRichStringPart_rPr(QXmlStreamWriter &writer, const Format &format) const
 {
     if (!format.hasFontData())
         return;
@@ -197,7 +197,7 @@ void SharedStrings::writeRichStringPart_rPr(XmlStreamWriter &writer, const Forma
 
 void SharedStrings::saveToXmlFile(QIODevice *device) const
 {
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("sst"));
@@ -253,7 +253,7 @@ QByteArray SharedStrings::saveToXmlData() const
     return data;
 }
 
-void SharedStrings::readString(XmlStreamReader &reader)
+void SharedStrings::readString(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("si"));
 
@@ -274,7 +274,7 @@ void SharedStrings::readString(XmlStreamReader &reader)
     m_stringList.append(richString);
 }
 
-void SharedStrings::readRichStringPart(XmlStreamReader &reader, RichString &richString)
+void SharedStrings::readRichStringPart(QXmlStreamReader &reader, RichString &richString)
 {
     Q_ASSERT(reader.name() == QLatin1String("r"));
 
@@ -293,7 +293,7 @@ void SharedStrings::readRichStringPart(XmlStreamReader &reader, RichString &rich
     richString.addFragment(text, format);
 }
 
-void SharedStrings::readPlainStringPart(XmlStreamReader &reader, RichString &richString)
+void SharedStrings::readPlainStringPart(QXmlStreamReader &reader, RichString &richString)
 {
     Q_ASSERT(reader.name() == QLatin1String("t"));
 
@@ -303,7 +303,7 @@ void SharedStrings::readPlainStringPart(XmlStreamReader &reader, RichString &ric
     richString.addFragment(text, Format());
 }
 
-Format SharedStrings::readRichStringPart_rPr(XmlStreamReader &reader)
+Format SharedStrings::readRichStringPart_rPr(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("rPr"));
     Format format;
@@ -370,7 +370,7 @@ Format SharedStrings::readRichStringPart_rPr(XmlStreamReader &reader)
 
 bool SharedStrings::loadFromXmlFile(QIODevice *device)
 {
-    XmlStreamReader reader(device);
+    QXmlStreamReader reader(device);
     int count = 0;
     while(!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();

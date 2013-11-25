@@ -34,14 +34,14 @@
 #include <QStringList>
 #include <QVector>
 
+class QXmlStreamWriter;
+class QXmlStreamReader;
 class QIODevice;
 class StylesTest;
 
 namespace QXlsx {
 
 class Format;
-class XmlStreamWriter;
-class XmlStreamReader;
 
 struct XlsxFormatNumberData
 {
@@ -72,31 +72,31 @@ private:
 
     void fixNumFmt(const Format &format);
 
-    void writeNumFmts(XmlStreamWriter &writer);
-    void writeFonts(XmlStreamWriter &writer);
-    void writeFont(XmlStreamWriter &writer, const Format &font, bool isDxf = false);
-    void writeFills(XmlStreamWriter &writer);
-    void writeFill(XmlStreamWriter &writer, const Format &fill, bool isDxf = false);
-    void writeBorders(XmlStreamWriter &writer);
-    void writeBorder(XmlStreamWriter &writer, const Format &border, bool isDxf = false);
-    void writeSubBorder(XmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
-    void writeCellXfs(XmlStreamWriter &writer);
-    void writeDxfs(XmlStreamWriter &writer);
-    void writeDxf(XmlStreamWriter &writer, const Format &format);
+    void writeNumFmts(QXmlStreamWriter &writer);
+    void writeFonts(QXmlStreamWriter &writer);
+    void writeFont(QXmlStreamWriter &writer, const Format &font, bool isDxf = false);
+    void writeFills(QXmlStreamWriter &writer);
+    void writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf = false);
+    void writeBorders(QXmlStreamWriter &writer);
+    void writeBorder(QXmlStreamWriter &writer, const Format &border, bool isDxf = false);
+    void writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
+    void writeCellXfs(QXmlStreamWriter &writer);
+    void writeDxfs(QXmlStreamWriter &writer);
+    void writeDxf(QXmlStreamWriter &writer, const Format &format);
 
-    bool readNumFmts(XmlStreamReader &reader);
-    bool readFonts(XmlStreamReader &reader);
-    bool readFont(XmlStreamReader &reader, Format &format);
-    bool readFills(XmlStreamReader &reader);
-    bool readFill(XmlStreamReader &reader, Format &format);
-    bool readBorders(XmlStreamReader &reader);
-    bool readBorder(XmlStreamReader &reader, Format &format);
-    bool readSubBorder(XmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor);
-    bool readCellXfs(XmlStreamReader &reader);
-    bool readDxfs(XmlStreamReader &reader);
-    bool readDxf(XmlStreamReader &reader);
-    bool readColors(XmlStreamReader &reader);
-    bool readIndexedColors(XmlStreamReader &reader);
+    bool readNumFmts(QXmlStreamReader &reader);
+    bool readFonts(QXmlStreamReader &reader);
+    bool readFont(QXmlStreamReader &reader, Format &format);
+    bool readFills(QXmlStreamReader &reader);
+    bool readFill(QXmlStreamReader &reader, Format &format);
+    bool readBorders(QXmlStreamReader &reader);
+    bool readBorder(QXmlStreamReader &reader, Format &format);
+    bool readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor);
+    bool readCellXfs(QXmlStreamReader &reader);
+    bool readDxfs(QXmlStreamReader &reader);
+    bool readDxf(QXmlStreamReader &reader);
+    bool readColors(QXmlStreamReader &reader);
+    bool readIndexedColors(QXmlStreamReader &reader);
 
     QColor getColorByIndex(int idx);
 

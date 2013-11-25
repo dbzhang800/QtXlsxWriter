@@ -30,9 +30,9 @@
 #include <QString>
 
 class QIODevice;
+class QXmlStreamWriter;
 
 namespace QXlsx {
-class XmlStreamWriter;
 
 struct XlsxDrawingDimensionData
 {
@@ -64,12 +64,12 @@ public:
     QList <XlsxDrawingDimensionData *> dimensionList;
 
 private:
-    void writeTwoCellAnchor(XmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data);
-    void writeAbsoluteAnchor(XmlStreamWriter &writer, int index);
-    void writePos(XmlStreamWriter &writer, int x, int y);
-    void writeExt(XmlStreamWriter &writer, int cx, int cy);
-    void writeGraphicFrame(XmlStreamWriter &writer, int index, const QString &name=QString());
-    void writePicture(XmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description);
+    void writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data);
+    void writeAbsoluteAnchor(QXmlStreamWriter &writer, int index);
+    void writePos(QXmlStreamWriter &writer, int x, int y);
+    void writeExt(QXmlStreamWriter &writer, int cx, int cy);
+    void writeGraphicFrame(QXmlStreamWriter &writer, int index, const QString &name=QString());
+    void writePicture(QXmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description);
 };
 
 } // namespace QXlsx

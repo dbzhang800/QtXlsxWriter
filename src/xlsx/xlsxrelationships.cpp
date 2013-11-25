@@ -23,8 +23,8 @@
 **
 ****************************************************************************/
 #include "xlsxrelationships_p.h"
-#include "xlsxxmlwriter_p.h"
-#include "xlsxxmlreader_p.h"
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QDir>
 #include <QFile>
 #include <QBuffer>
@@ -102,7 +102,7 @@ void Relationships::addRelationship(const QString &type, const QString &target, 
 
 void Relationships::saveToXmlFile(QIODevice *device)
 {
-    XmlStreamWriter writer(device);
+    QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("Relationships"));
@@ -134,7 +134,7 @@ Relationships Relationships::loadFromXmlFile(QIODevice *device)
 {
     Relationships rels;
 
-    XmlStreamReader reader(device);
+    QXmlStreamReader reader(device);
     while(!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {

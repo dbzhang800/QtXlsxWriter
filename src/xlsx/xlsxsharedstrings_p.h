@@ -32,11 +32,10 @@
 #include <QSharedPointer>
 
 class QIODevice;
+class QXmlStreamReader;
+class QXmlStreamWriter;
 
 namespace QXlsx {
-
-class XmlStreamReader;
-class XmlStreamWriter;
 
 class XlsxSharedStringInfo
 {
@@ -73,11 +72,11 @@ public:
     bool loadFromXmlData(const QByteArray &data);
 
 private:
-    void readString(XmlStreamReader &reader); // <si>
-    void readRichStringPart(XmlStreamReader &reader, RichString &rich); // <r>
-    void readPlainStringPart(XmlStreamReader &reader, RichString &rich); // <v>
-    Format readRichStringPart_rPr(XmlStreamReader &reader);
-    void writeRichStringPart_rPr(XmlStreamWriter &writer, const Format &format) const;
+    void readString(QXmlStreamReader &reader); // <si>
+    void readRichStringPart(QXmlStreamReader &reader, RichString &rich); // <r>
+    void readPlainStringPart(QXmlStreamReader &reader, RichString &rich); // <v>
+    Format readRichStringPart_rPr(QXmlStreamReader &reader);
+    void writeRichStringPart_rPr(QXmlStreamWriter &writer, const Format &format) const;
 
     QHash<RichString, XlsxSharedStringInfo> m_stringTable; //for fast lookup
     QList<RichString> m_stringList;
