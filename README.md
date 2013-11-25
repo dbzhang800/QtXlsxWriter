@@ -74,6 +74,13 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
     include(qtxlsx.pri)
 ```
 
+**Note**: If you do not use qmake, you need to define the following macro manually
+
+```
+    XLSX_NO_LIB
+```
+
+
 * Then, using Qt Xlsx in your code
 
 ## References

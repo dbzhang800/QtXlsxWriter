@@ -2,6 +2,13 @@
     \page building
     \title Qt Xlsx Build
 
+    \note QZipWriter and QZipReader which live in gui-private is used in
+    this library. For linux user, if your Qt is installed through package
+    manager tools such "apt-get", make sure that you have installed the Qt5
+    develop package *qtbase5-private-dev* ;
+    if you Qt is built from source by yourself,
+    or download from qt-project.org directly, nothing need to do.
+
     \section1 Usage(1): Use Xlsx as Qt5's addon module
 
     1. Download the source code from \l {https://github.com/dbzhang800/QtXlsxWriter/archive/master.zip} {github.com}.
@@ -64,6 +71,12 @@
 
     \code
     include(qtxlsx.pri)
+    \endcode
+
+    \note If you do not use qmake, you need to define the following macro manually
+
+    \code
+    XLSX_NO_LIB
     \endcode
 
     4. Then, using Qt Xlsx in your code
