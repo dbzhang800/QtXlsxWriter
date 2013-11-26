@@ -75,46 +75,50 @@ QStringList DocPropsCore::propertyNames() const
 void DocPropsCore::saveToXmlFile(QIODevice *device)
 {
     QXmlStreamWriter writer(device);
-
+    const QString cp = QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties");
+    const QString dc = QStringLiteral("http://purl.org/dc/elements/1.1/");
+    const QString dcterms = QStringLiteral("http://purl.org/dc/terms/");
+    const QString dcmitype = QStringLiteral("http://purl.org/dc/dcmitype/");
+    const QString xsi = QStringLiteral("http://www.w3.org/2001/XMLSchema-instance");
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("cp:coreProperties"));
-    writer.writeAttribute(QStringLiteral("xmlns:cp"), QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties"));
-    writer.writeAttribute(QStringLiteral("xmlns:dc"), QStringLiteral("http://purl.org/dc/elements/1.1/"));
-    writer.writeAttribute(QStringLiteral("xmlns:dcterms"), QStringLiteral("http://purl.org/dc/terms/"));
-    writer.writeAttribute(QStringLiteral("xmlns:dcmitype"), QStringLiteral("http://purl.org/dc/dcmitype/"));
-    writer.writeAttribute(QStringLiteral("xmlns:xsi"), QStringLiteral("http://www.w3.org/2001/XMLSchema-instance"));
+    writer.writeNamespace(cp, QStringLiteral("cp"));
+    writer.writeNamespace(dc, QStringLiteral("dc"));
+    writer.writeNamespace(dcterms, QStringLiteral("dcterms"));
+    writer.writeNamespace(dcmitype, QStringLiteral("dcmitype"));
+    writer.writeNamespace(xsi, QStringLiteral("xsi"));
 
     if (m_properties.contains(QStringLiteral("title")))
-        writer.writeTextElement(QStringLiteral("dc:title"), m_properties[QStringLiteral("title")]);
+        writer.writeTextElement(dc, QStringLiteral("title"), m_properties[QStringLiteral("title")]);
 
     if (m_properties.contains(QStringLiteral("subject")))
-        writer.writeTextElement(QStringLiteral("dc:subject"), m_properties[QStringLiteral("subject")]);
+        writer.writeTextElement(dc, QStringLiteral("subject"), m_properties[QStringLiteral("subject")]);
 
-    writer.writeTextElement(QStringLiteral("dc:creator"), m_properties.contains(QStringLiteral("creator")) ? m_properties[QStringLiteral("creator")] : QStringLiteral("Qt Xlsx Library"));
+    writer.writeTextElement(dc, QStringLiteral("creator"), m_properties.contains(QStringLiteral("creator")) ? m_properties[QStringLiteral("creator")] : QStringLiteral("Qt Xlsx Library"));
 
     if (m_properties.contains(QStringLiteral("keywords")))
-        writer.writeTextElement(QStringLiteral("cp:keywords"), m_properties[QStringLiteral("keywords")]);
+        writer.writeTextElement(cp, QStringLiteral("keywords"), m_properties[QStringLiteral("keywords")]);
 
     if (m_properties.contains(QStringLiteral("description")))
-        writer.writeTextElement(QStringLiteral("dc:description"), m_properties[QStringLiteral("description")]);
+        writer.writeTextElement(dc, QStringLiteral("description"), m_properties[QStringLiteral("description")]);
 
-    writer.writeTextElement(QStringLiteral("cp:lastModifiedBy"), m_properties.contains(QStringLiteral("creator")) ? m_properties[QStringLiteral("creator")] : QStringLiteral("Qt Xlsx Library"));
+    writer.writeTextElement(cp, QStringLiteral("lastModifiedBy"), m_properties.contains(QStringLiteral("creator")) ? m_properties[QStringLiteral("creator")] : QStringLiteral("Qt Xlsx Library"));
 
-    writer.writeStartElement(QStringLiteral("dcterms:created"));
-    writer.writeAttribute(QStringLiteral("xsi:type"), QStringLiteral("dcterms:W3CDTF"));
+    writer.writeStartElement(dcterms, QStringLiteral("created"));
+    writer.writeAttribute(xsi, QStringLiteral("type"), QStringLiteral("dcterms:W3CDTF"));
     writer.writeCharacters(m_properties.contains(QStringLiteral("created")) ? m_properties[QStringLiteral("created")] : QDateTime::currentDateTime().toString(Qt::ISODate));
     writer.writeEndElement();//dcterms:created
 
-    writer.writeStartElement(QStringLiteral("dcterms:modified"));
-    writer.writeAttribute(QStringLiteral("xsi:type"), QStringLiteral("dcterms:W3CDTF"));
+    writer.writeStartElement(dcterms, QStringLiteral("modified"));
+    writer.writeAttribute(xsi, QStringLiteral("type"), QStringLiteral("dcterms:W3CDTF"));
     writer.writeCharacters(QDateTime::currentDateTime().toString(Qt::ISODate));
     writer.writeEndElement();//dcterms:created
 
     if (m_properties.contains(QStringLiteral("category")))
-        writer.writeTextElement(QStringLiteral("cp:category"), m_properties[QStringLiteral("category")]);
+        writer.writeTextElement(cp, QStringLiteral("category"), m_properties[QStringLiteral("category")]);
 
     if (m_properties.contains(QStringLiteral("status")))
-        writer.writeTextElement(QStringLiteral("cp:contentStatus"), m_properties[QStringLiteral("status")]);
+        writer.writeTextElement(cp, QStringLiteral("contentStatus"), m_properties[QStringLiteral("status")]);
 
     writer.writeEndElement(); //cp:coreProperties
     writer.writeEndDocument();
@@ -134,34 +138,38 @@ DocPropsCore DocPropsCore::loadFromXmlFile(QIODevice *device)
 {
     DocPropsCore props;
     QXmlStreamReader reader(device);
+
+    const QString cp = QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties");
+    const QString dc = QStringLiteral("http://purl.org/dc/elements/1.1/");
+    const QString dcterms = QStringLiteral("http://purl.org/dc/terms/");
+
     while(!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
-             if (reader.qualifiedName() == QLatin1String("cp:coreProperties"))
-                 continue;
-
-             QString text = reader.readElementText();
-             if (reader.qualifiedName() == QStringLiteral("dc:subject")) {
-                 props.setProperty(QStringLiteral("subject"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("dc:title")) {
-                 props.setProperty(QStringLiteral("title"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("dc:creator")) {
-                 props.setProperty(QStringLiteral("creator"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("dc:description")) {
-                 props.setProperty(QStringLiteral("description"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("cp:keywords")) {
-                 props.setProperty(QStringLiteral("keywords"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("dcterms:created")) {
-                 props.setProperty(QStringLiteral("created"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("cp:category")) {
-                 props.setProperty(QStringLiteral("category"), text);
-             } else if (reader.qualifiedName() == QStringLiteral("cp:contentStatus")) {
-                 props.setProperty(QStringLiteral("status"), text);
+             const QStringRef nsUri = reader.namespaceUri();
+             const QStringRef name = reader.name();
+             qDebug()<<nsUri<<name;
+             if (name == QStringLiteral("subject") && nsUri == dc) {
+                 props.setProperty(QStringLiteral("subject"), reader.readElementText());
+             } else if (name == QStringLiteral("title") && nsUri == dc) {
+                 props.setProperty(QStringLiteral("title"), reader.readElementText());
+             } else if (name == QStringLiteral("creator") && nsUri == dc) {
+                 props.setProperty(QStringLiteral("creator"), reader.readElementText());
+             } else if (name == QStringLiteral("description") && nsUri == dc) {
+                 props.setProperty(QStringLiteral("description"), reader.readElementText());
+             } else if (name == QStringLiteral("keywords") && nsUri == cp) {
+                 props.setProperty(QStringLiteral("keywords"), reader.readElementText());
+             } else if (name == QStringLiteral("created") && nsUri == dcterms) {
+                 props.setProperty(QStringLiteral("created"), reader.readElementText());
+             } else if (name == QStringLiteral("category") && nsUri == cp) {
+                 props.setProperty(QStringLiteral("category"), reader.readElementText());
+             } else if (name == QStringLiteral("contentStatus") && nsUri == cp) {
+                 props.setProperty(QStringLiteral("status"), reader.readElementText());
              }
          }
 
          if (reader.hasError()) {
-             qDebug()<<"Error when read doc props core file.";
+             qDebug()<<"Error when read doc props core file."<<reader.errorString();
 
          }
     }

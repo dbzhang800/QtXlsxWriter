@@ -82,37 +82,38 @@ QStringList DocPropsApp::propertyNames() const
 void DocPropsApp::saveToXmlFile(QIODevice *device)
 {
     QXmlStreamWriter writer(device);
+    QString vt = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes");
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("Properties"));
-    writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"));
-    writer.writeAttribute(QStringLiteral("xmlns:vt"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"));
+    writer.writeDefaultNamespace(QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"));
+    writer.writeNamespace(vt, QStringLiteral("vt"));
     writer.writeTextElement(QStringLiteral("Application"), QStringLiteral("Microsoft Excel"));
     writer.writeTextElement(QStringLiteral("DocSecurity"), QStringLiteral("0"));
     writer.writeTextElement(QStringLiteral("ScaleCrop"), QStringLiteral("false"));
 
     writer.writeStartElement(QStringLiteral("HeadingPairs"));
-    writer.writeStartElement(QStringLiteral("vt:vector"));
+    writer.writeStartElement(vt, QStringLiteral("vector"));
     writer.writeAttribute(QStringLiteral("size"), QString::number(m_headingPairsList.size()*2));
     writer.writeAttribute(QStringLiteral("baseType"), QStringLiteral("variant"));
     typedef QPair<QString,int> PairType; //Make foreach happy
     foreach (PairType pair, m_headingPairsList) {
-        writer.writeStartElement(QStringLiteral("vt:variant"));
-        writer.writeTextElement(QStringLiteral("vt:lpstr"), pair.first);
+        writer.writeStartElement(vt, QStringLiteral("variant"));
+        writer.writeTextElement(vt, QStringLiteral("lpstr"), pair.first);
         writer.writeEndElement(); //vt:variant
-        writer.writeStartElement(QStringLiteral("vt:variant"));
-        writer.writeTextElement(QStringLiteral("vt:i4"), QString::number(pair.second));
+        writer.writeStartElement(vt, QStringLiteral("variant"));
+        writer.writeTextElement(vt, QStringLiteral("i4"), QString::number(pair.second));
         writer.writeEndElement(); //vt:variant
     }
     writer.writeEndElement();//vt:vector
     writer.writeEndElement();//HeadingPairs
 
     writer.writeStartElement(QStringLiteral("TitlesOfParts"));
-    writer.writeStartElement(QStringLiteral("vt:vector"));
+    writer.writeStartElement(vt, QStringLiteral("vector"));
     writer.writeAttribute(QStringLiteral("size"), QString::number(m_titlesOfPartsList.size()));
     writer.writeAttribute(QStringLiteral("baseType"), QStringLiteral("lpstr"));
     foreach (QString title, m_titlesOfPartsList)
-        writer.writeTextElement(QStringLiteral("vt:lpstr"), title);
+        writer.writeTextElement(vt, QStringLiteral("lpstr"), title);
     writer.writeEndElement();//vt:vector
     writer.writeEndElement();//TitlesOfParts
 
@@ -151,7 +152,7 @@ DocPropsApp DocPropsApp::loadFromXmlFile(QIODevice *device)
 
              if (reader.name() == QStringLiteral("Manager")) {
                  props.setProperty(QStringLiteral("manager"), reader.readElementText());
-             } else if (reader.qualifiedName() == QStringLiteral("Company")) {
+             } else if (reader.name() == QStringLiteral("Company")) {
                  props.setProperty(QStringLiteral("company"), reader.readElementText());
              }
          }
