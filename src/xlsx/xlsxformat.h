@@ -230,22 +230,6 @@ public:
     QString stringProperty(int propertyId) const;
     QColor colorProperty(int propertyId) const;
 
-private:
-    friend class Styles;
-    friend class Worksheet;
-    friend class WorksheetPrivate;
-    friend class RichStringPrivate;
-    friend class SharedStrings;
-    friend class ::FormatTest;
-    friend Q_XLSX_EXPORT QDebug operator<<(QDebug, const Format &f);
-
-    void fixNumberFormat(int id, const QString &format);
-
-    bool fontIndexValid() const;
-    int fontIndex() const;
-    void setFontIndex(int index);
-    QByteArray fontKey() const;
-
     bool hasNumFmtData() const;
     bool hasFontData() const;
     bool hasFillData() const;
@@ -253,22 +237,31 @@ private:
     bool hasAlignmentData() const;
     bool hasProtectionData() const;
 
+    bool fontIndexValid() const;
+    int fontIndex() const;
+    QByteArray fontKey() const;
     bool borderIndexValid() const;
     QByteArray borderKey() const;
     int borderIndex() const;
-    void setBorderIndex(int index);
-
     bool fillIndexValid() const;
     QByteArray fillKey() const;
     int fillIndex() const;
-    void setFillIndex(int index);
 
     QByteArray formatKey() const;
     bool xfIndexValid() const;
     int xfIndex() const;
-    void setXfIndex(int index);
     bool dxfIndexValid() const;
     int dxfIndex() const;
+private:
+    friend class Styles;
+    friend class ::FormatTest;
+    friend Q_XLSX_EXPORT QDebug operator<<(QDebug, const Format &f);
+
+    void fixNumberFormat(int id, const QString &format);
+    void setFontIndex(int index);
+    void setBorderIndex(int index);
+    void setFillIndex(int index);
+    void setXfIndex(int index);
     void setDxfIndex(int index);
 
     int theme() const;

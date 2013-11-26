@@ -493,7 +493,8 @@ void Format::setFontIndex(int index)
     d->font_index_valid = true;
 }
 
-/* Internal
+/*!
+ * \internal
  */
 QByteArray Format::fontKey() const
 {
@@ -895,7 +896,7 @@ void Format::setBorderIndex(int index)
     d->border_index = index;
 }
 
-/* Internal
+/*! \internal
  */
 QByteArray Format::borderKey() const
 {
@@ -1004,7 +1005,8 @@ void Format::setFillIndex(int index)
     d->fill_index = index;
 }
 
-/* Internal
+/*!
+ * \internal
  */
 QByteArray Format::fillKey() const
 {
@@ -1106,6 +1108,9 @@ bool Format::isEmpty() const
     return d->property.isEmpty();
 }
 
+/*!
+ * \internal
+ */
 QByteArray Format::formatKey() const
 {
     if (isEmpty())
@@ -1134,11 +1139,19 @@ void Format::setXfIndex(int index)
     d->xf_indexValid = true;
 }
 
+/*!
+ * \internal
+ */
 int Format::xfIndex() const
 {
+    if (!d)
+        return -1;
     return d->xf_index;
 }
 
+/*!
+ * \internal
+ */
 bool Format::xfIndexValid() const
 {
     if (!d)
@@ -1152,11 +1165,21 @@ void Format::setDxfIndex(int index)
     d->dxf_indexValid = true;
 }
 
+/*!
+ * \internal
+ * Returns the index in the styles dxfs.
+ */
 int Format::dxfIndex() const
 {
+    if (!d)
+        return -1;
     return d->dxf_index;
 }
 
+/*!
+ * \internal
+ * Returns whether the dxf index is valid or not.
+ */
 bool Format::dxfIndexValid() const
 {
     if (!d)
