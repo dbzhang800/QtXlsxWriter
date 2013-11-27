@@ -35,6 +35,7 @@
 #include "xlsxcell.h"
 #include "xlsxcell_p.h"
 #include "xlsxcellrange.h"
+#include "xlsxconditionalformatting_p.h"
 
 #include <QVariant>
 #include <QDateTime>
@@ -931,6 +932,22 @@ bool Worksheet::addDataValidation(const DataValidation &validation)
     return true;
 }
 
+bool Worksheet::addConditionalFormatting(const ConditionalFormatting &cf)
+{
+    Q_D(Worksheet);
+    if (cf.ranges().isEmpty())
+        return false;
+
+    for (int i=0; i<cf.d->cfRules.size(); ++i) {
+        const QSharedPointer<XlsxCfRuleData> &rule = cf.d->cfRules[i];
+        if (!rule->dxfFormat.isEmpty())
+            d->workbook->styles()->addDxfFormat(rule->dxfFormat);
+        rule->priority = 1;
+    }
+    d->conditionalFormattingList.append(cf);
+    return true;
+}
+
 int Worksheet::insertImage(int row, int column, const QImage &image, const QPointF &offset, double xScale, double yScale)
 {
     Q_D(Worksheet);
@@ -1120,6 +1137,8 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     writer.writeEndElement();//sheetData
 
     d->writeMergeCells(writer);
+    foreach (const ConditionalFormatting cf, d->conditionalFormattingList)
+        cf.saveToXml(writer);
     d->writeDataValidation(writer);
     d->writeHyperlinks(writer);
     d->writeDrawings(writer);

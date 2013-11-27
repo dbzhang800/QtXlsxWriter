@@ -11,5 +11,6 @@ SUBDIRS = hello \
     definename \
     formulas \
     richtext \
+    conditionalformatting \
     demo
 

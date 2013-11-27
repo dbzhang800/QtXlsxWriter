@@ -252,10 +252,6 @@ public:
     int xfIndex() const;
     bool dxfIndexValid() const;
     int dxfIndex() const;
-private:
-    friend class Styles;
-    friend class ::FormatTest;
-    friend Q_XLSX_EXPORT QDebug operator<<(QDebug, const Format &f);
 
     void fixNumberFormat(int id, const QString &format);
     void setFontIndex(int index);
@@ -263,6 +259,10 @@ private:
     void setFillIndex(int index);
     void setXfIndex(int index);
     void setDxfIndex(int index);
+private:
+    friend class Styles;
+    friend class ::FormatTest;
+    friend Q_XLSX_EXPORT QDebug operator<<(QDebug, const Format &f);
 
     int theme() const;
 

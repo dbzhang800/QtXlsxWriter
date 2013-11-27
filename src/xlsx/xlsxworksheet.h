@@ -45,6 +45,7 @@ class Workbook;
 class Format;
 class Drawing;
 class DataValidation;
+class ConditionalFormatting;
 class CellRange;
 struct XlsxImageData;
 class RichString;
@@ -80,6 +81,7 @@ public:
     int writeHyperlink(int row, int column, const QUrl &url, const Format &format=Format(), const QString &display=QString(), const QString &tip=QString());
 
     bool addDataValidation(const DataValidation &validation);
+    bool addConditionalFormatting(const ConditionalFormatting &cf);
 
     Cell *cellAt(const QString &row_column) const;
     Cell *cellAt(int row, int column) const;

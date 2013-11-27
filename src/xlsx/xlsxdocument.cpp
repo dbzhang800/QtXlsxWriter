@@ -250,6 +250,14 @@ bool Document::addDataValidation(const DataValidation &validation)
 }
 
 /*!
+ *  Add a  conditional formatting \a cf for current worksheet. Returns true if successful.
+ */
+bool Document::addConditionalFormatting(const ConditionalFormatting &cf)
+{
+    return currentWorksheet()->addConditionalFormatting(cf);
+}
+
+/*!
  * Returns a Cell object based on the given \a pos. 0 will be returned if the cell doesn't exist.
  */
 Cell *Document::cellAt(const QString &pos) const

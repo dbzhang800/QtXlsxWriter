@@ -41,6 +41,7 @@ class Package;
 class Cell;
 class CellRange;
 class DataValidation;
+class ConditionalFormatting;
 
 class DocumentPrivate;
 class Q_XLSX_EXPORT Document : public QObject
@@ -69,6 +70,7 @@ public:
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
     bool addDataValidation(const DataValidation &validation);
+    bool addConditionalFormatting(const ConditionalFormatting &cf);
 
     Cell *cellAt(const QString &cell) const;
     Cell *cellAt(int row, int col) const;

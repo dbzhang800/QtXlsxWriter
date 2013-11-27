@@ -40,6 +40,7 @@
 #include "xlsxworksheet.h"
 #include "xlsxcell.h"
 #include "xlsxdatavalidation.h"
+#include "xlsxconditionalformatting.h"
 
 #include <QImage>
 #include <QSharedPointer>
@@ -215,6 +216,7 @@ public:
     QList<QPair<QString, QString> > drawingLinks;
 
     QList<DataValidation> dataValidationsList;
+    QList<ConditionalFormatting> conditionalFormattingList;
 
     int xls_rowmax;
     int xls_colmax;

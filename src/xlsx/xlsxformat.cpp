@@ -891,6 +891,9 @@ int Format::borderIndex() const
     return d->border_index;
 }
 
+/*!
+ * \internal
+ */
 void Format::setBorderIndex(int index)
 {
     d->border_index = index;
@@ -986,6 +989,9 @@ void Format::setPatternBackgroundColor(const QColor &color)
     setProperty(FormatPrivate::P_Fill_BgColor, color);
 }
 
+/*!
+ * \internal
+ */
 bool Format::fillIndexValid() const
 {
     if (!hasFillData())
@@ -993,6 +999,9 @@ bool Format::fillIndexValid() const
     return d->fill_index_valid;
 }
 
+/*!
+ * \internal
+ */
 int Format::fillIndex() const
 {
     if (!d)
@@ -1000,6 +1009,9 @@ int Format::fillIndex() const
     return d->fill_index;
 }
 
+/*!
+ * \internal
+ */
 void Format::setFillIndex(int index)
 {
     d->fill_index = index;
@@ -1133,8 +1145,14 @@ QByteArray Format::formatKey() const
     return d->formatKey;
 }
 
+/*!
+ * \internal
+ *  Called by QXlsx::Styles or some unittests.
+ */
 void Format::setXfIndex(int index)
 {
+    if (!d)
+        d = new FormatPrivate;
     d->xf_index = index;
     d->xf_indexValid = true;
 }
@@ -1159,8 +1177,14 @@ bool Format::xfIndexValid() const
     return d->xf_indexValid;
 }
 
+/*!
+ * \internal
+ *  Called by QXlsx::Styles or some unittests.
+ */
 void Format::setDxfIndex(int index)
 {
+    if (!d)
+        d = new FormatPrivate;
     d->dxf_index = index;
     d->dxf_indexValid = true;
 }

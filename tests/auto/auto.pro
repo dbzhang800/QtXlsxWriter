@@ -10,4 +10,5 @@ SUBDIRS=\
     sharedstrings \
     styles \
     format \
-    richstring
+    richstring \
+    xlsxconditionalformatting

@@ -1,0 +1,10 @@
+/*!
+    \example conditionalformatting
+    \title Conditional Formatting Example
+    \brief This is a conditional formatting example.
+    \ingroup qtxlsx-examples
+
+    This example demonstrates how to create a new
+     .xlsx file containin conditional formatting
+    with Qt Xlsx Library. So lets see how this is achieved.
+*/
