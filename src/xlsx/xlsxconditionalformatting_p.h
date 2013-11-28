@@ -39,6 +39,7 @@
 
 #include "xlsxConditionalFormatting.h"
 #include "xlsxformat.h"
+#include "xlsxcolor_p.h"
 #include <QSharedData>
 #include <QSharedPointer>
 #include <QMap>
@@ -115,7 +116,6 @@ public:
     ~ConditionalFormattingPrivate();
 
     void writeCfVo(const XlsxCfVoData& cfvo, QXmlStreamWriter &writer) const;
-    void writeColor(const QColor &color, QXmlStreamWriter &writer) const;
 
     QList<QSharedPointer<XlsxCfRuleData> >cfRules;
     QList<CellRange> ranges;
