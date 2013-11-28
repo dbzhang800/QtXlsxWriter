@@ -26,6 +26,7 @@
 #include "xlsxsharedstrings_p.h"
 #include "xlsxutility_p.h"
 #include "xlsxformat_p.h"
+#include "xlsxcolor_p.h"
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QDir>
@@ -168,16 +169,9 @@ void SharedStrings::writeRichStringPart_rPr(QXmlStreamWriter &writer, const Form
         writer.writeAttribute(QStringLiteral("val"), QString::number(format.fontSize()));
     }
 
-    if (format.fontColor().isValid()) {
-        writer.writeEmptyElement(QStringLiteral("color"));
-        QString color = format.fontColor().name();
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.mid(1));//remove #
-    } else if (format.hasProperty(FormatPrivate::P_Font_ThemeColor)) {
-        writer.writeEmptyElement(QStringLiteral("color"));
-        QStringList themes = format.stringProperty(FormatPrivate::P_Font_ThemeColor).split(QLatin1Char(':'));
-        writer.writeAttribute(QStringLiteral("theme"), themes[0]);
-        if (!themes[1].isEmpty())
-            writer.writeAttribute(QStringLiteral("tint"), themes[1]);
+    if (format.hasProperty(FormatPrivate::P_Font_Color)) {
+        XlsxColor color = format.property(FormatPrivate::P_Font_Color).value<XlsxColor>();
+        color.saveToXml(writer);
     }
 
     if (!format.fontName().isEmpty()) {
@@ -332,16 +326,9 @@ Format SharedStrings::readRichStringPart_rPr(QXmlStreamReader &reader)
             } else if (reader.name() == QLatin1String("extend")) {
                 format.setProperty(FormatPrivate::P_Font_Extend, attributes.value(QLatin1String("val")).toString().toInt());
             } else if (reader.name() == QLatin1String("color")) {
-                if (attributes.hasAttribute(QLatin1String("rgb"))) {
-                    QString colorString = attributes.value(QLatin1String("rgb")).toString();
-                    format.setFontColor(fromARGBString(colorString));
-                } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-//                  color = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
-                } else if (attributes.hasAttribute(QLatin1String("theme"))) {
-                    QString theme = attributes.value(QLatin1String("theme")).toString();
-                    QString tint = attributes.value(QLatin1String("tint")).toString();
-                    format.setProperty(FormatPrivate::P_Font_ThemeColor, QString(theme + QLatin1Char(':') + tint));
-                }
+                XlsxColor color;
+                color.loadFromXml(reader);
+                format.setProperty(FormatPrivate::P_Font_Color, color);
             } else if (reader.name() == QLatin1String("sz")) {
                 format.setFontSize(attributes.value(QLatin1String("val")).toString().toInt());
             } else if (reader.name() == QLatin1String("u")) {

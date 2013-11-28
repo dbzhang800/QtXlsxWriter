@@ -53,6 +53,7 @@ class StylesTest;
 namespace QXlsx {
 
 class Format;
+class XlsxColor;
 
 struct XlsxFormatNumberData
 {
@@ -77,6 +78,8 @@ public:
     bool loadFromXmlFile(QIODevice *device);
     bool loadFromXmlData(const QByteArray &data);
 
+    QColor getColorByIndex(int idx);
+
 private:
     friend class Format;
     friend class ::StylesTest;
@@ -90,7 +93,7 @@ private:
     void writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf = false);
     void writeBorders(QXmlStreamWriter &writer);
     void writeBorder(QXmlStreamWriter &writer, const Format &border, bool isDxf = false);
-    void writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor);
+    void writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const XlsxColor &color);
     void writeCellXfs(QXmlStreamWriter &writer);
     void writeDxfs(QXmlStreamWriter &writer);
     void writeDxf(QXmlStreamWriter &writer, const Format &format);
@@ -102,14 +105,12 @@ private:
     bool readFill(QXmlStreamReader &reader, Format &format);
     bool readBorders(QXmlStreamReader &reader);
     bool readBorder(QXmlStreamReader &reader, Format &format);
-    bool readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor);
+    bool readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, XlsxColor &color);
     bool readCellXfs(QXmlStreamReader &reader);
     bool readDxfs(QXmlStreamReader &reader);
     bool readDxf(QXmlStreamReader &reader);
     bool readColors(QXmlStreamReader &reader);
     bool readIndexedColors(QXmlStreamReader &reader);
-
-    QColor getColorByIndex(int idx);
 
     QHash<QString, int> m_builtinNumFmtsHash;
     QMap<int, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtIdMap;

@@ -24,6 +24,7 @@
 ****************************************************************************/
 #include "xlsxformat.h"
 #include "xlsxformat_p.h"
+#include "xlsxcolor_p.h"
 #include <QDataStream>
 #include <QRegularExpression>
 #include <QDebug>
@@ -179,6 +180,7 @@ FormatPrivate::~FormatPrivate()
  */
 Format::Format()
 {
+    qRegisterMetaTypeStreamOperators<XlsxColor>("XlsxColor");
     //The d pointer is initialized with a null pointer
 }
 
@@ -364,12 +366,6 @@ QColor Format::fontColor() const
 {
     if (hasProperty(FormatPrivate::P_Font_Color))
         return colorProperty(FormatPrivate::P_Font_Color);
-
-    if (hasProperty(FormatPrivate::P_Font_ThemeColor)) {
-        //!Todo, get the real color from the theme{1}.xml file
-        //The same is ture for border and fill colord
-        return QColor();
-    }
     return QColor();
 }
 
@@ -378,7 +374,7 @@ QColor Format::fontColor() const
  */
 void Format::setFontColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Font_Color, color);
+    setProperty(FormatPrivate::P_Font_Color, XlsxColor(color));
 }
 
 /*!
@@ -724,7 +720,7 @@ QColor Format::leftBorderColor() const
 */
 void Format::setLeftBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_LeftColor, color);
+    setProperty(FormatPrivate::P_Border_LeftColor, XlsxColor(color));
 }
 
 /*!
@@ -756,7 +752,7 @@ QColor Format::rightBorderColor() const
 */
 void Format::setRightBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_RightColor, color);
+    setProperty(FormatPrivate::P_Border_RightColor, XlsxColor(color));
 }
 
 /*!
@@ -788,7 +784,7 @@ QColor Format::topBorderColor() const
 */
 void Format::setTopBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_TopColor, color);
+    setProperty(FormatPrivate::P_Border_TopColor, XlsxColor(color));
 }
 
 /*!
@@ -820,7 +816,7 @@ QColor Format::bottomBorderColor() const
 */
 void Format::setBottomBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_BottomColor, color);
+    setProperty(FormatPrivate::P_Border_BottomColor, XlsxColor(color));
 }
 
 /*!
@@ -868,7 +864,7 @@ QColor Format::diagonalBorderColor() const
 */
 void Format::setDiagonalBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_DiagonalColor, color);
+    setProperty(FormatPrivate::P_Border_DiagonalColor, XlsxColor(color));
 }
 
 /*!
@@ -968,7 +964,7 @@ void Format::setPatternForegroundColor(const QColor &color)
 {
     if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
         setFillPattern(PatternSolid);
-    setProperty(FormatPrivate::P_Fill_FgColor, color);
+    setProperty(FormatPrivate::P_Fill_FgColor, XlsxColor(color));
 }
 
 /*!
@@ -986,7 +982,7 @@ void Format::setPatternBackgroundColor(const QColor &color)
 {
     if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
         setFillPattern(PatternSolid);
-    setProperty(FormatPrivate::P_Fill_BgColor, color);
+    setProperty(FormatPrivate::P_Fill_BgColor, XlsxColor(color));
 }
 
 /*!
@@ -1363,9 +1359,9 @@ QColor Format::colorProperty(int propertyId) const
         return QColor();
 
     const QVariant prop = d->property[propertyId];
-    if (prop.userType() != qMetaTypeId<QColor>())
+    if (prop.userType() != qMetaTypeId<XlsxColor>())
         return QColor();
-    return qvariant_cast<QColor>(prop);
+    return qvariant_cast<XlsxColor>(prop).rgbColor();
 }
 
 #ifndef QT_NO_DEBUG_STREAM

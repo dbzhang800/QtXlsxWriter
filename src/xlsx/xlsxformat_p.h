@@ -69,7 +69,6 @@ public:
         P_Font_Italic,
         P_Font_StrikeOut,
         P_Font_Color,
-        P_Font_ThemeColor,
         P_Font_Bold,
         P_Font_Script,
         P_Font_Underline,
@@ -96,11 +95,6 @@ public:
         P_Border_BottomColor,
         P_Border_DiagonalColor,
         P_Border_DiagonalType,
-        P_Border_ThemeLeftColor,
-        P_Border_ThemeRightColor,
-        P_Border_ThemeTopColor,
-        P_Border_ThemeBottomColor,
-        P_Border_ThemeDiagonalColor,
         P_Border_ENDID,
 
         //fill
@@ -108,8 +102,6 @@ public:
         P_Fill_Pattern = P_Fill_STARTID,
         P_Fill_BgColor,
         P_Fill_FgColor,
-        P_Fill_BgThemeColor,
-        P_Fill_FgThemeColor,
         P_Fill_ENDID,
 
         //alignment

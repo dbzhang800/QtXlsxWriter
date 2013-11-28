@@ -33,7 +33,8 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxrichstring_p.h \
     $$PWD/xlsxrichstring.h \
     $$PWD/xlsxconditionalformatting.h \
-    $$PWD/xlsxconditionalformatting_p.h
+    $$PWD/xlsxconditionalformatting_p.h \
+    $$PWD/xlsxcolor_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -55,4 +56,5 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdatavalidation.cpp \
     $$PWD/xlsxcellrange.cpp \
     $$PWD/xlsxrichstring.cpp \
-    $$PWD/xlsxconditionalformatting.cpp
+    $$PWD/xlsxconditionalformatting.cpp \
+    $$PWD/xlsxcolor.cpp

@@ -25,6 +25,7 @@
 #include "xlsxstyles_p.h"
 #include "xlsxformat_p.h"
 #include "xlsxutility_p.h"
+#include "xlsxcolor_p.h"
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QFile>
@@ -403,16 +404,9 @@ void Styles::writeFont(QXmlStreamWriter &writer, const Format &format, bool isDx
         writer.writeAttribute(QStringLiteral("val"), QString::number(format.fontSize()));
     }
 
-    if (format.fontColor().isValid()) {
-        writer.writeEmptyElement(QStringLiteral("color"));
-        QString color = format.fontColor().name();
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.mid(1));//remove #
-    } else if (format.hasProperty(FormatPrivate::P_Font_ThemeColor)) {
-        writer.writeEmptyElement(QStringLiteral("color"));
-        QStringList themes = format.stringProperty(FormatPrivate::P_Font_ThemeColor).split(QLatin1Char(':'));
-        writer.writeAttribute(QStringLiteral("theme"), themes[0]);
-        if (!themes[1].isEmpty())
-            writer.writeAttribute(QStringLiteral("tint"), themes[1]);
+    if (format.hasProperty(FormatPrivate::P_Font_Color)) {
+        XlsxColor color = format.property(FormatPrivate::P_Font_Color).value<XlsxColor>();
+        color.saveToXml(writer);
     }
 
     if (!isDxf) {
@@ -473,25 +467,20 @@ void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool /*isDx
     writer.writeStartElement(QStringLiteral("patternFill"));
     writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill.fillPattern()]);
     // For a solid fill, Excel reverses the role of foreground and background colours
-    if (fill.patternForegroundColor().isValid()) {
-        writer.writeEmptyElement(fill.fillPattern() == Format::PatternSolid ? QStringLiteral("bgColor") : QStringLiteral("fgColor"));
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill.patternForegroundColor().name().mid(1));
-    } else if (!fill.stringProperty(FormatPrivate::P_Fill_FgThemeColor).isEmpty()) {
-        writer.writeEmptyElement(QStringLiteral("fgColor"));
-        QStringList themes = fill.stringProperty(FormatPrivate::P_Fill_FgThemeColor).split(QLatin1Char(':'));
-        writer.writeAttribute(QStringLiteral("theme"), themes[0]);
-        if (!themes[1].isEmpty())
-            writer.writeAttribute(QStringLiteral("tint"), themes[1]);
+    if (fill.hasProperty(FormatPrivate::P_Fill_FgColor)) {
+        XlsxColor color = fill.property(FormatPrivate::P_Fill_FgColor).value<XlsxColor>();
+        if (fill.fillPattern() == Format::PatternSolid)
+            color.saveToXml(writer, QStringLiteral("bgColor"));
+        else
+            color.saveToXml(writer, QStringLiteral("fgColor"));
     }
-    if (fill.patternBackgroundColor().isValid()) {
-        writer.writeEmptyElement(fill.fillPattern() == Format::PatternSolid ? QStringLiteral("fgColor") : QStringLiteral("bgColor"));
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+fill.patternBackgroundColor().name().mid(1));
-    } else if (!fill.stringProperty(FormatPrivate::P_Fill_BgThemeColor).isEmpty()) {
-        writer.writeEmptyElement(QStringLiteral("bgColor"));
-        QStringList themes = fill.stringProperty(FormatPrivate::P_Fill_BgThemeColor).split(QLatin1Char(':'));
-        writer.writeAttribute(QStringLiteral("theme"), themes[0]);
-        if (!themes[1].isEmpty())
-            writer.writeAttribute(QStringLiteral("tint"), themes[1]);
+
+    if (fill.hasProperty(FormatPrivate::P_Fill_BgColor)) {
+        XlsxColor color = fill.property(FormatPrivate::P_Fill_BgColor).value<XlsxColor>();
+        if (fill.fillPattern() == Format::PatternSolid)
+            color.saveToXml(writer, QStringLiteral("fgColor"));
+        else
+            color.saveToXml(writer, QStringLiteral("bgColor"));
     }
 
     writer.writeEndElement();//patternFill
@@ -522,17 +511,17 @@ void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool is
         }
     }
     if (border.hasProperty(FormatPrivate::P_Border_LeftStyle))
-        writeSubBorder(writer, QStringLiteral("left"), border.leftBorderStyle(), border.leftBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeLeftColor));
+        writeSubBorder(writer, QStringLiteral("left"), border.leftBorderStyle(), border.property(FormatPrivate::P_Border_LeftColor).value<XlsxColor>());
     if (border.hasProperty(FormatPrivate::P_Border_RightStyle))
-        writeSubBorder(writer, QStringLiteral("right"), border.rightBorderStyle(), border.rightBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeRightColor));
+        writeSubBorder(writer, QStringLiteral("right"), border.rightBorderStyle(), border.property(FormatPrivate::P_Border_RightColor).value<XlsxColor>());
     if (border.hasProperty(FormatPrivate::P_Border_TopStyle))
-        writeSubBorder(writer, QStringLiteral("top"), border.topBorderStyle(), border.topBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeTopColor));
+        writeSubBorder(writer, QStringLiteral("top"), border.topBorderStyle(), border.property(FormatPrivate::P_Border_TopColor).value<XlsxColor>());
     if (border.hasProperty(FormatPrivate::P_Border_BottomStyle))
-        writeSubBorder(writer, QStringLiteral("bottom"), border.bottomBorderStyle(), border.bottomBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeBottomColor));
+        writeSubBorder(writer, QStringLiteral("bottom"), border.bottomBorderStyle(), border.property(FormatPrivate::P_Border_BottomColor).value<XlsxColor>());
 
     //Condition DXF formats don't allow diagonal style
     if (!isDxf && border.hasProperty(FormatPrivate::P_Border_DiagonalStyle))
-        writeSubBorder(writer, QStringLiteral("diagonal"), border.diagonalBorderStyle(), border.diagonalBorderColor(), border.stringProperty(FormatPrivate::P_Border_ThemeDiagonalColor));
+        writeSubBorder(writer, QStringLiteral("diagonal"), border.diagonalBorderStyle(), border.property(FormatPrivate::P_Border_DiagonalColor).value<XlsxColor>());
 
     if (isDxf) {
 //        writeSubBorder(wirter, QStringLiteral("vertical"), );
@@ -542,7 +531,7 @@ void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool is
     writer.writeEndElement();//border
 }
 
-void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const QColor &color, const QString &themeColor)
+void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const XlsxColor &color)
 {
     if (style == Format::BorderNone) {
         writer.writeEmptyElement(type);
@@ -569,17 +558,8 @@ void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int s
 
     writer.writeStartElement(type);
     writer.writeAttribute(QStringLiteral("style"), stylesString[style]);
-    writer.writeEmptyElement(QStringLiteral("color"));
-    if (color.isValid()) {
-        writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.name().mid(1)); //remove #
-    } else if (!themeColor.isEmpty()) {
-        QStringList themes = themeColor.split(QLatin1Char(':'));
-        writer.writeAttribute(QStringLiteral("theme"), themes[0]);
-        if (!themes[1].isEmpty())
-            writer.writeAttribute(QStringLiteral("tint"), themes[1]);
-    } else {
-        writer.writeAttribute(QStringLiteral("auto"), QStringLiteral("1"));
-    }
+    color.saveToXml(writer); //write color element
+
     writer.writeEndElement();//type
 }
 
@@ -793,17 +773,9 @@ bool Styles::readFont(QXmlStreamReader &reader, Format &format)
             } else if (reader.name() == QLatin1String("extend")) {
                 format.setProperty(FormatPrivate::P_Font_Extend, attributes.value(QLatin1String("val")).toString().toInt());
             } else if (reader.name() == QLatin1String("color")) {
-                if (attributes.hasAttribute(QLatin1String("rgb"))) {
-                    QString colorString = attributes.value(QLatin1String("rgb")).toString();
-                    format.setFontColor(fromARGBString(colorString));
-                } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                    QColor color = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
-                    format.setFontColor(color);
-                } else if (attributes.hasAttribute(QLatin1String("theme"))) {
-                    QString theme = attributes.value(QLatin1String("theme")).toString();
-                    QString tint = attributes.value(QLatin1String("tint")).toString();
-                    format.setProperty(FormatPrivate::P_Font_ThemeColor, QString(theme + QLatin1Char(':') + tint));
-                }
+                XlsxColor color;
+                color.loadFromXml(reader, this);
+                format.setProperty(FormatPrivate::P_Font_Color, color);
             } else if (reader.name() == QLatin1String("sz")) {
                 int sz = attributes.value(QLatin1String("val")).toString().toInt();
                 format.setFontSize(sz);
@@ -899,37 +871,19 @@ bool Styles::readFill(QXmlStreamReader &reader, Format &fill)
                     fill.setFillPattern(patternValues.contains(pattern) ? patternValues[pattern] : Format::PatternNone);
                 }
             } else if (reader.name() == QLatin1String("fgColor")) {
-                QXmlStreamAttributes attributes = reader.attributes();
-                QColor c;
-                if (attributes.hasAttribute(QLatin1String("rgb"))) {
-                    c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
-                } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
-                } else if (attributes.hasAttribute(QLatin1String("theme"))) {
-                    QString theme = attributes.value(QLatin1String("theme")).toString();
-                    QString tint = attributes.value(QLatin1String("tint")).toString();
-                    fill.setProperty(FormatPrivate::P_Fill_FgThemeColor, QString(theme + QLatin1Char(':') + tint));
-                }
+                XlsxColor c;
+                c.loadFromXml(reader);
                 if (fill.fillPattern() == Format::PatternSolid)
-                    fill.setPatternBackgroundColor(c);
+                    fill.setProperty(FormatPrivate::P_Fill_BgColor, c);
                 else
-                    fill.setPatternForegroundColor(c);
+                    fill.setProperty(FormatPrivate::P_Fill_FgColor, c);
             } else if (reader.name() == QLatin1String("bgColor")) {
-                QXmlStreamAttributes attributes = reader.attributes();
-                QColor c;
-                if (attributes.hasAttribute(QLatin1String("rgb"))) {
-                    c = fromARGBString(attributes.value(QLatin1String("rgb")).toString());
-                } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
-                    c = getColorByIndex(attributes.value(QLatin1String("indexed")).toString().toInt());
-                } else if (attributes.hasAttribute(QLatin1String("theme"))) {
-                    QString theme = attributes.value(QLatin1String("theme")).toString();
-                    QString tint = attributes.value(QLatin1String("tint")).toString();
-                    fill.setProperty(FormatPrivate::P_Fill_BgThemeColor, QString(theme + QLatin1Char(':') + tint));
-                }
+                XlsxColor c;
+                c.loadFromXml(reader);
                 if (fill.fillPattern() == Format::PatternSolid)
-                    fill.setPatternForegroundColor(c);
+                    fill.setProperty(FormatPrivate::P_Fill_FgColor, c);
                 else
-                    fill.setPatternBackgroundColor(c);
+                    fill.setProperty(FormatPrivate::P_Fill_BgColor, c);
             }
         }
 
@@ -991,40 +945,29 @@ bool Styles::readBorder(QXmlStreamReader &reader, Format &border)
                     || reader.name() == QLatin1String("top") || reader.name() == QLatin1String("bottom")
                     || reader.name() == QLatin1String("diagonal") ) {
                 Format::BorderStyle style(Format::BorderNone);
-                QColor color;
-                QString themeColor;
-                readSubBorder(reader, reader.name().toString(), style, color, themeColor);
+                XlsxColor color;
+                readSubBorder(reader, reader.name().toString(), style, color);
 
                 if (reader.name() == QLatin1String("left")) {
                     border.setLeftBorderStyle(style);
-                    if (color.isValid())
-                        border.setLeftBorderColor(color);
-                    else if (!themeColor.isEmpty())
-                        border.setProperty(FormatPrivate::P_Border_ThemeLeftColor, themeColor);
+                    if (!color.isInvalid())
+                        border.setProperty(FormatPrivate::P_Border_LeftColor, color);
                 } else if (reader.name() == QLatin1String("right")) {
                     border.setRightBorderStyle(style);
-                    if (color.isValid())
-                        border.setRightBorderColor(color);
-                    else if (!themeColor.isEmpty())
-                        border.setProperty(FormatPrivate::P_Border_ThemeRightColor, themeColor);
+                    if (!color.isInvalid())
+                        border.setProperty(FormatPrivate::P_Border_RightColor, color);
                 } else if (reader.name() == QLatin1String("top")) {
                     border.setTopBorderStyle(style);
-                    if (color.isValid())
-                        border.setTopBorderColor(color);
-                    else if (!themeColor.isEmpty())
-                        border.setProperty(FormatPrivate::P_Border_ThemeTopColor, themeColor);
+                    if (!color.isInvalid())
+                        border.setProperty(FormatPrivate::P_Border_TopColor, color);
                 } else if (reader.name() == QLatin1String("bottom")) {
                     border.setBottomBorderStyle(style);
-                    if (color.isValid())
-                        border.setBottomBorderColor(color);
-                    else if (!themeColor.isEmpty())
-                        border.setProperty(FormatPrivate::P_Border_ThemeBottomColor, themeColor);
+                    if (!color.isInvalid())
+                        border.setProperty(FormatPrivate::P_Border_BottomColor, color);
                 } else if (reader.name() == QLatin1String("diagonal")) {
                     border.setDiagonalBorderStyle(style);
-                    if (color.isValid())
-                        border.setDiagonalBorderColor(color);
-                    else if (!themeColor.isEmpty())
-                        border.setProperty(FormatPrivate::P_Border_ThemeDiagonalColor, themeColor);
+                    if (!color.isInvalid())
+                        border.setProperty(FormatPrivate::P_Border_DiagonalColor, color);
                 }
             }
         }
@@ -1036,7 +979,7 @@ bool Styles::readBorder(QXmlStreamReader &reader, Format &border)
     return true;
 }
 
-bool Styles::readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, QColor &color, QString &themeColor)
+bool Styles::readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, XlsxColor &color)
 {
     Q_ASSERT(reader.name() == name);
 
@@ -1066,21 +1009,8 @@ bool Styles::readSubBorder(QXmlStreamReader &reader, const QString &name, Format
             style = stylesStringsMap[styleString];
             while((reader.readNextStartElement(),true)) {
                 if (reader.tokenType() == QXmlStreamReader::StartElement) {
-                    if (reader.name() == QLatin1String("color")) {
-                        QXmlStreamAttributes colorAttrs = reader.attributes();
-                        if (colorAttrs.hasAttribute(QLatin1String("rgb"))) {
-                            QString colorString = colorAttrs.value(QLatin1String("rgb")).toString();
-                            //get color
-                            color = fromARGBString(colorString);
-                        } else if (colorAttrs.hasAttribute(QLatin1String("indexed"))) {
-                            color = getColorByIndex(colorAttrs.value(QLatin1String("indexed")).toString().toInt());
-                        } else if (colorAttrs.hasAttribute(QLatin1String("theme"))) {
-                            QString theme = attributes.value(QLatin1String("theme")).toString();
-                            QString tint = attributes.value(QLatin1String("tint")).toString();
-                            themeColor = theme + QLatin1Char(':') + tint;
-                        }
-                    }
-
+                    if (reader.name() == QLatin1String("color"))
+                        color.loadFromXml(reader, this);
                 } else if (reader.tokenType() == QXmlStreamReader::EndElement) {
                     if (reader.name() == name)
                         break;
