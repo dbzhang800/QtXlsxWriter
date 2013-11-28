@@ -32,6 +32,7 @@
 
 class QXmlStreamReader;
 class QXmlStreamWriter;
+class QColor;
 class ConditionalFormattingTest;
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -87,6 +88,16 @@ public:
         Highlight_Expression
     };
 
+    enum ValueObjectType
+    {
+        VOT_Formula,
+        VOT_Max,
+        VOT_Min,
+        VOT_Num,
+        VOT_Percent,
+        VOT_Percentile
+    };
+
     ConditionalFormatting();
     ConditionalFormatting(const ConditionalFormatting &other);
     ~ConditionalFormatting();
@@ -94,6 +105,10 @@ public:
     bool addHighlightCellsRule(HighlightRuleType type, const Format &format, bool stopIfTrue=false);
     bool addHighlightCellsRule(HighlightRuleType type, const QString &formula1, const Format &format, bool stopIfTrue=false);
     bool addHighlightCellsRule(HighlightRuleType type, const QString &formula1, const QString &formula2, const Format &format, bool stopIfTrue=false);
+    bool addDataBarRule(const QColor &color, bool showData=true, bool stopIfTrue=false);
+    bool addDataBarRule(const QColor &color, ValueObjectType type1, const QString &val1, ValueObjectType type2, const QString &val2, bool showData=true, bool stopIfTrue=false);
+    bool add2ColorScaleRule(const QColor &minColor, const QColor &maxColor, bool stopIfTrue=false);
+    bool add3ColorScaleRule(const QColor &minColor, const QColor &midColor, const QColor &maxColor,  bool stopIfTrue=false);
 
     QList<CellRange> ranges() const;
 

@@ -19,6 +19,7 @@ public:
 private Q_SLOTS:
     void testHighlightRules();
     void testHighlightRules_data();
+    void testDataBarRules();
 };
 
 ConditionalFormattingTest::ConditionalFormattingTest()
@@ -76,6 +77,25 @@ void ConditionalFormattingTest::testHighlightRules()
     cf.saveToXml(writer);
     qDebug()<<buffer.buffer();
     QVERIFY(buffer.buffer().contains(result));
+}
+
+void ConditionalFormattingTest::testDataBarRules()
+{
+    ConditionalFormatting cf;
+    cf.addDataBarRule(Qt::blue);
+    cf.addRange("C3:C10");
+
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    QXmlStreamWriter writer(&buffer);
+    cf.saveToXml(writer);
+    qDebug()<<buffer.buffer();
+    QByteArray res = "<cfRule type=\"dataBar\" priority=\"1\">"
+            "<dataBar><cfvo type=\"min\" val=\"0\"/>"
+            "<cfvo type=\"max\" val=\"0\"/>"
+            "<color rgb=\"FF0000ff\"/></dataBar>"
+            "</cfRule>";
+    QVERIFY(buffer.buffer().contains(res));
 }
 
 QTEST_APPLESS_MAIN(ConditionalFormattingTest)

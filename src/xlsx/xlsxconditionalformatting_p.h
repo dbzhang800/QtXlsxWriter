@@ -45,6 +45,24 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
+class XlsxCfVoData
+{
+public:
+    XlsxCfVoData()
+        :gte(true)
+    {
+    }
+
+    XlsxCfVoData(ConditionalFormatting::ValueObjectType type, const QString &value, bool gte=true)
+        :type(type), value(value), gte(gte)
+    {
+    }
+
+    ConditionalFormatting::ValueObjectType type;
+    QString value;
+    bool gte;
+};
+
 class XlsxCfRuleData
 {
 public:
@@ -67,7 +85,17 @@ public:
         A_formula1,
         A_formula2,
         A_formula3,
-        A_formula1_temp
+        A_formula1_temp,
+
+        A_color1,
+        A_color2,
+        A_color3,
+
+        A_cfvo1,
+        A_cfvo2,
+        A_cfvo3,
+
+        A_hideData
     };
 
     XlsxCfRuleData()
@@ -86,9 +114,14 @@ public:
     ConditionalFormattingPrivate(const ConditionalFormattingPrivate &other);
     ~ConditionalFormattingPrivate();
 
+    void writeCfVo(const XlsxCfVoData& cfvo, QXmlStreamWriter &writer) const;
+    void writeColor(const QColor &color, QXmlStreamWriter &writer) const;
+
     QList<QSharedPointer<XlsxCfRuleData> >cfRules;
     QList<CellRange> ranges;
 };
 
 QT_END_NAMESPACE_XLSX
+
+Q_DECLARE_METATYPE(QXlsx::XlsxCfVoData)
 #endif // XLSXCONDITIONALFORMATTING_P_H
