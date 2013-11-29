@@ -148,7 +148,6 @@ DocPropsCore DocPropsCore::loadFromXmlFile(QIODevice *device)
          if (token == QXmlStreamReader::StartElement) {
              const QStringRef nsUri = reader.namespaceUri();
              const QStringRef name = reader.name();
-             qDebug()<<nsUri<<name;
              if (name == QStringLiteral("subject") && nsUri == dc) {
                  props.setProperty(QStringLiteral("subject"), reader.readElementText());
              } else if (name == QStringLiteral("title") && nsUri == dc) {
