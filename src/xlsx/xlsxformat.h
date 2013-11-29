@@ -31,6 +31,7 @@
 #include <QByteArray>
 #include <QList>
 #include <QExplicitlySharedDataPointer>
+#include <QVariant>
 
 class FormatTest;
 
@@ -219,16 +220,16 @@ public:
     bool operator == (const Format &format) const;
     bool operator != (const Format &format) const;
 
-    QVariant property(int propertyId) const;
-    void setProperty(int propertyId, const QVariant &value, bool detach=true);
+    QVariant property(int propertyId, const QVariant &defaultValue=QVariant()) const;
+    void setProperty(int propertyId, const QVariant &value, const QVariant &clearValue=QVariant(), bool detach=true);
     void clearProperty(int propertyId);
     bool hasProperty(int propertyId) const;
 
-    bool boolProperty(int propertyId) const;
-    int intProperty(int propertyId) const;
-    double doubleProperty(int propertyId) const;
-    QString stringProperty(int propertyId) const;
-    QColor colorProperty(int propertyId) const;
+    bool boolProperty(int propertyId, bool defaultValue=false) const;
+    int intProperty(int propertyId, int defaultValue=0) const;
+    double doubleProperty(int propertyId, double defaultValue = 0.0) const;
+    QString stringProperty(int propertyId, const QString &defaultValue = QString()) const;
+    QColor colorProperty(int propertyId, const QColor &defaultValue = QColor()) const;
 
     bool hasNumFmtData() const;
     bool hasFontData() const;

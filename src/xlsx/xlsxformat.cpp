@@ -291,8 +291,8 @@ void Format::setNumberFormat(int id, const QString &format)
  */
 void Format::fixNumberFormat(int id, const QString &format)
 {
-    setProperty(FormatPrivate::P_NumFmt_Id, id, false);
-    setProperty(FormatPrivate::P_NumFmt_FormatCode, format, false);
+    setProperty(FormatPrivate::P_NumFmt_Id, id, 0, false);
+    setProperty(FormatPrivate::P_NumFmt_FormatCode, format, QString(), false);
 }
 
 /*!
@@ -340,7 +340,7 @@ bool Format::fontItalic() const
  */
 void Format::setFontItalic(bool italic)
 {
-    setProperty(FormatPrivate::P_Font_Italic, italic);
+    setProperty(FormatPrivate::P_Font_Italic, italic, false);
 }
 
 /*!
@@ -356,7 +356,7 @@ bool Format::fontStrikeOut() const
  */
 void Format::setFontStrikeOut(bool strikeOut)
 {
-    setProperty(FormatPrivate::P_Font_StrikeOut, strikeOut);
+    setProperty(FormatPrivate::P_Font_StrikeOut, strikeOut, false);
 }
 
 /*!
@@ -374,7 +374,7 @@ QColor Format::fontColor() const
  */
 void Format::setFontColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Font_Color, XlsxColor(color));
+    setProperty(FormatPrivate::P_Font_Color, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -390,7 +390,7 @@ bool Format::fontBold() const
  */
 void Format::setFontBold(bool bold)
 {
-    setProperty(FormatPrivate::P_Font_Bold, bold);
+    setProperty(FormatPrivate::P_Font_Bold, bold, false);
 }
 
 /*!
@@ -406,7 +406,7 @@ Format::FontScript Format::fontScript() const
  */
 void Format::setFontScript(FontScript script)
 {
-    setProperty(FormatPrivate::P_Font_Script, script);
+    setProperty(FormatPrivate::P_Font_Script, script, FontScriptNormal);
 }
 
 /*!
@@ -422,7 +422,7 @@ Format::FontUnderline Format::fontUnderline() const
  */
 void Format::setFontUnderline(FontUnderline underline)
 {
-    setProperty(FormatPrivate::P_Font_Underline, underline);
+    setProperty(FormatPrivate::P_Font_Underline, underline, FontUnderlineNone);
 }
 
 /*!
@@ -438,7 +438,7 @@ bool Format::fontOutline() const
  */
 void Format::setFontOutline(bool outline)
 {
-    setProperty(FormatPrivate::P_Font_Outline, outline);
+    setProperty(FormatPrivate::P_Font_Outline, outline, false);
 }
 
 /*!
@@ -446,7 +446,7 @@ void Format::setFontOutline(bool outline)
  */
 QString Format::fontName() const
 {
-    return stringProperty(FormatPrivate::P_Font_Name);
+    return stringProperty(FormatPrivate::P_Font_Name, QStringLiteral("Calibri"));
 }
 
 /*!
@@ -454,7 +454,7 @@ QString Format::fontName() const
  */
 void Format::setFontName(const QString &name)
 {
-    setProperty(FormatPrivate::P_Font_Name, name);
+    setProperty(FormatPrivate::P_Font_Name, name, QStringLiteral("Calibri"));
 }
 
 /*!
@@ -533,7 +533,7 @@ bool Format::hasFontData() const
  */
 Format::HorizontalAlignment Format::horizontalAlignment() const
 {
-    return static_cast<Format::HorizontalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignH));
+    return static_cast<Format::HorizontalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignH, AlignHGeneral));
 }
 
 /*!
@@ -551,7 +551,7 @@ void Format::setHorizontalAlignment(HorizontalAlignment align)
         clearProperty(FormatPrivate::P_Alignment_ShinkToFit);
     }
 
-    setProperty(FormatPrivate::P_Alignment_AlignH, align);
+    setProperty(FormatPrivate::P_Alignment_AlignH, align, AlignHGeneral);
 }
 
 /*!
@@ -559,7 +559,7 @@ void Format::setHorizontalAlignment(HorizontalAlignment align)
  */
 Format::VerticalAlignment Format::verticalAlignment() const
 {
-    return static_cast<Format::VerticalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignV));
+    return static_cast<Format::VerticalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignV, AlignBottom));
 }
 
 /*!
@@ -567,7 +567,7 @@ Format::VerticalAlignment Format::verticalAlignment() const
  */
 void Format::setVerticalAlignment(VerticalAlignment align)
 {
-    setProperty(FormatPrivate::P_Alignment_AlignV, align);
+    setProperty(FormatPrivate::P_Alignment_AlignV, align, AlignBottom);
 }
 
 /*!
@@ -586,7 +586,7 @@ void Format::setTextWarp(bool wrap)
     if (wrap && hasProperty(FormatPrivate::P_Alignment_ShinkToFit))
         clearProperty(FormatPrivate::P_Alignment_ShinkToFit);
 
-    setProperty(FormatPrivate::P_Alignment_Wrap, wrap);
+    setProperty(FormatPrivate::P_Alignment_Wrap, wrap, false);
 }
 
 /*!
@@ -602,7 +602,7 @@ int Format::rotation() const
  */
 void Format::setRotation(int rotation)
 {
-    setProperty(FormatPrivate::P_Alignment_Rotation, rotation);
+    setProperty(FormatPrivate::P_Alignment_Rotation, rotation, 0);
 }
 
 /*!
@@ -626,7 +626,7 @@ void Format::setIndent(int indent)
         }
     }
 
-    setProperty(FormatPrivate::P_Alignment_Indent, indent);
+    setProperty(FormatPrivate::P_Alignment_Indent, indent, 0);
 }
 
 /*!
@@ -651,7 +651,7 @@ void Format::setShrinkToFit(bool shink)
             setHorizontalAlignment(AlignLeft);
     }
 
-    setProperty(FormatPrivate::P_Alignment_ShinkToFit, shink);
+    setProperty(FormatPrivate::P_Alignment_ShinkToFit, shink, false);
 }
 
 /*!
@@ -704,7 +704,7 @@ Format::BorderStyle Format::leftBorderStyle() const
  */
 void Format::setLeftBorderStyle(BorderStyle style)
 {
-    setProperty(FormatPrivate::P_Border_LeftStyle, style);
+    setProperty(FormatPrivate::P_Border_LeftStyle, style, BorderNone);
 }
 
 /*!
@@ -720,7 +720,7 @@ QColor Format::leftBorderColor() const
 */
 void Format::setLeftBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_LeftColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Border_LeftColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -736,7 +736,7 @@ Format::BorderStyle Format::rightBorderStyle() const
 */
 void Format::setRightBorderStyle(BorderStyle style)
 {
-    setProperty(FormatPrivate::P_Border_RightStyle, style);
+    setProperty(FormatPrivate::P_Border_RightStyle, style, BorderNone);
 }
 
 /*!
@@ -752,7 +752,7 @@ QColor Format::rightBorderColor() const
 */
 void Format::setRightBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_RightColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Border_RightColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -768,7 +768,7 @@ Format::BorderStyle Format::topBorderStyle() const
 */
 void Format::setTopBorderStyle(BorderStyle style)
 {
-    setProperty(FormatPrivate::P_Border_TopStyle, style);
+    setProperty(FormatPrivate::P_Border_TopStyle, style, BorderNone);
 }
 
 /*!
@@ -784,7 +784,7 @@ QColor Format::topBorderColor() const
 */
 void Format::setTopBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_TopColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Border_TopColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -800,7 +800,7 @@ Format::BorderStyle Format::bottomBorderStyle() const
 */
 void Format::setBottomBorderStyle(BorderStyle style)
 {
-    setProperty(FormatPrivate::P_Border_BottomStyle, style);
+    setProperty(FormatPrivate::P_Border_BottomStyle, style, BorderNone);
 }
 
 /*!
@@ -816,7 +816,7 @@ QColor Format::bottomBorderColor() const
 */
 void Format::setBottomBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_BottomColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Border_BottomColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -832,7 +832,7 @@ Format::BorderStyle Format::diagonalBorderStyle() const
 */
 void Format::setDiagonalBorderStyle(BorderStyle style)
 {
-    setProperty(FormatPrivate::P_Border_DiagonalStyle, style);
+    setProperty(FormatPrivate::P_Border_DiagonalStyle, style, BorderNone);
 }
 
 /*!
@@ -848,7 +848,7 @@ Format::DiagonalBorderType Format::diagonalBorderType() const
 */
 void Format::setDiagonalBorderType(DiagonalBorderType style)
 {
-    setProperty(FormatPrivate::P_Border_DiagonalType, style);
+    setProperty(FormatPrivate::P_Border_DiagonalType, style, DiagonalBorderNone);
 }
 
 /*!
@@ -864,7 +864,7 @@ QColor Format::diagonalBorderColor() const
 */
 void Format::setDiagonalBorderColor(const QColor &color)
 {
-    setProperty(FormatPrivate::P_Border_DiagonalColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Border_DiagonalColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -938,7 +938,7 @@ bool Format::hasBorderData() const
 */
 Format::FillPattern Format::fillPattern() const
 {
-    return static_cast<FillPattern>(intProperty(FormatPrivate::P_Fill_Pattern));
+    return static_cast<FillPattern>(intProperty(FormatPrivate::P_Fill_Pattern, PatternNone));
 }
 
 /*!
@@ -946,7 +946,7 @@ Format::FillPattern Format::fillPattern() const
 */
 void Format::setFillPattern(FillPattern pattern)
 {
-    setProperty(FormatPrivate::P_Fill_Pattern, pattern);
+    setProperty(FormatPrivate::P_Fill_Pattern, pattern, PatternNone);
 }
 
 /*!
@@ -964,7 +964,7 @@ void Format::setPatternForegroundColor(const QColor &color)
 {
     if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
         setFillPattern(PatternSolid);
-    setProperty(FormatPrivate::P_Fill_FgColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Fill_FgColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -982,7 +982,7 @@ void Format::setPatternBackgroundColor(const QColor &color)
 {
     if (color.isValid() && !hasProperty(FormatPrivate::P_Fill_Pattern))
         setFillPattern(PatternSolid);
-    setProperty(FormatPrivate::P_Fill_BgColor, XlsxColor(color));
+    setProperty(FormatPrivate::P_Fill_BgColor, XlsxColor(color), XlsxColor());
 }
 
 /*!
@@ -1231,22 +1231,22 @@ int Format::theme() const
 /*!
  * \internal
  */
-QVariant Format::property(int propertyId) const
+QVariant Format::property(int propertyId, const QVariant &defaultValue) const
 {
     if (d->property.contains(propertyId))
         return d->property[propertyId];
-    return QVariant();
+    return defaultValue;
 }
 
 /*!
  * \internal
  */
-void Format::setProperty(int propertyId, const QVariant &value, bool detach)
+void Format::setProperty(int propertyId, const QVariant &value, const QVariant &clearValue, bool detach)
 {
     if (!d)
         d = new FormatPrivate;
 
-    if (value.isValid()) {
+    if (value != clearValue) {
         if (d->property.contains(propertyId) && d->property[propertyId] == value)
             return;
         if (detach)
@@ -1297,70 +1297,70 @@ bool Format::hasProperty(int propertyId) const
 /*!
  * \internal
  */
-bool Format::boolProperty(int propertyId) const
+bool Format::boolProperty(int propertyId, bool defaultValue) const
 {
     if (!hasProperty(propertyId))
-        return false;
+        return defaultValue;
 
     const QVariant prop = d->property[propertyId];
     if (prop.userType() != QMetaType::Bool)
-        return false;
+        return defaultValue;
     return prop.toBool();
 }
 
 /*!
  * \internal
  */
-int Format::intProperty(int propertyId) const
+int Format::intProperty(int propertyId, int defaultValue) const
 {
     if (!hasProperty(propertyId))
-        return 0;
+        return defaultValue;
 
     const QVariant prop = d->property[propertyId];
     if (prop.userType() != QMetaType::Int)
-        return 0;
+        return defaultValue;
     return prop.toInt();
 }
 
 /*!
  * \internal
  */
-double Format::doubleProperty(int propertyId) const
+double Format::doubleProperty(int propertyId, double defaultValue) const
 {
     if (!hasProperty(propertyId))
-        return 0;
+        return defaultValue;
 
     const QVariant prop = d->property[propertyId];
     if (prop.userType() != QMetaType::Double && prop.userType() != QMetaType::Float)
-        return 0;
+        return defaultValue;
     return prop.toDouble();
 }
 
 /*!
  * \internal
  */
-QString Format::stringProperty(int propertyId) const
+QString Format::stringProperty(int propertyId, const QString &defaultValue) const
 {
     if (!hasProperty(propertyId))
-        return QString();
+        return defaultValue;
 
     const QVariant prop = d->property[propertyId];
     if (prop.userType() != QMetaType::QString)
-        return QString();
+        return defaultValue;
     return prop.toString();
 }
 
 /*!
  * \internal
  */
-QColor Format::colorProperty(int propertyId) const
+QColor Format::colorProperty(int propertyId, const QColor &defaultValue) const
 {
     if (!hasProperty(propertyId))
-        return QColor();
+        return defaultValue;
 
     const QVariant prop = d->property[propertyId];
     if (prop.userType() != qMetaTypeId<XlsxColor>())
-        return QColor();
+        return defaultValue;
     return qvariant_cast<XlsxColor>(prop).rgbColor();
 }
 
