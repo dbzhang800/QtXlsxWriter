@@ -9,8 +9,9 @@ namespace QXlsx {
 
 
 XlsxColor::XlsxColor(const QColor &color)
-    :val(color)
 {
+    if (color.isValid())
+        val.setValue(color);
 }
 
 XlsxColor::XlsxColor(const QString &theme, const QString &tint)
@@ -44,9 +45,7 @@ bool XlsxColor::isThemeColor() const
 
 bool XlsxColor::isInvalid() const
 {
-    if (val.userType() == qMetaTypeId<QColor>() && !val.value<QColor>().isValid())
-        return true;
-    return false;
+    return !val.isValid();
 }
 
 QColor XlsxColor::rgbColor() const
@@ -78,11 +77,7 @@ bool XlsxColor::saveToXml(QXmlStreamWriter &writer, const QString &node) const
         writer.writeEmptyElement(QStringLiteral("color"));
 
     if (val.userType() == qMetaTypeId<QColor>()) {
-        QColor color = val.value<QColor>();
-        if (color.isValid())
-            writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+color.name().mid(1));//remove #
-        else
-            writer.writeAttribute(QStringLiteral("auto"), QStringLiteral("1"));
+            writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+val.value<QColor>().name().mid(1));//remove #
     } else if (val.userType() == QMetaType::QStringList) {
         QStringList themes = val.toStringList();
         writer.writeAttribute(QStringLiteral("theme"), themes[0]);
@@ -91,7 +86,7 @@ bool XlsxColor::saveToXml(QXmlStreamWriter &writer, const QString &node) const
     } else if (val.userType() == QMetaType::Int) {
         writer.writeAttribute(QStringLiteral("indexed"), val.toString());
     } else {
-        return false;
+        writer.writeAttribute(QStringLiteral("auto"), QStringLiteral("1"));
     }
 
     return true;
