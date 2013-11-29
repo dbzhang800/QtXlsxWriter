@@ -40,6 +40,7 @@ QT_BEGIN_NAMESPACE_XLSX
 class CellRange;
 class Format;
 class Worksheet;
+class Styles;
 
 class ConditionalFormattingPrivate;
 class Q_XLSX_EXPORT ConditionalFormatting
@@ -125,7 +126,7 @@ private:
     friend class Worksheet;
     friend class ::ConditionalFormattingTest;
     bool saveToXml(QXmlStreamWriter &writer) const;
-    bool loadFromXml(QXmlStreamReader &reader) const;
+    bool loadFromXml(QXmlStreamReader &reader, Styles *styles=0);
     QSharedDataPointer<ConditionalFormattingPrivate> d;
 };
 

@@ -1266,6 +1266,8 @@ bool Styles::loadFromXmlFile(QIODevice *device)
                 readCellXfs(reader);
             } else if (reader.name() == QLatin1String("cellStyles")) {
 
+            } else if (reader.name() == QLatin1String("dxfs")) {
+                readDxfs(reader);
             }
         }
 

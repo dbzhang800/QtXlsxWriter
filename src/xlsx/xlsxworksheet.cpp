@@ -2255,6 +2255,10 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 d->readMergeCells(reader);
             } else if (reader.name() == QLatin1String("dataValidations")) {
                 d->readDataValidations(reader);
+            } else if (reader.name() == QLatin1String("conditionalFormatting")) {
+                ConditionalFormatting cf;
+                cf.loadFromXml(reader, workbook()->styles());
+                d->conditionalFormattingList.append(cf);
             }
         }
     }

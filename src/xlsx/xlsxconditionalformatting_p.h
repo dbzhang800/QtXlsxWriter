@@ -115,7 +115,11 @@ public:
     ConditionalFormattingPrivate(const ConditionalFormattingPrivate &other);
     ~ConditionalFormattingPrivate();
 
-    void writeCfVo(const XlsxCfVoData& cfvo, QXmlStreamWriter &writer) const;
+    void writeCfVo(QXmlStreamWriter &writer, const XlsxCfVoData& cfvo) const;
+    bool readCfVo(QXmlStreamReader &reader, XlsxCfVoData& cfvo);
+    bool readCfRule(QXmlStreamReader &reader, XlsxCfRuleData *cfRule, Styles *styles);
+    bool readCfDataBar(QXmlStreamReader &reader, XlsxCfRuleData *cfRule, Styles *styles);
+    bool readCfColorScale(QXmlStreamReader &reader, XlsxCfRuleData *cfRule, Styles *styles);
 
     QList<QSharedPointer<XlsxCfRuleData> >cfRules;
     QList<CellRange> ranges;

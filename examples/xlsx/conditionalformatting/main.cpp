@@ -67,8 +67,10 @@ int main()
     //![cf5]
 
     //![2]
-    xlsx.save();
+    xlsx.saveAs("Book1.xlsx");
     //![2]
 
+    Document xlsx2("Book1.xlsx");
+    xlsx2.saveAs("Book2.xlsx");
     return 0;
 }
