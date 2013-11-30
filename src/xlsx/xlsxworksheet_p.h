@@ -50,6 +50,10 @@ class QXmlStreamReader;
 
 namespace QXlsx {
 
+const int XLSX_ROW_MAX = 1048576;
+const int XLSX_COLUMN_MAX = 16384;
+const int XLSX_STRING_MAX = 32767;
+
 class SharedStrings;
 
 struct XlsxUrlData
@@ -218,9 +222,6 @@ public:
     QList<DataValidation> dataValidationsList;
     QList<ConditionalFormatting> conditionalFormattingList;
 
-    int xls_rowmax;
-    int xls_colmax;
-    int xls_strmax;
     CellRange dimension;
     int previous_row;
 

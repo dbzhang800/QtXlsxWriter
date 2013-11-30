@@ -60,10 +60,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
 {
     drawing = 0;
 
-    xls_rowmax = 1048576;
-    xls_colmax = 16384;
-    xls_strmax = 32767;
-
     previous_row = 0;
 
     outline_row_level = 0;
@@ -153,7 +149,7 @@ QString WorksheetPrivate::generateDimensionString()
 */
 int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ignore_col)
 {
-    if (row >= xls_rowmax || col >= xls_colmax)
+    if (row >= XLSX_ROW_MAX || col >= XLSX_COLUMN_MAX)
         return -1;
 
     if (!ignore_row) {
@@ -607,8 +603,8 @@ int Worksheet::writeString(int row, int column, const QString &value, const Form
     if (d->checkDimensions(row, column))
         return -1;
 
-    if (value.size() > d->xls_strmax) {
-        content = value.left(d->xls_strmax);
+    if (value.size() > XLSX_STRING_MAX) {
+        content = value.left(XLSX_STRING_MAX);
         error = -2;
     }
 
@@ -643,8 +639,8 @@ int Worksheet::writeInlineString(int row, int column, const QString &value, cons
     if (d->checkDimensions(row, column))
         return -1;
 
-    if (value.size() > d->xls_strmax) {
-        content = value.left(d->xls_strmax);
+    if (value.size() > XLSX_STRING_MAX) {
+        content = value.left(XLSX_STRING_MAX);
         error = -2;
     }
 
@@ -885,8 +881,8 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format
     QString displayString = display.isEmpty() ? urlString : display;
     if (displayString.startsWith(QLatin1String("mailto:")))
         displayString.replace(QLatin1String("mailto:"), QString());
-    if (displayString.size() > d->xls_strmax) {
-        displayString = displayString.left(d->xls_strmax);
+    if (displayString.size() > XLSX_STRING_MAX) {
+        displayString = displayString.left(XLSX_STRING_MAX);
         error = -2;
     }
 
