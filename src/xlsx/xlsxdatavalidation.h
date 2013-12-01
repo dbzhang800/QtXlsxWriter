@@ -30,6 +30,9 @@
 #include <QString>
 #include <QList>
 
+class QXmlStreamReader;
+class QXmlStreamWriter;
+
 QT_BEGIN_NAMESPACE_XLSX
 
 class Worksheet;
@@ -107,8 +110,10 @@ public:
     void addRange(int firstRow, int firstCol, int lastRow, int lastCol);
     void addRange(const CellRange &range);
 
-    //needed by QSharedDataPointer!!
     DataValidation &operator=(const DataValidation &other);
+
+    bool saveToXml(QXmlStreamWriter &writer) const;
+    static DataValidation loadFromXml(QXmlStreamReader &reader);
 private:
     QSharedDataPointer<DataValidationPrivate> d;
 };

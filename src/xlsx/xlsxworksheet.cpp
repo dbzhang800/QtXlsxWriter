@@ -1135,7 +1135,7 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     d->writeMergeCells(writer);
     foreach (const ConditionalFormatting cf, d->conditionalFormattingList)
         cf.saveToXml(writer);
-    d->writeDataValidation(writer);
+    d->writeDataValidations(writer);
     d->writeHyperlinks(writer);
     d->writeDrawings(writer);
 
@@ -1288,78 +1288,16 @@ void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer)
     writer.writeEndElement(); //mergeCells
 }
 
-void WorksheetPrivate::writeDataValidation(QXmlStreamWriter &writer)
+void WorksheetPrivate::writeDataValidations(QXmlStreamWriter &writer)
 {
     if (dataValidationsList.isEmpty())
         return;
 
-    static QMap<DataValidation::ValidationType, QString> typeMap;
-    static QMap<DataValidation::ValidationOperator, QString> opMap;
-    static QMap<DataValidation::ErrorStyle, QString> esMap;
-    if (typeMap.isEmpty()) {
-        typeMap.insert(DataValidation::None, QStringLiteral("none"));
-        typeMap.insert(DataValidation::Whole, QStringLiteral("whole"));
-        typeMap.insert(DataValidation::Decimal, QStringLiteral("decimal"));
-        typeMap.insert(DataValidation::List, QStringLiteral("list"));
-        typeMap.insert(DataValidation::Date, QStringLiteral("date"));
-        typeMap.insert(DataValidation::Time, QStringLiteral("time"));
-        typeMap.insert(DataValidation::TextLength, QStringLiteral("textLength"));
-        typeMap.insert(DataValidation::Custom, QStringLiteral("custom"));
-
-        opMap.insert(DataValidation::Between, QStringLiteral("between"));
-        opMap.insert(DataValidation::NotBetween, QStringLiteral("notBetween"));
-        opMap.insert(DataValidation::Equal, QStringLiteral("equal"));
-        opMap.insert(DataValidation::NotEqual, QStringLiteral("notEqual"));
-        opMap.insert(DataValidation::LessThan, QStringLiteral("lessThan"));
-        opMap.insert(DataValidation::LessThanOrEqual, QStringLiteral("lessThanOrEqual"));
-        opMap.insert(DataValidation::GreaterThan, QStringLiteral("greaterThan"));
-        opMap.insert(DataValidation::GreaterThanOrEqual, QStringLiteral("greaterThanOrEqual"));
-
-        esMap.insert(DataValidation::Stop, QStringLiteral("stop"));
-        esMap.insert(DataValidation::Warning, QStringLiteral("warning"));
-        esMap.insert(DataValidation::Information, QStringLiteral("information"));
-    }
-
     writer.writeStartElement(QStringLiteral("dataValidations"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(dataValidationsList.size()));
 
-    foreach (DataValidation validation, dataValidationsList) {
-        writer.writeStartElement(QStringLiteral("dataValidation"));
-        if (validation.validationType() != DataValidation::None)
-            writer.writeAttribute(QStringLiteral("type"), typeMap[validation.validationType()]);
-        if (validation.errorStyle() != DataValidation::Stop)
-            writer.writeAttribute(QStringLiteral("errorStyle"), esMap[validation.errorStyle()]);
-        if (validation.validationOperator() != DataValidation::Between)
-            writer.writeAttribute(QStringLiteral("operator"), opMap[validation.validationOperator()]);
-        if (validation.allowBlank())
-            writer.writeAttribute(QStringLiteral("allowBlank"), QStringLiteral("1"));
-//        if (validation.dropDownVisible())
-//            writer.writeAttribute(QStringLiteral("showDropDown"), QStringLiteral("1"));
-        if (validation.isPromptMessageVisible())
-            writer.writeAttribute(QStringLiteral("showInputMessage"), QStringLiteral("1"));
-        if (validation.isErrorMessageVisible())
-            writer.writeAttribute(QStringLiteral("showErrorMessage"), QStringLiteral("1"));
-        if (!validation.errorMessageTitle().isEmpty())
-            writer.writeAttribute(QStringLiteral("errorTitle"), validation.errorMessageTitle());
-        if (!validation.errorMessage().isEmpty())
-            writer.writeAttribute(QStringLiteral("error"), validation.errorMessage());
-        if (!validation.promptMessageTitle().isEmpty())
-            writer.writeAttribute(QStringLiteral("promptTitle"), validation.promptMessageTitle());
-        if (!validation.promptMessage().isEmpty())
-            writer.writeAttribute(QStringLiteral("prompt"), validation.promptMessage());
-
-        QStringList sqref;
-        foreach (CellRange range, validation.ranges())
-            sqref.append(range.toString());
-        writer.writeAttribute(QStringLiteral("sqref"), sqref.join(QLatin1Char(' ')));
-
-        if (!validation.formula1().isEmpty())
-            writer.writeTextElement(QStringLiteral("formula1"), validation.formula1());
-        if (!validation.formula2().isEmpty())
-            writer.writeTextElement(QStringLiteral("formula2"), validation.formula2());
-
-        writer.writeEndElement(); //dataValidation
-    }
+    foreach (DataValidation validation, dataValidationsList)
+        validation.saveToXml(writer);
 
     writer.writeEndElement(); //dataValidations
 }
@@ -2103,103 +2041,12 @@ void WorksheetPrivate::readDataValidations(QXmlStreamReader &reader)
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement
                 && reader.name() == QLatin1String("dataValidation")) {
-            readDataValidation(reader);
+            dataValidationsList.append(DataValidation::loadFromXml(reader));
         }
     }
 
     if (dataValidationsList.size() != count)
         qDebug("read data validation error");
-}
-
-void WorksheetPrivate::readDataValidation(QXmlStreamReader &reader)
-{
-    Q_ASSERT(reader.name() == QLatin1String("dataValidation"));
-
-    static QMap<QString, DataValidation::ValidationType> typeMap;
-    static QMap<QString, DataValidation::ValidationOperator> opMap;
-    static QMap<QString, DataValidation::ErrorStyle> esMap;
-    if (typeMap.isEmpty()) {
-        typeMap.insert(QStringLiteral("none"), DataValidation::None);
-        typeMap.insert(QStringLiteral("whole"), DataValidation::Whole);
-        typeMap.insert(QStringLiteral("decimal"), DataValidation::Decimal);
-        typeMap.insert(QStringLiteral("list"), DataValidation::List);
-        typeMap.insert(QStringLiteral("date"), DataValidation::Date);
-        typeMap.insert(QStringLiteral("time"), DataValidation::Time);
-        typeMap.insert(QStringLiteral("textLength"), DataValidation::TextLength);
-        typeMap.insert(QStringLiteral("custom"), DataValidation::Custom);
-
-        opMap.insert(QStringLiteral("between"), DataValidation::Between);
-        opMap.insert(QStringLiteral("notBetween"), DataValidation::NotBetween);
-        opMap.insert(QStringLiteral("equal"), DataValidation::Equal);
-        opMap.insert(QStringLiteral("notEqual"), DataValidation::NotEqual);
-        opMap.insert(QStringLiteral("lessThan"), DataValidation::LessThan);
-        opMap.insert(QStringLiteral("lessThanOrEqual"), DataValidation::LessThanOrEqual);
-        opMap.insert(QStringLiteral("greaterThan"), DataValidation::GreaterThan);
-        opMap.insert(QStringLiteral("greaterThanOrEqual"), DataValidation::GreaterThanOrEqual);
-
-        esMap.insert(QStringLiteral("stop"), DataValidation::Stop);
-        esMap.insert(QStringLiteral("warning"), DataValidation::Warning);
-        esMap.insert(QStringLiteral("information"), DataValidation::Information);
-    }
-
-    DataValidation validation;
-    QXmlStreamAttributes attrs = reader.attributes();
-
-    QString sqref = attrs.value(QLatin1String("sqref")).toString();
-    foreach (QString range, sqref.split(QLatin1Char(' ')))
-        validation.addRange(range);
-
-    if (attrs.hasAttribute(QLatin1String("type"))) {
-        QString t = attrs.value(QLatin1String("type")).toString();
-        validation.setValidationType(typeMap.contains(t) ? typeMap[t] : DataValidation::None);
-    }
-    if (attrs.hasAttribute(QLatin1String("errorStyle"))) {
-        QString es = attrs.value(QLatin1String("errorStyle")).toString();
-        validation.setErrorStyle(esMap.contains(es) ? esMap[es] : DataValidation::Stop);
-    }
-    if (attrs.hasAttribute(QLatin1String("operator"))) {
-        QString op = attrs.value(QLatin1String("operator")).toString();
-        validation.setValidationOperator(opMap.contains(op) ? opMap[op] : DataValidation::Between);
-    }
-    if (attrs.hasAttribute(QLatin1String("allowBlank"))) {
-        validation.setAllowBlank(true);
-    } else {
-        validation.setAllowBlank(false);
-    }
-    if (attrs.hasAttribute(QLatin1String("showInputMessage"))) {
-        validation.setPromptMessageVisible(true);
-    } else {
-        validation.setPromptMessageVisible(false);
-    }
-    if (attrs.hasAttribute(QLatin1String("showErrorMessage"))) {
-        validation.setErrorMessageVisible(true);
-    } else {
-        validation.setErrorMessageVisible(false);
-    }
-
-    QString et = attrs.value(QLatin1String("errorTitle")).toString();
-    QString e = attrs.value(QLatin1String("error")).toString();
-    if (!e.isEmpty() || !et.isEmpty())
-        validation.setErrorMessage(e, et);
-
-    QString pt = attrs.value(QLatin1String("promptTitle")).toString();
-    QString p = attrs.value(QLatin1String("prompt")).toString();
-    if (!p.isEmpty() || !pt.isEmpty())
-        validation.setPromptMessage(p, pt);
-
-    //find the end
-    while(!(reader.name() == QLatin1String("dataValidation") && reader.tokenType() == QXmlStreamReader::EndElement)) {
-        reader.readNextStartElement();
-        if (reader.tokenType() == QXmlStreamReader::StartElement) {
-            if (reader.name() == QLatin1String("formula1")) {
-                validation.setFormula1(reader.readElementText());
-            } else if (reader.name() == QLatin1String("formula2")) {
-                validation.setFormula2(reader.readElementText());
-            }
-        }
-    }
-
-    dataValidationsList.append(validation);
 }
 
 void WorksheetPrivate::readSheetViews(QXmlStreamReader &reader)

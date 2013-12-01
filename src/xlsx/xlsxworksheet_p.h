@@ -188,7 +188,7 @@ public:
     void writeMergeCells(QXmlStreamWriter &writer);
     void writeHyperlinks(QXmlStreamWriter &writer);
     void writeDrawings(QXmlStreamWriter &writer);
-    void writeDataValidation(QXmlStreamWriter &writer);
+    void writeDataValidations(QXmlStreamWriter &writer);
     int rowPixelsSize(int row);
     int colPixelsSize(int col);
     XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
@@ -199,7 +199,6 @@ public:
     void readColumnsInfo(QXmlStreamReader &reader);
     void readMergeCells(QXmlStreamReader &reader);
     void readDataValidations(QXmlStreamReader &reader);
-    void readDataValidation(QXmlStreamReader &reader);
     void readSheetViews(QXmlStreamReader &reader);
 
     SharedStrings *sharedStrings() const;
