@@ -253,7 +253,7 @@ void SharedStrings::readString(QXmlStreamReader &reader)
 
     RichString richString;
 
-    while (!(reader.name() == QLatin1String("si") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("si") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("r"))
@@ -274,7 +274,7 @@ void SharedStrings::readRichStringPart(QXmlStreamReader &reader, RichString &ric
 
     QString text;
     Format format;
-    while (!(reader.name() == QLatin1String("r") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("r") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("rPr")) {
@@ -301,7 +301,7 @@ Format SharedStrings::readRichStringPart_rPr(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("rPr"));
     Format format;
-    while (!(reader.name() == QLatin1String("rPr") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("rPr") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             QXmlStreamAttributes attributes = reader.attributes();
@@ -359,7 +359,7 @@ bool SharedStrings::loadFromXmlFile(QIODevice *device)
 {
     QXmlStreamReader reader(device);
     int count = 0;
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("sst")) {

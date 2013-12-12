@@ -121,7 +121,7 @@ void ContentTypes::saveToXmlFile(QIODevice *device)
 
     {
     QMapIterator<QString, QString> it(m_defaults);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         writer.writeStartElement(QStringLiteral("Default"));
         writer.writeAttribute(QStringLiteral("Extension"), it.key());
@@ -132,7 +132,7 @@ void ContentTypes::saveToXmlFile(QIODevice *device)
 
     {
     QMapIterator<QString, QString> it(m_overrides);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         writer.writeStartElement(QStringLiteral("Override"));
         writer.writeAttribute(QStringLiteral("PartName"), it.key());

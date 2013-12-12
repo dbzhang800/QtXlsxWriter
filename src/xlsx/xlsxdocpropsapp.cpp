@@ -144,7 +144,7 @@ DocPropsApp DocPropsApp::loadFromXmlFile(QIODevice *device)
 {
     DocPropsApp props;
     QXmlStreamReader reader(device);
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("Properties"))

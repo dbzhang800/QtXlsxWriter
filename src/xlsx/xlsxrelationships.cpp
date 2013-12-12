@@ -135,7 +135,7 @@ Relationships Relationships::loadFromXmlFile(QIODevice *device)
     Relationships rels;
 
     QXmlStreamReader reader(device);
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QStringLiteral("Relationship")) {

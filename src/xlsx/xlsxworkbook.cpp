@@ -382,7 +382,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
     Q_D(Workbook);
 
     QXmlStreamReader reader(device);
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("sheet")) {
@@ -399,7 +399,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                 if (attrs.hasAttribute(QLatin1String("date1904")))
                     d->date1904 = true;
              } else if (reader.name() == QLatin1String("bookviews")) {
-                while(!(reader.name() == QLatin1String("bookviews") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                while (!(reader.name() == QLatin1String("bookviews") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                     reader.readNextStartElement();
                     if (reader.tokenType() == QXmlStreamReader::StartElement) {
                         if (reader.name() == QLatin1String("workbookView")) {

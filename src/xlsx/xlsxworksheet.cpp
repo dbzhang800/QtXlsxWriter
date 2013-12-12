@@ -1316,7 +1316,7 @@ void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer)
         it.next();
         int row = it.key();
         QMapIterator <int, XlsxUrlData *> it2(it.value());
-        while(it2.hasNext()) {
+        while (it2.hasNext()) {
             it2.next();
             int col = it2.key();
             XlsxUrlData *data = it2.value();
@@ -1379,7 +1379,7 @@ void WorksheetPrivate::splitColsInfo(int colFirst, int colLast)
     // This will be more complex if we try to set "C:F" after "B:D".
     {
         QMapIterator<int, QSharedPointer<XlsxColumnInfo> > it(colsInfo);
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             it.next();
             QSharedPointer<XlsxColumnInfo> info = it.value();
             if (colFirst > info->firstColumn && colFirst <= info->lastColumn) {
@@ -1397,7 +1397,7 @@ void WorksheetPrivate::splitColsInfo(int colFirst, int colLast)
     }
     {
         QMapIterator<int, QSharedPointer<XlsxColumnInfo> > it(colsInfo);
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             it.next();
             QSharedPointer<XlsxColumnInfo> info = it.value();
             if (colLast >= info->firstColumn && colLast < info->lastColumn) {
@@ -1795,7 +1795,7 @@ QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(QXmlStreamReader &rea
     QString v_str;
     QString f_str;
     QSharedPointer<Cell> cell;
-    while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("v")) {
@@ -1833,7 +1833,7 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
     Q_Q(Worksheet);
     Q_ASSERT(reader.name() == QLatin1String("sheetData"));
 
-    while(!(reader.name() == QLatin1String("sheetData") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("sheetData") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
 
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
@@ -1886,7 +1886,7 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
                     QString type = attributes.value(QLatin1String("t")).toString();
                     if (type == QLatin1String("s")) {
                         //string type
-                        while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                        while (!reader.atEnd() && !(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                             reader.readNextStartElement();
                             if (reader.name() == QLatin1String("v")) {
                                 int sst_idx = reader.readElementText().toInt();
@@ -1900,7 +1900,7 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
                         }
                     } else if (type == QLatin1String("inlineStr")) {
                         //inline string type
-                        while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                        while (!reader.atEnd() && !(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                             reader.readNextStartElement();
                             if (reader.tokenType() == QXmlStreamReader::StartElement) {
                                 //:Todo, add rich text read support
@@ -1928,7 +1928,7 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
                     } else if (type == QLatin1String("e")) {
                         //error type, such as #DIV/0! #NULL! #REF! etc
                         QString v_str, f_str;
-                        while (!(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                        while (!reader.atEnd() && !(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                             reader.readNextStartElement();
                             if (reader.tokenType() == QXmlStreamReader::StartElement) {
                                 if (reader.name() == QLatin1String("v"))
@@ -1963,7 +1963,7 @@ void WorksheetPrivate::readColumnsInfo(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("cols"));
 
-    while(!(reader.name() == QLatin1String("cols") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("cols") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("col")) {
@@ -2007,7 +2007,7 @@ void WorksheetPrivate::readMergeCells(QXmlStreamReader &reader)
     QXmlStreamAttributes attributes = reader.attributes();
     int count = attributes.value(QLatin1String("count")).toString().toInt();
 
-    while(!(reader.name() == QLatin1String("mergeCells") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("mergeCells") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("mergeCell")) {
@@ -2036,7 +2036,7 @@ void WorksheetPrivate::readDataValidations(QXmlStreamReader &reader)
     QXmlStreamAttributes attributes = reader.attributes();
     int count = attributes.value(QLatin1String("count")).toString().toInt();
 
-    while(!(reader.name() == QLatin1String("dataValidations")
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("dataValidations")
             && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement
@@ -2053,7 +2053,7 @@ void WorksheetPrivate::readSheetViews(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("sheetViews"));
 
-    while(!(reader.name() == QLatin1String("sheetViews")
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("sheetViews")
             && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == QLatin1String("sheetView")) {
@@ -2079,7 +2079,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
     Q_D(Worksheet);
 
     QXmlStreamReader reader(device);
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("dimension")) {

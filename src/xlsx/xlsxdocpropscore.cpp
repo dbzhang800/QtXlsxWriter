@@ -143,7 +143,7 @@ DocPropsCore DocPropsCore::loadFromXmlFile(QIODevice *device)
     const QString dc = QStringLiteral("http://purl.org/dc/elements/1.1/");
     const QString dcterms = QStringLiteral("http://purl.org/dc/terms/");
 
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              const QStringRef nsUri = reader.namespaceUri();
