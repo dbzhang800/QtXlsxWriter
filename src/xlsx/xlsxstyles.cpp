@@ -467,22 +467,17 @@ void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool /*isDx
     writer.writeStartElement(QStringLiteral("patternFill"));
     writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill.fillPattern()]);
     // For a solid fill, Excel reverses the role of foreground and background colours
-    if (fill.hasProperty(FormatPrivate::P_Fill_FgColor)) {
-        XlsxColor color = fill.property(FormatPrivate::P_Fill_FgColor).value<XlsxColor>();
-        if (fill.fillPattern() == Format::PatternSolid)
-            color.saveToXml(writer, QStringLiteral("bgColor"));
-        else
-            color.saveToXml(writer, QStringLiteral("fgColor"));
+    if (fill.fillPattern() == Format::PatternSolid) {
+        if (fill.hasProperty(FormatPrivate::P_Fill_BgColor))
+            fill.property(FormatPrivate::P_Fill_BgColor).value<XlsxColor>().saveToXml(writer, QStringLiteral("fgColor"));
+        if (fill.hasProperty(FormatPrivate::P_Fill_FgColor))
+            fill.property(FormatPrivate::P_Fill_FgColor).value<XlsxColor>().saveToXml(writer, QStringLiteral("bgColor"));
+    } else {
+        if (fill.hasProperty(FormatPrivate::P_Fill_FgColor))
+            fill.property(FormatPrivate::P_Fill_FgColor).value<XlsxColor>().saveToXml(writer, QStringLiteral("fgColor"));
+        if (fill.hasProperty(FormatPrivate::P_Fill_BgColor))
+            fill.property(FormatPrivate::P_Fill_BgColor).value<XlsxColor>().saveToXml(writer, QStringLiteral("bgColor"));
     }
-
-    if (fill.hasProperty(FormatPrivate::P_Fill_BgColor)) {
-        XlsxColor color = fill.property(FormatPrivate::P_Fill_BgColor).value<XlsxColor>();
-        if (fill.fillPattern() == Format::PatternSolid)
-            color.saveToXml(writer, QStringLiteral("fgColor"));
-        else
-            color.saveToXml(writer, QStringLiteral("bgColor"));
-    }
-
     writer.writeEndElement();//patternFill
     writer.writeEndElement();//fill
 }
