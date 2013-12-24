@@ -16,7 +16,7 @@
 <li>Qt 0.2</li>
 <li>Document</li>
 <li id="buildversion">
-Qt 0.2.0 Reference Documentation</li>
+Qt 0.2.1 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -36,7 +36,7 @@ Qt 0.2.0 Reference Documentation</li>
 <!-- @@@Document -->
 <table class="alignedsummary">
 <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;Document&gt;</span>
-</tt></td></tr></table><ul>
+</tt></td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="../qtcore/qobject.html">QObject</a>.</td></tr></table><ul>
 <li><a href="document-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -46,6 +46,7 @@ Qt 0.2.0 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#Document-2">Document</a></b>(const QString &amp;<i> name</i>, QObject *<i> parent</i> = 0)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#Document-3">Document</a></b>(QIODevice *<i> device</i>, QObject *<i> parent</i> = 0)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="document.html#dtor.Document">~Document</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#addConditionalFormatting">addConditionalFormatting</a></b>(const ConditionalFormatting &amp;<i> cf</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#addDataValidation">addDataValidation</a></b>(const DataValidation &amp;<i> validation</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#addWorksheet">addWorksheet</a></b>(const QString &amp;<i> name</i> = QString())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="document.html#cellAt">cellAt</a></b>(const QString &amp;<i> pos</i>) const</td></tr>
@@ -79,6 +80,19 @@ Qt 0.2.0 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#write">write</a></b>(int<i> row</i>, int<i> col</i>, const QVariant &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#write-2">write</a></b>(const QString &amp;<i> row_column</i>, const QVariant &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 </table>
+<ul>
+<li class="fn">31 public functions inherited from <a href="../qtcore/qobject.html#public-functions">QObject</a></li>
+</ul>
+<h3>Additional Inherited Members</h3>
+<ul>
+<li class="fn">1 property inherited from <a href="../qtcore/qobject.html#properties">QObject</a></li>
+<li class="fn">1 public slot inherited from <a href="../qtcore/qobject.html#public-slots">QObject</a></li>
+<li class="fn">2 signals inherited from <a href="../qtcore/qobject.html#signals">QObject</a></li>
+<li class="fn">1 public variable inherited from <a href="../qtcore/qobject.html#public-variables">QObject</a></li>
+<li class="fn">10 static public members inherited from <a href="../qtcore/qobject.html#static-public-members">QObject</a></li>
+<li class="fn">9 protected functions inherited from <a href="../qtcore/qobject.html#protected-functions">QObject</a></li>
+<li class="fn">2 protected variables inherited from <a href="../qtcore/qobject.html#protected-variables">QObject</a></li>
+</ul>
 <a name="details"></a>
 <!-- $$$Document-description -->
 <div class="descr">
@@ -89,33 +103,37 @@ Qt 0.2.0 Reference Documentation</li>
 <div class="func">
 <h2>Member Function Documentation</h2>
 <!-- $$$Document[overload1]$$$DocumentQObject* -->
-<h3 class="fn"><a name="Document"></a>Document::<span class="name">Document</span>(<span class="type">QObject</span> *<i> parent</i> = 0)</h3>
-<p>Creates a new empty xlsx document. The <i>parent</i> argument is passed to QObject's constructor.</p>
+<h3 class="fn"><a name="Document"></a>Document::<span class="name">Document</span>(<span class="type"><a href="../qtcore/qobject.html">QObject</a></span> *<i> parent</i> = 0)</h3>
+<p>Creates a new empty xlsx document. The <i>parent</i> argument is passed to <a href="../qtcore/qobject.html">QObject</a>'s constructor.</p>
 <!-- @@@Document -->
 <!-- $$$Document$$$DocumentconstQString&QObject* -->
-<h3 class="fn"><a name="Document-2"></a>Document::<span class="name">Document</span>(const <span class="type">QString</span> &amp;<i> name</i>, <span class="type">QObject</span> *<i> parent</i> = 0)</h3>
+<h3 class="fn"><a name="Document-2"></a>Document::<span class="name">Document</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i>, <span class="type"><a href="../qtcore/qobject.html">QObject</a></span> *<i> parent</i> = 0)</h3>
 <p>This is an overloaded function.</p>
-<p>Try to open an existing xlsx document named <i>name</i>. The <i>parent</i> argument is passed to QObject's constructor.</p>
+<p>Try to open an existing xlsx document named <i>name</i>. The <i>parent</i> argument is passed to <a href="../qtcore/qobject.html">QObject</a>'s constructor.</p>
 <!-- @@@Document -->
 <!-- $$$Document$$$DocumentQIODevice*QObject* -->
-<h3 class="fn"><a name="Document-3"></a>Document::<span class="name">Document</span>(<span class="type">QIODevice</span> *<i> device</i>, <span class="type">QObject</span> *<i> parent</i> = 0)</h3>
+<h3 class="fn"><a name="Document-3"></a>Document::<span class="name">Document</span>(<span class="type"><a href="../qtcore/qiodevice.html">QIODevice</a></span> *<i> device</i>, <span class="type"><a href="../qtcore/qobject.html">QObject</a></span> *<i> parent</i> = 0)</h3>
 <p>This is an overloaded function.</p>
-<p>Try to open an existing xlsx document from <i>device</i>. The <i>parent</i> argument is passed to QObject's constructor.</p>
+<p>Try to open an existing xlsx document from <i>device</i>. The <i>parent</i> argument is passed to <a href="../qtcore/qobject.html">QObject</a>'s constructor.</p>
 <!-- @@@Document -->
 <!-- $$$~Document[overload1]$$$~Document -->
 <h3 class="fn"><a name="dtor.Document"></a>Document::<span class="name">~Document</span>()</h3>
 <p>Destroys the document and cleans up.</p>
 <!-- @@@~Document -->
+<!-- $$$addConditionalFormatting[overload1]$$$addConditionalFormattingconstConditionalFormatting& -->
+<h3 class="fn"><a name="addConditionalFormatting"></a><span class="type">bool</span> Document::<span class="name">addConditionalFormatting</span>(const <span class="type"><a href="conditionalformatting.html">ConditionalFormatting</a></span> &amp;<i> cf</i>)</h3>
+<p>Add a conditional formatting <i>cf</i> for current worksheet. Returns true if successful.</p>
+<!-- @@@addConditionalFormatting -->
 <!-- $$$addDataValidation[overload1]$$$addDataValidationconstDataValidation& -->
 <h3 class="fn"><a name="addDataValidation"></a><span class="type">bool</span> Document::<span class="name">addDataValidation</span>(const <span class="type"><a href="datavalidation.html">DataValidation</a></span> &amp;<i> validation</i>)</h3>
 <p>Add a data <i>validation</i> rule for current worksheet. Returns true if successful.</p>
 <!-- @@@addDataValidation -->
 <!-- $$$addWorksheet[overload1]$$$addWorksheetconstQString& -->
-<h3 class="fn"><a name="addWorksheet"></a><span class="type">bool</span> Document::<span class="name">addWorksheet</span>(const <span class="type">QString</span> &amp;<i> name</i> = QString())</h3>
+<h3 class="fn"><a name="addWorksheet"></a><span class="type">bool</span> Document::<span class="name">addWorksheet</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i> = QString())</h3>
 <p>Creates and append an document with name <i>name</i>. Return true if success.</p>
 <!-- @@@addWorksheet -->
 <!-- $$$cellAt[overload1]$$$cellAtconstQString& -->
-<h3 class="fn"><a name="cellAt"></a><span class="type"><a href="cell.html">Cell</a></span> * Document::<span class="name">cellAt</span>(const <span class="type">QString</span> &amp;<i> pos</i>) const</h3>
+<h3 class="fn"><a name="cellAt"></a><span class="type"><a href="cell.html">Cell</a></span> * Document::<span class="name">cellAt</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> pos</i>) const</h3>
 <p>Returns a Cell object based on the given <i>pos</i>. 0 will be returned if the cell doesn't exist.</p>
 <!-- @@@cellAt -->
 <!-- $$$cellAt$$$cellAtintint -->
@@ -128,7 +146,7 @@ Qt 0.2.0 Reference Documentation</li>
 <p><b>See also </b><a href="document.html#setCurrentWorksheet">setCurrentWorksheet</a>().</p>
 <!-- @@@currentWorksheet -->
 <!-- $$$defineName[overload1]$$$defineNameconstQString&constQString&constQString&constQString& -->
-<h3 class="fn"><a name="defineName"></a><span class="type">bool</span> Document::<span class="name">defineName</span>(const <span class="type">QString</span> &amp;<i> name</i>, const <span class="type">QString</span> &amp;<i> formula</i>, const <span class="type">QString</span> &amp;<i> comment</i> = QString(), const <span class="type">QString</span> &amp;<i> scope</i> = QString())</h3>
+<h3 class="fn"><a name="defineName"></a><span class="type">bool</span> Document::<span class="name">defineName</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> comment</i> = QString(), const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> scope</i> = QString())</h3>
 <p>Create a defined name in the workbook with the given <i>name</i>, <i>formula</i>, <i>comment</i> and <i>scope</i>.</p>
 <p><i>name</i> The defined name. <i>formula</i> The cell or range that the defined name refers to. <i>scope</i> The name of one worksheet, or empty which means golbal scope. Returns Return false if the name invalid.</p>
 <!-- @@@defineName -->
@@ -137,12 +155,12 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Return the range that contains cell data.</p>
 <!-- @@@dimension -->
 <!-- $$$documentProperty[overload1]$$$documentPropertyconstQString& -->
-<h3 class="fn"><a name="documentProperty"></a><span class="type">QString</span> Document::<span class="name">documentProperty</span>(const <span class="type">QString</span> &amp;<i> key</i>) const</h3>
+<h3 class="fn"><a name="documentProperty"></a><span class="type"><a href="../qtcore/qstring.html">QString</a></span> Document::<span class="name">documentProperty</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> key</i>) const</h3>
 <p>Returns the value of the document's <i>key</i> property.</p>
 <p><b>See also </b><a href="document.html#setDocumentProperty">setDocumentProperty</a>().</p>
 <!-- @@@documentProperty -->
 <!-- $$$documentPropertyNames[overload1]$$$documentPropertyNames -->
-<h3 class="fn"><a name="documentPropertyNames"></a><span class="type">QStringList</span> Document::<span class="name">documentPropertyNames</span>() const</h3>
+<h3 class="fn"><a name="documentPropertyNames"></a><span class="type"><a href="../qtcore/qstringlist.html">QStringList</a></span> Document::<span class="name">documentPropertyNames</span>() const</h3>
 <p>Returns the names of all properties that were addedusing <a href="document.html#setDocumentProperty">setDocumentProperty</a>().</p>
 <!-- @@@documentPropertyNames -->
 <!-- $$$groupColumns[overload1]$$$groupColumnsintintbool -->
@@ -154,11 +172,11 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Groups rows from <i>rowFirst</i> to <i>rowLast</i> with the given <i>collapsed</i>. Returns false if error occurs.</p>
 <!-- @@@groupRows -->
 <!-- $$$insertImage[overload1]$$$insertImageintintconstQImage&doubledoubledoubledouble -->
-<h3 class="fn"><a name="insertImage"></a><span class="type">int</span> Document::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QImage</span> &amp;<i> image</i>, <span class="type">double</span><i> xOffset</i> = 0, <span class="type">double</span><i> yOffset</i> = 0, <span class="type">double</span><i> xScale</i> = 1, <span class="type">double</span><i> yScale</i> = 1)</h3>
+<h3 class="fn"><a name="insertImage"></a><span class="type">int</span> Document::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtgui/qimage.html">QImage</a></span> &amp;<i> image</i>, <span class="type">double</span><i> xOffset</i> = 0, <span class="type">double</span><i> yOffset</i> = 0, <span class="type">double</span><i> xScale</i> = 1, <span class="type">double</span><i> yScale</i> = 1)</h3>
 <p>Insert an <i>image</i> to current active worksheet to the position <i>row</i>, <i>column</i> with the given <i>xOffset</i>, <i>yOffset</i>, <i>xScale</i> and <i>yScale</i>.</p>
 <!-- @@@insertImage -->
 <!-- $$$insertWorkSheet[overload1]$$$insertWorkSheetintconstQString& -->
-<h3 class="fn"><a name="insertWorkSheet"></a><span class="type">bool</span> Document::<span class="name">insertWorkSheet</span>(<span class="type">int</span><i> index</i>, const <span class="type">QString</span> &amp;<i> name</i> = QString())</h3>
+<h3 class="fn"><a name="insertWorkSheet"></a><span class="type">bool</span> Document::<span class="name">insertWorkSheet</span>(<span class="type">int</span><i> index</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i> = QString())</h3>
 <p>Creates and inserts an document with name <i>name</i> at the <i>index</i>. Returns false if the <i>name</i> already used.</p>
 <!-- @@@insertWorkSheet -->
 <!-- $$$mergeCells[overload1]$$$mergeCellsconstCellRange&constFormat& -->
@@ -166,16 +184,16 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Merge a <i>range</i> of cells. The first cell should contain the data and the others should be blank. All cells will be applied the same style if a valid <i>format</i> is given.</p>
 <p><b>Note: </b>All cells except the top-left one will be cleared.</p><!-- @@@mergeCells -->
 <!-- $$$mergeCells$$$mergeCellsconstQString&constFormat& -->
-<h3 class="fn"><a name="mergeCells-2"></a><span class="type">int</span> Document::<span class="name">mergeCells</span>(const <span class="type">QString</span> &amp;<i> range</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<h3 class="fn"><a name="mergeCells-2"></a><span class="type">int</span> Document::<span class="name">mergeCells</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> range</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
 <p>Merge a <i>range</i> of cells. The first cell should contain the data and the others should be blank. All cells will be applied the same style if a valid <i>format</i> is given.</p>
 <p><b>Note: </b>All cells except the top-left one will be cleared.</p><!-- @@@mergeCells -->
 <!-- $$$read[overload1]$$$readintint -->
-<h3 class="fn"><a name="read"></a><span class="type">QVariant</span> Document::<span class="name">read</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>) const</h3>
+<h3 class="fn"><a name="read"></a><span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> Document::<span class="name">read</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>) const</h3>
 <p>Returns the contents of the cell (<i>row</i>, <i>col</i>).</p>
 <!-- @@@read -->
 <!-- $$$read$$$readconstQString& -->
-<h3 class="fn"><a name="read-2"></a><span class="type">QVariant</span> Document::<span class="name">read</span>(const <span class="type">QString</span> &amp;<i> cell</i>) const</h3>
+<h3 class="fn"><a name="read-2"></a><span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> Document::<span class="name">read</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> cell</i>) const</h3>
 <p>This is an overloaded function.</p>
 <p>Returns the contents of the cell <i>cell</i>.</p>
 <!-- @@@read -->
@@ -184,11 +202,11 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Save current document to the filesystem. If no name specified when the document constructed, a default name &quot;book1.xlsx&quot; will be used. Returns true if saved successfully.</p>
 <!-- @@@save -->
 <!-- $$$saveAs[overload1]$$$saveAsconstQString& -->
-<h3 class="fn"><a name="saveAs"></a><span class="type">bool</span> Document::<span class="name">saveAs</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>
+<h3 class="fn"><a name="saveAs"></a><span class="type">bool</span> Document::<span class="name">saveAs</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i>)</h3>
 <p>Saves the document to the file with the given <i>name</i>. Returns true if saved successfully.</p>
 <!-- @@@saveAs -->
 <!-- $$$saveAs$$$saveAsQIODevice* -->
-<h3 class="fn"><a name="saveAs-2"></a><span class="type">bool</span> Document::<span class="name">saveAs</span>(<span class="type">QIODevice</span> *<i> device</i>)</h3>
+<h3 class="fn"><a name="saveAs-2"></a><span class="type">bool</span> Document::<span class="name">saveAs</span>(<span class="type"><a href="../qtcore/qiodevice.html">QIODevice</a></span> *<i> device</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>This function writes a document to the given <i>device</i>.</p>
 <!-- @@@saveAs -->
@@ -198,7 +216,7 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Return false if failed.</p>
 <!-- @@@setColumn -->
 <!-- $$$setColumn$$$setColumnconstQString&constQString&doubleconstFormat&bool -->
-<h3 class="fn"><a name="setColumn-2"></a><span class="type">bool</span> Document::<span class="name">setColumn</span>(const <span class="type">QString</span> &amp;<i> colFirst</i>, const <span class="type">QString</span> &amp;<i> colLast</i>, <span class="type">double</span><i> width</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format(), <span class="type">bool</span><i> hidden</i> = false)</h3>
+<h3 class="fn"><a name="setColumn-2"></a><span class="type">bool</span> Document::<span class="name">setColumn</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> colFirst</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> colLast</i>, <span class="type">double</span><i> width</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format(), <span class="type">bool</span><i> hidden</i> = false)</h3>
 <p>This is an overloaded function.</p>
 <p>Sets column width and format for all columns from <i>colFirst</i> to <i>colLast</i> with the given <i>width</i> and <i>format</i>. Column <i>width</i> measured as the number of characters of the maximum digit width of the numbers 0, 1, 2, ..&#x2e;, 9 as rendered in the normal style's font. <i>colFirst</i> and <i>colLast</i> should be &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, ..&#x2e;</p>
 <!-- @@@setColumn -->
@@ -208,11 +226,11 @@ Qt 0.2.0 Reference Documentation</li>
 <p><b>See also </b><a href="document.html#currentWorksheet">currentWorksheet</a>().</p>
 <!-- @@@setCurrentWorksheet -->
 <!-- $$$setCurrentWorksheet$$$setCurrentWorksheetconstQString& -->
-<h3 class="fn"><a name="setCurrentWorksheet-2"></a><span class="type">void</span> Document::<span class="name">setCurrentWorksheet</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>
+<h3 class="fn"><a name="setCurrentWorksheet-2"></a><span class="type">void</span> Document::<span class="name">setCurrentWorksheet</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i>)</h3>
 <p>Set current worksheet to be the sheet named <i>name</i>.</p>
 <!-- @@@setCurrentWorksheet -->
 <!-- $$$setDocumentProperty[overload1]$$$setDocumentPropertyconstQString&constQString& -->
-<h3 class="fn"><a name="setDocumentProperty"></a><span class="type">void</span> Document::<span class="name">setDocumentProperty</span>(const <span class="type">QString</span> &amp;<i> key</i>, const <span class="type">QString</span> &amp;<i> property</i>)</h3>
+<h3 class="fn"><a name="setDocumentProperty"></a><span class="type">void</span> Document::<span class="name">setDocumentProperty</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> key</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> property</i>)</h3>
 <p>Set the document properties such as Title, Author etc.</p>
 <p>The method can be used to set the document properties of the Excel file created by Qt Xlsx. These properties are visible when you use the Office Button -&gt; Prepare -&gt; Properties option in Excel and are also available to external applications that read or index windows files.</p>
 <p>The <i>property</i> <i>key</i> that can be set are:</p>
@@ -235,7 +253,7 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Returns false if failed.</p>
 <!-- @@@setRow -->
 <!-- $$$setSheetName[overload1]$$$setSheetNameconstQString& -->
-<h3 class="fn"><a name="setSheetName"></a><span class="type">bool</span> Document::<span class="name">setSheetName</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>
+<h3 class="fn"><a name="setSheetName"></a><span class="type">bool</span> Document::<span class="name">setSheetName</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> name</i>)</h3>
 <p>Rename current worksheet to new <i>name</i>. Returns true if the name defined successful.</p>
 <!-- @@@setSheetName -->
 <!-- $$$unmergeCells[overload1]$$$unmergeCellsconstCellRange& -->
@@ -243,7 +261,7 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Unmerge the cells in the <i>range</i>.</p>
 <!-- @@@unmergeCells -->
 <!-- $$$unmergeCells$$$unmergeCellsconstQString& -->
-<h3 class="fn"><a name="unmergeCells-2"></a><span class="type">int</span> Document::<span class="name">unmergeCells</span>(const <span class="type">QString</span> &amp;<i> range</i>)</h3>
+<h3 class="fn"><a name="unmergeCells-2"></a><span class="type">int</span> Document::<span class="name">unmergeCells</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> range</i>)</h3>
 <p>Unmerge the cells in the <i>range</i>.</p>
 <!-- @@@unmergeCells -->
 <!-- $$$workbook[overload1]$$$workbook -->
@@ -251,11 +269,11 @@ Qt 0.2.0 Reference Documentation</li>
 <p>Return the internal Workbook object.</p>
 <!-- @@@workbook -->
 <!-- $$$write[overload1]$$$writeintintconstQVariant&constFormat& -->
-<h3 class="fn"><a name="write"></a><span class="type">int</span> Document::<span class="name">write</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>, const <span class="type">QVariant</span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<h3 class="fn"><a name="write"></a><span class="type">int</span> Document::<span class="name">write</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>, const <span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>Write <i>value</i> to cell (<i>row</i>, <i>col</i>) with the <i>format</i>.</p>
 <!-- @@@write -->
 <!-- $$$write$$$writeconstQString&constQVariant&constFormat& -->
-<h3 class="fn"><a name="write-2"></a><span class="type">int</span> Document::<span class="name">write</span>(const <span class="type">QString</span> &amp;<i> row_column</i>, const <span class="type">QVariant</span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<h3 class="fn"><a name="write-2"></a><span class="type">int</span> Document::<span class="name">write</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
 <p>Write <i>value</i> to cell <i>row_column</i> with the <i>format</i>.</p>
 <!-- @@@write -->

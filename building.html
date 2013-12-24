@@ -16,7 +16,7 @@
 <li>Qt 0.2</li>
 <li>Qt Xlsx Build</li>
 <li id="buildversion">
-Qt 0.2.0 Reference Documentation</li>
+Qt 0.2.1 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -34,7 +34,7 @@ Qt 0.2.0 Reference Documentation</li>
 <span class="subtitle"></span>
 <!-- $$$building-description -->
 <div class="descr"> <a name="details"></a>
-<a name="usage-1-use-xlsx-as-qt5-s-addon-module"></a>
+<p><b>Note: </b><a href="../qtgui/qzipwriter.html">QZipWriter</a> and <a href="../qtgui/qzipreader.html">QZipReader</a> which live in gui-private is used in this library. For linux user, if your Qt is installed through package manager tools such &quot;apt-get&quot;, make sure that you have installed the Qt5 develop package *qtbase5-private-dev* ; if you Qt is built from source by yourself, or download from qt-project.org directly, nothing need to do.</p><a name="usage-1-use-xlsx-as-qt5-s-addon-module"></a>
 <h2>Usage(1): Use Xlsx as Qt5's addon module</h2>
 <p>1. Download the source code from <a href="https://github.com/dbzhang800/QtXlsxWriter/archive/master.zip">github.com</a>.</p>
 <p>2. Put the source code in any directory you like. At the toplevel directory run</p>
@@ -66,6 +66,7 @@ make install</pre>
 <p>3. Add following line to your qmake project file:</p>
 <pre class="cpp"><span class="keyword">include</span>(<span class="number">3rdparty</span><span class="operator">/</span>qtxlsx<span class="operator">/</span>src<span class="operator">/</span>xlsx<span class="operator">/</span>qtxlsx<span class="operator">.</span>pri)</pre>
 <p><b>Note: </b>If you like, you can copy all files from *src/xlsx* to your application's source path. Then add following line to your project file:</p><pre class="cpp"><span class="keyword">include</span>(qtxlsx<span class="operator">.</span>pri)</pre>
+<p><b>Note: </b>If you do not use qmake, you need to define the following macro manually</p><pre class="cpp">XLSX_NO_LIB</pre>
 <p>4. Then, using Qt Xlsx in your code</p>
 </div>
 <!-- @@@building -->

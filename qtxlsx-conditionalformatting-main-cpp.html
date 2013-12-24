@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>main.cpp Example File (conditionalformatting/main.cpp) | QtXlsx 0.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li>Qt 0.2</li>
+<li>main.cpp Example File (conditionalformatting/main.cpp)</li>
+<li id="buildversion">
+Qt 0.2.1 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">main.cpp Example File</h1>
+<span class="small-subtitle">conditionalformatting/main.cpp</span>
+<!-- $$$conditionalformatting/main.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
+<span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxconditionalformatting.h&quot;</span>
+
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type">QXlsx</span>;
+
+<span class="type">int</span> main()
+{
+    Document xlsx;
+    Format hFmt;
+    hFmt<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B1&quot;</span><span class="operator">,</span> <span class="string">&quot;(-inf,40)&quot;</span><span class="operator">,</span> hFmt);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;C1&quot;</span><span class="operator">,</span> <span class="string">&quot;[30,70]&quot;</span><span class="operator">,</span> hFmt);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;D1&quot;</span><span class="operator">,</span> <span class="string">&quot;startsWith 2&quot;</span><span class="operator">,</span> hFmt);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;E1&quot;</span><span class="operator">,</span> <span class="string">&quot;dataBar&quot;</span><span class="operator">,</span> hFmt);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;F1&quot;</span><span class="operator">,</span> <span class="string">&quot;colorScale&quot;</span><span class="operator">,</span> hFmt);
+
+    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">3</span>; row<span class="operator">&lt;</span><span class="number">22</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+        <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span><span class="number">2</span>; col<span class="operator">&lt;</span><span class="number">22</span>; <span class="operator">+</span><span class="operator">+</span>col)
+            xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> qrand() <span class="operator">%</span> <span class="number">100</span>);
+    }
+
+    ConditionalFormatting cf1;
+    Format fmt1;
+    fmt1<span class="operator">.</span>setFontColor(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>green);
+    fmt1<span class="operator">.</span>setBorderStyle(Format<span class="operator">::</span>BorderDashed);
+    cf1<span class="operator">.</span>addHighlightCellsRule(ConditionalFormatting<span class="operator">::</span>Highlight_LessThan<span class="operator">,</span> <span class="string">&quot;40&quot;</span><span class="operator">,</span> fmt1);
+    cf1<span class="operator">.</span>addRange(<span class="string">&quot;B3:B21&quot;</span>);
+    xlsx<span class="operator">.</span>addConditionalFormatting(cf1);
+
+    ConditionalFormatting cf2;
+    Format fmt2;
+    fmt2<span class="operator">.</span>setBorderStyle(Format<span class="operator">::</span>BorderDotted);
+    fmt2<span class="operator">.</span>setBorderColor(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
+    cf2<span class="operator">.</span>addHighlightCellsRule(ConditionalFormatting<span class="operator">::</span>Highlight_Between<span class="operator">,</span> <span class="string">&quot;30&quot;</span><span class="operator">,</span> <span class="string">&quot;70&quot;</span><span class="operator">,</span> fmt2);
+    cf2<span class="operator">.</span>addRange(<span class="string">&quot;C3:C21&quot;</span>);
+    xlsx<span class="operator">.</span>addConditionalFormatting(cf2);
+
+    ConditionalFormatting cf3;
+    Format fmt3;
+    fmt3<span class="operator">.</span>setFontStrikeOut(<span class="keyword">true</span>);
+    fmt3<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
+    cf3<span class="operator">.</span>addHighlightCellsRule(ConditionalFormatting<span class="operator">::</span>Highlight_BeginsWith<span class="operator">,</span> <span class="string">&quot;2&quot;</span><span class="operator">,</span> fmt3);
+    cf3<span class="operator">.</span>addRange(<span class="string">&quot;D3:D21&quot;</span>);
+    xlsx<span class="operator">.</span>addConditionalFormatting(cf3);
+
+    ConditionalFormatting cf4;
+    cf4<span class="operator">.</span>addDataBarRule(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
+    cf4<span class="operator">.</span>addRange(<span class="string">&quot;E3:E21&quot;</span>);
+    xlsx<span class="operator">.</span>addConditionalFormatting(cf4);
+
+    ConditionalFormatting cf5;
+    cf5<span class="operator">.</span>add2ColorScaleRule(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>red);
+    cf5<span class="operator">.</span>addRange(<span class="string">&quot;F3:F21&quot;</span>);
+    xlsx<span class="operator">.</span>addConditionalFormatting(cf5);
+
+    xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Book1.xlsx&quot;</span>);
+
+    Document xlsx2(<span class="string">&quot;Book1.xlsx&quot;</span>);
+    xlsx2<span class="operator">.</span>saveAs(<span class="string">&quot;Book2.xlsx&quot;</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+</div>
+<!-- @@@conditionalformatting/main.cpp -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+        <div class="qt13a-copyright" id="copyright">
+            <div class="qt13a-container">
+            <p>
+              <acronym title="Copyright">&copy;</acronym> 2013 Debao Zhang. 
+              Documentation contributions included herein are the copyrights of
+              their respective owners.</p>
+            <p>
+              The documentation provided herein is licensed under the terms of the
+              <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+              License version 1.3</a> as published by the Free Software Foundation.</p>
+            <p>
+              Documentation sources may be obtained from <a href="https://github.com/dbzhang800/QtXlsxWriter">
+              github.com/dbzhang800</a>.</p>
+            <p>
+              Qt and their respective logos are trademarks of Digia Plc 
+              in Finland and/or other countries worldwide. All other trademarks are property
+              of their respective owners. <a title="Privacy Policy"
+              href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+            </div>
+        </div>
+</div>
+</body>
+</html>

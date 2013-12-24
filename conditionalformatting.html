@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- xlsxconditionalformatting.cpp -->
+  <title>ConditionalFormatting Class | QtXlsx 0.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li>Qt 0.2</li>
+<li>ConditionalFormatting</li>
+<li id="buildversion">
+Qt 0.2.1 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#public-types">Public Types</a></li>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<h1 class="title">ConditionalFormatting Class</h1>
+<!-- $$$ConditionalFormatting-brief -->
+<p>Conditional formatting for single cell or ranges <a href="#details">More...</a></p>
+<!-- @@@ConditionalFormatting -->
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;ConditionalFormatting&gt;</span>
+</tt></td></tr></table><ul>
+<li><a href="conditionalformatting-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h2>Public Types</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></b> { Highlight_LessThan, Highlight_LessThanOrEqual, Highlight_Equal, Highlight_NotEqual, ..., Highlight_Expression }</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></b> { VOT_Formula, VOT_Max, VOT_Min, VOT_Num, VOT_Percent, VOT_Percentile }</td></tr>
+</table>
+<a name="public-functions"></a>
+<h2>Public Functions</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#ConditionalFormatting">ConditionalFormatting</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#ConditionalFormatting-2">ConditionalFormatting</a></b>(const ConditionalFormatting &amp;<i> other</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#dtor.ConditionalFormatting">~ConditionalFormatting</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#add2ColorScaleRule">add2ColorScaleRule</a></b>(const QColor &amp;<i> minColor</i>, const QColor &amp;<i> maxColor</i>, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#add3ColorScaleRule">add3ColorScaleRule</a></b>(const QColor &amp;<i> minColor</i>, const QColor &amp;<i> midColor</i>, const QColor &amp;<i> maxColor</i>, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addCell">addCell</a></b>(const QString &amp;<i> cell</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addCell-2">addCell</a></b>(int<i> row</i>, int<i> col</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addDataBarRule">addDataBarRule</a></b>(const QColor &amp;<i> color</i>, ValueObjectType<i> type1</i>, const QString &amp;<i> val1</i>, ValueObjectType<i> type2</i>, const QString &amp;<i> val2</i>, bool<i> showData</i> = true, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addDataBarRule-2">addDataBarRule</a></b>(const QColor &amp;<i> color</i>, bool<i> showData</i> = true, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addHighlightCellsRule">addHighlightCellsRule</a></b>(HighlightRuleType<i> type</i>, const QString &amp;<i> formula1</i>, const QString &amp;<i> formula2</i>, const Format &amp;<i> format</i>, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addHighlightCellsRule-2">addHighlightCellsRule</a></b>(HighlightRuleType<i> type</i>, const Format &amp;<i> format</i>, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addHighlightCellsRule-3">addHighlightCellsRule</a></b>(HighlightRuleType<i> type</i>, const QString &amp;<i> formula</i>, const Format &amp;<i> format</i>, bool<i> stopIfTrue</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addRange">addRange</a></b>(const QString &amp;<i> range</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addRange-2">addRange</a></b>(int<i> firstRow</i>, int<i> firstCol</i>, int<i> lastRow</i>, int<i> lastCol</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#addRange-3">addRange</a></b>(const CellRange &amp;<i> range</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QList&lt;CellRange&gt; </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#ranges">ranges</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> ConditionalFormatting &amp; </td><td class="memItemRight bottomAlign"><b><a href="conditionalformatting.html#operator-eq">operator=</a></b>(const ConditionalFormatting &amp;<i> other</i>)</td></tr>
+</table>
+<a name="details"></a>
+<!-- $$$ConditionalFormatting-description -->
+<div class="descr">
+<h2>Detailed Description</h2>
+<p>Conditional formatting for single cell or ranges</p>
+<p>The conditional formatting can be applied to a single cell or ranges of cells.</p>
+</div>
+<!-- @@@ConditionalFormatting -->
+<div class="types">
+<h2>Member Type Documentation</h2>
+<!-- $$$HighlightRuleType$$$Highlight_LessThan$$$Highlight_LessThanOrEqual$$$Highlight_Equal$$$Highlight_NotEqual$$$Highlight_GreaterThanOrEqual$$$Highlight_GreaterThan$$$Highlight_Between$$$Highlight_NotBetween$$$Highlight_ContainsText$$$Highlight_NotContainsText$$$Highlight_BeginsWith$$$Highlight_EndsWith$$$Highlight_TimePeriod$$$Highlight_Duplicate$$$Highlight_Unique$$$Highlight_Blanks$$$Highlight_NoBlanks$$$Highlight_Errors$$$Highlight_NoErrors$$$Highlight_Top$$$Highlight_TopPercent$$$Highlight_Bottom$$$Highlight_BottomPercent$$$Highlight_AboveAverage$$$Highlight_AboveOrEqualAverage$$$Highlight_AboveStdDev1$$$Highlight_AboveStdDev2$$$Highlight_AboveStdDev3$$$Highlight_BelowAverage$$$Highlight_BelowOrEqualAverage$$$Highlight_BelowStdDev1$$$Highlight_BelowStdDev2$$$Highlight_BelowStdDev3$$$Highlight_Expression -->
+<h3 class="fn"><a name="HighlightRuleType-enum"></a>enum ConditionalFormatting::<span class="name">HighlightRuleType</span></h3>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_LessThan</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_LessThanOrEqual</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Equal</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_NotEqual</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_GreaterThanOrEqual</tt></td><td class="topAlign"><tt>4</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_GreaterThan</tt></td><td class="topAlign"><tt>5</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Between</tt></td><td class="topAlign"><tt>6</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_NotBetween</tt></td><td class="topAlign"><tt>7</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_ContainsText</tt></td><td class="topAlign"><tt>8</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_NotContainsText</tt></td><td class="topAlign"><tt>9</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BeginsWith</tt></td><td class="topAlign"><tt>10</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_EndsWith</tt></td><td class="topAlign"><tt>11</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_TimePeriod</tt></td><td class="topAlign"><tt>12</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Duplicate</tt></td><td class="topAlign"><tt>13</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Unique</tt></td><td class="topAlign"><tt>14</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Blanks</tt></td><td class="topAlign"><tt>15</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_NoBlanks</tt></td><td class="topAlign"><tt>16</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Errors</tt></td><td class="topAlign"><tt>17</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_NoErrors</tt></td><td class="topAlign"><tt>18</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Top</tt></td><td class="topAlign"><tt>19</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_TopPercent</tt></td><td class="topAlign"><tt>20</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Bottom</tt></td><td class="topAlign"><tt>21</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BottomPercent</tt></td><td class="topAlign"><tt>22</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_AboveAverage</tt></td><td class="topAlign"><tt>23</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_AboveOrEqualAverage</tt></td><td class="topAlign"><tt>24</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BelowAverage</tt></td><td class="topAlign"><tt>28</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BelowOrEqualAverage</tt></td><td class="topAlign"><tt>29</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_AboveStdDev1</tt></td><td class="topAlign"><tt>25</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_AboveStdDev2</tt></td><td class="topAlign"><tt>26</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_AboveStdDev3</tt></td><td class="topAlign"><tt>27</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BelowStdDev1</tt></td><td class="topAlign"><tt>30</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BelowStdDev2</tt></td><td class="topAlign"><tt>31</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_BelowStdDev3</tt></td><td class="topAlign"><tt>32</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::Highlight_Expression</tt></td><td class="topAlign"><tt>33</tt></td></tr>
+</table>
+<!-- @@@HighlightRuleType -->
+<!-- $$$ValueObjectType$$$VOT_Formula$$$VOT_Max$$$VOT_Min$$$VOT_Num$$$VOT_Percent$$$VOT_Percentile -->
+<h3 class="fn"><a name="ValueObjectType-enum"></a>enum ConditionalFormatting::<span class="name">ValueObjectType</span></h3>
+<!-- @@@ValueObjectType -->
+</div>
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$ConditionalFormatting[overload1]$$$ConditionalFormatting -->
+<h3 class="fn"><a name="ConditionalFormatting"></a>ConditionalFormatting::<span class="name">ConditionalFormatting</span>()</h3>
+<p>Construct a conditional formatting object</p>
+<!-- @@@ConditionalFormatting -->
+<!-- $$$ConditionalFormatting$$$ConditionalFormattingconstConditionalFormatting& -->
+<h3 class="fn"><a name="ConditionalFormatting-2"></a>ConditionalFormatting::<span class="name">ConditionalFormatting</span>(const <span class="type">ConditionalFormatting</span> &amp;<i> other</i>)</h3>
+<p>Constructs a copy of <i>other</i>.</p>
+<!-- @@@ConditionalFormatting -->
+<!-- $$$~ConditionalFormatting[overload1]$$$~ConditionalFormatting -->
+<h3 class="fn"><a name="dtor.ConditionalFormatting"></a>ConditionalFormatting::<span class="name">~ConditionalFormatting</span>()</h3>
+<p>Destroy the object.</p>
+<!-- @@@~ConditionalFormatting -->
+<!-- $$$add2ColorScaleRule[overload1]$$$add2ColorScaleRuleconstQColor&constQColor&bool -->
+<h3 class="fn"><a name="add2ColorScaleRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">add2ColorScaleRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> minColor</i>, const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> maxColor</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a colorScale rule with the given <i>minColor</i>, <i>maxColor</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@add2ColorScaleRule -->
+<!-- $$$add3ColorScaleRule[overload1]$$$add3ColorScaleRuleconstQColor&constQColor&constQColor&bool -->
+<h3 class="fn"><a name="add3ColorScaleRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">add3ColorScaleRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> minColor</i>, const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> midColor</i>, const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> maxColor</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a colorScale rule with the given <i>minColor</i>, <i>midColor</i>, <i>maxColor</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@add3ColorScaleRule -->
+<!-- $$$addCell[overload1]$$$addCellconstQString& -->
+<h3 class="fn"><a name="addCell"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addCell</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> cell</i>)</h3>
+<p>Add the <i>cell</i> on which the conditional formatting will apply to.</p>
+<!-- @@@addCell -->
+<!-- $$$addCell$$$addCellintint -->
+<h3 class="fn"><a name="addCell-2"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addCell</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>)</h3>
+<p>This is an overloaded function.</p>
+<p>Add the cell(<i>row</i>, <i>col</i>) on which the conditional formatting will apply to.</p>
+<!-- @@@addCell -->
+<!-- $$$addDataBarRule[overload1]$$$addDataBarRuleconstQColor&ValueObjectTypeconstQString&ValueObjectTypeconstQString&boolbool -->
+<h3 class="fn"><a name="addDataBarRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addDataBarRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> color</i>, <span class="type"><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></span><i> type1</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> val1</i>, <span class="type"><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></span><i> type2</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> val2</i>, <span class="type">bool</span><i> showData</i> = true, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a dataBar rule with the given <i>color</i>, <i>type1</i>, <i>val1</i> , <i>type2</i>, <i>val2</i>, <i>showData</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@addDataBarRule -->
+<!-- $$$addDataBarRule$$$addDataBarRuleconstQColor&boolbool -->
+<h3 class="fn"><a name="addDataBarRule-2"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addDataBarRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> color</i>, <span class="type">bool</span><i> showData</i> = true, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>This is an overloaded function.</p>
+<p>Add a dataBar rule with the given <i>color</i>, <i>showData</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@addDataBarRule -->
+<!-- $$$addHighlightCellsRule[overload1]$$$addHighlightCellsRuleHighlightRuleTypeconstQString&constQString&constFormat&bool -->
+<h3 class="fn"><a name="addHighlightCellsRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula1</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula2</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a hightlight rule with the given <i>type</i>, <i>formula1</i>, <i>formula2</i>, <i>format</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@addHighlightCellsRule -->
+<!-- $$$addHighlightCellsRule$$$addHighlightCellsRuleHighlightRuleTypeconstFormat&bool -->
+<h3 class="fn"><a name="addHighlightCellsRule-2"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>This is an overloaded function.</p>
+<p>Add a hightlight rule with the given <i>type</i> <i>format</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@addHighlightCellsRule -->
+<!-- $$$addHighlightCellsRule$$$addHighlightCellsRuleHighlightRuleTypeconstQString&constFormat&bool -->
+<h3 class="fn"><a name="addHighlightCellsRule-3"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>This is an overloaded function.</p>
+<p>Add a hightlight rule with the given <i>type</i>, <i>formula</i>, <i>format</i> and <i>stopIfTrue</i>.</p>
+<!-- @@@addHighlightCellsRule -->
+<!-- $$$addRange[overload1]$$$addRangeconstQString& -->
+<h3 class="fn"><a name="addRange"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addRange</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> range</i>)</h3>
+<p>Add the <i>range</i> on which the conditional formatting will apply to.</p>
+<!-- @@@addRange -->
+<!-- $$$addRange$$$addRangeintintintint -->
+<h3 class="fn"><a name="addRange-2"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addRange</span>(<span class="type">int</span><i> firstRow</i>, <span class="type">int</span><i> firstCol</i>, <span class="type">int</span><i> lastRow</i>, <span class="type">int</span><i> lastCol</i>)</h3>
+<p>This is an overloaded function.</p>
+<p>Add the range(<i>firstRow</i>, <i>firstCol</i>, <i>lastRow</i>, <i>lastCol</i>) on which the conditional formatting will apply to.</p>
+<!-- @@@addRange -->
+<!-- $$$addRange$$$addRangeconstCellRange& -->
+<h3 class="fn"><a name="addRange-3"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addRange</span>(const <span class="type">CellRange</span> &amp;<i> range</i>)</h3>
+<p>This is an overloaded function.</p>
+<p>Add the <i>range</i> on which the conditional formatting will apply to.</p>
+<!-- @@@addRange -->
+<!-- $$$ranges[overload1]$$$ranges -->
+<h3 class="fn"><a name="ranges"></a><span class="type"><a href="../qtcore/qlist.html">QList</a></span>&lt;<span class="type">CellRange</span>&gt; ConditionalFormatting::<span class="name">ranges</span>() const</h3>
+<p>Returns the ranges on which the validation will be applied.</p>
+<!-- @@@ranges -->
+<!-- $$$operator=[overload1]$$$operator=constConditionalFormatting& -->
+<h3 class="fn"><a name="operator-eq"></a><span class="type">ConditionalFormatting</span> &amp; ConditionalFormatting::<span class="name">operator=</span>(const <span class="type">ConditionalFormatting</span> &amp;<i> other</i>)</h3>
+<p>Assigns <i>other</i> to this conditional formatting and returns a reference to this conditional formatting.</p>
+<!-- @@@operator= -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+        <div class="qt13a-copyright" id="copyright">
+            <div class="qt13a-container">
+            <p>
+              <acronym title="Copyright">&copy;</acronym> 2013 Debao Zhang. 
+              Documentation contributions included herein are the copyrights of
+              their respective owners.</p>
+            <p>
+              The documentation provided herein is licensed under the terms of the
+              <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+              License version 1.3</a> as published by the Free Software Foundation.</p>
+            <p>
+              Documentation sources may be obtained from <a href="https://github.com/dbzhang800/QtXlsxWriter">
+              github.com/dbzhang800</a>.</p>
+            <p>
+              Qt and their respective logos are trademarks of Digia Plc 
+              in Finland and/or other countries worldwide. All other trademarks are property
+              of their respective owners. <a title="Privacy Policy"
+              href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+            </div>
+        </div>
+</div>
+</body>
+</html>

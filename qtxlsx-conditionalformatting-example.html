@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- hello.qdoc -->
-  <title>Hello QtXlsx Example | QtXlsx 0.2</title>
+<!-- conditionalformatting.qdoc -->
+  <title>Conditional Formatting Example | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.2</li>
-<li>Hello QtXlsx Example</li>
+<li>Conditional Formatting Example</li>
 <li id="buildversion">
 Qt 0.2.1 Reference Documentation</li>
     </ul>
@@ -23,28 +23,18 @@ Qt 0.2.1 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">Hello QtXlsx Example</h1>
+<h1 class="title">Conditional Formatting Example</h1>
 <span class="subtitle"></span>
-<!-- $$$hello-description -->
+<!-- $$$conditionalformatting-description -->
 <div class="descr"> <a name="details"></a>
-<p>This is a simplest Qt Xlsx example.<p>This example demonstrates how to create a new .xlsx file containing some basic data and calculations with Qt Xlsx Library. So lets see how this is achieved.</p>
-<p class="centerAlign"><img src="images/hello.png" alt="" /></p><p>This creates a new instance of the all important Document class which gives you access to the Excel workbook and worksheets.</p>
-<pre class="cpp"><span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;</pre>
-<p>A default worksheet have been created by Document. Let's start by adding some basic data.</p>
-<pre class="cpp">xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
-xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="number">12345</span>);
-xlsx<span class="operator">.</span>write(<span class="string">&quot;A3&quot;</span><span class="operator">,</span> <span class="string">&quot;=44+33&quot;</span>);
-xlsx<span class="operator">.</span>write(<span class="string">&quot;A4&quot;</span><span class="operator">,</span> <span class="keyword">true</span>);
-xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="string">&quot;http://qt-project.org&quot;</span>);</pre>
-<p>Now save the file and all its components.</p>
-<pre class="cpp">xlsx<span class="operator">.</span>save();</pre>
+<p>This is a conditional formatting example.<p>This example demonstrates how to create a new .xlsx file containin conditional formatting with Qt Xlsx Library. So lets see how this is achieved.</p>
 <p>Files:</p>
 <ul>
-<li><a href="qtxlsx-hello-main-cpp.html">hello/main.cpp</a></li>
-<li><a href="qtxlsx-hello-hello-pro.html">hello/hello.pro</a></li>
+<li><a href="qtxlsx-conditionalformatting-main-cpp.html">conditionalformatting/main.cpp</a></li>
+<li><a href="qtxlsx-conditionalformatting-conditionalformatting-pro.html">conditionalformatting/conditionalformatting.pro</a></li>
 </ul>
 </div>
-<!-- @@@hello -->
+<!-- @@@conditionalformatting -->
         </div>
        </div>
    </div>
