@@ -580,10 +580,10 @@ void Styles::writeCellXfs(QXmlStreamWriter &writer)
             writer.writeAttribute(QStringLiteral("applyNumberFormat"), QStringLiteral("1"));
         if (format.hasFontData())
             writer.writeAttribute(QStringLiteral("applyFont"), QStringLiteral("1"));
-        if (format.hasBorderData())
-            writer.writeAttribute(QStringLiteral("applyBorder"), QStringLiteral("1"));
         if (format.hasFillData())
             writer.writeAttribute(QStringLiteral("applyFill"), QStringLiteral("1"));
+        if (format.hasBorderData())
+            writer.writeAttribute(QStringLiteral("applyBorder"), QStringLiteral("1"));
         if (format.hasAlignmentData())
             writer.writeAttribute(QStringLiteral("applyAlignment"), QStringLiteral("1"));
 
