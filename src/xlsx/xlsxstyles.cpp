@@ -414,6 +414,10 @@ void Styles::writeFont(QXmlStreamWriter &writer, const Format &format, bool isDx
             writer.writeEmptyElement(QStringLiteral("name"));
             writer.writeAttribute(QStringLiteral("val"), format.fontName());
         }
+        if (format.hasProperty(FormatPrivate::P_Font_Charset)) {
+            writer.writeEmptyElement(QStringLiteral("charset"));
+            writer.writeAttribute(QStringLiteral("val"), QString::number(format.intProperty(FormatPrivate::P_Font_Charset)));
+        }
         if (format.hasProperty(FormatPrivate::P_Font_Family)) {
             writer.writeEmptyElement(QStringLiteral("family"));
             writer.writeAttribute(QStringLiteral("val"), QString::number(format.intProperty(FormatPrivate::P_Font_Family)));
