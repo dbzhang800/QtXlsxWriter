@@ -9,23 +9,40 @@ The library can be used to
  
 ## Getting Started
 
-* **Note** QZipWriter and QZipReader which live in *gui-private* is used in this library. For linux user, if your Qt is installed through package manager tools such "apt-get", make sure that you have installed the Qt5 develop package *qtbase5-private-dev* ; if you Qt is built from source by yourself, or download from qt-project.org directly, nothing need to do.
-
-* **Note**: Perl is needed if you want to build this library as Qt5's module, aka. Usage(1) .
+> * For linux user, if your Qt is installed through package manager tools such "apt-get", make sure that you have installed the Qt5 develop package *qtbase5-private-dev*
 
 ### Usage(1): Use Xlsx as Qt5's addon module
 
+#### Building the module
+
+> **Note**: Perl is needed in this step.
+
 * Download the source code.
 
-* Put the source code in any directory you like. At the toplevel directory run
+* Put the source code in any directory you like
+
+* Open the qtxlsx.pro file using Qt Creator
+ * Build the project.
+ * Play with the examples provided by Qt Xlsx if you like.
+
+* Go to the build directory of the project in a terminal and run
 
 ```
+   make install
+```
+
+The library, the header files, and others will be installed to your system.
+
+> **Note**: If you don't want to use Qt Creator, you can run following command
+ at the toplevel directory of the project
+
+> ```
     qmake
     make
     make install
 ```
 
-The library, the header files, and others will be installed to your system.
+#### Using the module
 
 * Add following line to your qmake's project file:
 
@@ -36,7 +53,7 @@ The library, the header files, and others will be installed to your system.
 * Then, using Qt Xlsx in your code
 
 ```cpp
-    #include "xlsxdocument.h"
+    #include <QtXlsx>
     int main()
     {
         QXlsx::Document xlsx;
@@ -68,20 +85,31 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
     include(3rdparty/qtxlsx/src/xlsx/qtxlsx.pri)
 ```
 
-**Note**: If you like, you can copy all files from *src/xlsx* to your application's source path. Then add following line to your project file:
+> **Note**: If you like, you can copy all files from *src/xlsx* to your application's source path. Then add following line to your project file:
 
-```
+> ```
     include(qtxlsx.pri)
 ```
 
-**Note**: If you do not use qmake, you need to define the following macro manually
+> **Note**: If you do not use qmake, you need to define the following macro manually
 
-```
+> ```
     XLSX_NO_LIB
 ```
 
 
 * Then, using Qt Xlsx in your code
+
+```cpp
+    #include "xlsxdocument.h"
+    int main()
+    {
+        QXlsx::Document xlsx;
+        xlsx.write("A1", "Hello Qt!");
+        xlsx.saveAs("Test.xlsx");
+        return 0;
+    }
+```
 
 ## References
 
