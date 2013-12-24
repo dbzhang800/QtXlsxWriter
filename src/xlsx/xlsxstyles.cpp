@@ -183,7 +183,7 @@ void Styles::addXfFormat(const Format &format, bool force)
 {
     if (format.isEmpty()) {
         //Try do something for empty Format.
-        if (m_emptyFormatAdded)
+        if (m_emptyFormatAdded && !force)
             return;
         m_emptyFormatAdded = true;
     }
