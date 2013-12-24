@@ -442,7 +442,7 @@ void Styles::writeFills(QXmlStreamWriter &writer)
     writer.writeEndElement(); //fills
 }
 
-void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool /*isDxf*/)
+void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf)
 {
     static QMap<int, QString> patternStrings;
     if (patternStrings.isEmpty()) {
@@ -469,7 +469,12 @@ void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool /*isDx
 
     writer.writeStartElement(QStringLiteral("fill"));
     writer.writeStartElement(QStringLiteral("patternFill"));
-    writer.writeAttribute(QStringLiteral("patternType"), patternStrings[fill.fillPattern()]);
+    Format::FillPattern pattern = fill.fillPattern();
+    // For normal fill formats, Excel prefer to outputing the default "none" attribute
+    // But for dxf, Excel prefer to omiting the default "none"
+    // Though not make any difference, but it make easier to compare origin files with generate files during debug
+    if (!(pattern == Format::PatternNone && isDxf))
+        writer.writeAttribute(QStringLiteral("patternType"), patternStrings[pattern]);
     // For a solid fill, Excel reverses the role of foreground and background colours
     if (fill.fillPattern() == Format::PatternSolid) {
         if (fill.hasProperty(FormatPrivate::P_Fill_BgColor))
