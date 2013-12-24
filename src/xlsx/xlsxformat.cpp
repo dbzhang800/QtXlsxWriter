@@ -1233,7 +1233,7 @@ int Format::theme() const
  */
 QVariant Format::property(int propertyId, const QVariant &defaultValue) const
 {
-    if (d->property.contains(propertyId))
+    if (d && d->property.contains(propertyId))
         return d->property[propertyId];
     return defaultValue;
 }

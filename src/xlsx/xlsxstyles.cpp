@@ -505,17 +505,14 @@ void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool is
             writer.writeAttribute(QStringLiteral("diagonalDown"), QStringLiteral("1"));
         }
     }
-    if (border.hasProperty(FormatPrivate::P_Border_LeftStyle))
-        writeSubBorder(writer, QStringLiteral("left"), border.leftBorderStyle(), border.property(FormatPrivate::P_Border_LeftColor).value<XlsxColor>());
-    if (border.hasProperty(FormatPrivate::P_Border_RightStyle))
-        writeSubBorder(writer, QStringLiteral("right"), border.rightBorderStyle(), border.property(FormatPrivate::P_Border_RightColor).value<XlsxColor>());
-    if (border.hasProperty(FormatPrivate::P_Border_TopStyle))
-        writeSubBorder(writer, QStringLiteral("top"), border.topBorderStyle(), border.property(FormatPrivate::P_Border_TopColor).value<XlsxColor>());
-    if (border.hasProperty(FormatPrivate::P_Border_BottomStyle))
-        writeSubBorder(writer, QStringLiteral("bottom"), border.bottomBorderStyle(), border.property(FormatPrivate::P_Border_BottomColor).value<XlsxColor>());
+
+    writeSubBorder(writer, QStringLiteral("left"), border.leftBorderStyle(), border.property(FormatPrivate::P_Border_LeftColor).value<XlsxColor>());
+    writeSubBorder(writer, QStringLiteral("right"), border.rightBorderStyle(), border.property(FormatPrivate::P_Border_RightColor).value<XlsxColor>());
+    writeSubBorder(writer, QStringLiteral("top"), border.topBorderStyle(), border.property(FormatPrivate::P_Border_TopColor).value<XlsxColor>());
+    writeSubBorder(writer, QStringLiteral("bottom"), border.bottomBorderStyle(), border.property(FormatPrivate::P_Border_BottomColor).value<XlsxColor>());
 
     //Condition DXF formats don't allow diagonal style
-    if (!isDxf && border.hasProperty(FormatPrivate::P_Border_DiagonalStyle))
+    if (!isDxf)
         writeSubBorder(writer, QStringLiteral("diagonal"), border.diagonalBorderStyle(), border.property(FormatPrivate::P_Border_DiagonalColor).value<XlsxColor>());
 
     if (isDxf) {

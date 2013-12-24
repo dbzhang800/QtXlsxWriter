@@ -37,6 +37,7 @@ void StylesTest::testEmptyStyle()
 
 //    QVERIFY2(xmlData.contains("<cellXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/></cellXfs>"), "Must have one cell style");
     QVERIFY2(xmlData.contains("<cellXfs count=\"1\"><xf xfId=\"0\"/></cellXfs>"), "Must have one cell style");
+    QVERIFY2(xmlData.contains("<border><left/><right/><top/><bottom/><diagonal/></border>"), "Excel don't simply generate <border/>, through it works");
 }
 
 void StylesTest::testAddXfFormat()
@@ -92,7 +93,7 @@ void StylesTest::testWriteBorders()
 
     QByteArray xmlData = styles.saveToXmlData();
 
-    QVERIFY(xmlData.contains("<border><right style=\"thin\">"));
+    QVERIFY(xmlData.contains("<border><left/><right style=\"thin\">"));
 }
 
 void StylesTest::testReadFonts()
