@@ -1222,7 +1222,7 @@ bool Styles::readIndexedColors(QXmlStreamReader &reader)
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("rgbColor")) {
                 QString color = reader.attributes().value(QLatin1String("rgb")).toString();
-                m_indexedColors.append(fromARGBString(color));
+                m_indexedColors.append(XlsxColor::fromARGBString(color));
             }
         }
     }

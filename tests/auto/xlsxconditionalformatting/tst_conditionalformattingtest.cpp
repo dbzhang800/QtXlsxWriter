@@ -93,7 +93,7 @@ void ConditionalFormattingTest::testDataBarRules()
     QByteArray res = "<cfRule type=\"dataBar\" priority=\"1\">"
             "<dataBar><cfvo type=\"min\" val=\"0\"/>"
             "<cfvo type=\"max\" val=\"0\"/>"
-            "<color rgb=\"FF0000ff\"/></dataBar>"
+            "<color rgb=\"FF0000FF\"/></dataBar>"
             "</cfRule>";
     QVERIFY(buffer.buffer().contains(res));
 }

@@ -47,7 +47,6 @@ namespace QXlsx {
 
 XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
 XLSX_AUTOTEST_EXPORT QStringList splitPath(const QString &path);
-XLSX_AUTOTEST_EXPORT QColor fromARGBString(const QString &c);
 XLSX_AUTOTEST_EXPORT double datetimeToNumber(const QDateTime &dt, bool is1904=false);
 XLSX_AUTOTEST_EXPORT QDateTime datetimeFromNumber(double num, bool is1904=false);
 

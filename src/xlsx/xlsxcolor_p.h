@@ -66,6 +66,9 @@ public:
 
     operator QVariant() const;
 
+    static QColor fromARGBString(const QString &c);
+    static QString toARGBString(const QColor &c);
+
     bool saveToXml(QXmlStreamWriter &writer, const QString &node=QString()) const;
     bool loadFromXml(QXmlStreamReader &reader);
 

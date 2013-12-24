@@ -77,7 +77,7 @@ bool XlsxColor::saveToXml(QXmlStreamWriter &writer, const QString &node) const
         writer.writeEmptyElement(QStringLiteral("color"));
 
     if (val.userType() == qMetaTypeId<QColor>()) {
-            writer.writeAttribute(QStringLiteral("rgb"), QStringLiteral("FF")+val.value<QColor>().name().mid(1));//remove #
+        writer.writeAttribute(QStringLiteral("rgb"), XlsxColor::toARGBString(val.value<QColor>()));
     } else if (val.userType() == QMetaType::QStringList) {
         QStringList themes = val.toStringList();
         writer.writeAttribute(QStringLiteral("theme"), themes[0]);
@@ -153,6 +153,24 @@ QDataStream &operator>>(QDataStream &s, XlsxColor &color)
     }
 
     return s;
+}
+
+QColor XlsxColor::fromARGBString(const QString &c)
+{
+    Q_ASSERT(c.length() == 8);
+    QColor color;
+    color.setAlpha(c.mid(0, 2).toInt(0, 16));
+    color.setRed(c.mid(2, 2).toInt(0, 16));
+    color.setGreen(c.mid(4, 2).toInt(0, 16));
+    color.setBlue(c.mid(6, 2).toInt(0, 16));
+    return color;
+}
+
+QString XlsxColor::toARGBString(const QColor &c)
+{
+    QString color;
+    color.sprintf("%02X%02X%02X%02X", c.alpha(), c.red(), c.green(), c.blue());
+    return color;
 }
 
 #endif

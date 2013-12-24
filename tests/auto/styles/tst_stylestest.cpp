@@ -81,7 +81,7 @@ void StylesTest::testSolidFillBackgroundColor()
 
     QByteArray xmlData = styles.saveToXmlData();
 
-    QVERIFY(xmlData.contains("<patternFill patternType=\"solid\"><fgColor rgb=\"FFff0000\"/>"));
+    QVERIFY(xmlData.contains("<patternFill patternType=\"solid\"><fgColor rgb=\"FFFF0000\"/>"));
 }
 
 void StylesTest::testWriteBorders()
