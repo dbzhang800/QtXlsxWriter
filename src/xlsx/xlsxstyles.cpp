@@ -771,7 +771,7 @@ bool Styles::readFont(QXmlStreamReader &reader, Format &format)
                 format.setProperty(FormatPrivate::P_Font_Extend, attributes.value(QLatin1String("val")).toString().toInt());
             } else if (reader.name() == QLatin1String("color")) {
                 XlsxColor color;
-                color.loadFromXml(reader, this);
+                color.loadFromXml(reader);
                 format.setProperty(FormatPrivate::P_Font_Color, color);
             } else if (reader.name() == QLatin1String("sz")) {
                 int sz = attributes.value(QLatin1String("val")).toString().toInt();
@@ -1004,7 +1004,7 @@ bool Styles::readSubBorder(QXmlStreamReader &reader, const QString &name, Format
                 reader.readNextStartElement();
                 if (reader.tokenType() == QXmlStreamReader::StartElement) {
                     if (reader.name() == QLatin1String("color"))
-                        color.loadFromXml(reader, this);
+                        color.loadFromXml(reader);
                 }
             }
         }
@@ -1225,20 +1225,6 @@ bool Styles::readIndexedColors(QXmlStreamReader &reader)
 
 bool Styles::loadFromXmlFile(QIODevice *device)
 {
-    {
-        //Try load colors part first!
-        QXmlStreamReader reader(device);
-        while (!reader.atEnd()) {
-            QXmlStreamReader::TokenType token = reader.readNext();
-            if (token == QXmlStreamReader::StartElement) {
-                if (reader.name() == QLatin1String("colors")) {
-                    readColors(reader);
-                }
-            }
-        }
-        device->seek(0);
-    }
-
     QXmlStreamReader reader(device);
     while (!reader.atEnd()) {
         QXmlStreamReader::TokenType token = reader.readNext();
@@ -1259,6 +1245,8 @@ bool Styles::loadFromXmlFile(QIODevice *device)
 
             } else if (reader.name() == QLatin1String("dxfs")) {
                 readDxfs(reader);
+            } else if (reader.name() == QLatin1String("colors")) {
+                readColors(reader);
             }
         }
 

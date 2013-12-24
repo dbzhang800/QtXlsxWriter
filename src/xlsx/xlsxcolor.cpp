@@ -92,7 +92,7 @@ bool XlsxColor::saveToXml(QXmlStreamWriter &writer, const QString &node) const
     return true;
 }
 
-bool XlsxColor::loadFromXml(QXmlStreamReader &reader, Styles *styles)
+bool XlsxColor::loadFromXml(QXmlStreamReader &reader)
 {
     QXmlStreamAttributes attributes = reader.attributes();
 
@@ -101,14 +101,7 @@ bool XlsxColor::loadFromXml(QXmlStreamReader &reader, Styles *styles)
         val.setValue(fromARGBString(colorString));
     } else if (attributes.hasAttribute(QLatin1String("indexed"))) {
         int index = attributes.value(QLatin1String("indexed")).toString().toInt();
-        if (styles) {
-            //Convert to rgb color is possible
-            QColor c = styles->getColorByIndex(index);
-            if (c.isValid())
-            val.setValue(c);
-        } else {
-            val.setValue(index);
-        }
+        val.setValue(index);
     } else if (attributes.hasAttribute(QLatin1String("theme"))) {
         QString theme = attributes.value(QLatin1String("theme")).toString();
         QString tint = attributes.value(QLatin1String("tint")).toString();

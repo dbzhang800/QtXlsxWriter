@@ -506,9 +506,9 @@ bool ConditionalFormattingPrivate::readCfRule(QXmlStreamReader &reader, XlsxCfRu
                 else if (!rule->attrs.contains(XlsxCfRuleData::A_formula3))
                     rule->attrs[XlsxCfRuleData::A_formula3] = f;
             } else if (reader.name() == QLatin1String("dataBar")) {
-                readCfDataBar(reader, rule, styles);
+                readCfDataBar(reader, rule);
             } else if (reader.name() == QLatin1String("colorScale")) {
-                readCfColorScale(reader, rule, styles);
+                readCfColorScale(reader, rule);
             }
         }
         if (reader.tokenType() == QXmlStreamReader::EndElement
@@ -519,7 +519,7 @@ bool ConditionalFormattingPrivate::readCfRule(QXmlStreamReader &reader, XlsxCfRu
     return true;
 }
 
-bool ConditionalFormattingPrivate::readCfDataBar(QXmlStreamReader &reader, XlsxCfRuleData *rule, Styles *styles)
+bool ConditionalFormattingPrivate::readCfDataBar(QXmlStreamReader &reader, XlsxCfRuleData *rule)
 {
     Q_ASSERT(reader.name() == QLatin1String("dataBar"));
     QXmlStreamAttributes attrs = reader.attributes();
@@ -538,7 +538,7 @@ bool ConditionalFormattingPrivate::readCfDataBar(QXmlStreamReader &reader, XlsxC
                     rule->attrs[XlsxCfRuleData::A_cfvo2] = QVariant::fromValue(data);
             } else if (reader.name() == QLatin1String("color")) {
                 XlsxColor color;
-                color.loadFromXml(reader, styles);
+                color.loadFromXml(reader);
                 rule->attrs[XlsxCfRuleData::A_color1] = color;
             }
         }
@@ -551,7 +551,7 @@ bool ConditionalFormattingPrivate::readCfDataBar(QXmlStreamReader &reader, XlsxC
     return true;
 }
 
-bool ConditionalFormattingPrivate::readCfColorScale(QXmlStreamReader &reader, XlsxCfRuleData *rule, Styles *styles)
+bool ConditionalFormattingPrivate::readCfColorScale(QXmlStreamReader &reader, XlsxCfRuleData *rule)
 {
     Q_ASSERT(reader.name() == QLatin1String("colorScale"));
 
@@ -569,7 +569,7 @@ bool ConditionalFormattingPrivate::readCfColorScale(QXmlStreamReader &reader, Xl
                     rule->attrs[XlsxCfRuleData::A_cfvo2] = QVariant::fromValue(data);
             } else if (reader.name() == QLatin1String("color")) {
                 XlsxColor color;
-                color.loadFromXml(reader, styles);
+                color.loadFromXml(reader);
                 if (!rule->attrs.contains(XlsxCfRuleData::A_color1))
                     rule->attrs[XlsxCfRuleData::A_color1] = color;
                 else if (!rule->attrs.contains(XlsxCfRuleData::A_color2))

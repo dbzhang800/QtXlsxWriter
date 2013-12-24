@@ -67,7 +67,7 @@ public:
     operator QVariant() const;
 
     bool saveToXml(QXmlStreamWriter &writer, const QString &node=QString()) const;
-    bool loadFromXml(QXmlStreamReader &reader, Styles *styles=0);
+    bool loadFromXml(QXmlStreamReader &reader);
 
 private:
     QVariant val;

@@ -118,8 +118,8 @@ public:
     void writeCfVo(QXmlStreamWriter &writer, const XlsxCfVoData& cfvo) const;
     bool readCfVo(QXmlStreamReader &reader, XlsxCfVoData& cfvo);
     bool readCfRule(QXmlStreamReader &reader, XlsxCfRuleData *cfRule, Styles *styles);
-    bool readCfDataBar(QXmlStreamReader &reader, XlsxCfRuleData *cfRule, Styles *styles);
-    bool readCfColorScale(QXmlStreamReader &reader, XlsxCfRuleData *cfRule, Styles *styles);
+    bool readCfDataBar(QXmlStreamReader &reader, XlsxCfRuleData *cfRule);
+    bool readCfColorScale(QXmlStreamReader &reader, XlsxCfRuleData *cfRule);
 
     QList<QSharedPointer<XlsxCfRuleData> >cfRules;
     QList<CellRange> ranges;
