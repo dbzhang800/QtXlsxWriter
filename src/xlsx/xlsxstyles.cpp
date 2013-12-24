@@ -571,14 +571,10 @@ void Styles::writeCellXfs(QXmlStreamWriter &writer)
     foreach (const Format &format, m_xf_formatsList) {
         int xf_id = 0;
         writer.writeStartElement(QStringLiteral("xf"));
-        if (format.hasNumFmtData())
-            writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(format.numberFormatIndex()));
-        if (format.hasFontData())
-            writer.writeAttribute(QStringLiteral("fontId"), QString::number(format.fontIndex()));
-        if (format.hasFillData())
-            writer.writeAttribute(QStringLiteral("fillId"), QString::number(format.fillIndex()));
-        if (format.hasBorderData())
-            writer.writeAttribute(QStringLiteral("borderId"), QString::number(format.borderIndex()));
+        writer.writeAttribute(QStringLiteral("numFmtId"), QString::number(format.numberFormatIndex()));
+        writer.writeAttribute(QStringLiteral("fontId"), QString::number(format.fontIndex()));
+        writer.writeAttribute(QStringLiteral("fillId"), QString::number(format.fillIndex()));
+        writer.writeAttribute(QStringLiteral("borderId"), QString::number(format.borderIndex()));
         writer.writeAttribute(QStringLiteral("xfId"), QString::number(xf_id));
         if (format.hasNumFmtData())
             writer.writeAttribute(QStringLiteral("applyNumberFormat"), QStringLiteral("1"));

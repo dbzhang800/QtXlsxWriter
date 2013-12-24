@@ -33,9 +33,9 @@ QT_BEGIN_NAMESPACE_XLSX
 
 FormatPrivate::FormatPrivate()
     : dirty(true)
-    , font_dirty(true), font_index_valid(false), font_index(-1)
-    , fill_dirty(true), fill_index_valid(false), fill_index(-1)
-    , border_dirty(true), border_index_valid(false), border_index(-1)
+    , font_dirty(true), font_index_valid(false), font_index(0)
+    , fill_dirty(true), fill_index_valid(false), fill_index(0)
+    , border_dirty(true), border_index_valid(false), border_index(0)
     , xf_index(-1), xf_indexValid(false)
     , is_dxf_fomat(false), dxf_index(-1), dxf_indexValid(false)
     , theme(0)
@@ -215,7 +215,7 @@ Format::~Format()
  */
 int Format::numberFormatIndex() const
 {
-    return intProperty(FormatPrivate::P_NumFmt_Id);
+    return intProperty(FormatPrivate::P_NumFmt_Id, 0);
 }
 
 /*!
@@ -477,7 +477,7 @@ int Format::fontIndex() const
     if (fontIndexValid())
         return d->font_index;
 
-    return -1;
+    return 0;
 }
 
 /*!
@@ -884,7 +884,9 @@ bool Format::borderIndexValid() const
 */
 int Format::borderIndex() const
 {
-    return d->border_index;
+    if (borderIndexValid())
+        return d->border_index;
+    return 0;
 }
 
 /*!
@@ -893,6 +895,7 @@ int Format::borderIndex() const
 void Format::setBorderIndex(int index)
 {
     d->border_index = index;
+    d->border_index_valid = true;
 }
 
 /*! \internal
@@ -1000,9 +1003,9 @@ bool Format::fillIndexValid() const
  */
 int Format::fillIndex() const
 {
-    if (!d)
-        return 0;
-    return d->fill_index;
+    if (fillIndexValid())
+        return d->fill_index;
+    return 0;
 }
 
 /*!
@@ -1011,6 +1014,7 @@ int Format::fillIndex() const
 void Format::setFillIndex(int index)
 {
     d->fill_index = index;
+    d->fill_index_valid = true;
 }
 
 /*!
