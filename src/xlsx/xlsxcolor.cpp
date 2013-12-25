@@ -4,6 +4,7 @@
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QDebug>
 
 namespace QXlsx {
 
@@ -172,6 +173,23 @@ QDataStream &operator>>(QDataStream &s, XlsxColor &color)
     }
 
     return s;
+}
+
+#endif
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug dbg, const XlsxColor &c)
+{
+    if (c.isInvalid())
+        dbg.nospace() << "XlsxColor(invalid)";
+    else if (c.isRgbColor())
+        dbg.nospace() << c.rgbColor();
+    else if (c.isIndexedColor())
+        dbg.nospace() << "XlsxColor(indexed," << c.indexedColor() << ")";
+    else if (c.isThemeColor())
+        dbg.nospace() << "XlsxColor(theme," << c.themeColor().join(QLatin1Char(':')) << ")";
+
+    return dbg.space();
 }
 
 #endif

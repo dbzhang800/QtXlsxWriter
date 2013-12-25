@@ -180,7 +180,14 @@ FormatPrivate::~FormatPrivate()
  */
 Format::Format()
 {
-    qRegisterMetaTypeStreamOperators<XlsxColor>("XlsxColor");
+    if (QMetaType::type("XlsxColor") == QMetaType::UnknownType) {
+        //Fix me! Where should we put these register code?
+        qRegisterMetaType<XlsxColor>("XlsxColor");
+        qRegisterMetaTypeStreamOperators<XlsxColor>("XlsxColor");
+#if QT_VERSION >= 0x050200
+        QMetaType::registerDebugStreamOperator<XlsxColor>();
+#endif
+    }
     //The d pointer is initialized with a null pointer
 }
 
