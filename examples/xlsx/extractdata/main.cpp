@@ -11,6 +11,8 @@ int main()
     xlsx.write("A3", "=44+33");
     xlsx.write("A4", true);
     xlsx.write("A5", "http://qt-project.org");
+    xlsx.write("A6", QDate(2013, 12, 27));
+    xlsx.write("A7", QTime(6, 30));
     xlsx.saveAs("Book1.xlsx");
     }
 
@@ -24,6 +26,8 @@ int main()
     qDebug()<<xlsx.read("A3");
     qDebug()<<xlsx.read("A4");
     qDebug()<<xlsx.read("A5");
+    qDebug()<<xlsx.read("A6");
+    qDebug()<<xlsx.read("A7");
     //![1]
 
     return 0;
