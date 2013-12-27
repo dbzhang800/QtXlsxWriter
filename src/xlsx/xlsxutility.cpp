@@ -57,7 +57,7 @@ QStringList splitPath(const QString &path)
 double datetimeToNumber(const QDateTime &dt, bool is1904)
 {
     //Note, for number 0, Excel2007 shown as 1900-1-0, which should be 1899-12-31
-    QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0), Qt::UTC);
+    QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0));
 
     double excel_time = epoch.msecsTo(dt) / (1000*60*60*24.0);
     if (!is1904 && excel_time > 59) {//31+28
@@ -73,7 +73,7 @@ QDateTime datetimeFromNumber(double num, bool is1904)
         num = num - 1;
 
     qint64 msecs = static_cast<qint64>(num * 1000*60*60*24.0);
-    QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0), Qt::UTC);
+    QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0));
 
     return epoch.addMSecs(msecs);
 }

@@ -178,7 +178,7 @@ void DocumentTest::testReadWriteDateTime()
     device.open(QIODevice::WriteOnly);
 
     Document xlsx1;
-    QDateTime dt(QDate(2012, 11, 12), QTime(6, 0), Qt::UTC);
+    QDateTime dt(QDate(2012, 11, 12), QTime(6, 0));
 
     xlsx1.write("A1", dt);
 
