@@ -25,8 +25,8 @@
 #include "xlsxformat.h"
 #include "xlsxformat_p.h"
 #include "xlsxcolor_p.h"
+#include "xlsxnumformatparser_p.h"
 #include <QDataStream>
-#include <QRegularExpression>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -266,16 +266,16 @@ bool Format::isDateTimeFormat() const
     if (hasProperty(FormatPrivate::P_NumFmt_FormatCode)) {
         //Custom numFmt, so
         //Gauss from the number string
-        QString formatCode = numberFormat();
-        formatCode.remove(QRegularExpression(QStringLiteral("\\[(Green|White|Blue|Magenta|Yellow|Cyan|Red)\\]")));
-        if (formatCode.contains(QRegularExpression(QStringLiteral("[dmhys]"))))
-            return true;
+        return NumFormatParser::isDateTime(numberFormat());
     } else if (hasProperty(FormatPrivate::P_NumFmt_Id)){
         //Non-custom numFmt
         int idx = numberFormatIndex();
 
         //Is built-in date time number id?
-        if ((idx >= 15 && idx <= 22) || (idx >= 45 && idx <= 47))
+        if ((idx >= 14 && idx <= 22) || (idx >= 45 && idx <= 47))
+            return true;
+
+        if ((idx >= 27 && idx <= 36) || (idx >= 50 && idx <= 58)) //Used in CHS\CHT\JPN\KOR
             return true;
     }
 

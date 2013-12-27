@@ -122,8 +122,10 @@ QString Cell::formula() const
 bool Cell::isDateTime() const
 {
     Q_D(const Cell);
-    if (d->dataType == Numeric && d->format.isValid() && d->format.isDateTimeFormat())
+    if (d->dataType == Numeric && d->value.toDouble() >=0
+            && d->format.isValid() && d->format.isDateTimeFormat()) {
         return true;
+    }
     return false;
 }
 

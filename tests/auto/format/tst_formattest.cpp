@@ -43,8 +43,13 @@ void FormatTest::testDateTimeFormat_data()
     QTest::newRow("4") << QString("[h]:mm:ss")<<true;
     QTest::newRow("5") << QString("[h]")<<true;
     QTest::newRow("6") << QString("[m]")<<true;
+    QTest::newRow("7") << QString("yyyy-mm-dd;###;\\(0.000\\)")<<true;
+    QTest::newRow("8") << QString("[Red][m]")<<true;
 
     QTest::newRow("20") << QString("[Red]#,##0 ;[Yellow](#,##0)")<<false;
+    QTest::newRow("21") << QString("#,##0\\y")<<false;
+    QTest::newRow("22") << QString("\"yyyy-mm-dd\"###")<<false;
+    QTest::newRow("23") << QString("###;m/d/yy")<<false;
 }
 
 QTEST_APPLESS_MAIN(FormatTest)

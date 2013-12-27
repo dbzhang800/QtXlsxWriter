@@ -113,6 +113,8 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 
 ## References
 
+### General
+
 * https://github.com/jmcnamara/XlsxWriter
 * http://openpyxl.readthedocs.org
 * http://officeopenxml.com/anatomyofOOXML-xlsx.php
@@ -122,3 +124,10 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 * http://excelpackage.codeplex.com/
 * http://spreadsheetlight.com/
 * http://www.schemacentral.com/sc/ooxml/
+
+### Number formats
+
+* http://msdn.microsoft.com/en-us/library/ff529356%28v=office.12%29.aspx
+* http://www.ozgrid.com/Excel/excel-custom-number-formats.htm
+* http://stackoverflow.com/questions/894805/excel-number-format-what-is-409
+* http://office.microsoft.com/en-001/excel-help/create-a-custom-number-format-HP010342372.aspx
