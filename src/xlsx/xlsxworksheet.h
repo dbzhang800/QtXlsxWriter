@@ -77,6 +77,9 @@ public:
     int writeBool(int row, int column, bool value, const Format &format=Format());
     int writeDateTime(const QString &row_column, const QDateTime& dt, const Format &format=Format());
     int writeDateTime(int row, int column, const QDateTime& dt, const Format &format=Format());
+    int writeTime(const QString &row_column, const QTime& t, const Format &format=Format());
+    int writeTime(int row, int column, const QTime& t, const Format &format=Format());
+
     int writeHyperlink(const QString &row_column, const QUrl &url, const Format &format=Format(), const QString &display=QString(), const QString &tip=QString());
     int writeHyperlink(int row, int column, const QUrl &url, const Format &format=Format(), const QString &display=QString(), const QString &tip=QString());
 

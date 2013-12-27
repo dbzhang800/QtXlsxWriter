@@ -42,6 +42,7 @@ class QString;
 class QStringList;
 class QColor;
 class QDateTime;
+class QTime;
 
 namespace QXlsx {
 
@@ -49,6 +50,7 @@ XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
 XLSX_AUTOTEST_EXPORT QStringList splitPath(const QString &path);
 XLSX_AUTOTEST_EXPORT double datetimeToNumber(const QDateTime &dt, bool is1904=false);
 XLSX_AUTOTEST_EXPORT QDateTime datetimeFromNumber(double num, bool is1904=false);
+XLSX_AUTOTEST_EXPORT double timeToNumber(const QTime &t);
 
 XLSX_AUTOTEST_EXPORT QPoint xl_cell_to_rowcol(const QString &cell_str);
 XLSX_AUTOTEST_EXPORT QString xl_col_to_name(int col_num);

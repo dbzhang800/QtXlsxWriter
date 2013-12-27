@@ -67,6 +67,11 @@ double datetimeToNumber(const QDateTime &dt, bool is1904)
     return excel_time;
 }
 
+double timeToNumber(const QTime &time)
+{
+    return QTime(0,0).msecsTo(time) / (1000*60*60*24.0);
+}
+
 QDateTime datetimeFromNumber(double num, bool is1904)
 {
     if (!is1904 && num > 60)

@@ -444,6 +444,8 @@ int Worksheet::write(int row, int column, const QVariant &value, const Format &f
         ret = writeBool(row,column, value.toBool(), format);
     } else if (value.toDateTime().isValid()) { //DateTime
         ret = writeDateTime(row, column, value.toDateTime(), format);
+    } else if (value.toTime().isValid()) { //Time
+        ret = writeTime(row, column, value.toTime(), format);
     } else if (value.toDouble(&ok), ok) { //Number
         if (!d->workbook->isStringsToNumbersEnabled() && value.userType() == QMetaType::QString) {
             //Don't convert string to number if the flag not enabled.
@@ -509,6 +511,13 @@ QVariant Worksheet::read(int row, int column) const
         return QVariant();
     if (!cell->formula().isEmpty())
         return QVariant(QLatin1String("=")+cell->formula());
+    if (cell->isDateTime()) {
+        double val = cell->value().toDouble();
+        QDateTime dt = cell->dateTime();
+        if (val < 1)
+            return dt.time();
+        return dt;
+    }
     return cell->value();
 }
 
@@ -847,6 +856,38 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const For
     double value = datetimeToNumber(dt, d->workbook->isDate1904());
 
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(value, Cell::Numeric, fmt, this));
+
+    return 0;
+}
+
+/*!
+    \overload
+ */
+int Worksheet::writeTime(const QString &row_column, const QTime &t, const Format &format)
+{
+    //convert the "A1" notation to row/column notation
+    QPoint pos = xl_cell_to_rowcol(row_column);
+    if (pos == QPoint(-1, -1))
+        return -1;
+
+    return writeTime(pos.x(), pos.y(), t, format);
+}
+
+/*!
+    Write a QTime \a value to the cell (\a row, \a column) with the \a format
+ */
+int Worksheet::writeTime(int row, int column, const QTime &t, const Format &format)
+{
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
+        return -1;
+
+    Format fmt = format;
+    if (!fmt.isValid())
+        fmt.setNumberFormat(QStringLiteral("hh:mm:ss"));
+    d->workbook->styles()->addXfFormat(fmt);
+
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(timeToNumber(t), Cell::Numeric, fmt, this));
 
     return 0;
 }

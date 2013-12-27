@@ -21,6 +21,7 @@ private Q_SLOTS:
     void testReadWriteBlank();
     void testReadWriteFormula();
     void testReadWriteDateTime();
+    void testReadWriteTime();
 };
 
 DocumentTest::DocumentTest()
@@ -192,6 +193,8 @@ void DocumentTest::testReadWriteDateTime()
     format3.setNumberFormat("dd/mm/yyyy");
     xlsx1.write("A3", dt, format3);
 
+    xlsx1.write("A4", "2013-12-14"); //Auto convert to QDateTime, by QVariant
+
     xlsx1.saveAs(&device);
 
     device.open(QIODevice::ReadOnly);
@@ -210,6 +213,33 @@ void DocumentTest::testReadWriteDateTime()
     QCOMPARE(xlsx2.cellAt("A3")->isDateTime(), true);
     QCOMPARE(xlsx2.cellAt("A3")->dateTime(), dt);
     QCOMPARE(xlsx2.cellAt("A3")->format().numberFormat(), QString("dd/mm/yyyy"));
+
+    QCOMPARE(xlsx2.cellAt("A4")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A4")->isDateTime(), true);
+    QCOMPARE(xlsx2.cellAt("A4")->dateTime(), QDateTime(QDate(2013,12,14)));
+}
+
+void DocumentTest::testReadWriteTime()
+{
+    QBuffer device;
+    device.open(QIODevice::WriteOnly);
+
+    Document xlsx1;
+
+    xlsx1.write("A1", QTime()); //Blank cell
+    xlsx1.write("A2", QTime(1, 22));
+
+    xlsx1.saveAs(&device);
+
+    device.open(QIODevice::ReadOnly);
+    Document xlsx2(&device);
+
+    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Blank);
+
+    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A2")->isDateTime(), true);
+    qDebug()<<xlsx2.cellAt("A2")->value().toDouble();
+    //QCOMPARE(xlsx2.read("A2").toTime(), QTime(1, 22)); //01:21:59.999 ???
 }
 
 QTEST_APPLESS_MAIN(DocumentTest)

@@ -44,6 +44,9 @@ private Q_SLOTS:
     void test_datetimeToNumber_data();
     void test_datetimeToNumber();
 
+    void test_timeToNumber_data();
+    void test_timeToNumber();
+
     void test_datetimeFromNumber_data();
     void test_datetimeFromNumber();
 };
@@ -131,6 +134,25 @@ void UtilityTest::test_datetimeToNumber()
     QFETCH(double, num);
 
     QCOMPARE(QXlsx::datetimeToNumber(dt, is1904), num);
+}
+
+void UtilityTest::test_timeToNumber_data()
+{
+    QTest::addColumn<QTime>("t");
+    QTest::addColumn<double>("num");
+
+    QTest::newRow("0") << QTime(0,0) << 0.0;
+    QTest::newRow("0.0625") << QTime(1, 30) << 0.0625;
+    QTest::newRow("0.25") << QTime(6, 0) << 0.25;
+    QTest::newRow("0.5") << QTime(12, 0) << 0.5;
+}
+
+void UtilityTest::test_timeToNumber()
+{
+    QFETCH(QTime, t);
+    QFETCH(double, num);
+
+    QCOMPARE(QXlsx::timeToNumber(t), num);
 }
 
 void UtilityTest::test_datetimeFromNumber_data()
