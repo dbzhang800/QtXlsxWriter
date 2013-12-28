@@ -298,6 +298,36 @@ CellRange Document::dimension() const
 }
 
 /*!
+    Return the maximum column which contains cell data of a row
+ */
+int Document::maxColumn(int row) const
+{
+    int max = 0;
+
+    for(int i = dimension().firstColumn(); i <= dimension().lastColumn(); i++) {
+        if(!read(row, i).toString().isEmpty() || !read(row, i).toString().isNull())
+            max = i;
+    }
+
+    return max;
+}
+
+/*!
+    Return the maximum row which contains cell data of a column
+ */
+int Document::maxRow(int column) const
+{
+    int max = 0;
+
+    for(int i = dimension().firstRow(); i <= dimension().lastRow(); i++) {
+        if(!read(i, column).toString().isEmpty() || !read(i, column).toString().isNull())
+            max = i;
+    }
+
+    return max;
+}
+
+/*!
  * Returns the value of the document's \a key property.
  */
 QString Document::documentProperty(const QString &key) const
