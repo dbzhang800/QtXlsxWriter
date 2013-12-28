@@ -258,6 +258,38 @@ bool Document::addConditionalFormatting(const ConditionalFormatting &cf)
 }
 
 /*!
+ *  Returns a QStringList of the specified column
+ */
+QStringList Document::column(int column, int start, int end, bool empty)
+{
+    QStringList list;
+
+    for(int i = start; i <= end; i++){
+        if(empty || !read(i, column).toString().isEmpty()){
+            list.append(read(i, column).toString());
+        }
+    }
+
+    return list;
+}
+
+/*!
+ *  Returns a QStringList of the specified row
+ */
+QStringList Document::row(int row, int start, int end, bool empty)
+{
+    QStringList list;
+
+    for(int i = start; i <= end; i++){
+        if(empty || !read(row, i).toString().isEmpty()){
+            list.append(read(row, i).toString());
+        }
+    }
+
+    return list;
+}
+
+/*!
  * Returns a Cell object based on the given \a pos. 0 will be returned if the cell doesn't exist.
  */
 Cell *Document::cellAt(const QString &pos) const

@@ -72,6 +72,9 @@ public:
     bool addDataValidation(const DataValidation &validation);
     bool addConditionalFormatting(const ConditionalFormatting &cf);
 
+    QStringList column(int column, int start, int end, bool empty = false);
+    QStringList row(int row, int start, int end, bool empty = false);
+
     Cell *cellAt(const QString &cell) const;
     Cell *cellAt(int row, int col) const;
 
