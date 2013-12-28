@@ -463,6 +463,20 @@ bool Document::saveAs(QIODevice *device)
 }
 
 /*!
+ * \brief Test if a worksheet with name \a name exists.
+ * Returns true if the \a name exists as worksheet
+ */
+bool Document::WorksheetExists(const QString &name)
+{
+    Q_D(Document);
+    for (int i=0; i<d->workbook->worksheets().size(); ++i) {
+        if (d->workbook->worksheets()[i]->sheetName() == name)
+            return true;
+    }
+    return false;
+}
+
+/*!
  * Destroys the document and cleans up.
  */
 Document::~Document()
