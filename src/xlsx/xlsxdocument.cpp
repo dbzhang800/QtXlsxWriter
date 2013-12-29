@@ -258,6 +258,38 @@ bool Document::addConditionalFormatting(const ConditionalFormatting &cf)
 }
 
 /*!
+ *  Returns a QStringList of the specified column
+ */
+QStringList Document::column(int column, int start, int end, bool empty)
+{
+    QStringList list;
+
+    for(int i = start; i <= end; i++){
+        if(empty || !read(i, column).toString().isEmpty()){
+            list.append(read(i, column).toString());
+        }
+    }
+
+    return list;
+}
+
+/*!
+ *  Returns a QStringList of the specified row
+ */
+QStringList Document::row(int row, int start, int end, bool empty)
+{
+    QStringList list;
+
+    for(int i = start; i <= end; i++){
+        if(empty || !read(row, i).toString().isEmpty()){
+            list.append(read(row, i).toString());
+        }
+    }
+
+    return list;
+}
+
+/*!
  * Returns a Cell object based on the given \a pos. 0 will be returned if the cell doesn't exist.
  */
 Cell *Document::cellAt(const QString &pos) const
@@ -295,6 +327,36 @@ bool Document::defineName(const QString &name, const QString &formula, const QSt
 CellRange Document::dimension() const
 {
     return currentWorksheet()->dimension();
+}
+
+/*!
+    Return the maximum column which contains cell data of a row
+ */
+int Document::maxColumn(int row) const
+{
+    int max = 0;
+
+    for(int i = dimension().firstColumn(); i <= dimension().lastColumn(); i++) {
+        if(!read(row, i).toString().isEmpty() || !read(row, i).toString().isNull())
+            max = i;
+    }
+
+    return max;
+}
+
+/*!
+    Return the maximum row which contains cell data of a column
+ */
+int Document::maxRow(int column) const
+{
+    int max = 0;
+
+    for(int i = dimension().firstRow(); i <= dimension().lastRow(); i++) {
+        if(!read(i, column).toString().isEmpty() || !read(i, column).toString().isNull())
+            max = i;
+    }
+
+    return max;
 }
 
 /*!
@@ -460,6 +522,20 @@ bool Document::saveAs(QIODevice *device)
     //Create the package based on current workbook
     Package package(this);
     return package.createPackage(device);
+}
+
+/*!
+ * \brief Test if a worksheet with name \a name exists.
+ * Returns true if the \a name exists as worksheet
+ */
+bool Document::WorksheetExists(const QString &name)
+{
+    Q_D(Document);
+    for (int i=0; i<d->workbook->worksheets().size(); ++i) {
+        if (d->workbook->worksheets()[i]->sheetName() == name)
+            return true;
+    }
+    return false;
 }
 
 /*!
