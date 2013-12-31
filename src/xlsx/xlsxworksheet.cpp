@@ -49,6 +49,7 @@
 #include <QXmlStreamReader>
 
 #include <stdint.h>
+#include <math.h>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -516,6 +517,8 @@ QVariant Worksheet::read(int row, int column) const
         QDateTime dt = cell->dateTime();
         if (val < 1)
             return dt.time();
+        if (fmod(val, 1.0) <  1.0/(1000*60*60*24)) //integer
+            return dt.date();
         return dt;
     }
     return cell->value();
@@ -848,8 +851,8 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const For
     if (d->checkDimensions(row, column))
         return -1;
 
-    Format fmt = format;
-    if (!fmt.isValid())
+    Format fmt = format.isValid() ? format : d->cellFormat(row, column);
+    if (!fmt.isValid() || !fmt.isDateTimeFormat())
         fmt.setNumberFormat(d->workbook->defaultDateFormat());
     d->workbook->styles()->addXfFormat(fmt);
 
@@ -882,8 +885,8 @@ int Worksheet::writeTime(int row, int column, const QTime &t, const Format &form
     if (d->checkDimensions(row, column))
         return -1;
 
-    Format fmt = format;
-    if (!fmt.isValid())
+    Format fmt = format.isValid() ? format : d->cellFormat(row, column);
+    if (!fmt.isValid() || !fmt.isDateTimeFormat())
         fmt.setNumberFormat(QStringLiteral("hh:mm:ss"));
     d->workbook->styles()->addXfFormat(fmt);
 

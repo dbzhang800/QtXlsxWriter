@@ -77,7 +77,7 @@ QDateTime datetimeFromNumber(double num, bool is1904)
     if (!is1904 && num > 60)
         num = num - 1;
 
-    qint64 msecs = static_cast<qint64>(num * 1000*60*60*24.0);
+    qint64 msecs = static_cast<qint64>(num * 1000*60*60*24.0 + 0.5);
     QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0));
 
     return epoch.addMSecs(msecs);

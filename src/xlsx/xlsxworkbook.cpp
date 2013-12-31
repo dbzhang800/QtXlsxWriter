@@ -53,7 +53,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
 
     strings_to_numbers_enabled = false;
     date1904 = false;
-    defaultDateFormat = QStringLiteral("yyyy-mm-ddThh:mm:ss");
+    defaultDateFormat = QStringLiteral("yyyy-mm-dd");
     activesheet = 0;
     firstsheet = 0;
     table_count = 0;
