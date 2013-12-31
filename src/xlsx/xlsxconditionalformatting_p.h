@@ -37,7 +37,7 @@
 // We mean it.
 //
 
-#include "xlsxConditionalFormatting.h"
+#include "xlsxconditionalformatting.h"
 #include "xlsxformat.h"
 #include "xlsxcolor_p.h"
 #include <QSharedData>
