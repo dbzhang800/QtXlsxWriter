@@ -54,7 +54,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     strings_to_numbers_enabled = false;
     date1904 = false;
     defaultDateFormat = QStringLiteral("yyyy-mm-dd");
-    activesheet = 0;
+    activesheetIndex = 0;
     firstsheet = 0;
     table_count = 0;
 
@@ -205,30 +205,111 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
     ++d->last_sheet_id;
     Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this);
     d->worksheets.insert(index, QSharedPointer<Worksheet>(sheet));
-    d->activesheet = index;
+    d->activesheetIndex = index;
     return sheet;
 }
 
-int Workbook::activeWorksheet() const
+/*!
+ * Returns current active worksheet.
+ */
+Worksheet *Workbook::activeWorksheet() const
 {
     Q_D(const Workbook);
-    return d->activesheet;
+    return d->worksheets[d->activesheetIndex].data();
 }
 
-void Workbook::setActiveWorksheet(int index)
+bool Workbook::setActiveWorksheet(int index)
 {
     Q_D(Workbook);
     if (index < 0 || index >= d->worksheets.size()) {
         //warning
-        return;
+        return false;
     }
-    d->activesheet = index;
+    d->activesheetIndex = index;
+    return true;
+}
+
+/*!
+ * Rename the worksheet at the \a index to \a name.
+ */
+bool Workbook::renameWorksheet(int index, const QString &name)
+{
+    Q_D(Workbook);
+    //If user given an already in-used name, return false
+    for (int i=0; i<d->worksheets.size(); ++i) {
+        if (d->worksheets[i]->sheetName() == name)
+            return false;
+    }
+
+    d->worksheets[index]->setSheetName(name);
+    return true;
+}
+
+/*!
+ * Remove the worksheet at pos \a index.
+ */
+bool Workbook::deleteWorksheet(int index)
+{
+    Q_D(Workbook);
+    if (index < 0 || index >= d->worksheets.size())
+        return false;
+    d->worksheets.removeAt(index);
+    return true;
+}
+
+/*!
+ * Moves the worksheet form \a srcIndex to \a distIndex.
+ */
+bool Workbook::moveWorksheet(int srcIndex, int distIndex)
+{
+    Q_D(Workbook);
+    if (srcIndex == distIndex)
+        return false;
+
+    if (srcIndex < 0 || srcIndex >= d->worksheets.size())
+        return false;
+
+    QSharedPointer<Worksheet> sheet = d->worksheets.takeAt(srcIndex);
+    if (distIndex >= 0 || distIndex <= d->worksheets.size())
+        d->worksheets.insert(distIndex, sheet);
+    else
+        d->worksheets.append(sheet);
+    return true;
+}
+
+bool Workbook::copyWorksheet(int index, const QString &newName)
+{
+    Q_D(Workbook);
+    if (index < 0 || index >= d->worksheets.size())
+        return false;
+    //! Todo
+    return false;
 }
 
 QList<QSharedPointer<Worksheet> > Workbook::worksheets() const
 {
     Q_D(const Workbook);
     return d->worksheets;
+}
+
+/*!
+ * Returns count of worksheets.
+ */
+int Workbook::worksheetCount() const
+{
+    Q_D(const Workbook);
+    return d->worksheets.count();
+}
+
+/*!
+ * Returns the sheet object at index \a sheetIndex.
+ */
+Worksheet *Workbook::worksheet(int index) const
+{
+    Q_D(const Workbook);
+    if (index < 0 || index >= d->worksheets.size())
+        return 0;
+    return d->worksheets.at(index).data();
 }
 
 SharedStrings *Workbook::sharedStrings() const
@@ -321,8 +402,8 @@ void Workbook::saveToXmlFile(QIODevice *device)
     if (d->firstsheet > 0)
         writer.writeAttribute(QStringLiteral("firstSheet"), QString::number(d->firstsheet + 1));
     //Store the activeTab when it isn't the first sheet
-    if (d->activesheet > 0)
-        writer.writeAttribute(QStringLiteral("activeTab"), QString::number(d->activesheet));
+    if (d->activesheetIndex > 0)
+        writer.writeAttribute(QStringLiteral("activeTab"), QString::number(d->activesheetIndex));
     writer.writeEndElement();//bookViews
 
     writer.writeStartElement(QStringLiteral("sheets"));
@@ -415,7 +496,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                             if (attrs.hasAttribute(QLatin1String("firstSheet")))
                                 d->firstsheet = attrs.value(QLatin1String("firstSheet")).toString().toInt();
                             if (attrs.hasAttribute(QLatin1String("activeTab")))
-                                d->activesheet = attrs.value(QLatin1String("activeTab")).toString().toInt();
+                                d->activesheetIndex = attrs.value(QLatin1String("activeTab")).toString().toInt();
                         }
                     }
                 }

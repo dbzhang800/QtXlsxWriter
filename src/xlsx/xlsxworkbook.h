@@ -50,11 +50,19 @@ class Q_XLSX_EXPORT Workbook
 public:
     ~Workbook();
 
-    QList<QSharedPointer<Worksheet> > worksheets() const;
+    Q_DECL_DEPRECATED QList<QSharedPointer<Worksheet> > worksheets() const;
+    int worksheetCount() const;
+    Worksheet *worksheet(int sheetIndex) const;
+
     Worksheet *addWorksheet(const QString &name = QString());
     Worksheet *insertWorkSheet(int index, const QString &name = QString());
-    int activeWorksheet() const;
-    void setActiveWorksheet(int index);
+    bool renameWorksheet(int index, const QString &name);
+    bool deleteWorksheet(int index);
+    bool copyWorksheet(int index, const QString &newName);
+    bool moveWorksheet(int srcIndex, int distIndex);
+
+    Worksheet *activeWorksheet() const;
+    bool setActiveWorksheet(int index);
 
 //    void addChart();
     bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());

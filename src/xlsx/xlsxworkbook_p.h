@@ -97,7 +97,7 @@ public:
     int window_width;
     int window_height;
 
-    int activesheet;
+    int activesheetIndex;
     int firstsheet;
     int table_count;
 

@@ -83,14 +83,20 @@ public:
     void setDocumentProperty(const QString &name, const QString &property);
     QStringList documentPropertyNames() const;
 
+    QStringList worksheetNames() const;
     bool addWorksheet(const QString &name = QString());
     bool insertWorkSheet(int index, const QString &name = QString());
-    bool setSheetName(const QString &name);
+    bool selectWorksheet(const QString &name);
+    bool renameWorksheet(const QString &oldName, const QString &newName);
+    bool copyWorksheet(const QString &srcName, const QString &distName);
+    bool moveWorksheet(const QString &srcName, int distIndex);
+    bool deleteWorksheet(const QString &name);
 
     Workbook *workbook() const;
     Worksheet *currentWorksheet() const;
-    void setCurrentWorksheet(int index);
-    void setCurrentWorksheet(const QString &name);
+    Q_DECL_DEPRECATED bool setSheetName(const QString &name);
+    Q_DECL_DEPRECATED void setCurrentWorksheet(int index);
+    Q_DECL_DEPRECATED void setCurrentWorksheet(const QString &name);
 
     bool save();
     bool saveAs(const QString &xlsXname);

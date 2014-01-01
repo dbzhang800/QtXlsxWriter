@@ -80,7 +80,6 @@ namespace QXlsx {
     The Packager class coordinates the classes that represent the
     elements of the package and writes them into the XLSX file.
 */
-typedef QSharedPointer<Worksheet> WorksheetPtrType;
 
 Package::Package(Document *document) :
     m_document(document)
@@ -88,7 +87,8 @@ Package::Package(Document *document) :
     m_workbook = m_document->workbook();
     m_worksheet_count = 0;
     m_chartsheet_count = 0;
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()) {
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->isChartsheet())
             m_chartsheet_count += 1;
         else
@@ -226,13 +226,12 @@ bool Package::createPackage(QIODevice *package)
 
 void Package::writeWorksheetFiles(ZipWriter &zipWriter)
 {
-    int index = 1;
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()) {
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->isChartsheet())
             continue;
 
-        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(index), sheet->saveToXmlData());
-        index += 1;
+        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
     }
 }
 
@@ -258,13 +257,12 @@ void Package::writeContentTypesFile(ZipWriter &zipWriter)
 {
     ContentTypes content;
 
-    int worksheet_index = 1;
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()) {
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->isChartsheet()) {
 
         } else {
-            content.addWorksheetName(QStringLiteral("sheet%1").arg(worksheet_index));
-            worksheet_index += 1;
+            content.addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
         }
     }
 
@@ -301,13 +299,15 @@ void Package::writeDocPropsAppFile(ZipWriter &zipWriter)
         props.addHeadingPair(QStringLiteral("Chartsheets"), m_chartsheet_count);
 
     //Add worksheet parts
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()){
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (!sheet->isChartsheet())
             props.addPartTitle(sheet->sheetName());
     }
 
     //Add the chartsheet parts
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()){
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->isChartsheet())
             props.addPartTitle(sheet->sheetName());
     }
@@ -360,7 +360,8 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
 
     int worksheet_index = 1;
     int chartsheet_index = 1;
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()) {
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->isChartsheet()) {
             rels.addDocumentRelationship(QStringLiteral("/chartsheet"), QStringLiteral("chartsheets/sheet%1.xml").arg(chartsheet_index));
             chartsheet_index += 1;
@@ -381,8 +382,8 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
 
 void Package::writeWorksheetRelsFiles(ZipWriter &zipWriter)
 {
-    int index = 1;
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()) {
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->isChartsheet())
             continue;
         Relationships rels;
@@ -392,15 +393,14 @@ void Package::writeWorksheetRelsFiles(ZipWriter &zipWriter)
         foreach (QString link, sheet->externDrawingList())
             rels.addWorksheetRelationship(QStringLiteral("/drawing"), link);
 
-        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(index), rels.saveToXmlData());
-        index += 1;
+        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rels.saveToXmlData());
     }
 }
 
 void Package::writeDrawingRelsFiles(ZipWriter &zipWriter)
 {
-    int index = 1;
-    foreach (WorksheetPtrType sheet, m_workbook->worksheets()) {
+    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = m_workbook->worksheet(i);
         if (sheet->drawingLinks().size() == 0)
             continue;
         Relationships rels;
@@ -409,8 +409,7 @@ void Package::writeDrawingRelsFiles(ZipWriter &zipWriter)
         foreach (PairType pair, sheet->drawingLinks())
             rels.addDocumentRelationship(pair.first, pair.second);
 
-        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(index), rels.saveToXmlData());
-        index += 1;
+        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), rels.saveToXmlData());
     }
 }
 

@@ -94,7 +94,7 @@ int main()
 
     //---------------------------------------------------------------
     //The default sheet is "Sheet1"
-    xlsx.setSheetName("Aligns & Borders");
+    xlsx.renameWorksheet("Sheet1", "Aligns & Borders");
     xlsx.setColumn("B", "B", 20);
     xlsx.setColumn("H", "H", 12);
     xlsx.currentWorksheet()->setGridLinesVisible(false);

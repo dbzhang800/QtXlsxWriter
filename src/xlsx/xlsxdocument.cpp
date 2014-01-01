@@ -42,7 +42,7 @@ DocumentPrivate::DocumentPrivate(Document *p) :
 
 void DocumentPrivate::init()
 {
-    if (workbook->worksheets().size() == 0)
+    if (workbook->worksheetCount() == 0)
         workbook->addWorksheet();
 }
 
@@ -376,18 +376,55 @@ bool Document::insertWorkSheet(int index, const QString &name)
 }
 
 /*!
+   Rename the worksheet from \a oldName to \a newName.
+   Returns true if the success.
+ */
+bool Document::renameWorksheet(const QString &oldName, const QString &newName)
+{
+    Q_D(Document);
+    if (oldName == newName)
+        return false;
+    return d->workbook->renameWorksheet(worksheetNames().indexOf(oldName), newName);
+}
+
+/*!
+   Make a copy of the worksheet \a srcName with the new name \a distName.
+   Returns true if the success.
+ */
+bool Document::copyWorksheet(const QString &srcName, const QString &distName)
+{
+    Q_D(Document);
+    if (srcName == distName)
+        return false;
+    return d->workbook->copyWorksheet(worksheetNames().indexOf(srcName), distName);
+}
+
+/*!
+   Move the worksheet \a srcName to the new pos \a distIndex.
+   Returns true if the success.
+ */
+bool Document::moveWorksheet(const QString &srcName, int distIndex)
+{
+    Q_D(Document);
+    return d->workbook->moveWorksheet(worksheetNames().indexOf(srcName), distIndex);
+}
+
+/*!
+   Delete the worksheet \a name.
+ */
+bool Document::deleteWorksheet(const QString &name)
+{
+    Q_D(Document);
+    return d->workbook->deleteWorksheet(worksheetNames().indexOf(name));
+}
+
+/*!
    Rename current worksheet to new \a name.
    Returns true if the name defined successful.
  */
 bool Document::setSheetName(const QString &name)
 {
-    Q_D(Document);
-    for (int i=0; i<d->workbook->worksheets().size(); ++i) {
-        if (d->workbook->worksheets()[i]->sheetName() == name)
-            return false;
-    }
-    currentWorksheet()->setSheetName(name);
-    return true;
+    return renameWorksheet(currentWorksheet()->sheetName(), name);
 }
 
 /*!
@@ -396,10 +433,10 @@ bool Document::setSheetName(const QString &name)
 Worksheet *Document::currentWorksheet() const
 {
     Q_D(const Document);
-    if (d->workbook->worksheets().size() == 0)
+    if (d->workbook->worksheetCount() == 0)
         return 0;
 
-    return d->workbook->worksheets().at(d->workbook->activeWorksheet()).data();
+    return d->workbook->activeWorksheet();
 }
 
 /*!
@@ -412,15 +449,37 @@ void Document::setCurrentWorksheet(int index)
 }
 
 /*!
- * \brief Set current worksheet to be the sheet named \a name.
+ * \brief Set current selected worksheet to be the sheet named \a name.
  */
 void Document::setCurrentWorksheet(const QString &name)
 {
+    selectWorksheet(name);
+}
+
+/*!
+ * \brief Set current selected worksheet to be the sheet named \a name.
+ */
+bool Document::selectWorksheet(const QString &name)
+{
     Q_D(Document);
-    for (int i=0; i<d->workbook->worksheets().size(); ++i) {
-        if (d->workbook->worksheets()[i]->sheetName() == name)
-            d->workbook->setActiveWorksheet(i);
+    for (int i=0; i<d->workbook->worksheetCount(); ++i) {
+        if (d->workbook->worksheet(i)->sheetName() == name)
+            return d->workbook->setActiveWorksheet(i);
     }
+    return false;
+}
+
+/*!
+ * Returns the names of worksheets contained in current document.
+ */
+QStringList Document::worksheetNames() const
+{
+    Q_D(const Document);
+    QStringList names;
+    for (int i=0; i<d->workbook->worksheetCount(); ++i)
+        names.append(d->workbook->worksheet(i)->sheetName());
+
+    return names;
 }
 
 /*!

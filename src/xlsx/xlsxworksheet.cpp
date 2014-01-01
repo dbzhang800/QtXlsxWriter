@@ -198,6 +198,9 @@ QString Worksheet::sheetName() const
     return d->name;
 }
 
+/*!
+ * \internal
+ */
 void Worksheet::setSheetName(const QString &sheetName)
 {
     Q_D(Worksheet);
