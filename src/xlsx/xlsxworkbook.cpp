@@ -251,6 +251,8 @@ bool Workbook::renameWorksheet(int index, const QString &name)
 bool Workbook::deleteWorksheet(int index)
 {
     Q_D(Workbook);
+    if (d->worksheets.size() <= 1)
+        return false;
     if (index < 0 || index >= d->worksheets.size())
         return false;
     d->worksheets.removeAt(index);

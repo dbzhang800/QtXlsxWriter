@@ -343,8 +343,10 @@ void DocumentTest::testDeleteWorksheet()
     QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet3");
     xlsx1.deleteWorksheet("Sheet1");
     QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet3");
-//    xlsx1.deleteWorksheet("Sheet3");
-//    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet4");
+
+    //Cann't delete the last worksheet
+    xlsx1.deleteWorksheet("Sheet3");
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet3");
 }
 
 QTEST_APPLESS_MAIN(DocumentTest)
