@@ -67,6 +67,7 @@ private:
     friend class WorksheetPrivate;
 
     Cell(const QVariant &data=QVariant(), DataType type=Blank, const Format &format=Format(), Worksheet *parent=0);
+    Cell(const Cell * const cell);
     CellPrivate * const d_ptr;
 };
 

@@ -39,6 +39,14 @@ CellPrivate::CellPrivate(Cell *p) :
 
 }
 
+CellPrivate::CellPrivate(const CellPrivate * const cp)
+    : value(cp->value), formula(cp->formula), dataType(cp->dataType)
+    , format(cp->format), range(cp->range), richString(cp->richString)
+    , parent(cp->parent)
+{
+
+}
+
 /*!
   \class Cell
   \inmodule QtXlsx
@@ -70,6 +78,15 @@ Cell::Cell(const QVariant &data, DataType type, const Format &format, Worksheet 
     d_ptr->dataType = type;
     d_ptr->format = format;
     d_ptr->parent = parent;
+}
+
+/*!
+ * \internal
+ */
+Cell::Cell(const Cell * const cell):
+    d_ptr(new CellPrivate(cell->d_ptr))
+{
+    d_ptr->q_ptr = this;
 }
 
 /*!

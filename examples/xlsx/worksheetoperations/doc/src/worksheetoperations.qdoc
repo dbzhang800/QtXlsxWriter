@@ -1,0 +1,8 @@
+/*!
+    \example worksheetoperations
+    \title Worksheet Operations Example
+    \brief Copy, delete, move worksheet
+    \ingroup qtxlsx-examples
+
+    This example demonstrates how to copy, delete, move worksheet.
+*/

@@ -182,6 +182,44 @@ Worksheet::Worksheet(const QString &name, int id, Workbook *workbook) :
     d_ptr->workbook = workbook;
 }
 
+QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) const
+{
+    Q_D(const Worksheet);
+    QSharedPointer<Worksheet> sheet(new Worksheet(distName, distId, d->workbook));
+
+    WorksheetPrivate *sheet_d = sheet->d_ptr;
+
+    sheet_d->dimension = d->dimension;
+
+    QMapIterator<int, QMap<int, QSharedPointer<Cell> > > it(d->cellTable);
+    while (it.hasNext()) {
+        it.next();
+        int row = it.key();
+        QMapIterator<int, QSharedPointer<Cell> > it2(it.value());
+        while (it2.hasNext()) {
+            it2.next();
+            int col = it2.key();
+
+            QSharedPointer<Cell> cell(new Cell(it2.value().data()));
+            cell->d_ptr->parent = sheet.data();
+
+            if (cell->dataType() == Cell::String)
+                d->workbook->sharedStrings()->addSharedString(cell->d_ptr->richString);
+
+            sheet_d->cellTable[row][col] = cell;
+        }
+    }
+
+    sheet_d->merges = d->merges;
+//    sheet_d->rowsInfo = d->rowsInfo;
+//    sheet_d->colsInfo = d->colsInfo;
+//    sheet_d->colsInfoHelper = d->colsInfoHelper;
+//    sheet_d->dataValidationsList = d->dataValidationsList;
+//    sheet_d->conditionalFormattingList = d->conditionalFormattingList;
+
+    return sheet;
+}
+
 Worksheet::~Worksheet()
 {
     delete d_ptr;

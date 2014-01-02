@@ -58,7 +58,7 @@ public:
     Worksheet *insertWorkSheet(int index, const QString &name = QString());
     bool renameWorksheet(int index, const QString &name);
     bool deleteWorksheet(int index);
-    bool copyWorksheet(int index, const QString &newName);
+    bool copyWorksheet(int index, const QString &newName=QString());
     bool moveWorksheet(int srcIndex, int distIndex);
 
     Worksheet *activeWorksheet() const;

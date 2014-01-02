@@ -23,6 +23,10 @@ private Q_SLOTS:
     void testReadWriteDateTime();
     void testReadWriteDate();
     void testReadWriteTime();
+
+    void testMoveWorksheet();
+    void testDeleteWorksheet();
+    void testCopyWorksheet();
 };
 
 DocumentTest::DocumentTest()
@@ -292,6 +296,55 @@ void DocumentTest::testReadWriteTime()
     QCOMPARE(xlsx2.cellAt("A2")->isDateTime(), true);
     QVERIFY(xlsx2.read("A2").userType() == QMetaType::QTime);
     QCOMPARE(xlsx2.read("A2").toTime(), QTime(1, 22));
+}
+
+void DocumentTest::testMoveWorksheet()
+{
+    Document xlsx1;
+    xlsx1.addWorksheet();
+
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
+    xlsx1.moveWorksheet("Sheet2", 0);
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet2"<<"Sheet1");
+    xlsx1.moveWorksheet("Sheet2", 1);
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
+}
+
+void DocumentTest::testCopyWorksheet()
+{
+    Document xlsx1;
+    xlsx1.addWorksheet();
+    xlsx1.write("A1", "String");
+    xlsx1.write("A2", 999);
+    xlsx1.write("A3", true);
+    xlsx1.addWorksheet();
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3");
+
+    xlsx1.copyWorksheet("Sheet2");
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3"<<"Sheet2(2)");
+
+    xlsx1.deleteWorksheet("Sheet2");
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet3"<<"Sheet2(2)");
+
+    xlsx1.selectWorksheet("Sheet2(2)");
+    QCOMPARE(xlsx1.read("A1").toString(), QString("String"));
+    QCOMPARE(xlsx1.read("A2").toInt(), 999);
+    QCOMPARE(xlsx1.read("A3").toBool(), true);
+}
+
+void DocumentTest::testDeleteWorksheet()
+{
+    Document xlsx1;
+    xlsx1.addWorksheet();
+    xlsx1.addWorksheet();
+
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3");
+    xlsx1.deleteWorksheet("Sheet2");
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet3");
+    xlsx1.deleteWorksheet("Sheet1");
+    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet3");
+//    xlsx1.deleteWorksheet("Sheet3");
+//    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet4");
 }
 
 QTEST_APPLESS_MAIN(DocumentTest)

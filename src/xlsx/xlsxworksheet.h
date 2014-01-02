@@ -135,6 +135,7 @@ private:
     friend class Workbook;
     friend class ::WorksheetTest;
     Worksheet(const QString &sheetName, int sheetId, Workbook *book);
+    QSharedPointer<Worksheet> copy(const QString &distName, int distId) const;
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();

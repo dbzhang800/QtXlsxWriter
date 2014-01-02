@@ -282,7 +282,33 @@ bool Workbook::copyWorksheet(int index, const QString &newName)
     Q_D(Workbook);
     if (index < 0 || index >= d->worksheets.size())
         return false;
-    //! Todo
+
+    QString worksheetName = newName;
+    if (!newName.isEmpty()) {
+        //If user given an already in-used name, we should not continue any more!
+        for (int i=0; i<d->worksheets.size(); ++i) {
+            if (d->worksheets[i]->sheetName() == newName) {
+                return 0;
+            }
+        }
+    } else {
+        int copy_index = 1;
+        bool exists;
+        do {
+            ++copy_index;
+            exists = false;
+            worksheetName = QStringLiteral("%1(%2)").arg(d->worksheets[index]->sheetName()).arg(copy_index);
+            for (int i=0; i<d->worksheets.size(); ++i) {
+                if (d->worksheets[i]->sheetName() == worksheetName)
+                    exists = true;
+            }
+        } while (exists);
+    }
+
+    ++d->last_sheet_id;
+    QSharedPointer<Worksheet> sheet = d->worksheets[index]->copy(worksheetName, d->last_sheet_id);
+    d->worksheets.append(sheet);
+
     return false;
 }
 

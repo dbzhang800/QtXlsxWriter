@@ -12,5 +12,6 @@ SUBDIRS = hello \
     formulas \
     richtext \
     conditionalformatting \
+    worksheetoperations \
     demo
 

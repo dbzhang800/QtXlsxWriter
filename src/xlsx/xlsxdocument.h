@@ -88,7 +88,7 @@ public:
     bool insertWorkSheet(int index, const QString &name = QString());
     bool selectWorksheet(const QString &name);
     bool renameWorksheet(const QString &oldName, const QString &newName);
-    bool copyWorksheet(const QString &srcName, const QString &distName);
+    bool copyWorksheet(const QString &srcName, const QString &distName = QString());
     bool moveWorksheet(const QString &srcName, int distIndex);
     bool deleteWorksheet(const QString &name);
 
