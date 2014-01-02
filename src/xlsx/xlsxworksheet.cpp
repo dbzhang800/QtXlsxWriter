@@ -48,7 +48,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
-#include <stdint.h>
+#include <limits>
 #include <math.h>
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -87,14 +87,14 @@ WorksheetPrivate::~WorksheetPrivate()
 void WorksheetPrivate::calculateSpans()
 {
     row_spans.clear();
-    int span_min = INT32_MAX;
-    int span_max = INT32_MIN;
+    int span_min = std::numeric_limits<int>::max();
+    int span_max = std::numeric_limits<int>::min();
 
     for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
         if (cellTable.contains(row_num)) {
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (cellTable[row_num].contains(col_num)) {
-                    if (span_max == INT32_MIN) {
+                    if (span_max == std::numeric_limits<int>::min()) {
                         span_min = col_num;
                         span_max = col_num;
                     } else {
@@ -109,7 +109,7 @@ void WorksheetPrivate::calculateSpans()
         if (comments.contains(row_num)) {
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (comments[row_num].contains(col_num)) {
-                    if (span_max == INT32_MIN) {
+                    if (span_max == std::numeric_limits<int>::min()) {
                         span_min = col_num;
                         span_max = col_num;
                     } else {
@@ -122,11 +122,11 @@ void WorksheetPrivate::calculateSpans()
             }
         }
 
-        if ((row_num)%16 == 0 || row_num == dimension.lastRow()) {
-            int span_index = row_num / 16;
-            if (span_max != INT32_MIN) {
-                row_spans[span_index] = QStringLiteral("%1:%2").arg(span_min).arg(span_max);
-                span_max = INT32_MIN;
+        if (row_num%16 == 0 || row_num == dimension.lastRow()) {
+            if (span_max != std::numeric_limits<int>::min()) {
+                row_spans[row_num / 16] = QStringLiteral("%1:%2").arg(span_min).arg(span_max);
+                span_min = std::numeric_limits<int>::max();
+                span_max = std::numeric_limits<int>::min();
             }
         }
     }
