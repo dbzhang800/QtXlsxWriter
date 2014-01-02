@@ -126,7 +126,6 @@ public:
     void setWhiteSpaceVisible(bool visible);
 
     QString sheetName() const;
-    void setSheetName(const QString &sheetName);
 
     Workbook *workbook() const;
     ~Worksheet();
@@ -136,6 +135,7 @@ private:
     friend class ::WorksheetTest;
     Worksheet(const QString &sheetName, int sheetId, Workbook *book);
     QSharedPointer<Worksheet> copy(const QString &distName, int distId) const;
+    void setSheetName(const QString &sheetName);
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();

@@ -462,11 +462,7 @@ void Document::setCurrentWorksheet(const QString &name)
 bool Document::selectWorksheet(const QString &name)
 {
     Q_D(Document);
-    for (int i=0; i<d->workbook->worksheetCount(); ++i) {
-        if (d->workbook->worksheet(i)->sheetName() == name)
-            return d->workbook->setActiveWorksheet(i);
-    }
-    return false;
+    return d->workbook->setActiveWorksheet(worksheetNames().indexOf(name));
 }
 
 /*!
@@ -475,11 +471,7 @@ bool Document::selectWorksheet(const QString &name)
 QStringList Document::worksheetNames() const
 {
     Q_D(const Document);
-    QStringList names;
-    for (int i=0; i<d->workbook->worksheetCount(); ++i)
-        names.append(d->workbook->worksheet(i)->sheetName());
-
-    return names;
+    return d->workbook->worksheetNames();
 }
 
 /*!

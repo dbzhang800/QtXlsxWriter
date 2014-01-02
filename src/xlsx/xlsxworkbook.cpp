@@ -165,6 +165,15 @@ Worksheet *Workbook::addWorksheet(const QString &name)
 
 /*!
  * \internal
+ */
+QStringList Workbook::worksheetNames() const
+{
+    Q_D(const Workbook);
+    return d->worksheetNames;
+}
+
+/*!
+ * \internal
  * Used only when load the xlsx file!!
  */
 Worksheet *Workbook::addWorksheet(const QString &name, int sheetId)
@@ -175,6 +184,7 @@ Worksheet *Workbook::addWorksheet(const QString &name, int sheetId)
 
     Worksheet *sheet = new Worksheet(name, sheetId, this);
     d->worksheets.append(QSharedPointer<Worksheet>(sheet));
+    d->worksheetNames.append(name);
     return sheet;
 }
 
@@ -184,27 +194,19 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
     QString worksheetName = name;
     if (!name.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
-        for (int i=0; i<d->worksheets.size(); ++i) {
-            if (d->worksheets[i]->sheetName() == name) {
-                return 0;
-            }
-        }
+        if (d->worksheetNames.contains(name))
+            return 0;
     } else {
-        bool exists;
         do {
             ++d->last_sheet_index;
-            exists = false;
             worksheetName = QStringLiteral("Sheet%1").arg(d->last_sheet_index);
-            for (int i=0; i<d->worksheets.size(); ++i) {
-                if (d->worksheets[i]->sheetName() == worksheetName)
-                    exists = true;
-            }
-        } while (exists);
+        } while (d->worksheetNames.contains(worksheetName));
     }
 
     ++d->last_sheet_id;
     Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this);
     d->worksheets.insert(index, QSharedPointer<Worksheet>(sheet));
+    d->worksheetNames.insert(index, worksheetName);
     d->activesheetIndex = index;
     return sheet;
 }
@@ -242,6 +244,7 @@ bool Workbook::renameWorksheet(int index, const QString &name)
     }
 
     d->worksheets[index]->setSheetName(name);
+    d->worksheetNames[index] = name;
     return true;
 }
 
@@ -256,6 +259,7 @@ bool Workbook::deleteWorksheet(int index)
     if (index < 0 || index >= d->worksheets.size())
         return false;
     d->worksheets.removeAt(index);
+    d->worksheetNames.removeAt(index);
     return true;
 }
 
@@ -272,10 +276,14 @@ bool Workbook::moveWorksheet(int srcIndex, int distIndex)
         return false;
 
     QSharedPointer<Worksheet> sheet = d->worksheets.takeAt(srcIndex);
-    if (distIndex >= 0 || distIndex <= d->worksheets.size())
+    d->worksheetNames.takeAt(srcIndex);
+    if (distIndex >= 0 || distIndex <= d->worksheets.size()) {
         d->worksheets.insert(distIndex, sheet);
-    else
+        d->worksheetNames.insert(distIndex, sheet->sheetName());
+    } else {
         d->worksheets.append(sheet);
+        d->worksheetNames.append(sheet->sheetName());
+    }
     return true;
 }
 
@@ -288,28 +296,20 @@ bool Workbook::copyWorksheet(int index, const QString &newName)
     QString worksheetName = newName;
     if (!newName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
-        for (int i=0; i<d->worksheets.size(); ++i) {
-            if (d->worksheets[i]->sheetName() == newName) {
-                return 0;
-            }
-        }
+        if (d->worksheetNames.contains(newName))
+            return false;
     } else {
         int copy_index = 1;
-        bool exists;
         do {
             ++copy_index;
-            exists = false;
             worksheetName = QStringLiteral("%1(%2)").arg(d->worksheets[index]->sheetName()).arg(copy_index);
-            for (int i=0; i<d->worksheets.size(); ++i) {
-                if (d->worksheets[i]->sheetName() == worksheetName)
-                    exists = true;
-            }
-        } while (exists);
+        } while (d->worksheetNames.contains(worksheetName));
     }
 
     ++d->last_sheet_id;
     QSharedPointer<Worksheet> sheet = d->worksheets[index]->copy(worksheetName, d->last_sheet_id);
     d->worksheets.append(sheet);
+    d->worksheetNames.append(sheet->sheetName());
 
     return false;
 }

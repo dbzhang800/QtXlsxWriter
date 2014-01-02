@@ -80,6 +80,7 @@ public:
 
     QSharedPointer<SharedStrings> sharedStrings;
     QList<QSharedPointer<Worksheet> > worksheets;
+    QStringList worksheetNames;
     QSharedPointer<Styles> styles;
     QSharedPointer<Theme> theme;
     QList<QImage> images;
