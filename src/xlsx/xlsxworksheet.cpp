@@ -48,7 +48,6 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
-#include <limits>
 #include <math.h>
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -87,20 +86,20 @@ WorksheetPrivate::~WorksheetPrivate()
 void WorksheetPrivate::calculateSpans()
 {
     row_spans.clear();
-    int span_min = std::numeric_limits<int>::max();
-    int span_max = std::numeric_limits<int>::min();
+    int span_min = XLSX_COLUMN_MAX+1;
+    int span_max = -1;
 
     for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
         if (cellTable.contains(row_num)) {
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (cellTable[row_num].contains(col_num)) {
-                    if (span_max == std::numeric_limits<int>::min()) {
+                    if (span_max == -1) {
                         span_min = col_num;
                         span_max = col_num;
                     } else {
                         if (col_num < span_min)
                             span_min = col_num;
-                        if (col_num > span_max)
+                        else if (col_num > span_max)
                             span_max = col_num;
                     }
                 }
@@ -109,13 +108,13 @@ void WorksheetPrivate::calculateSpans()
         if (comments.contains(row_num)) {
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (comments[row_num].contains(col_num)) {
-                    if (span_max == std::numeric_limits<int>::min()) {
+                    if (span_max == -1) {
                         span_min = col_num;
                         span_max = col_num;
                     } else {
                         if (col_num < span_min)
                             span_min = col_num;
-                        if (col_num > span_max)
+                        else if (col_num > span_max)
                             span_max = col_num;
                     }
                 }
@@ -123,10 +122,10 @@ void WorksheetPrivate::calculateSpans()
         }
 
         if (row_num%16 == 0 || row_num == dimension.lastRow()) {
-            if (span_max != std::numeric_limits<int>::min()) {
+            if (span_max != -1) {
                 row_spans[row_num / 16] = QStringLiteral("%1:%2").arg(span_min).arg(span_max);
-                span_min = std::numeric_limits<int>::max();
-                span_max = std::numeric_limits<int>::min();
+                span_min = XLSX_COLUMN_MAX+1;
+                span_max = -1;
             }
         }
     }
