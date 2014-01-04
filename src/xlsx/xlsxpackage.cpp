@@ -337,11 +337,7 @@ void Package::writeStylesFiles(ZipWriter &zipWriter)
 
 void Package::writeThemeFile(ZipWriter &zipWriter)
 {
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    m_workbook->theme()->saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), data);
+    zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), m_workbook->theme()->saveToXmlData());
 }
 
 void Package::writeRootRelsFile(ZipWriter &zipWriter)

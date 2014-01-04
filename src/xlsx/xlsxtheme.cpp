@@ -213,6 +213,14 @@ void Theme::saveToXmlFile(QIODevice *device)
         device->write(xmlData);
 }
 
+QByteArray Theme::saveToXmlData() const
+{
+    if (xmlData.isEmpty())
+        return defaultXmlData;
+    else
+        return xmlData;
+}
+
 void Theme::loadFromXmlData(const QByteArray &data)
 {
     xmlData = data;
