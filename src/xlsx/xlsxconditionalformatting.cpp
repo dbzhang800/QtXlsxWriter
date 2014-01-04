@@ -605,7 +605,7 @@ bool ConditionalFormattingPrivate::readCfVo(QXmlStreamReader &reader, XlsxCfVoDa
         t = ConditionalFormatting::VOT_Num;
     else if (type == QLatin1String("percent"))
         t = ConditionalFormatting::VOT_Percent;
-    else if (type == QLatin1String("percentile"))
+    else //if (type == QLatin1String("percentile"))
         t = ConditionalFormatting::VOT_Percentile;
 
     cfvo.type = t;
