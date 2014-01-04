@@ -104,7 +104,8 @@ bool Package::parsePackage(QIODevice *packageDevice)
     if (!filePaths.contains(QLatin1String("_rels/.rels")))
         return false;
 
-    Relationships rootRels = Relationships::loadFromXmlData(zipReader.fileData(QStringLiteral("_rels/.rels")));
+    Relationships rootRels;
+    rootRels.loadFromXmlData(zipReader.fileData(QStringLiteral("_rels/.rels")));
 
     //load core property
     QList<XlsxRelationship> rels_core = rootRels.packageRelationships(QStringLiteral("/metadata/core-properties"));
@@ -141,8 +142,8 @@ bool Package::parsePackage(QIODevice *packageDevice)
     QString xlworkbook_Name = xlworkbook_PathList[1];
     m_document->workbook()->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
     QList<XlsxSheetItemInfo> sheetNameIdPairList = m_document->workbook()->d_func()->sheetItemInfoList;
-    Relationships xlworkbook_Rels = Relationships::loadFromXmlData(
-                zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
+    Relationships xlworkbook_Rels;
+    xlworkbook_Rels.loadFromXmlData(zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
 
     //load styles
     QList<XlsxRelationship> rels_styles = xlworkbook_Rels.documentRelationships(QStringLiteral("/styles"));

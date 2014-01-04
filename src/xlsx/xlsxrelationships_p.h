@@ -68,9 +68,13 @@ public:
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();
-    static Relationships loadFromXmlFile(QIODevice *device);
-    static Relationships loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlFile(QIODevice *device);
+    bool loadFromXmlData(const QByteArray &data);
     XlsxRelationship getRelationshipById(const QString &id) const;
+
+    void clear();
+    int count() const;
+    bool isEmpty() const;
 
 private:
     QList<XlsxRelationship> relationships(const QString &type) const;

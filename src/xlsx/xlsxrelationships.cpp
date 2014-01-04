@@ -130,10 +130,9 @@ QByteArray Relationships::saveToXmlData()
     return data;
 }
 
-Relationships Relationships::loadFromXmlFile(QIODevice *device)
+bool Relationships::loadFromXmlFile(QIODevice *device)
 {
-    Relationships rels;
-
+    clear();
     QXmlStreamReader reader(device);
     while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
@@ -145,18 +144,17 @@ Relationships Relationships::loadFromXmlFile(QIODevice *device)
                  relationship.type = attributes.value(QLatin1String("Type")).toString();
                  relationship.target = attributes.value(QLatin1String("Target")).toString();
                  relationship.targetMode = attributes.value(QLatin1String("TargetMode")).toString();
-                 rels.m_relationships.append(relationship);
+                 m_relationships.append(relationship);
              }
          }
 
-         if (reader.hasError()) {
-
-         }
+         if (reader.hasError())
+            return false;
     }
-    return rels;
+    return true;
 }
 
-Relationships Relationships::loadFromXmlData(const QByteArray &data)
+bool Relationships::loadFromXmlData(const QByteArray &data)
 {
     QBuffer buffer;
     buffer.setData(data);
@@ -171,6 +169,21 @@ XlsxRelationship Relationships::getRelationshipById(const QString &id) const
             return ship;
     }
     return XlsxRelationship();
+}
+
+void Relationships::clear()
+{
+    m_relationships.clear();
+}
+
+int Relationships::count() const
+{
+    return m_relationships.count();
+}
+
+bool Relationships::isEmpty() const
+{
+    return m_relationships.isEmpty();
 }
 
 } //namespace
