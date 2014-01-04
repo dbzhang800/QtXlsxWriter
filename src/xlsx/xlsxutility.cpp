@@ -54,6 +54,19 @@ QStringList splitPath(const QString &path)
     return QStringList()<<path.left(idx)<<path.mid(idx+1);
 }
 
+/*
+ * Return the .rel file path based on filePath
+ */
+QString getRelFilePath(const QString &filePath)
+{
+    int idx = filePath.lastIndexOf(QLatin1Char('/'));
+    if (idx == -1)
+        return QString();
+
+    return QString(filePath.left(idx) + QLatin1String("/_rel/")
+                   + filePath.mid(idx+1) + QLatin1String(".rel"));
+}
+
 double datetimeToNumber(const QDateTime &dt, bool is1904)
 {
     //Note, for number 0, Excel2007 shown as 1900-1-0, which should be 1899-12-31

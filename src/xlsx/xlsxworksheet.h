@@ -49,6 +49,7 @@ class ConditionalFormatting;
 class CellRange;
 struct XlsxImageData;
 class RichString;
+class Relationships;
 
 class WorksheetPrivate;
 class Q_XLSX_EXPORT Worksheet
@@ -136,6 +137,7 @@ private:
     Worksheet(const QString &sheetName, int sheetId, Workbook *book);
     QSharedPointer<Worksheet> copy(const QString &distName, int distId) const;
     void setSheetName(const QString &sheetName);
+    Relationships &relationships();
 
     void saveToXmlFile(QIODevice *device);
     QByteArray saveToXmlData();
@@ -146,12 +148,10 @@ private:
     bool isHidden() const;
     void setHidden(bool hidden);
     int sheetId() const;
-    QStringList externUrlList() const;
-    QStringList externDrawingList() const;
     QList<QPair<QString, QString> > drawingLinks() const;
     Drawing *drawing() const;
     QList<XlsxImageData *> images() const;
-    void prepareImage(int index, int image_id, int drawing_id);
+    void prepareImage(int index, int image_id);
     void clearExtraDrawingInfo();
 
     WorksheetPrivate * const d_ptr;

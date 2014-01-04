@@ -41,6 +41,7 @@
 #include "xlsxcell.h"
 #include "xlsxdatavalidation.h"
 #include "xlsxconditionalformatting.h"
+#include "xlsxrelationships_p.h"
 
 #include <QImage>
 #include <QSharedPointer>
@@ -205,13 +206,12 @@ public:
 
     Worksheet *q_ptr;
     Workbook *workbook;
+    mutable Relationships relationships;
     Drawing *drawing;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, XlsxUrlData *> > urlTable;
     QList<CellRange> merges;
-    QStringList externUrlList;
-    QStringList externDrawingList;
     QList<XlsxImageData *> imageList;
     QMap<int, QSharedPointer<XlsxRowInfo> > rowsInfo;
     QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfo;

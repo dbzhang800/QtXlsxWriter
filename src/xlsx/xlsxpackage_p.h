@@ -76,8 +76,6 @@ private:
     void writeThemeFile(ZipWriter &zipWriter);
     void writeRootRelsFile(ZipWriter &zipWriter);
     void writeWorkbookRelsFile(ZipWriter &zipWriter);
-    void writeWorksheetRelsFiles(ZipWriter &zipWriter);
-//    void writeChartsheetRelsFile(ZipWriter &zipWriter);
     void writeDrawingRelsFiles(ZipWriter &zipWriter);
     void writeImageFiles(ZipWriter &zipWriter);
 //    void writeVbaProjectFiles(ZipWriter &zipWriter);

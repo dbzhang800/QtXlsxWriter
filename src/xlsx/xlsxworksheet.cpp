@@ -244,6 +244,12 @@ void Worksheet::setSheetName(const QString &sheetName)
     d->name = sheetName;
 }
 
+Relationships &Worksheet::relationships()
+{
+    Q_D(Worksheet);
+    return d->relationships;
+}
+
 bool Worksheet::isHidden() const
 {
     Q_D(const Worksheet);
@@ -443,19 +449,6 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 {
     Q_D(Worksheet);
     d->showWhiteSpace = visible;
-}
-
-
-QStringList Worksheet::externUrlList() const
-{
-    Q_D(const Worksheet);
-    return d->externUrlList;
-}
-
-QStringList Worksheet::externDrawingList() const
-{
-    Q_D(const Worksheet);
-    return d->externDrawingList;
 }
 
 QList<QPair<QString, QString> > Worksheet::drawingLinks() const
@@ -1129,6 +1122,8 @@ int Worksheet::unmergeCells(const QString &range)
 void Worksheet::saveToXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
+    d->relationships.clear();
+
     QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
@@ -1391,9 +1386,6 @@ void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer)
     if (urlTable.isEmpty())
         return;
 
-    int rel_count = 0;
-    externUrlList.clear();
-
     writer.writeStartElement(QStringLiteral("hyperlinks"));
     QMapIterator<int, QMap<int, XlsxUrlData *> > it(urlTable);
     while (it.hasNext()) {
@@ -1408,9 +1400,11 @@ void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer)
             writer.writeEmptyElement(QStringLiteral("hyperlink"));
             writer.writeAttribute(QStringLiteral("ref"), ref);
             if (data->linkType == XlsxUrlData::External) {
-                rel_count += 1;
-                externUrlList.append(data->url);
-                writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(rel_count));
+
+                //Update relationships
+                relationships.addWorksheetRelationship(QStringLiteral("/hyperlink"), data->url, QStringLiteral("External"));
+
+                writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships.count()));
                 if (!data->location.isEmpty())
                     writer.writeAttribute(QStringLiteral("location"), data->location);
                 if (!data->display.isEmpty())
@@ -1434,9 +1428,11 @@ void WorksheetPrivate::writeDrawings(QXmlStreamWriter &writer)
     if (!drawing)
         return;
 
-    int index = externUrlList.size() + 1;
+    int idx = workbook->drawings().indexOf(drawing);
+    relationships.addWorksheetRelationship(QStringLiteral("/drawing"), QStringLiteral("../drawings/drawing%1.xml").arg(idx+1));
+
     writer.writeEmptyElement(QStringLiteral("drawing"));
-    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(index));
+    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships.count()));
 }
 
 /*!
@@ -1692,18 +1688,16 @@ void Worksheet::clearExtraDrawingInfo()
     if (d->drawing) {
         delete d->drawing;
         d->drawing = 0;
-        d->externDrawingList.clear();
         d->drawingLinks.clear();
     }
 }
 
-void Worksheet::prepareImage(int index, int image_id, int drawing_id)
+void Worksheet::prepareImage(int index, int image_id)
 {
     Q_D(Worksheet);
     if (!d->drawing) {
         d->drawing = new Drawing;
         d->drawing->embedded = true;
-        d->externDrawingList.append(QStringLiteral("../drawings/drawing%1.xml").arg(drawing_id));
     }
 
     XlsxImageData *imageData = d->imageList[index];

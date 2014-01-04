@@ -181,10 +181,12 @@ bool Package::parsePackage(QIODevice *packageDevice)
 
     for (int i=0; i<sheetNameIdPairList.size(); ++i) {
         XlsxSheetItemInfo info = sheetNameIdPairList[i];
-        QString worksheet_rId = info.rId;
-        QString name = xlworkbook_Rels.getRelationshipById(worksheet_rId).target;
-        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + name;
+        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + xlworkbook_Rels.getRelationshipById(info.rId).target;
+        QString rel_path = getRelFilePath(worksheet_path);
         Worksheet *sheet = m_document->workbook()->addWorksheet(info.name, info.sheetId);
+        //If the .rel file exists, load it.
+        if (zipReader.filePaths().contains(rel_path))
+            sheet->relationships().loadFromXmlData(zipReader.fileData(rel_path));
         sheet->loadFromXmlData(zipReader.fileData(worksheet_path));
     }
 
@@ -215,8 +217,6 @@ bool Package::createPackage(QIODevice *package)
     writeThemeFile(zipWriter);
     writeRootRelsFile(zipWriter);
     writeWorkbookRelsFile(zipWriter);
-    writeWorksheetRelsFiles(zipWriter);
-//    writeChartsheetRelsFile(zipWriter);
     writeDrawingRelsFiles(zipWriter);
     writeImageFiles(zipWriter);
 //    writeVbaProjectFiles(zipWriter);
@@ -233,6 +233,7 @@ void Package::writeWorksheetFiles(ZipWriter &zipWriter)
             continue;
 
         zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), sheet->relationships().saveToXmlData());
     }
 }
 
@@ -375,23 +376,6 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
         rels.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
 
     zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), rels.saveToXmlData());
-}
-
-void Package::writeWorksheetRelsFiles(ZipWriter &zipWriter)
-{
-    for (int i=0; i<m_workbook->worksheetCount(); ++i) {
-        Worksheet *sheet = m_workbook->worksheet(i);
-        if (sheet->isChartsheet())
-            continue;
-        Relationships rels;
-
-        foreach (QString link, sheet->externUrlList())
-            rels.addWorksheetRelationship(QStringLiteral("/hyperlink"), link, QStringLiteral("External"));
-        foreach (QString link, sheet->externDrawingList())
-            rels.addWorksheetRelationship(QStringLiteral("/drawing"), link);
-
-        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rels.saveToXmlData());
-    }
 }
 
 void Package::writeDrawingRelsFiles(ZipWriter &zipWriter)
