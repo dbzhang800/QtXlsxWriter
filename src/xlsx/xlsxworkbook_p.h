@@ -40,6 +40,7 @@
 #include "xlsxtheme_p.h"
 #include <QSharedPointer>
 #include <QPair>
+#include <QStringList>
 
 namespace QXlsx {
 
