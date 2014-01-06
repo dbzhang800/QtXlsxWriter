@@ -233,7 +233,9 @@ void Package::writeWorksheetFiles(ZipWriter &zipWriter)
             continue;
 
         zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
-        zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), sheet->relationships().saveToXmlData());
+        Relationships &rel = sheet->relationships();
+        if (!rel.isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel.saveToXmlData());
     }
 }
 
