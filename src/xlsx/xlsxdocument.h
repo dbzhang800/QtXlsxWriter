@@ -97,9 +97,9 @@ public:
     Q_DECL_DEPRECATED void setCurrentWorksheet(int index);
     Q_DECL_DEPRECATED void setCurrentWorksheet(const QString &name);
 
-    bool save();
-    bool saveAs(const QString &xlsXname);
-    bool saveAs(QIODevice *device);
+    bool save() const;
+    bool saveAs(const QString &xlsXname) const;
+    bool saveAs(QIODevice *device) const;
 
 private:
     Q_DISABLE_COPY(Document)

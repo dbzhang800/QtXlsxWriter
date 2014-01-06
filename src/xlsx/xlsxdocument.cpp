@@ -191,9 +191,9 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     return true;
 }
 
-bool DocumentPrivate::savePackage(QIODevice *device)
+bool DocumentPrivate::savePackage(QIODevice *device) const
 {
-    Q_Q(Document);
+    Q_Q(const Document);
     ZipWriter zipWriter(device);
     if (zipWriter.error())
         return false;
@@ -202,6 +202,7 @@ bool DocumentPrivate::savePackage(QIODevice *device)
     DocPropsApp docPropsApp;
     DocPropsCore docPropsCore;
 
+    //: Todo
     workbook->prepareDrawings();
 
     // save worksheet xml files
@@ -724,9 +725,9 @@ QStringList Document::worksheetNames() const
  * the document constructed, a default name "book1.xlsx" will be used.
  * Returns true if saved successfully.
  */
-bool Document::save()
+bool Document::save() const
 {
-    Q_D(Document);
+    Q_D(const Document);
     QString name = d->packageName.isEmpty() ? d->defaultPackageName : d->packageName;
 
     return saveAs(name);
@@ -736,7 +737,7 @@ bool Document::save()
  * Saves the document to the file with the given \a name.
  * Returns true if saved successfully.
  */
-bool Document::saveAs(const QString &name)
+bool Document::saveAs(const QString &name) const
 {
     QFile file(name);
     if (file.open(QIODevice::WriteOnly))
@@ -748,9 +749,9 @@ bool Document::saveAs(const QString &name)
  * \overload
  * This function writes a document to the given \a device.
  */
-bool Document::saveAs(QIODevice *device)
+bool Document::saveAs(QIODevice *device) const
 {
-    Q_D(Document);
+    Q_D(const Document);
     return d->savePackage(device);
 }
 
