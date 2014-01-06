@@ -63,8 +63,8 @@ QString getRelFilePath(const QString &filePath)
     if (idx == -1)
         return QString();
 
-    return QString(filePath.left(idx) + QLatin1String("/_rel/")
-                   + filePath.mid(idx+1) + QLatin1String(".rel"));
+    return QString(filePath.left(idx) + QLatin1String("/_rels/")
+                   + filePath.mid(idx+1) + QLatin1String(".rels"));
 }
 
 double datetimeToNumber(const QDateTime &dt, bool is1904)
