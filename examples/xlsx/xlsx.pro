@@ -13,5 +13,6 @@ SUBDIRS = hello \
     richtext \
     conditionalformatting \
     worksheetoperations \
+    hyperlinks \
     demo
 

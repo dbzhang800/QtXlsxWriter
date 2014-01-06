@@ -65,17 +65,18 @@ struct XlsxHyperlinkData
         Internal
     };
 
-    XlsxHyperlinkData(LinkType linkType=External, const QString &url=QString(), const QString &location=QString(), const QString &tip=QString()) :
-        linkType(linkType), url(url), location(location), tip(tip)
+    XlsxHyperlinkData(LinkType linkType=External, const QString &target=QString(), const QString &location=QString()
+            , const QString &display=QString(), const QString &tip=QString())
+        :linkType(linkType), target(target), location(location), display(display), tooltip(tip)
     {
 
     }
 
     LinkType linkType;
-    QString url;
-    QString location; //location string
+    QString target; //For External link
+    QString location;
     QString display;
-    QString tip;
+    QString tooltip;
 };
 
 struct XlsxImageData
@@ -201,6 +202,7 @@ public:
     void loadXmlMergeCells(QXmlStreamReader &reader);
     void loadXmlDataValidations(QXmlStreamReader &reader);
     void loadXmlSheetViews(QXmlStreamReader &reader);
+    void loadXmlHyperlinks(QXmlStreamReader &reader);
 
     SharedStrings *sharedStrings() const;
 
@@ -210,7 +212,7 @@ public:
     Drawing *drawing;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
-    QMap<int, QMap<int, XlsxHyperlinkData *> > urlTable;
+    QMap<int, QMap<int, QSharedPointer<XlsxHyperlinkData> > > urlTable;
     QList<CellRange> merges;
     QList<XlsxImageData *> imageList;
     QMap<int, QSharedPointer<XlsxRowInfo> > rowsInfo;

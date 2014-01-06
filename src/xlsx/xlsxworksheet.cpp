@@ -945,7 +945,7 @@ int Worksheet::writeHyperlink(const QString &row_column, const QUrl &url, const 
 }
 
 /*!
-    Write a QUrl \a value to the cell (\a row, \a column) with the \a format
+    Write a QUrl \a url to the cell (\a row, \a column) with the given \a format
  */
 int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
 {
@@ -993,7 +993,7 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(displayString, Cell::String, fmt, this));
 
     //Store the hyperlink data in a separate table
-    d->urlTable[row][column] = new XlsxHyperlinkData(XlsxHyperlinkData::External, urlString, locationString, tip);
+    d->urlTable[row][column] = QSharedPointer<XlsxHyperlinkData>(new XlsxHyperlinkData(XlsxHyperlinkData::External, urlString, locationString, QString(), tip));
 
     return error;
 }
@@ -1390,36 +1390,31 @@ void WorksheetPrivate::saveXmlHyperlinks(QXmlStreamWriter &writer) const
         return;
 
     writer.writeStartElement(QStringLiteral("hyperlinks"));
-    QMapIterator<int, QMap<int, XlsxHyperlinkData *> > it(urlTable);
+    QMapIterator<int, QMap<int, QSharedPointer<XlsxHyperlinkData> > > it(urlTable);
     while (it.hasNext()) {
         it.next();
         int row = it.key();
-        QMapIterator <int, XlsxHyperlinkData *> it2(it.value());
+        QMapIterator <int, QSharedPointer<XlsxHyperlinkData> > it2(it.value());
         while (it2.hasNext()) {
             it2.next();
             int col = it2.key();
-            XlsxHyperlinkData *data = it2.value();
+            QSharedPointer<XlsxHyperlinkData> data = it2.value();
             QString ref = xl_rowcol_to_cell(row, col);
             writer.writeEmptyElement(QStringLiteral("hyperlink"));
             writer.writeAttribute(QStringLiteral("ref"), ref);
             if (data->linkType == XlsxHyperlinkData::External) {
-
                 //Update relationships
-                relationships.addWorksheetRelationship(QStringLiteral("/hyperlink"), data->url, QStringLiteral("External"));
+                relationships.addWorksheetRelationship(QStringLiteral("/hyperlink"), data->target, QStringLiteral("External"));
 
                 writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships.count()));
-                if (!data->location.isEmpty())
-                    writer.writeAttribute(QStringLiteral("location"), data->location);
-                if (!data->display.isEmpty())
-                    writer.writeAttribute(QStringLiteral("display"), data->url);
-                if (!data->tip.isEmpty())
-                    writer.writeAttribute(QStringLiteral("tooltip"), data->tip);
-            } else {
-                writer.writeAttribute(QStringLiteral("location"), data->url);
-                if (!data->tip.isEmpty())
-                    writer.writeAttribute(QStringLiteral("tooltip"), data->tip);
-                writer.writeAttribute(QStringLiteral("display"), data->location);
             }
+
+            if (!data->location.isEmpty())
+                writer.writeAttribute(QStringLiteral("location"), data->location);
+            if (!data->display.isEmpty())
+                writer.writeAttribute(QStringLiteral("display"), data->display);
+            if (!data->tooltip.isEmpty())
+                writer.writeAttribute(QStringLiteral("tooltip"), data->tooltip);
         }
     }
 
@@ -2155,6 +2150,36 @@ void WorksheetPrivate::loadXmlSheetViews(QXmlStreamReader &reader)
     }
 }
 
+void WorksheetPrivate::loadXmlHyperlinks(QXmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("hyperlinks"));
+
+    while (!reader.atEnd() && !(reader.name() == QLatin1String("hyperlinks")
+            && reader.tokenType() == QXmlStreamReader::EndElement)) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == QLatin1String("hyperlink")) {
+            QXmlStreamAttributes attrs = reader.attributes();
+            QPoint pos = xl_cell_to_rowcol(attrs.value(QLatin1String("ref")).toString());
+            if (pos.x() != -1) { //Valid
+                QSharedPointer<XlsxHyperlinkData> link(new XlsxHyperlinkData);
+                link->display = attrs.value(QLatin1String("display")).toString();
+                link->tooltip = attrs.value(QLatin1String("tooltip")).toString();
+                link->location = attrs.value(QLatin1String("location")).toString();
+
+                if (attrs.hasAttribute(QLatin1String("r:id"))) {
+                    link->linkType = XlsxHyperlinkData::External;
+                    XlsxRelationship ship = relationships.getRelationshipById(attrs.value(QLatin1String("r:id")).toString());
+                    link->target = ship.target;
+                } else {
+                    link->linkType = XlsxHyperlinkData::Internal;
+                }
+
+                urlTable[pos.x()][pos.y()] = link;
+            }
+        }
+    }
+}
+
 bool Worksheet::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Worksheet);
@@ -2183,6 +2208,8 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 ConditionalFormatting cf;
                 cf.loadFromXml(reader, workbook()->styles());
                 d->conditionalFormattingList.append(cf);
+            } else if (reader.name() == QLatin1String("hyperlinks")) {
+                d->loadXmlHyperlinks(reader);
             }
         }
     }
