@@ -40,7 +40,7 @@ class QImage;
 class WorksheetTest;
 
 QT_BEGIN_NAMESPACE_XLSX
-class Package;
+class DocumentPrivate;
 class Workbook;
 class Format;
 class Drawing;
@@ -129,15 +129,15 @@ public:
     QString sheetName() const;
 
     Workbook *workbook() const;
+    Relationships &relationships();
     ~Worksheet();
 private:
-    friend class Package;
+    friend class DocumentPrivate;
     friend class Workbook;
     friend class ::WorksheetTest;
     Worksheet(const QString &sheetName, int sheetId, Workbook *book);
     QSharedPointer<Worksheet> copy(const QString &distName, int distId) const;
     void setSheetName(const QString &sheetName);
-    Relationships &relationships();
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;

@@ -27,12 +27,59 @@
 #include "xlsxdocument_p.h"
 #include "xlsxworkbook.h"
 #include "xlsxworksheet.h"
-#include "xlsxpackage_p.h"
+#include "xlsxcontenttypes_p.h"
+#include "xlsxrelationships_p.h"
+#include "xlsxstyles_p.h"
+#include "xlsxtheme_p.h"
+#include "xlsxdocpropsapp_p.h"
+#include "xlsxdocpropscore_p.h"
+#include "xlsxsharedstrings_p.h"
+#include "xlsxutility_p.h"
+#include "xlsxworkbook_p.h"
+#include "xlsxdrawing_p.h"
+#include "xlsxzipreader_p.h"
+#include "xlsxzipwriter_p.h"
 
 #include <QFile>
 #include <QPointF>
+#include <QBuffer>
 
 QT_BEGIN_NAMESPACE_XLSX
+
+/*
+    From Wikipedia: The Open Packaging Conventions (OPC) is a
+    container-file technology initially created by Microsoft to store
+    a combination of XML and non-XML files that together form a single
+    entity such as an Open XML Paper Specification (OpenXPS)
+    document. http://en.wikipedia.org/wiki/Open_Packaging_Conventions.
+
+    At its simplest an Excel XLSX file contains the following elements:
+
+         ____ [Content_Types].xml
+        |
+        |____ docProps
+        | |____ app.xml
+        | |____ core.xml
+        |
+        |____ xl
+        | |____ workbook.xml
+        | |____ worksheets
+        | | |____ sheet1.xml
+        | |
+        | |____ styles.xml
+        | |
+        | |____ theme
+        | | |____ theme1.xml
+        | |
+        | |_____rels
+        | |____ workbook.xml.rels
+        |
+        |_____rels
+          |____ .rels
+
+    The Packager class coordinates the classes that represent the
+    elements of the package and writes them into the XLSX file.
+*/
 
 DocumentPrivate::DocumentPrivate(Document *p) :
     q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx"))
@@ -49,8 +96,206 @@ void DocumentPrivate::init()
 bool DocumentPrivate::loadPackage(QIODevice *device)
 {
     Q_Q(Document);
-    Package package(q);
-    return package.parsePackage(device);
+    ZipReader zipReader(device);
+    QStringList filePaths = zipReader.filePaths();
+
+    if (!filePaths.contains(QLatin1String("_rels/.rels")))
+        return false;
+
+    Relationships rootRels;
+    rootRels.loadFromXmlData(zipReader.fileData(QStringLiteral("_rels/.rels")));
+
+    //load core property
+    QList<XlsxRelationship> rels_core = rootRels.packageRelationships(QStringLiteral("/metadata/core-properties"));
+    if (!rels_core.isEmpty()) {
+        //Get the core property file name if it exists.
+        //In normal case, this should be "docProps/core.xml"
+        QString docPropsCore_Name = rels_core[0].target;
+
+        DocPropsCore props = DocPropsCore::loadFromXmlData(zipReader.fileData(docPropsCore_Name));
+        foreach (QString name, props.propertyNames())
+            q->setDocumentProperty(name, props.property(name));
+    }
+
+    //load app property
+    QList<XlsxRelationship> rels_app = rootRels.documentRelationships(QStringLiteral("/extended-properties"));
+    if (!rels_app.isEmpty()) {
+        //Get the app property file name if it exists.
+        //In normal case, this should be "docProps/app.xml"
+        QString docPropsApp_Name = rels_app[0].target;
+
+        DocPropsApp props = DocPropsApp::loadFromXmlData(zipReader.fileData(docPropsApp_Name));
+        foreach (QString name, props.propertyNames())
+            q->setDocumentProperty(name, props.property(name));
+    }
+
+    //load workbook now, Get the workbook file path from the root rels file
+    //In normal case, this should be "xl/workbook.xml"
+    QList<XlsxRelationship> rels_xl = rootRels.documentRelationships(QStringLiteral("/officeDocument"));
+    if (rels_xl.isEmpty())
+        return false;
+    QString xlworkbook_Path = rels_xl[0].target;
+    QStringList xlworkbook_PathList = splitPath(xlworkbook_Path);
+    QString xlworkbook_Dir = xlworkbook_PathList[0];
+    QString xlworkbook_Name = xlworkbook_PathList[1];
+    workbook->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
+    QList<XlsxSheetItemInfo> sheetNameIdPairList = workbook->d_func()->sheetItemInfoList;
+    Relationships xlworkbook_Rels;
+    xlworkbook_Rels.loadFromXmlData(zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
+
+    //load styles
+    QList<XlsxRelationship> rels_styles = xlworkbook_Rels.documentRelationships(QStringLiteral("/styles"));
+    if (!rels_styles.isEmpty()) {
+        //In normal case this should be styles.xml which in xl
+        QString name = rels_styles[0].target;
+        QString path = xlworkbook_Dir + QLatin1String("/") + name;
+        QSharedPointer<Styles> styles (new Styles(true));
+        styles->loadFromXmlData(zipReader.fileData(path));
+        workbook->d_ptr->styles = styles;
+    }
+
+    //load sharedStrings
+    QList<XlsxRelationship> rels_sharedStrings = xlworkbook_Rels.documentRelationships(QStringLiteral("/sharedStrings"));
+    if (!rels_sharedStrings.isEmpty()) {
+        //In normal case this should be sharedStrings.xml which in xl
+        QString name = rels_sharedStrings[0].target;
+        QString path = xlworkbook_Dir + QLatin1String("/") + name;
+        workbook->d_ptr->sharedStrings->loadFromXmlData(zipReader.fileData(path));
+    }
+
+    //load theme
+    QList<XlsxRelationship> rels_theme = xlworkbook_Rels.documentRelationships(QStringLiteral("/theme"));
+    if (!rels_theme.isEmpty()) {
+        //In normal case this should be theme/theme1.xml which in xl
+        QString name = rels_theme[0].target;
+        QString path = xlworkbook_Dir + QLatin1String("/") + name;
+        workbook->theme()->loadFromXmlData(zipReader.fileData(path));
+    }
+
+    //load worksheets
+    QList<XlsxRelationship> rels_worksheets = xlworkbook_Rels.documentRelationships(QStringLiteral("/worksheet"));
+    if (rels_worksheets.isEmpty())
+        return false;
+
+    for (int i=0; i<sheetNameIdPairList.size(); ++i) {
+        XlsxSheetItemInfo info = sheetNameIdPairList[i];
+        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + xlworkbook_Rels.getRelationshipById(info.rId).target;
+        QString rel_path = getRelFilePath(worksheet_path);
+        Worksheet *sheet = workbook->addWorksheet(info.name, info.sheetId);
+        //If the .rel file exists, load it.
+        if (zipReader.filePaths().contains(rel_path))
+            sheet->relationships().loadFromXmlData(zipReader.fileData(rel_path));
+        sheet->loadFromXmlData(zipReader.fileData(worksheet_path));
+    }
+
+    return true;
+}
+
+bool DocumentPrivate::savePackage(QIODevice *device)
+{
+    Q_Q(Document);
+    ZipWriter zipWriter(device);
+    if (zipWriter.error())
+        return false;
+
+    ContentTypes contentTypes;
+    DocPropsApp docPropsApp;
+    DocPropsCore docPropsCore;
+
+    workbook->prepareDrawings();
+
+    // save worksheet xml files
+    for (int i=0; i<workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = workbook->worksheet(i);
+        contentTypes.addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+        docPropsApp.addPartTitle(sheet->sheetName());
+
+        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+        Relationships &rel = sheet->relationships();
+        if (!rel.isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel.saveToXmlData());
+    }
+
+    // save workbook xml file
+    zipWriter.addFile(QStringLiteral("xl/workbook.xml"), workbook->saveToXmlData());
+    Relationships rels;
+    for (int i=0; i<workbook->worksheetCount(); ++i)
+        rels.addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
+    rels.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
+    rels.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
+    if (!workbook->sharedStrings()->isEmpty())
+        rels.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
+    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), rels.saveToXmlData());
+
+    // save drawing xml files
+    for (int i=0; i<workbook->drawings().size(); ++i) {
+        contentTypes.addDrawingName(QStringLiteral("drawing%1").arg(i+1));
+
+        Drawing *drawing = workbook->drawings()[i];
+        zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), drawing->saveToXmlData());
+    }
+
+    for (int i=0; i<workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = workbook->worksheet(i);
+        if (sheet->drawingLinks().size() == 0)
+            continue;
+        Relationships rels;
+
+        typedef QPair<QString, QString> PairType;
+        foreach (PairType pair, sheet->drawingLinks())
+            rels.addDocumentRelationship(pair.first, pair.second);
+
+        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), rels.saveToXmlData());
+    }
+
+    // save docProps app/core xml file
+    foreach (QString name, q->documentPropertyNames()) {
+        docPropsApp.setProperty(name, q->documentProperty(name));
+        docPropsCore.setProperty(name, q->documentProperty(name));
+    }
+    if (workbook->worksheetCount())
+        docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), workbook->worksheetCount());
+    zipWriter.addFile(QStringLiteral("docProps/app.xml"), docPropsApp.saveToXmlData());
+    zipWriter.addFile(QStringLiteral("docProps/core.xml"), docPropsCore.saveToXmlData());
+
+    // save sharedStrings xml file
+    if (!workbook->sharedStrings()->isEmpty()) {
+        contentTypes.addSharedString();
+        zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), workbook->sharedStrings()->saveToXmlData());
+    }
+
+    // save styles xml file
+    zipWriter.addFile(QStringLiteral("xl/styles.xml"), workbook->styles()->saveToXmlData());
+
+    // save theme xml file
+    zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), workbook->theme()->saveToXmlData());
+
+    // save image files
+    if (!workbook->images().isEmpty())
+        contentTypes.addImageTypes(QStringList()<<QStringLiteral("png"));
+
+    for (int i=0; i<workbook->images().size(); ++i) {
+        QImage image = workbook->images()[i];
+
+        QByteArray data;
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::WriteOnly);
+        image.save(&buffer, "png");
+        zipWriter.addFile(QStringLiteral("xl/media/image%1.png").arg(i+1), data);
+    }
+
+    // save root .rels xml file
+    Relationships rootrels;
+    rootrels.addDocumentRelationship(QStringLiteral("/officeDocument"), QStringLiteral("xl/workbook.xml"));
+    rootrels.addPackageRelationship(QStringLiteral("/metadata/core-properties"), QStringLiteral("docProps/core.xml"));
+    rootrels.addDocumentRelationship(QStringLiteral("/extended-properties"), QStringLiteral("docProps/app.xml"));
+    zipWriter.addFile(QStringLiteral("_rels/.rels"), rootrels.saveToXmlData());
+
+    // save content types xml file
+    zipWriter.addFile(QStringLiteral("[Content_Types].xml"), contentTypes.saveToXmlData());
+
+    zipWriter.close();
+    return true;
 }
 
 
@@ -505,12 +750,8 @@ bool Document::saveAs(const QString &name)
  */
 bool Document::saveAs(QIODevice *device)
 {
-//    activedWorksheet()->setHidden(false);
-//    activedWorksheet()->setSelected(true);
-
-    //Create the package based on current workbook
-    Package package(this);
-    return package.createPackage(device);
+    Q_D(Document);
+    return d->savePackage(device);
 }
 
 /*!

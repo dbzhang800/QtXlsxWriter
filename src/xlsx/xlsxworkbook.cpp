@@ -28,7 +28,6 @@
 #include "xlsxworksheet.h"
 #include "xlsxstyles_p.h"
 #include "xlsxformat.h"
-#include "xlsxpackage_p.h"
 #include "xlsxworksheet_p.h"
 #include "xlsxformat_p.h"
 

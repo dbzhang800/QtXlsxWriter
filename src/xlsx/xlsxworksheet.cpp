@@ -244,6 +244,9 @@ void Worksheet::setSheetName(const QString &sheetName)
     d->name = sheetName;
 }
 
+/*!
+ * \internal
+ */
 Relationships &Worksheet::relationships()
 {
     Q_D(Worksheet);

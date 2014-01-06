@@ -52,6 +52,7 @@ public:
     void init();
 
     bool loadPackage(QIODevice *device);
+    bool savePackage(QIODevice *device);
 
     Document *q_ptr;
     const QString defaultPackageName; //default name when package name not specified

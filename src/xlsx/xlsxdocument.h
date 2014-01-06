@@ -37,7 +37,6 @@ QT_BEGIN_NAMESPACE_XLSX
 
 class Workbook;
 class Worksheet;
-class Package;
 class Cell;
 class CellRange;
 class DataValidation;
@@ -103,7 +102,6 @@ public:
     bool saveAs(QIODevice *device);
 
 private:
-    friend class Package;
     Q_DISABLE_COPY(Document)
     DocumentPrivate * const d_ptr;
 };

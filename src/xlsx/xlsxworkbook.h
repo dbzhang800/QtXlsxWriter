@@ -37,7 +37,6 @@ QT_BEGIN_NAMESPACE_XLSX
 class Worksheet;
 class SharedStrings;
 class Styles;
-class Package;
 class Drawing;
 class Document;
 class Theme;
@@ -74,7 +73,6 @@ public:
     void setDefaultDateFormat(const QString &format);
 
 private:
-    friend class Package;
     friend class Worksheet;
     friend class WorksheetPrivate;
     friend class Document;
