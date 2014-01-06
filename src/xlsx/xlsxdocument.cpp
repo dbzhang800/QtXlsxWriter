@@ -137,14 +137,12 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     QString xlworkbook_Path = rels_xl[0].target;
     QStringList xlworkbook_PathList = splitPath(xlworkbook_Path);
     QString xlworkbook_Dir = xlworkbook_PathList[0];
-    QString xlworkbook_Name = xlworkbook_PathList[1];
+    workbook->relationships().loadFromXmlData(zipReader.fileData(getRelFilePath(xlworkbook_Path)));
     workbook->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
     QList<XlsxSheetItemInfo> sheetNameIdPairList = workbook->d_func()->sheetItemInfoList;
-    Relationships xlworkbook_Rels;
-    xlworkbook_Rels.loadFromXmlData(zipReader.fileData(xlworkbook_Dir+QStringLiteral("/_rels/")+xlworkbook_Name+QStringLiteral(".rels")));
 
     //load styles
-    QList<XlsxRelationship> rels_styles = xlworkbook_Rels.documentRelationships(QStringLiteral("/styles"));
+    QList<XlsxRelationship> rels_styles = workbook->relationships().documentRelationships(QStringLiteral("/styles"));
     if (!rels_styles.isEmpty()) {
         //In normal case this should be styles.xml which in xl
         QString name = rels_styles[0].target;
@@ -155,7 +153,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load sharedStrings
-    QList<XlsxRelationship> rels_sharedStrings = xlworkbook_Rels.documentRelationships(QStringLiteral("/sharedStrings"));
+    QList<XlsxRelationship> rels_sharedStrings = workbook->relationships().documentRelationships(QStringLiteral("/sharedStrings"));
     if (!rels_sharedStrings.isEmpty()) {
         //In normal case this should be sharedStrings.xml which in xl
         QString name = rels_sharedStrings[0].target;
@@ -164,7 +162,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load theme
-    QList<XlsxRelationship> rels_theme = xlworkbook_Rels.documentRelationships(QStringLiteral("/theme"));
+    QList<XlsxRelationship> rels_theme = workbook->relationships().documentRelationships(QStringLiteral("/theme"));
     if (!rels_theme.isEmpty()) {
         //In normal case this should be theme/theme1.xml which in xl
         QString name = rels_theme[0].target;
@@ -173,13 +171,13 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load worksheets
-    QList<XlsxRelationship> rels_worksheets = xlworkbook_Rels.documentRelationships(QStringLiteral("/worksheet"));
+    QList<XlsxRelationship> rels_worksheets = workbook->relationships().documentRelationships(QStringLiteral("/worksheet"));
     if (rels_worksheets.isEmpty())
         return false;
 
     for (int i=0; i<sheetNameIdPairList.size(); ++i) {
         XlsxSheetItemInfo info = sheetNameIdPairList[i];
-        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + xlworkbook_Rels.getRelationshipById(info.rId).target;
+        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + workbook->relationships().getRelationshipById(info.rId).target;
         QString rel_path = getRelFilePath(worksheet_path);
         Worksheet *sheet = workbook->addWorksheet(info.name, info.sheetId);
         //If the .rel file exists, load it.
@@ -219,14 +217,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
 
     // save workbook xml file
     zipWriter.addFile(QStringLiteral("xl/workbook.xml"), workbook->saveToXmlData());
-    Relationships rels;
-    for (int i=0; i<workbook->worksheetCount(); ++i)
-        rels.addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
-    rels.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
-    rels.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
-    if (!workbook->sharedStrings()->isEmpty())
-        rels.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
-    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), rels.saveToXmlData());
+    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), workbook->relationships().saveToXmlData());
 
     // save drawing xml files
     for (int i=0; i<workbook->drawings().size(); ++i) {

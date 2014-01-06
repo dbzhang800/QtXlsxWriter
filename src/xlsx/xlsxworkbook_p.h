@@ -38,6 +38,8 @@
 
 #include "xlsxworkbook.h"
 #include "xlsxtheme_p.h"
+#include "xlsxrelationships_p.h"
+
 #include <QSharedPointer>
 #include <QPair>
 #include <QStringList>
@@ -78,6 +80,7 @@ public:
     WorkbookPrivate(Workbook *q);
 
     Workbook *q_ptr;
+    mutable Relationships relationships;
 
     QSharedPointer<SharedStrings> sharedStrings;
     QList<QSharedPointer<Worksheet> > worksheets;

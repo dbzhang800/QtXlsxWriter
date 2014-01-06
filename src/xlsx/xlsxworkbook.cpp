@@ -397,6 +397,15 @@ void Workbook::prepareDrawings()
 void Workbook::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Workbook);
+    d->relationships.clear();
+
+    for (int i=0; i<worksheetCount(); ++i)
+        d->relationships.addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
+    d->relationships.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
+    d->relationships.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
+    if (!sharedStrings()->isEmpty())
+        d->relationships.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
+
     QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
@@ -552,6 +561,15 @@ bool Workbook::loadFromXmlData(const QByteArray &data)
     buffer.open(QIODevice::ReadOnly);
 
     return loadFromXmlFile(&buffer);
+}
+
+/*!
+ * \internal
+ */
+Relationships &Workbook::relationships()
+{
+    Q_D(Workbook);
+    return d->relationships;
 }
 
 QT_END_NAMESPACE_XLSX

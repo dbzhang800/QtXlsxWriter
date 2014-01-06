@@ -40,6 +40,7 @@ class Styles;
 class Drawing;
 class Document;
 class Theme;
+class Relationships;
 class DocumentPrivate;
 
 class WorkbookPrivate;
@@ -84,6 +85,7 @@ private:
     QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
     bool loadFromXmlData(const QByteArray &data);
+    Relationships &relationships();
 
     SharedStrings *sharedStrings() const;
     Styles *styles();
