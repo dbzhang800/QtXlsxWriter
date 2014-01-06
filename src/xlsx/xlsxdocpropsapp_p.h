@@ -58,8 +58,8 @@ public:
     QString property(const QString &name) const;
     QStringList propertyNames() const;
 
-    QByteArray saveToXmlData();
-    void saveToXmlFile(QIODevice *device);
+    QByteArray saveToXmlData() const;
+    void saveToXmlFile(QIODevice *device) const;
     static DocPropsApp loadFromXmlFile(QIODevice *device);
     static DocPropsApp loadFromXmlData(const QByteArray &data);
 

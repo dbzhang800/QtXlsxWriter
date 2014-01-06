@@ -57,7 +57,7 @@ const int XLSX_STRING_MAX = 32767;
 
 class SharedStrings;
 
-struct XlsxUrlData
+struct XlsxHyperlinkData
 {
     enum LinkType
     {
@@ -65,7 +65,7 @@ struct XlsxUrlData
         Internal
     };
 
-    XlsxUrlData(LinkType linkType=External, const QString &url=QString(), const QString &location=QString(), const QString &tip=QString()) :
+    XlsxHyperlinkData(LinkType linkType=External, const QString &url=QString(), const QString &location=QString(), const QString &tip=QString()) :
         linkType(linkType), url(url), location(location), tip(tip)
     {
 
@@ -180,20 +180,20 @@ public:
     ~WorksheetPrivate();
     int checkDimensions(int row, int col, bool ignore_row=false, bool ignore_col=false);
     Format cellFormat(int row, int col) const;
-    QString generateDimensionString();
-    void calculateSpans();
+    QString generateDimensionString() const;
+    void calculateSpans() const;
     void splitColsInfo(int colFirst, int colLast);
 
-    void writeSheetData(QXmlStreamWriter &writer);
-    void writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell);
-    void writeMergeCells(QXmlStreamWriter &writer);
-    void writeHyperlinks(QXmlStreamWriter &writer);
-    void writeDrawings(QXmlStreamWriter &writer);
-    void writeDataValidations(QXmlStreamWriter &writer);
-    int rowPixelsSize(int row);
-    int colPixelsSize(int col);
-    XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height);
-    XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data);
+    void writeSheetData(QXmlStreamWriter &writer) const;
+    void writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const;
+    void writeMergeCells(QXmlStreamWriter &writer) const;
+    void writeHyperlinks(QXmlStreamWriter &writer) const;
+    void writeDrawings(QXmlStreamWriter &writer) const;
+    void writeDataValidations(QXmlStreamWriter &writer) const;
+    int rowPixelsSize(int row) const;
+    int colPixelsSize(int col) const;
+    XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height) const;
+    XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data) const;
 
     QSharedPointer<Cell> readNumericCellData(QXmlStreamReader &reader);
     void readSheetData(QXmlStreamReader &reader);
@@ -210,7 +210,7 @@ public:
     Drawing *drawing;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
-    QMap<int, QMap<int, XlsxUrlData *> > urlTable;
+    QMap<int, QMap<int, XlsxHyperlinkData *> > urlTable;
     QList<CellRange> merges;
     QList<XlsxImageData *> imageList;
     QMap<int, QSharedPointer<XlsxRowInfo> > rowsInfo;
@@ -224,7 +224,7 @@ public:
     CellRange dimension;
     int previous_row;
 
-    QMap<int, QString> row_spans;
+    mutable QMap<int, QString> row_spans;
     QMap<int, double> row_sizes;
     QMap<int, double> col_sizes;
 

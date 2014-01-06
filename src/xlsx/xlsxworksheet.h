@@ -139,8 +139,8 @@ private:
     void setSheetName(const QString &sheetName);
     Relationships &relationships();
 
-    void saveToXmlFile(QIODevice *device);
-    QByteArray saveToXmlData();
+    void saveToXmlFile(QIODevice *device) const;
+    QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
     bool loadFromXmlData(const QByteArray &data);
 

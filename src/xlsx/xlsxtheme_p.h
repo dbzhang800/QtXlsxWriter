@@ -46,7 +46,7 @@ class Theme
 public:
     Theme();
 
-    void saveToXmlFile(QIODevice *device);
+    void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;
     void loadFromXmlData(const QByteArray &data);
 

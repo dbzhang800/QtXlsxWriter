@@ -65,7 +65,7 @@ public:
     void addCalcChain();
     void addVbaProject();
 
-    void saveToXmlFile(QIODevice *device);
+    void saveToXmlFile(QIODevice *device) const;
 
 private:
     QMap<QString, QString> m_defaults;

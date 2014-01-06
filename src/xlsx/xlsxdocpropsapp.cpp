@@ -79,7 +79,7 @@ QStringList DocPropsApp::propertyNames() const
     return m_properties.keys();
 }
 
-void DocPropsApp::saveToXmlFile(QIODevice *device)
+void DocPropsApp::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
     QString vt = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes");
@@ -130,7 +130,7 @@ void DocPropsApp::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-QByteArray DocPropsApp::saveToXmlData()
+QByteArray DocPropsApp::saveToXmlData() const
 {
     QByteArray data;
     QBuffer buffer(&data);

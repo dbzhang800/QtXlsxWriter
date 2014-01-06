@@ -68,19 +68,19 @@ class Drawing
 {
 public:
     Drawing();
-    void saveToXmlFile(QIODevice *device);
+    void saveToXmlFile(QIODevice *device) const;
 
     bool embedded;
     int orientation;
     QList <XlsxDrawingDimensionData *> dimensionList;
 
 private:
-    void writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data);
-    void writeAbsoluteAnchor(QXmlStreamWriter &writer, int index);
-    void writePos(QXmlStreamWriter &writer, int x, int y);
-    void writeExt(QXmlStreamWriter &writer, int cx, int cy);
-    void writeGraphicFrame(QXmlStreamWriter &writer, int index, const QString &name=QString());
-    void writePicture(QXmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description);
+    void writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data) const;
+    void writeAbsoluteAnchor(QXmlStreamWriter &writer, int index) const;
+    void writePos(QXmlStreamWriter &writer, int x, int y) const;
+    void writeExt(QXmlStreamWriter &writer, int cx, int cy) const;
+    void writeGraphicFrame(QXmlStreamWriter &writer, int index, const QString &name=QString()) const;
+    void writePicture(QXmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description) const;
 };
 
 } // namespace QXlsx

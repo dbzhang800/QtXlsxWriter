@@ -100,7 +100,7 @@ void Relationships::addRelationship(const QString &type, const QString &target, 
     m_relationships.append(relation);
 }
 
-void Relationships::saveToXmlFile(QIODevice *device)
+void Relationships::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
 
@@ -120,7 +120,7 @@ void Relationships::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-QByteArray Relationships::saveToXmlData()
+QByteArray Relationships::saveToXmlData() const
 {
     QByteArray data;
     QBuffer buffer(&data);

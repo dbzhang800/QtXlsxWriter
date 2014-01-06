@@ -111,7 +111,7 @@ void ContentTypes::addVbaProject()
     addOverride(QStringLiteral("bin"), QStringLiteral("application/vnd.ms-office.vbaProject"));
 }
 
-void ContentTypes::saveToXmlFile(QIODevice *device)
+void ContentTypes::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
 

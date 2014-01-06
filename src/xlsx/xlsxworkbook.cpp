@@ -395,9 +395,9 @@ void Workbook::prepareDrawings()
     }
 }
 
-void Workbook::saveToXmlFile(QIODevice *device)
+void Workbook::saveToXmlFile(QIODevice *device) const
 {
-    Q_D(Workbook);
+    Q_D(const Workbook);
     QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
@@ -474,7 +474,7 @@ void Workbook::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-QByteArray Workbook::saveToXmlData()
+QByteArray Workbook::saveToXmlData() const
 {
     QByteArray data;
     QBuffer buffer(&data);

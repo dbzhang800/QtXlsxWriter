@@ -66,8 +66,8 @@ public:
     void addMsPackageRelationship(const QString &relativeType, const QString &target);
     void addWorksheetRelationship(const QString &relativeType, const QString &target, const QString &targetMode=QString());
 
-    void saveToXmlFile(QIODevice *device);
-    QByteArray saveToXmlData();
+    void saveToXmlFile(QIODevice *device) const;
+    QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
     bool loadFromXmlData(const QByteArray &data);
     XlsxRelationship getRelationshipById(const QString &id) const;

@@ -36,7 +36,7 @@ Drawing::Drawing()
     orientation = 0;
 }
 
-void Drawing::saveToXmlFile(QIODevice *device)
+void Drawing::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
 
@@ -60,7 +60,7 @@ void Drawing::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void Drawing::writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data)
+void Drawing::writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawingDimensionData *data) const
 {
     writer.writeStartElement(QStringLiteral("xdr:twoCellAnchor"));
     if (data->drawing_type == 2)
@@ -96,7 +96,7 @@ void Drawing::writeTwoCellAnchor(QXmlStreamWriter &writer, int index, XlsxDrawin
     writer.writeEndElement(); //xdr:twoCellAnchor
 }
 
-void Drawing::writeAbsoluteAnchor(QXmlStreamWriter &writer, int index)
+void Drawing::writeAbsoluteAnchor(QXmlStreamWriter &writer, int index) const
 {
     writer.writeStartElement(QStringLiteral("xdr:absoluteAnchor"));
     if (orientation == 0) {
@@ -113,21 +113,21 @@ void Drawing::writeAbsoluteAnchor(QXmlStreamWriter &writer, int index)
     writer.writeEndElement(); //xdr:absoluteAnchor
 }
 
-void Drawing::writePos(QXmlStreamWriter &writer, int x, int y)
+void Drawing::writePos(QXmlStreamWriter &writer, int x, int y) const
 {
     writer.writeEmptyElement(QStringLiteral("xdr:pos"));
     writer.writeAttribute(QStringLiteral("x"), QString::number(x));
     writer.writeAttribute(QStringLiteral("y"), QString::number(y));
 }
 
-void Drawing::writeExt(QXmlStreamWriter &writer, int cx, int cy)
+void Drawing::writeExt(QXmlStreamWriter &writer, int cx, int cy) const
 {
     writer.writeStartElement(QStringLiteral("xdr:ext"));
     writer.writeAttribute(QStringLiteral("cx"), QString::number(cx));
     writer.writeAttribute(QStringLiteral("cy"), QString::number(cy));
 }
 
-void Drawing::writeGraphicFrame(QXmlStreamWriter &writer, int index, const QString &name)
+void Drawing::writeGraphicFrame(QXmlStreamWriter &writer, int index, const QString &name) const
 {
     writer.writeStartElement(QStringLiteral("xdr:graphicFrame"));
     writer.writeAttribute(QStringLiteral("macro"), QString());
@@ -149,7 +149,7 @@ void Drawing::writeGraphicFrame(QXmlStreamWriter &writer, int index, const QStri
     writer.writeEndElement(); //xdr:graphicFrame
 }
 
-void Drawing::writePicture(QXmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description)
+void Drawing::writePicture(QXmlStreamWriter &writer, int index, double col_abs, double row_abs, int width, int height, const QString &description) const
 {
     writer.writeStartElement(QStringLiteral("xdr:pic"));
 

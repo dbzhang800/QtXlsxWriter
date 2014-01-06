@@ -205,7 +205,7 @@ Theme::Theme()
 {
 }
 
-void Theme::saveToXmlFile(QIODevice *device)
+void Theme::saveToXmlFile(QIODevice *device) const
 {
     if (xmlData.isEmpty())
         device->write(defaultXmlData);

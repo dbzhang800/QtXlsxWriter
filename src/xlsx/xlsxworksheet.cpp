@@ -83,7 +83,7 @@ WorksheetPrivate::~WorksheetPrivate()
   makes comparing files easier. The span is the same for each
   block of 16 rows.
  */
-void WorksheetPrivate::calculateSpans()
+void WorksheetPrivate::calculateSpans() const
 {
     row_spans.clear();
     int span_min = XLSX_COLUMN_MAX+1;
@@ -132,7 +132,7 @@ void WorksheetPrivate::calculateSpans()
 }
 
 
-QString WorksheetPrivate::generateDimensionString()
+QString WorksheetPrivate::generateDimensionString() const
 {
     if (!dimension.isValid())
         return QStringLiteral("A1");
@@ -990,7 +990,7 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format
     d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(displayString, Cell::String, fmt, this));
 
     //Store the hyperlink data in a separate table
-    d->urlTable[row][column] = new XlsxUrlData(XlsxUrlData::External, urlString, locationString, tip);
+    d->urlTable[row][column] = new XlsxHyperlinkData(XlsxHyperlinkData::External, urlString, locationString, tip);
 
     return error;
 }
@@ -1119,9 +1119,9 @@ int Worksheet::unmergeCells(const QString &range)
     return unmergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
 }
 
-void Worksheet::saveToXmlFile(QIODevice *device)
+void Worksheet::saveToXmlFile(QIODevice *device) const
 {
-    Q_D(Worksheet);
+    Q_D(const Worksheet);
     d->relationships.clear();
 
     QXmlStreamWriter writer(device);
@@ -1222,7 +1222,7 @@ void Worksheet::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer)
+void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer) const
 {
     calculateSpans();
     for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
@@ -1275,7 +1275,7 @@ void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer)
     }
 }
 
-void WorksheetPrivate::writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell)
+void WorksheetPrivate::writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const
 {
     //This is the innermost loop so efficiency is important.
     QString cell_pos = xl_rowcol_to_cell_fast(row, col);
@@ -1349,7 +1349,7 @@ void WorksheetPrivate::writeCellData(QXmlStreamWriter &writer, int row, int col,
     writer.writeEndElement(); //c
 }
 
-void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer)
+void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer) const
 {
     if (merges.isEmpty())
         return;
@@ -1367,7 +1367,7 @@ void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer)
     writer.writeEndElement(); //mergeCells
 }
 
-void WorksheetPrivate::writeDataValidations(QXmlStreamWriter &writer)
+void WorksheetPrivate::writeDataValidations(QXmlStreamWriter &writer) const
 {
     if (dataValidationsList.isEmpty())
         return;
@@ -1381,25 +1381,25 @@ void WorksheetPrivate::writeDataValidations(QXmlStreamWriter &writer)
     writer.writeEndElement(); //dataValidations
 }
 
-void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer)
+void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer) const
 {
     if (urlTable.isEmpty())
         return;
 
     writer.writeStartElement(QStringLiteral("hyperlinks"));
-    QMapIterator<int, QMap<int, XlsxUrlData *> > it(urlTable);
+    QMapIterator<int, QMap<int, XlsxHyperlinkData *> > it(urlTable);
     while (it.hasNext()) {
         it.next();
         int row = it.key();
-        QMapIterator <int, XlsxUrlData *> it2(it.value());
+        QMapIterator <int, XlsxHyperlinkData *> it2(it.value());
         while (it2.hasNext()) {
             it2.next();
             int col = it2.key();
-            XlsxUrlData *data = it2.value();
+            XlsxHyperlinkData *data = it2.value();
             QString ref = xl_rowcol_to_cell(row, col);
             writer.writeEmptyElement(QStringLiteral("hyperlink"));
             writer.writeAttribute(QStringLiteral("ref"), ref);
-            if (data->linkType == XlsxUrlData::External) {
+            if (data->linkType == XlsxHyperlinkData::External) {
 
                 //Update relationships
                 relationships.addWorksheetRelationship(QStringLiteral("/hyperlink"), data->url, QStringLiteral("External"));
@@ -1423,7 +1423,7 @@ void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer)
     writer.writeEndElement();//hyperlinks
 }
 
-void WorksheetPrivate::writeDrawings(QXmlStreamWriter &writer)
+void WorksheetPrivate::writeDrawings(QXmlStreamWriter &writer) const
 {
     if (!drawing)
         return;
@@ -1732,7 +1732,7 @@ void Worksheet::prepareImage(int index, int image_id)
  height hasn't been set by the user we use the default value. If
  the row is hidden it has a value of zero.
 */
-int WorksheetPrivate::rowPixelsSize(int row)
+int WorksheetPrivate::rowPixelsSize(int row) const
 {
     double height;
     if (row_sizes.contains(row))
@@ -1748,7 +1748,7 @@ int WorksheetPrivate::rowPixelsSize(int row)
  by the user we use the default value. If the column is hidden it
  has a value of zero.
 */
-int WorksheetPrivate::colPixelsSize(int col)
+int WorksheetPrivate::colPixelsSize(int col) const
 {
     double max_digit_width = 7.0; //For Calabri 11
     double padding = 5.0;
@@ -1780,7 +1780,7 @@ int WorksheetPrivate::colPixelsSize(int col)
         x_abs         Absolute distance to left side of object.
         y_abs         Absolute distance to top side of object.
 */
-XlsxObjectPositionData WorksheetPrivate::objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height)
+XlsxObjectPositionData WorksheetPrivate::objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height) const
 {
     double x_abs = 0;
     double y_abs = 0;
@@ -1841,7 +1841,7 @@ XlsxObjectPositionData WorksheetPrivate::objectPixelsPosition(int col_start, int
         12,700 EMUs per point. Therefore, 12,700 * 3 /4 = 9,525 EMUs per
         pixel
 */
-XlsxObjectPositionData WorksheetPrivate::pixelsToEMUs(const XlsxObjectPositionData &data)
+XlsxObjectPositionData WorksheetPrivate::pixelsToEMUs(const XlsxObjectPositionData &data) const
 {
     XlsxObjectPositionData result = data;
     result.x1 = static_cast<int>(data.x1 * 9525 + 0.5);
@@ -1856,7 +1856,7 @@ XlsxObjectPositionData WorksheetPrivate::pixelsToEMUs(const XlsxObjectPositionDa
     return result;
 }
 
-QByteArray Worksheet::saveToXmlData()
+QByteArray Worksheet::saveToXmlData() const
 {
     QByteArray data;
     QBuffer buffer(&data);

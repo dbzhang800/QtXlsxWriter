@@ -72,7 +72,7 @@ QStringList DocPropsCore::propertyNames() const
     return m_properties.keys();
 }
 
-void DocPropsCore::saveToXmlFile(QIODevice *device)
+void DocPropsCore::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
     const QString cp = QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties");
@@ -124,7 +124,7 @@ void DocPropsCore::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-QByteArray DocPropsCore::saveToXmlData()
+QByteArray DocPropsCore::saveToXmlData() const
 {
     QByteArray data;
     QBuffer buffer(&data);
