@@ -199,7 +199,7 @@ void WorksheetTest::testReadSheetData()
 
     QXlsx::Worksheet sheet("", 1, 0);
     sheet.d_ptr->sharedStrings()->addSharedString("Hello");
-    sheet.d_ptr->readSheetData(reader);
+    sheet.d_ptr->loadXmlSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->cellTable.size(), 2);
 
@@ -239,7 +239,7 @@ void WorksheetTest::testReadColsInfo()
     reader.readNextStartElement();//current node is cols
 
     QXlsx::Worksheet sheet("", 1, 0);
-    sheet.d_ptr->readColumnsInfo(reader);
+    sheet.d_ptr->loadXmlColumnsInfo(reader);
 
     QCOMPARE(sheet.d_ptr->colsInfo.size(), 1);
     QCOMPARE(sheet.d_ptr->colsInfo[9]->width, 5.0);
@@ -259,7 +259,7 @@ void WorksheetTest::testReadRowsInfo()
     reader.readNextStartElement();//current node is sheetData
 
     QXlsx::Worksheet sheet("", 1, 0);
-    sheet.d_ptr->readSheetData(reader);
+    sheet.d_ptr->loadXmlSheetData(reader);
 
     QCOMPARE(sheet.d_ptr->rowsInfo.size(), 1);
     QCOMPARE(sheet.d_ptr->rowsInfo[3]->height, 40.0);
@@ -273,7 +273,7 @@ void WorksheetTest::testReadMergeCells()
     reader.readNextStartElement();//current node is mergeCells
 
     QXlsx::Worksheet sheet("", 1, 0);
-    sheet.d_ptr->readMergeCells(reader);
+    sheet.d_ptr->loadXmlMergeCells(reader);
 
     QCOMPARE(sheet.d_ptr->merges.size(), 2);
     QCOMPARE(sheet.d_ptr->merges[0].toString(), QStringLiteral("B1:B5"));
@@ -290,7 +290,7 @@ void WorksheetTest::testReadDataValidations()
     reader.readNextStartElement();//current node is dataValidations
 
     QXlsx::Worksheet sheet("", 1, 0);
-    sheet.d_ptr->readDataValidations(reader);
+    sheet.d_ptr->loadXmlDataValidations(reader);
 
     QCOMPARE(sheet.d_ptr->dataValidationsList.size(), 2);
     QCOMPARE(sheet.d_ptr->dataValidationsList[0].validationType(), QXlsx::DataValidation::Whole);

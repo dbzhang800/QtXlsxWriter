@@ -184,23 +184,23 @@ public:
     void calculateSpans() const;
     void splitColsInfo(int colFirst, int colLast);
 
-    void writeSheetData(QXmlStreamWriter &writer) const;
-    void writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const;
-    void writeMergeCells(QXmlStreamWriter &writer) const;
-    void writeHyperlinks(QXmlStreamWriter &writer) const;
-    void writeDrawings(QXmlStreamWriter &writer) const;
-    void writeDataValidations(QXmlStreamWriter &writer) const;
+    void saveXmlSheetData(QXmlStreamWriter &writer) const;
+    void saveXmlCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const;
+    void saveXmlMergeCells(QXmlStreamWriter &writer) const;
+    void saveXmlHyperlinks(QXmlStreamWriter &writer) const;
+    void saveXmlDrawings(QXmlStreamWriter &writer) const;
+    void saveXmlDataValidations(QXmlStreamWriter &writer) const;
     int rowPixelsSize(int row) const;
     int colPixelsSize(int col) const;
     XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height) const;
     XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data) const;
 
-    QSharedPointer<Cell> readNumericCellData(QXmlStreamReader &reader);
-    void readSheetData(QXmlStreamReader &reader);
-    void readColumnsInfo(QXmlStreamReader &reader);
-    void readMergeCells(QXmlStreamReader &reader);
-    void readDataValidations(QXmlStreamReader &reader);
-    void readSheetViews(QXmlStreamReader &reader);
+    QSharedPointer<Cell> loadXmlNumericCellData(QXmlStreamReader &reader);
+    void loadXmlSheetData(QXmlStreamReader &reader);
+    void loadXmlColumnsInfo(QXmlStreamReader &reader);
+    void loadXmlMergeCells(QXmlStreamReader &reader);
+    void loadXmlDataValidations(QXmlStreamReader &reader);
+    void loadXmlSheetViews(QXmlStreamReader &reader);
 
     SharedStrings *sharedStrings() const;
 

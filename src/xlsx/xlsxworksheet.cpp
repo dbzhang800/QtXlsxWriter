@@ -1211,21 +1211,21 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
 
     writer.writeStartElement(QStringLiteral("sheetData"));
     if (d->dimension.isValid())
-        d->writeSheetData(writer);
+        d->saveXmlSheetData(writer);
     writer.writeEndElement();//sheetData
 
-    d->writeMergeCells(writer);
+    d->saveXmlMergeCells(writer);
     foreach (const ConditionalFormatting cf, d->conditionalFormattingList)
         cf.saveToXml(writer);
-    d->writeDataValidations(writer);
-    d->writeHyperlinks(writer);
-    d->writeDrawings(writer);
+    d->saveXmlDataValidations(writer);
+    d->saveXmlHyperlinks(writer);
+    d->saveXmlDrawings(writer);
 
     writer.writeEndElement();//worksheet
     writer.writeEndDocument();
 }
 
-void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer) const
+void WorksheetPrivate::saveXmlSheetData(QXmlStreamWriter &writer) const
 {
     calculateSpans();
     for (int row_num = dimension.firstRow(); row_num <= dimension.lastRow(); row_num++) {
@@ -1266,7 +1266,7 @@ void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer) const
 
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (cellTable[row_num].contains(col_num)) {
-                    writeCellData(writer, row_num, col_num, cellTable[row_num][col_num]);
+                    saveXmlCellData(writer, row_num, col_num, cellTable[row_num][col_num]);
                 }
             }
             writer.writeEndElement(); //row
@@ -1278,7 +1278,7 @@ void WorksheetPrivate::writeSheetData(QXmlStreamWriter &writer) const
     }
 }
 
-void WorksheetPrivate::writeCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const
+void WorksheetPrivate::saveXmlCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const
 {
     //This is the innermost loop so efficiency is important.
     QString cell_pos = xl_rowcol_to_cell_fast(row, col);
@@ -1352,7 +1352,7 @@ void WorksheetPrivate::writeCellData(QXmlStreamWriter &writer, int row, int col,
     writer.writeEndElement(); //c
 }
 
-void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer) const
+void WorksheetPrivate::saveXmlMergeCells(QXmlStreamWriter &writer) const
 {
     if (merges.isEmpty())
         return;
@@ -1370,7 +1370,7 @@ void WorksheetPrivate::writeMergeCells(QXmlStreamWriter &writer) const
     writer.writeEndElement(); //mergeCells
 }
 
-void WorksheetPrivate::writeDataValidations(QXmlStreamWriter &writer) const
+void WorksheetPrivate::saveXmlDataValidations(QXmlStreamWriter &writer) const
 {
     if (dataValidationsList.isEmpty())
         return;
@@ -1384,7 +1384,7 @@ void WorksheetPrivate::writeDataValidations(QXmlStreamWriter &writer) const
     writer.writeEndElement(); //dataValidations
 }
 
-void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer) const
+void WorksheetPrivate::saveXmlHyperlinks(QXmlStreamWriter &writer) const
 {
     if (urlTable.isEmpty())
         return;
@@ -1426,7 +1426,7 @@ void WorksheetPrivate::writeHyperlinks(QXmlStreamWriter &writer) const
     writer.writeEndElement();//hyperlinks
 }
 
-void WorksheetPrivate::writeDrawings(QXmlStreamWriter &writer) const
+void WorksheetPrivate::saveXmlDrawings(QXmlStreamWriter &writer) const
 {
     if (!drawing)
         return;
@@ -1869,7 +1869,7 @@ QByteArray Worksheet::saveToXmlData() const
     return data;
 }
 
-QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(QXmlStreamReader &reader)
+QSharedPointer<Cell> WorksheetPrivate::loadXmlNumericCellData(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("c"));
 
@@ -1909,7 +1909,7 @@ QSharedPointer<Cell> WorksheetPrivate::readNumericCellData(QXmlStreamReader &rea
     return cell;
 }
 
-void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
+void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
 {
     Q_Q(Worksheet);
     Q_ASSERT(reader.name() == QLatin1String("sheetData"));
@@ -2002,7 +2002,7 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
                         }
                     } else if (type == QLatin1String("str")) {
                         //formula type
-                        QSharedPointer<Cell> data = readNumericCellData(reader);
+                        QSharedPointer<Cell> data = loadXmlNumericCellData(reader);
                         data->d_ptr->format = format;
                         data->d_ptr->parent = q;
                         cellTable[pos.x()][pos.y()] = data;
@@ -2023,14 +2023,14 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
                             data->d_ptr->formula = f_str;
                         cellTable[pos.x()][pos.y()] = data;
                     } else if (type == QLatin1String("n")) {
-                        QSharedPointer<Cell> data = readNumericCellData(reader);
+                        QSharedPointer<Cell> data = loadXmlNumericCellData(reader);
                         data->d_ptr->format = format;
                         data->d_ptr->parent = q;
                         cellTable[pos.x()][pos.y()] = data;
                     }
                 } else {
                     //default is "n"
-                    QSharedPointer<Cell> data = readNumericCellData(reader);
+                    QSharedPointer<Cell> data = loadXmlNumericCellData(reader);
                     data->d_ptr->format = format;
                     data->d_ptr->parent = q;
                     cellTable[pos.x()][pos.y()] = data;
@@ -2040,7 +2040,7 @@ void WorksheetPrivate::readSheetData(QXmlStreamReader &reader)
     }
 }
 
-void WorksheetPrivate::readColumnsInfo(QXmlStreamReader &reader)
+void WorksheetPrivate::loadXmlColumnsInfo(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("cols"));
 
@@ -2081,7 +2081,7 @@ void WorksheetPrivate::readColumnsInfo(QXmlStreamReader &reader)
     }
 }
 
-void WorksheetPrivate::readMergeCells(QXmlStreamReader &reader)
+void WorksheetPrivate::loadXmlMergeCells(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("mergeCells"));
 
@@ -2111,7 +2111,7 @@ void WorksheetPrivate::readMergeCells(QXmlStreamReader &reader)
         qDebug("read merge cells error");
 }
 
-void WorksheetPrivate::readDataValidations(QXmlStreamReader &reader)
+void WorksheetPrivate::loadXmlDataValidations(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("dataValidations"));
     QXmlStreamAttributes attributes = reader.attributes();
@@ -2130,7 +2130,7 @@ void WorksheetPrivate::readDataValidations(QXmlStreamReader &reader)
         qDebug("read data validation error");
 }
 
-void WorksheetPrivate::readSheetViews(QXmlStreamReader &reader)
+void WorksheetPrivate::loadXmlSheetViews(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("sheetViews"));
 
@@ -2168,17 +2168,17 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QString range = attributes.value(QLatin1String("ref")).toString();
                 d->dimension = CellRange(range);
             } else if (reader.name() == QLatin1String("sheetViews")) {
-                d->readSheetViews(reader);
+                d->loadXmlSheetViews(reader);
             } else if (reader.name() == QLatin1String("sheetFormatPr")) {
 
             } else if (reader.name() == QLatin1String("cols")) {
-                d->readColumnsInfo(reader);
+                d->loadXmlColumnsInfo(reader);
             } else if (reader.name() == QLatin1String("sheetData")) {
-                d->readSheetData(reader);
+                d->loadXmlSheetData(reader);
             } else if (reader.name() == QLatin1String("mergeCells")) {
-                d->readMergeCells(reader);
+                d->loadXmlMergeCells(reader);
             } else if (reader.name() == QLatin1String("dataValidations")) {
-                d->readDataValidations(reader);
+                d->loadXmlDataValidations(reader);
             } else if (reader.name() == QLatin1String("conditionalFormatting")) {
                 ConditionalFormatting cf;
                 cf.loadFromXml(reader, workbook()->styles());
