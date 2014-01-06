@@ -36,7 +36,8 @@ void RelationshipsTest::testLoadXml()
                        "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>"
                        "</Relationships>");
 
-    QXlsx::Relationships rels = QXlsx::Relationships::loadFromXmlData(xmldata);
+    QXlsx::Relationships rels;
+    rels.loadFromXmlData(xmldata);
 
     QCOMPARE(rels.documentRelationships("/officeDocument").size(), 1);
 }
