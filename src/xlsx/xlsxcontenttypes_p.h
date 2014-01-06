@@ -65,6 +65,7 @@ public:
     void addCalcChain();
     void addVbaProject();
 
+    QByteArray saveToXmlData() const;
     void saveToXmlFile(QIODevice *device) const;
 
 private:

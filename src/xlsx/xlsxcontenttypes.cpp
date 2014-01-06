@@ -26,6 +26,7 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 #include <QMapIterator>
+#include <QBuffer>
 
 namespace QXlsx {
 
@@ -109,6 +110,15 @@ void ContentTypes::addVbaProject()
 {
     //:TODO
     addOverride(QStringLiteral("bin"), QStringLiteral("application/vnd.ms-office.vbaProject"));
+}
+
+QByteArray ContentTypes::saveToXmlData() const
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+    return data;
 }
 
 void ContentTypes::saveToXmlFile(QIODevice *device) const

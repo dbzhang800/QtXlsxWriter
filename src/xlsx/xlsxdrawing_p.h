@@ -69,6 +69,7 @@ class Drawing
 public:
     Drawing();
     void saveToXmlFile(QIODevice *device) const;
+    QByteArray saveToXmlData() const;
 
     bool embedded;
     int orientation;

@@ -65,6 +65,7 @@ class XLSX_AUTOTEST_EXPORT SharedStrings
 public:
     SharedStrings();
     int count() const;
+    bool isEmpty() const;
     
     int addSharedString(const QString &string);
     int addSharedString(const RichString &string);

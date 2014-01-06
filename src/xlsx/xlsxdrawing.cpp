@@ -27,6 +27,7 @@
 
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
+#include <QBuffer>
 
 namespace QXlsx {
 
@@ -34,6 +35,15 @@ Drawing::Drawing()
 {
     embedded = false;
     orientation = 0;
+}
+
+QByteArray Drawing::saveToXmlData() const
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+    return data;
 }
 
 void Drawing::saveToXmlFile(QIODevice *device) const

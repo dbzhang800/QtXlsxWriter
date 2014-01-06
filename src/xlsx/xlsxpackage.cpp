@@ -46,6 +46,8 @@
 
 namespace QXlsx {
 
+//: TODO This class should be merged to Document class.
+
 /*
     From Wikipedia: The Open Packaging Conventions (OPC) is a
     container-file technology initially created by Microsoft to store
@@ -202,24 +204,21 @@ bool Package::createPackage(QIODevice *package)
     m_workbook->prepareDrawings();
 
     writeWorksheetFiles(zipWriter);
-//    writeChartsheetFiles(zipWriter);
-    writeWorkbookFile(zipWriter);
-//    writeChartFiles(zipWriter);
+    zipWriter.addFile(QStringLiteral("xl/workbook.xml"), m_workbook->saveToXmlData());
     writeDrawingFiles(zipWriter);
-//    writeVmlFiles(zipWriter);
-//    writeCommentFiles(zipWriter);
-//    writeTableFiles(zipWriter);
-    writeSharedStringsFile(zipWriter);
     writeDocPropsAppFile(zipWriter);
     writeDocPropsCoreFile(zipWriter);
     writeContentTypesFile(zipWriter);
-    writeStylesFiles(zipWriter);
-    writeThemeFile(zipWriter);
+
+    if (!m_workbook->sharedStrings()->isEmpty())
+        zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), m_workbook->sharedStrings()->saveToXmlData());
+    zipWriter.addFile(QStringLiteral("xl/styles.xml"), m_workbook->styles()->saveToXmlData());
+    zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), m_workbook->theme()->saveToXmlData());
+
     writeRootRelsFile(zipWriter);
     writeWorkbookRelsFile(zipWriter);
     writeDrawingRelsFiles(zipWriter);
     writeImageFiles(zipWriter);
-//    writeVbaProjectFiles(zipWriter);
 
     zipWriter.close();
     return true;
@@ -239,21 +238,11 @@ void Package::writeWorksheetFiles(ZipWriter &zipWriter)
     }
 }
 
-void Package::writeWorkbookFile(ZipWriter &zipWriter)
-{
-    zipWriter.addFile(QStringLiteral("xl/workbook.xml"), m_workbook->saveToXmlData());
-}
-
 void Package::writeDrawingFiles(ZipWriter &zipWriter)
 {
     for (int i=0; i<m_workbook->drawings().size(); ++i) {
         Drawing *drawing = m_workbook->drawings()[i];
-
-        QByteArray data;
-        QBuffer buffer(&data);
-        buffer.open(QIODevice::WriteOnly);
-        drawing->saveToXmlFile(&buffer);
-        zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), data);
+        zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), drawing->saveToXmlData());
     }
 }
 
@@ -283,11 +272,7 @@ void Package::writeContentTypesFile(ZipWriter &zipWriter)
     if (m_workbook->sharedStrings()->count())
         content.addSharedString();
 
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    content.saveToXmlFile(&buffer);
-    zipWriter.addFile(QStringLiteral("[Content_Types].xml"), data);
+    zipWriter.addFile(QStringLiteral("[Content_Types].xml"), content.saveToXmlData());
 }
 
 void Package::writeDocPropsAppFile(ZipWriter &zipWriter)
@@ -329,21 +314,6 @@ void Package::writeDocPropsCoreFile(ZipWriter &zipWriter)
     zipWriter.addFile(QStringLiteral("docProps/core.xml"), props.saveToXmlData());
 }
 
-void Package::writeSharedStringsFile(ZipWriter &zipWriter)
-{
-    zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), m_workbook->sharedStrings()->saveToXmlData());
-}
-
-void Package::writeStylesFiles(ZipWriter &zipWriter)
-{
-    zipWriter.addFile(QStringLiteral("xl/styles.xml"), m_workbook->styles()->saveToXmlData());
-}
-
-void Package::writeThemeFile(ZipWriter &zipWriter)
-{
-    zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), m_workbook->theme()->saveToXmlData());
-}
-
 void Package::writeRootRelsFile(ZipWriter &zipWriter)
 {
     Relationships rels;
@@ -374,7 +344,7 @@ void Package::writeWorkbookRelsFile(ZipWriter &zipWriter)
     rels.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
     rels.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
 
-    if (m_workbook->sharedStrings()->count())
+    if (!m_workbook->sharedStrings()->isEmpty())
         rels.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
 
     zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), rels.saveToXmlData());

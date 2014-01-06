@@ -47,6 +47,11 @@ int SharedStrings::count() const
     return m_stringCount;
 }
 
+bool SharedStrings::isEmpty() const
+{
+    return m_stringList.isEmpty();
+}
+
 int SharedStrings::addSharedString(const QString &string)
 {
     return addSharedString(RichString(string));
