@@ -16,3 +16,5 @@ SUBDIRS = hello \
     hyperlinks \
     demo
 
+qtHaveModule(widgets): SUBDIRS += xlsxwidget
+
