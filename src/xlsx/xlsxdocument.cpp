@@ -593,6 +593,15 @@ Workbook *Document::workbook() const
 }
 
 /*!
+ * Returns the worksheet object named \a sheetName.
+ */
+Worksheet *Document::worksheet(const QString &sheetName) const
+{
+    Q_D(const Document);
+    return d->workbook->worksheet(worksheetNames().indexOf(sheetName));
+}
+
+/*!
  * Creates and append an document with name \a name.
  * Return true if success.
  */

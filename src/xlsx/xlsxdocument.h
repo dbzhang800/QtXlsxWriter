@@ -92,6 +92,7 @@ public:
     bool deleteWorksheet(const QString &name);
 
     Workbook *workbook() const;
+    Worksheet *worksheet(const QString &sheetName) const;
     Worksheet *currentWorksheet() const;
     Q_DECL_DEPRECATED bool setSheetName(const QString &name);
     Q_DECL_DEPRECATED void setCurrentWorksheet(int index);
