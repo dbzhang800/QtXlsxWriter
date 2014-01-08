@@ -1122,6 +1122,16 @@ int Worksheet::unmergeCells(const QString &range)
     return unmergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
 }
 
+
+/*!
+  Returns all the merged cells
+*/
+QList<CellRange> Worksheet::mergedCells() const
+{
+    Q_D(const Worksheet);
+    return d->merges;
+}
+
 void Worksheet::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Worksheet);

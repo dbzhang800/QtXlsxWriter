@@ -96,6 +96,7 @@ public:
     int mergeCells(const CellRange &range, const Format &format=Format());
     int unmergeCells(const QString &range);
     int unmergeCells(const CellRange &range);
+    QList<CellRange> mergedCells() const;
 
     bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
