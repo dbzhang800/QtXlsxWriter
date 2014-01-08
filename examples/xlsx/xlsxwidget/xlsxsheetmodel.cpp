@@ -27,6 +27,8 @@
 #include "xlsxsheetmodel_p.h"
 #include "xlsxworksheet.h"
 
+#include <QBrush>
+
 QT_BEGIN_NAMESPACE_XLSX
 
 SheetModelPrivate::SheetModelPrivate(SheetModel *p)
@@ -99,6 +101,47 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
         return cell->value();
     } else if (role == Qt::EditRole) {
         return userFriendlyValue;
+    } else if (role == Qt::TextAlignmentRole) {
+        Qt::Alignment align;
+        switch (cell->format().horizontalAlignment()) {
+        case Format::AlignLeft:
+            align |= Qt::AlignLeft;
+            break;
+        case Format::AlignRight:
+            align |= Qt::AlignRight;
+            break;
+        case Format::AlignHCenter:
+            align |= Qt::AlignHCenter;
+            break;
+        case Format::AlignHJustify:
+            align |= Qt::AlignJustify;
+            break;
+        default:
+            break;
+        }
+        switch (cell->format().verticalAlignment()) {
+        case Format::AlignTop:
+            align |= Qt::AlignTop;
+            break;
+        case Format::AlignBottom:
+            align |= Qt::AlignBottom;
+            break;
+        case Format::AlignVCenter:
+            align |= Qt::AlignVCenter;
+            break;
+        default:
+            break;
+        }
+        return QVariant(align);
+    } else if (role == Qt::FontRole) {
+        if (cell->format().hasFontData())
+            return cell->format().font();
+    } else if (role == Qt::ForegroundRole) {
+        if (cell->format().fontColor().isValid())
+            return QBrush(cell->format().fontColor());
+    } else if (role == Qt::BackgroundRole) {
+        if (cell->format().patternBackgroundColor().isValid())
+            return QBrush(cell->format().patternBackgroundColor());
     }
 
     return QVariant();
