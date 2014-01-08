@@ -163,6 +163,8 @@ public:
     void setFontOutline(bool outline);
     QString fontName() const;
     void setFontName(const QString &);
+    QFont font() const;
+    void setFont(const QFont &font);
 
     HorizontalAlignment horizontalAlignment() const;
     void setHorizontalAlignment(HorizontalAlignment align);

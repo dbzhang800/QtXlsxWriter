@@ -465,6 +465,35 @@ void Format::setFontName(const QString &name)
 }
 
 /*!
+ * Returns a QFont object based on font data contained in the format.
+ */
+QFont Format::font() const
+{
+   QFont font;
+   font.setFamily(fontName());
+   if (fontSize() > 0)
+       font.setPointSize(fontSize());
+   font.setBold(fontBold());
+   font.setItalic(fontItalic());
+   font.setUnderline(fontUnderline()!=FontUnderlineNone);
+   font.setStrikeOut(fontStrikeOut());
+   return font;
+}
+
+/*!
+ * Set the format properties from the given \a font.
+ */
+void Format::setFont(const QFont &font)
+{
+    setFontName(font.family());
+    setFontSize(font.pointSize());
+    setFontBold(font.bold());
+    setFontItalic(font.italic());
+    setFontUnderline(font.underline() ? FontUnderlineSingle : FontUnderlineNone);
+    setFontStrikeOut(font.strikeOut());
+}
+
+/*!
  * \internal
  * When the format has font data, when need to assign a valid index for it.
  * The index value is depend on the order <fonts > in styles.xml
