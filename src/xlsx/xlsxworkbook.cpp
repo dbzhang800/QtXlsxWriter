@@ -51,6 +51,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     window_height = 9660;
 
     strings_to_numbers_enabled = false;
+    html_to_richstring_enabled = false;
     date1904 = false;
     defaultDateFormat = QStringLiteral("yyyy-mm-dd");
     activesheetIndex = 0;
@@ -111,6 +112,18 @@ bool Workbook::isStringsToNumbersEnabled() const
 {
     Q_D(const Workbook);
     return d->strings_to_numbers_enabled;
+}
+
+void Workbook::setHtmlToRichStringEnabled(bool enable)
+{
+    Q_D(Workbook);
+    d->html_to_richstring_enabled = enable;
+}
+
+bool Workbook::isHtmlToRichStringEnabled() const
+{
+    Q_D(const Workbook);
+    return d->html_to_richstring_enabled;
 }
 
 QString Workbook::defaultDateFormat() const

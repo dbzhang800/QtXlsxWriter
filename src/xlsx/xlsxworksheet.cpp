@@ -47,6 +47,7 @@
 #include <QBuffer>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
+#include <QTextDocument>
 
 #include <math.h>
 
@@ -621,7 +622,7 @@ int Worksheet::writeString(int row, int column, const RichString &value, const F
     d->sharedStrings()->addSharedString(value);
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
     d->workbook->styles()->addXfFormat(fmt);
-    QSharedPointer<Cell> cell = QSharedPointer<Cell>(new Cell(QString(), Cell::String, fmt, this));
+    QSharedPointer<Cell> cell = QSharedPointer<Cell>(new Cell(value.toPlainString(), Cell::String, fmt, this));
     cell->d_ptr->richString = value;
     d->cellTable[row][column] = cell;
     return error;
@@ -641,26 +642,23 @@ int Worksheet::writeString(const QString &row_column, const QString &value, cons
 }
 
 /*!
+    \overload
+
     Write string \a value to the cell (\a row, \a column) with the \a format
 */
 int Worksheet::writeString(int row, int column, const QString &value, const Format &format)
 {
     Q_D(Worksheet);
-    int error = 0;
-    QString content = value;
     if (d->checkDimensions(row, column))
         return -1;
 
-    if (value.size() > XLSX_STRING_MAX) {
-        content = value.left(XLSX_STRING_MAX);
-        error = -2;
-    }
+    RichString rs;
+    if (Qt::mightBeRichText(value) && d->workbook->isHtmlToRichStringEnabled())
+        rs.setHtml(value);
+    else
+        rs.addFragment(value, Format());
 
-    d->sharedStrings()->addSharedString(content);
-    Format fmt = format.isValid() ? format : d->cellFormat(row, column);
-    d->workbook->styles()->addXfFormat(fmt);
-    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(content, Cell::String, fmt, this));
-    return error;
+    return writeString(row, column, rs, format);
 }
 
 /*!

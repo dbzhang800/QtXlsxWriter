@@ -26,6 +26,8 @@
 #include "xlsxrichstring_p.h"
 #include "xlsxformat_p.h"
 #include <QDebug>
+#include <QTextDocument>
+#include <QTextFragment>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -68,7 +70,10 @@ RichString::RichString()
 RichString::RichString(const QString text)
     :d(new RichStringPrivate)
 {
-    addFragment(text, Format());
+    if (Qt::mightBeRichText(text))
+        setHtml(text);
+    else
+        addFragment(text, Format());
 }
 
 /*!
@@ -147,6 +152,36 @@ QString RichString::toPlainString() const
         return d->fragmentTexts[0];
 
     return d->fragmentTexts.join(QString());
+}
+
+/*!
+  Converts to html string
+*/
+QString RichString::toHtml() const
+{
+    //: Todo
+    return QString();
+}
+
+/*!
+  Replaces the entire contents of the document
+  with the given HTML-formatted text in the \a text string
+*/
+void RichString::setHtml(const QString &text)
+{
+    QTextDocument doc;
+    doc.setHtml(text);
+    QTextBlock block = doc.firstBlock();
+    QTextBlock::iterator it;
+    for (it = block.begin(); !(it.atEnd()); ++it) {
+        QTextFragment textFragment = it.fragment();
+        if (textFragment.isValid()) {
+            Format fmt;
+            fmt.setFont(textFragment.charFormat().font());
+            fmt.setFontColor(textFragment.charFormat().foreground().color());
+            addFragment(textFragment.text(), fmt);
+        }
+    }
 }
 
 /*!

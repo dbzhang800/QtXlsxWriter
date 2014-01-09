@@ -1,7 +1,9 @@
 #include <QtCore>
 #include "xlsxdocument.h"
 #include "xlsxrichstring.h"
+#include "xlsxworkbook.h"
 #include "xlsxformat.h"
+
 int main()
 {
     //![0]
@@ -22,6 +24,9 @@ int main()
     rich.addFragment("Qt ", red);
     rich.addFragment("Xlsx", bold);
     xlsx.write("B2", rich);
+
+    xlsx.workbook()->setHtmlToRichStringEnabled(true);
+    xlsx.write("B4", "<b>Hello</b> <font color=\"red\">Qt</font> <i>Xlsx</i>");
     //![1]
 
     //![2]

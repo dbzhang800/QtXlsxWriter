@@ -94,6 +94,7 @@ public:
     QList<XlsxSheetItemInfo> sheetItemInfoList;//Data from xml file
 
     bool strings_to_numbers_enabled;
+    bool html_to_richstring_enabled;
     bool date1904;
     QString defaultDateFormat;
 

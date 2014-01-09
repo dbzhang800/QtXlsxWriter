@@ -49,6 +49,8 @@ public:
     bool isNull() const;
     bool isEmtpy() const;
     QString toPlainString() const;
+    QString toHtml() const;
+    void setHtml(const QString &text);
 
     int fragmentCount() const;
     void addFragment(const QString &text, const Format &format);

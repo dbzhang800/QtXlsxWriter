@@ -331,7 +331,7 @@ int Format::fontSize() const
  */
 void Format::setFontSize(int size)
 {
-    setProperty(FormatPrivate::P_Font_Size, size);
+    setProperty(FormatPrivate::P_Font_Size, size, 0);
 }
 
 /*!
@@ -486,7 +486,8 @@ QFont Format::font() const
 void Format::setFont(const QFont &font)
 {
     setFontName(font.family());
-    setFontSize(font.pointSize());
+    if (font.pointSize() > 0)
+        setFontSize(font.pointSize());
     setFontBold(font.bold());
     setFontItalic(font.italic());
     setFontUnderline(font.underline() ? FontUnderlineSingle : FontUnderlineNone);
