@@ -216,6 +216,7 @@ public:
     bool hidden() const;
     void setHidden(bool hidden);
 
+    void mergeFormat(const Format &modifier);
     bool isValid() const;
     bool isEmpty() const;
 

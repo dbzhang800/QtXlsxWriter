@@ -1138,6 +1138,26 @@ bool Format::hasProtectionData() const
 }
 
 /*!
+    Merges the current format with the properties described by format \a modifier.
+ */
+void Format::mergeFormat(const Format &modifier)
+{
+    if (!modifier.isValid())
+        return;
+
+    if (!isValid()) {
+        d = modifier.d;
+        return;
+    }
+
+    QMapIterator<int, QVariant> it(modifier.d->property);
+    while(it.hasNext()) {
+        it.next();
+        setProperty(it.key(), it.value());
+    }
+}
+
+/*!
     Returns true if the format is valid; otherwise returns false.
  */
 bool Format::isValid() const
