@@ -1,7 +1,8 @@
 TARGET = xlsxwidget
+QT += widgets
 
 #include(../../../src/xlsx/qtxlsx.pri)
-QT+= xlsx xlsx-private widgets
+QT+= xlsx
 
 SOURCES += main.cpp \
     xlsxsheetmodel.cpp
