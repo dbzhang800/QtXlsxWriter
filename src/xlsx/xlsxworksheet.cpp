@@ -621,6 +621,8 @@ int Worksheet::writeString(int row, int column, const RichString &value, const F
 
     d->sharedStrings()->addSharedString(value);
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
+    if (value.fragmentCount() == 1 && value.fragmentFormat(0).isValid())
+        fmt.mergeFormat(value.fragmentFormat(0));
     d->workbook->styles()->addXfFormat(fmt);
     QSharedPointer<Cell> cell = QSharedPointer<Cell>(new Cell(value.toPlainString(), Cell::String, fmt, this));
     cell->d_ptr->richString = value;

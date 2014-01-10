@@ -27,6 +27,9 @@ int main()
 
     xlsx.workbook()->setHtmlToRichStringEnabled(true);
     xlsx.write("B4", "<b>Hello</b> <font color=\"red\">Qt</font> <i>Xlsx</i>");
+
+    xlsx.write("B6", "<font color=\"red\"><b><u><i>Qt Xlsx</i></u></b></font>");
+
     //![1]
 
     //![2]
