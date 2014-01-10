@@ -39,6 +39,7 @@
 #include "xlsxformat.h"
 #include <QSharedData>
 #include <QMap>
+#include <QSet>
 
 namespace QXlsx {
 
@@ -152,7 +153,7 @@ public:
 
     int theme;
 
-    QMap<int, QVariant> property;
+    QMap<int, QVariant> properties;
 };
 
 }

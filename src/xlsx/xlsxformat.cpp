@@ -51,7 +51,7 @@ FormatPrivate::FormatPrivate(const FormatPrivate &other)
     , xf_index(other.xf_index), xf_indexValid(other.xf_indexValid)
     , is_dxf_fomat(other.is_dxf_fomat), dxf_index(other.dxf_index), dxf_indexValid(other.dxf_indexValid)
     , theme(other.theme)
-    , property(other.property)
+    , properties(other.properties)
 {
 
 }
@@ -538,8 +538,8 @@ QByteArray Format::fontKey() const
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         for (int i=FormatPrivate::P_Font_STARTID; i<FormatPrivate::P_Font_ENDID; ++i) {
-            if (d->property.contains(i))
-                stream << i << d->property[i];
+            if (d->properties.contains(i))
+                stream << i << d->properties[i];
         };
 
         const_cast<Format*>(this)->d->font_key = key;
@@ -946,8 +946,8 @@ QByteArray Format::borderKey() const
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         for (int i=FormatPrivate::P_Border_STARTID; i<FormatPrivate::P_Border_ENDID; ++i) {
-            if (d->property.contains(i))
-                stream << i << d->property[i];
+            if (d->properties.contains(i))
+                stream << i << d->properties[i];
         };
 
         const_cast<Format*>(this)->d->border_key = key;
@@ -1066,8 +1066,8 @@ QByteArray Format::fillKey() const
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
         for (int i=FormatPrivate::P_Fill_STARTID; i<FormatPrivate::P_Fill_ENDID; ++i) {
-            if (d->property.contains(i))
-                stream << i << d->property[i];
+            if (d->properties.contains(i))
+                stream << i << d->properties[i];
         };
 
         const_cast<Format*>(this)->d->fill_key = key;
@@ -1150,7 +1150,7 @@ void Format::mergeFormat(const Format &modifier)
         return;
     }
 
-    QMapIterator<int, QVariant> it(modifier.d->property);
+    QMapIterator<int, QVariant> it(modifier.d->properties);
     while(it.hasNext()) {
         it.next();
         setProperty(it.key(), it.value());
@@ -1174,7 +1174,7 @@ bool Format::isEmpty() const
 {
     if (!d)
         return true;
-    return d->property.isEmpty();
+    return d->properties.isEmpty();
 }
 
 /*!
@@ -1189,7 +1189,7 @@ QByteArray Format::formatKey() const
         QByteArray key;
         QDataStream stream(&key, QIODevice::WriteOnly);
 
-        QMapIterator<int, QVariant> i(d->property);
+        QMapIterator<int, QVariant> i(d->properties);
         while (i.hasNext()) {
             i.next();
             stream<<i.key()<<i.value();
@@ -1294,8 +1294,8 @@ int Format::theme() const
  */
 QVariant Format::property(int propertyId, const QVariant &defaultValue) const
 {
-    if (d && d->property.contains(propertyId))
-        return d->property[propertyId];
+    if (d && d->properties.contains(propertyId))
+        return d->properties[propertyId];
     return defaultValue;
 }
 
@@ -1308,17 +1308,17 @@ void Format::setProperty(int propertyId, const QVariant &value, const QVariant &
         d = new FormatPrivate;
 
     if (value != clearValue) {
-        if (d->property.contains(propertyId) && d->property[propertyId] == value)
+        if (d->properties.contains(propertyId) && d->properties[propertyId] == value)
             return;
         if (detach)
             d.detach();
-        d->property[propertyId] = value;
+        d->properties[propertyId] = value;
     } else {
-        if (!d->property.contains(propertyId))
+        if (!d->properties.contains(propertyId))
             return;
         if (detach)
             d.detach();
-        d->property.remove(propertyId);
+        d->properties.remove(propertyId);
     }
 
     d->dirty = true;
@@ -1352,7 +1352,7 @@ bool Format::hasProperty(int propertyId) const
 {
     if (!d)
         return false;
-    return d->property.contains(propertyId);
+    return d->properties.contains(propertyId);
 }
 
 /*!
@@ -1363,7 +1363,7 @@ bool Format::boolProperty(int propertyId, bool defaultValue) const
     if (!hasProperty(propertyId))
         return defaultValue;
 
-    const QVariant prop = d->property[propertyId];
+    const QVariant prop = d->properties[propertyId];
     if (prop.userType() != QMetaType::Bool)
         return defaultValue;
     return prop.toBool();
@@ -1377,7 +1377,7 @@ int Format::intProperty(int propertyId, int defaultValue) const
     if (!hasProperty(propertyId))
         return defaultValue;
 
-    const QVariant prop = d->property[propertyId];
+    const QVariant prop = d->properties[propertyId];
     if (prop.userType() != QMetaType::Int)
         return defaultValue;
     return prop.toInt();
@@ -1391,7 +1391,7 @@ double Format::doubleProperty(int propertyId, double defaultValue) const
     if (!hasProperty(propertyId))
         return defaultValue;
 
-    const QVariant prop = d->property[propertyId];
+    const QVariant prop = d->properties[propertyId];
     if (prop.userType() != QMetaType::Double && prop.userType() != QMetaType::Float)
         return defaultValue;
     return prop.toDouble();
@@ -1405,7 +1405,7 @@ QString Format::stringProperty(int propertyId, const QString &defaultValue) cons
     if (!hasProperty(propertyId))
         return defaultValue;
 
-    const QVariant prop = d->property[propertyId];
+    const QVariant prop = d->properties[propertyId];
     if (prop.userType() != QMetaType::QString)
         return defaultValue;
     return prop.toString();
@@ -1419,7 +1419,7 @@ QColor Format::colorProperty(int propertyId, const QColor &defaultValue) const
     if (!hasProperty(propertyId))
         return defaultValue;
 
-    const QVariant prop = d->property[propertyId];
+    const QVariant prop = d->properties[propertyId];
     if (prop.userType() != qMetaTypeId<XlsxColor>())
         return defaultValue;
     return qvariant_cast<XlsxColor>(prop).rgbColor();
@@ -1428,7 +1428,7 @@ QColor Format::colorProperty(int propertyId, const QColor &defaultValue) const
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const Format &f)
 {
-    dbg.nospace() << "QXlsx::Format(" << f.d->property << ")";
+    dbg.nospace() << "QXlsx::Format(" << f.d->properties << ")";
     return dbg.space();
 }
 #endif
