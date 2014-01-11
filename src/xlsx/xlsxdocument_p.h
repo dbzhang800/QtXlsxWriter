@@ -39,6 +39,7 @@
 
 #include "xlsxdocument.h"
 #include "xlsxworkbook.h"
+#include "xlsxcontenttypes_p.h"
 
 #include <QMap>
 
@@ -60,6 +61,7 @@ public:
 
     QMap<QString, QString> documentProperties; //core, app and custom properties
     QSharedPointer<Workbook> workbook;
+    mutable ContentTypes contentTypes;
 };
 
 }

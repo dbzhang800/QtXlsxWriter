@@ -99,9 +99,14 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     ZipReader zipReader(device);
     QStringList filePaths = zipReader.filePaths();
 
+    //Load the Content_Types file
+    if (!filePaths.contains(QLatin1String("[Content_Types].xml")))
+        return false;
+    contentTypes.loadFromXmlData(zipReader.fileData(QStringLiteral("[Content_Types].xml")));
+
+    //Load root rels file
     if (!filePaths.contains(QLatin1String("_rels/.rels")))
         return false;
-
     Relationships rootRels;
     rootRels.loadFromXmlData(zipReader.fileData(QStringLiteral("_rels/.rels")));
 
@@ -196,7 +201,8 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     if (zipWriter.error())
         return false;
 
-    ContentTypes contentTypes;
+    contentTypes.clearOverrides();
+
     DocPropsApp docPropsApp;
     DocPropsCore docPropsCore;
 
@@ -216,6 +222,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     }
 
     // save workbook xml file
+    contentTypes.addWorkbook();
     zipWriter.addFile(QStringLiteral("xl/workbook.xml"), workbook->saveToXmlData());
     zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), workbook->relationships().saveToXmlData());
 
@@ -247,6 +254,8 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     }
     if (workbook->worksheetCount())
         docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), workbook->worksheetCount());
+    contentTypes.addDocPropApp();
+    contentTypes.addDocPropCore();
     zipWriter.addFile(QStringLiteral("docProps/app.xml"), docPropsApp.saveToXmlData());
     zipWriter.addFile(QStringLiteral("docProps/core.xml"), docPropsCore.saveToXmlData());
 
@@ -257,14 +266,16 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     }
 
     // save styles xml file
+    contentTypes.addStyles();
     zipWriter.addFile(QStringLiteral("xl/styles.xml"), workbook->styles()->saveToXmlData());
 
     // save theme xml file
+    contentTypes.addTheme();
     zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), workbook->theme()->saveToXmlData());
 
     // save image files
     if (!workbook->images().isEmpty())
-        contentTypes.addImageTypes(QStringList()<<QStringLiteral("png"));
+        contentTypes.addDefault(QStringLiteral("png"), QStringLiteral("image/png"));
 
     for (int i=0; i<workbook->images().size(); ++i) {
         QImage image = workbook->images()[i];

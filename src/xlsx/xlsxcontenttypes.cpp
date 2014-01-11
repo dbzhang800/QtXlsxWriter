@@ -39,12 +39,6 @@ ContentTypes::ContentTypes()
 
     m_defaults.insert(QStringLiteral("rels"), m_package_prefix + QStringLiteral("relationships+xml"));
     m_defaults.insert(QStringLiteral("xml"), QStringLiteral("application/xml"));
-
-    m_overrides.insert(QStringLiteral("/docProps/app.xml"), m_document_prefix + QStringLiteral("extended-properties+xml"));
-    m_overrides.insert(QStringLiteral("/docProps/core.xml"), m_package_prefix + QStringLiteral("core-properties+xml"));
-    m_overrides.insert(QStringLiteral("/xl/styles.xml"), m_document_prefix + QStringLiteral("spreadsheetml.styles+xml"));
-    m_overrides.insert(QStringLiteral("/xl/theme/theme1.xml"), m_document_prefix + QStringLiteral("theme+xml"));
-    m_overrides.insert(QStringLiteral("/xl/workbook.xml"), m_document_prefix + QStringLiteral("spreadsheetml.sheet.main+xml"));
 }
 
 void ContentTypes::addDefault(const QString &key, const QString &value)
@@ -55,6 +49,31 @@ void ContentTypes::addDefault(const QString &key, const QString &value)
 void ContentTypes::addOverride(const QString &key, const QString &value)
 {
     m_overrides.insert(key, value);
+}
+
+void ContentTypes::addDocPropApp()
+{
+    addOverride(QStringLiteral("/docProps/app.xml"), m_document_prefix + QStringLiteral("extended-properties+xml"));
+}
+
+void ContentTypes::addDocPropCore()
+{
+    addOverride(QStringLiteral("/docProps/core.xml"), m_package_prefix + QStringLiteral("core-properties+xml"));
+}
+
+void ContentTypes::addStyles()
+{
+    addOverride(QStringLiteral("/xl/styles.xml"), m_document_prefix + QStringLiteral("spreadsheetml.styles+xml"));
+}
+
+void ContentTypes::addTheme()
+{
+    addOverride(QStringLiteral("/xl/theme/theme1.xml"), m_document_prefix + QStringLiteral("theme+xml"));
+}
+
+void ContentTypes::addWorkbook()
+{
+    addOverride(QStringLiteral("/xl/workbook.xml"), m_document_prefix + QStringLiteral("spreadsheetml.sheet.main+xml"));
 }
 
 void ContentTypes::addWorksheetName(const QString &name)
@@ -80,12 +99,6 @@ void ContentTypes::addChartName(const QString &name)
 void ContentTypes::addCommentName(const QString &name)
 {
     addOverride(QStringLiteral("/xl/%1.xml").arg(name), m_document_prefix + QStringLiteral("spreadsheetml.comments+xml"));
-}
-
-void ContentTypes::addImageTypes(const QStringList &imageTypes)
-{
-    foreach (QString type, imageTypes)
-        addDefault(type, QStringLiteral("image/") + type);
 }
 
 void ContentTypes::addTableName(const QString &name)

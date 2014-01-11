@@ -53,12 +53,16 @@ public:
     void addOverride(const QString &key, const QString &value);
 
     //Convenient funcation for addOverride()
+    void addDocPropCore();
+    void addDocPropApp();
+    void addStyles();
+    void addTheme();
+    void addWorkbook();
     void addWorksheetName(const QString &name);
     void addChartsheetName(const QString &name);
     void addChartName(const QString &name);
     void addDrawingName(const QString &name);
     void addCommentName(const QString &name);
-    void addImageTypes(const QStringList &imageTypes);
     void addTableName(const QString &name);
     void addSharedString();
     void addVmlName();
