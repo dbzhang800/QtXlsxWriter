@@ -65,8 +65,12 @@ public:
     void addCalcChain();
     void addVbaProject();
 
+    void clearOverrides();
+
     QByteArray saveToXmlData() const;
     void saveToXmlFile(QIODevice *device) const;
+    bool loadFromXmlFile(QIODevice *device);
+    bool loadFromXmlData(const QByteArray &data);
 
 private:
     QMap<QString, QString> m_defaults;

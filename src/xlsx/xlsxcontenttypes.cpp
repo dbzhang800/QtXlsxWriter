@@ -24,9 +24,11 @@
 ****************************************************************************/
 #include "xlsxcontenttypes_p.h"
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QFile>
 #include <QMapIterator>
 #include <QBuffer>
+#include <QDebug>
 
 namespace QXlsx {
 
@@ -112,6 +114,11 @@ void ContentTypes::addVbaProject()
     addOverride(QStringLiteral("bin"), QStringLiteral("application/vnd.ms-office.vbaProject"));
 }
 
+void ContentTypes::clearOverrides()
+{
+    m_overrides.clear();
+}
+
 QByteArray ContentTypes::saveToXmlData() const
 {
     QByteArray data;
@@ -154,6 +161,44 @@ void ContentTypes::saveToXmlFile(QIODevice *device) const
     writer.writeEndElement();//Types
     writer.writeEndDocument();
 
+}
+
+bool ContentTypes::loadFromXmlFile(QIODevice *device)
+{
+    m_defaults.clear();
+    m_overrides.clear();
+
+    QXmlStreamReader reader(device);
+    while (!reader.atEnd()) {
+        QXmlStreamReader::TokenType token = reader.readNext();
+        if (token == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("Default")) {
+                QXmlStreamAttributes attrs = reader.attributes();
+                QString extension = attrs.value(QLatin1String("Extension")).toString();
+                QString type = attrs.value(QLatin1String("ContentType")).toString();
+                m_defaults.insert(extension, type);
+            } else if (reader.name() == QLatin1String("Override")) {
+                QXmlStreamAttributes attrs = reader.attributes();
+                QString partName = attrs.value(QLatin1String("PartName")).toString();
+                QString type = attrs.value(QLatin1String("ContentType")).toString();
+                m_overrides.insert(partName, type);
+            }
+        }
+
+        if (reader.hasError()) {
+            qDebug()<<reader.errorString();
+        }
+    }
+    return true;
+}
+
+bool ContentTypes::loadFromXmlData(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+
+    return loadFromXmlFile(&buffer);
 }
 
 } //namespace QXlsx
