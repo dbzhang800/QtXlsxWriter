@@ -467,45 +467,59 @@ QList<QPair<QString, QString> > Worksheet::drawingLinks() const
 int Worksheet::write(int row, int column, const QVariant &value, const Format &format)
 {
     Q_D(Worksheet);
-    bool ok;
     int ret = 0;
 
     if (d->checkDimensions(row, column))
         return -1;
 
-    if (value.isNull()) { //blank
+    if (value.isNull()) {
+        //Blank
         ret = writeBlank(row, column, format);
     } else if (value.userType() == qMetaTypeId<RichString>()) {
         ret = writeString(row, column, value.value<RichString>(), format);
-    } else if (value.userType() == QMetaType::Bool) { //Bool
+    } else if (value.userType() == QMetaType::Bool) {
+        //Bool
         ret = writeBool(row,column, value.toBool(), format);
-    } else if (value.toDateTime().isValid()) { //DateTime
+    } else if (value.userType() == QMetaType::QDateTime || value.userType() == QMetaType::QDate) {
+        //DateTime, Date
+        //  note that, QTime cann't convert to QDateTime
         ret = writeDateTime(row, column, value.toDateTime(), format);
-    } else if (value.toTime().isValid()) { //Time
+    } else if (value.userType() == QMetaType::QTime) {
+        //Time
         ret = writeTime(row, column, value.toTime(), format);
-    } else if (value.toDouble(&ok), ok) { //Number
-        if (!d->workbook->isStringsToNumbersEnabled() && value.userType() == QMetaType::QString) {
-            //Don't convert string to number if the flag not enabled.
-            ret = writeString(row, column, value.toString(), format);
-        } else {
-            ret = writeNumeric(row, column, value.toDouble(), format);
-        }
-    } else if (value.userType() == QMetaType::QUrl) { //url
+    } else if (value.userType() == QMetaType::Int || value.userType() == QMetaType::UInt
+               || value.userType() == QMetaType::LongLong || value.userType() == QMetaType::ULongLong
+               || value.userType() == QMetaType::Double || value.userType() == QMetaType::Float) {
+        //Number
+
+        ret = writeNumeric(row, column, value.toDouble(), format);
+    } else if (value.userType() == QMetaType::QUrl) {
+        //Url
         ret = writeHyperlink(row, column, value.toUrl(), format);
-    } else if (value.userType() == QMetaType::QString) { //string
+    } else if (value.userType() == QMetaType::QString) {
+        //String
         QString token = value.toString();
+        bool ok;
         QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"));
+
         if (token.startsWith(QLatin1String("="))) {
+            //convert to formula
             ret = writeFormula(row, column, token, format);
         } else if (token.startsWith(QLatin1String("{=")) && token.endsWith(QLatin1Char('}'))) {
+            //convert to array formula
             ret = writeArrayFormula(CellRange(row, column, row, column), token, format);
         } else if (token.contains(urlPattern)) {
+            //convert to url
             ret = writeHyperlink(row, column, QUrl(token));
+        } else if (d->workbook->isStringsToNumbersEnabled() && (value.toDouble(&ok), ok)) {
+            //Try convert string to number if the flag enabled.
+            ret = writeString(row, column, value.toString(), format);
         } else {
+            //normal string now
             ret = writeString(row, column, token, format);
         }
-    } else { //Wrong type
-
+    } else {
+        //Wrong type
         return -1;
     }
 
