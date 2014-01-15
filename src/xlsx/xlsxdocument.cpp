@@ -389,6 +389,14 @@ QVariant Document::read(int row, int col) const
 }
 
 /*!
+ * \brief Insert an \a image to current active worksheet at the position \a row, \a column
+ */
+bool Document::insertImage(int row, int column, const QImage &image)
+{
+    return currentWorksheet()->insertImage(row, column, image);
+}
+
+/*!
  * \brief Insert an \a image to current active worksheet to the position \a row, \a column with the given
  * \a xOffset, \a yOffset, \a xScale and \a yScale.
  */

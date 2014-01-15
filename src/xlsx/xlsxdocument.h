@@ -58,7 +58,8 @@ public:
     int write(int row, int col, const QVariant &value, const Format &format=Format());
     QVariant read(const QString &cell) const;
     QVariant read(int row, int col) const;
-    int insertImage(int row, int column, const QImage &image, double xOffset=0, double yOffset=0, double xScale=1, double yScale=1);
+    bool insertImage(int row, int col, const QImage &image);
+    Q_DECL_DEPRECATED int insertImage(int row, int column, const QImage &image, double xOffset, double yOffset, double xScale=1, double yScale=1);
     int mergeCells(const CellRange &range, const Format &format=Format());
     int mergeCells(const QString &range, const Format &format=Format());
     int unmergeCells(const CellRange &range);
