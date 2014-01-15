@@ -79,67 +79,6 @@ struct XlsxHyperlinkData
     QString tooltip;
 };
 
-struct XlsxImageData
-{
-    XlsxImageData(int row, int col, const QImage &image, const QPointF &offset, double xScale, double yScale) :
-        row(row), col(col), image(image), offset(offset), xScale(xScale), yScale(yScale)
-    {
-    }
-
-    int row;
-    int col;
-    QImage image;
-    QPointF offset;
-    double xScale;
-    double yScale;
-};
-
-/*
-     The vertices that define the position of a graphical object
-     within the worksheet in pixels.
-
-             +------------+------------+
-             |     A      |      B     |
-       +-----+------------+------------+
-       |     |(x1,y1)     |            |
-       |  1  |(A1)._______|______      |
-       |     |    |              |     |
-       |     |    |              |     |
-       +-----+----|    OBJECT    |-----+
-       |     |    |              |     |
-       |  2  |    |______________.     |
-       |     |            |        (B2)|
-       |     |            |     (x2,y2)|
-       +---- +------------+------------+
-
-     Example of an object that covers some of the area from cell A1 to  B2.
-
-     Based on the width and height of the object we need to calculate 8 vars:
-
-         col_start, row_start, col_end, row_end, x1, y1, x2, y2.
-
-     We also calculate the absolute x and y position of the top left vertex of
-     the object. This is required for images.
-
-     The width and height of the cells that the object occupies can be
-     variable and have to be taken into account.
-*/
-struct XlsxObjectPositionData
-{
-    int col_start;
-    double x1;
-    int row_start;
-    double y1;
-    int col_end;
-    double x2;
-    int row_end;
-    double y2;
-    double width;
-    double height;
-    double x_abs;
-    double y_abs;
-};
-
 struct XlsxRowInfo
 {
     XlsxRowInfo(double height=0, const Format &format=Format(), bool hidden=false) :
@@ -193,8 +132,6 @@ public:
     void saveXmlDataValidations(QXmlStreamWriter &writer) const;
     int rowPixelsSize(int row) const;
     int colPixelsSize(int col) const;
-    XlsxObjectPositionData objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height) const;
-    XlsxObjectPositionData pixelsToEMUs(const XlsxObjectPositionData &data) const;
 
     QSharedPointer<Cell> loadXmlNumericCellData(QXmlStreamReader &reader);
     void loadXmlSheetData(QXmlStreamReader &reader);
@@ -210,15 +147,14 @@ public:
     Workbook *workbook;
     mutable Relationships relationships;
     Drawing *drawing;
+    QString drawingPath_in_zip;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, QSharedPointer<XlsxHyperlinkData> > > urlTable;
     QList<CellRange> merges;
-    QList<XlsxImageData *> imageList;
     QMap<int, QSharedPointer<XlsxRowInfo> > rowsInfo;
     QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfo;
     QMap<int, QSharedPointer<XlsxColumnInfo> > colsInfoHelper;
-    QList<QPair<QString, QString> > drawingLinks;
 
     QList<DataValidation> dataValidationsList;
     QList<ConditionalFormatting> conditionalFormattingList;

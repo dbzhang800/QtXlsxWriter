@@ -37,12 +37,14 @@
 #include "xlsxutility_p.h"
 #include "xlsxworkbook_p.h"
 #include "xlsxdrawing_p.h"
+#include "xlsxmediafile_p.h"
 #include "xlsxzipreader_p.h"
 #include "xlsxzipwriter_p.h"
 
 #include <QFile>
 #include <QPointF>
 #include <QBuffer>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -189,6 +191,27 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         if (zipReader.filePaths().contains(rel_path))
             sheet->relationships().loadFromXmlData(zipReader.fileData(rel_path));
         sheet->loadFromXmlData(zipReader.fileData(worksheet_path));
+
+        //load drawing if exists
+        if (!sheet->drawingPath().isEmpty()) {
+            QString drawingPath = QDir::cleanPath(splitPath(worksheet_path)[0] + QLatin1String("/") + sheet->drawingPath());
+            Drawing *drawing = new Drawing(workbook.data());
+            drawing->pathInPackage = drawingPath;
+            QString drawing_rel_path = getRelFilePath(drawingPath);
+            if (zipReader.filePaths().contains(drawing_rel_path))
+                drawing->relationships.loadFromXmlData(zipReader.fileData(drawing_rel_path));
+            drawing->loadFromXmlData(zipReader.fileData(drawingPath));
+            sheet->setDrawing(drawing);
+        }
+    }
+
+    //load media files
+    QList<QSharedPointer<MediaFile> > mediaFileToLoad = workbook->mediaFiles();
+    for (int i=0; i<mediaFileToLoad.size(); ++i) {
+        QSharedPointer<MediaFile> mf = mediaFileToLoad[i];
+        const QString path = mf->fileName();
+        const QString suffix = path.mid(path.lastIndexOf(QLatin1Char('.'))+1);
+        mf->set(zipReader.fileData(path), suffix);
     }
 
     return true;
@@ -205,9 +228,6 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
 
     DocPropsApp docPropsApp;
     DocPropsCore docPropsCore;
-
-    //: Todo
-    workbook->prepareDrawings();
 
     // save worksheet xml files
     for (int i=0; i<workbook->worksheetCount(); ++i) {
@@ -232,19 +252,8 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
 
         Drawing *drawing = workbook->drawings()[i];
         zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), drawing->saveToXmlData());
-    }
-
-    for (int i=0; i<workbook->worksheetCount(); ++i) {
-        Worksheet *sheet = workbook->worksheet(i);
-        if (sheet->drawingLinks().size() == 0)
-            continue;
-        Relationships rels;
-
-        typedef QPair<QString, QString> PairType;
-        foreach (PairType pair, sheet->drawingLinks())
-            rels.addDocumentRelationship(pair.first, pair.second);
-
-        zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), rels.saveToXmlData());
+        if (!drawing->relationships.isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), drawing->relationships.saveToXmlData());
     }
 
     // save docProps app/core xml file
@@ -274,17 +283,12 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), workbook->theme()->saveToXmlData());
 
     // save image files
-    if (!workbook->images().isEmpty())
-        contentTypes.addDefault(QStringLiteral("png"), QStringLiteral("image/png"));
+    for (int i=0; i<workbook->mediaFiles().size(); ++i) {
+        QSharedPointer<MediaFile> mf = workbook->mediaFiles()[i];
+        if (!mf->mimeType().isEmpty())
+            contentTypes.addDefault(mf->suffix(), mf->mimeType());
 
-    for (int i=0; i<workbook->images().size(); ++i) {
-        QImage image = workbook->images()[i];
-
-        QByteArray data;
-        QBuffer buffer(&data);
-        buffer.open(QIODevice::WriteOnly);
-        image.save(&buffer, "png");
-        zipWriter.addFile(QStringLiteral("xl/media/image%1.png").arg(i+1), data);
+        zipWriter.addFile(QStringLiteral("xl/media/image%1.%2").arg(i+1).arg(mf->suffix()), mf->contents());
     }
 
     // save root .rels xml file
@@ -388,9 +392,9 @@ QVariant Document::read(int row, int col) const
  * \brief Insert an \a image to current active worksheet to the position \a row, \a column with the given
  * \a xOffset, \a yOffset, \a xScale and \a yScale.
  */
-int Document::insertImage(int row, int column, const QImage &image, double xOffset, double yOffset, double xScale, double yScale)
+int Document::insertImage(int row, int column, const QImage &image, double /*xOffset*/, double /*yOffset*/, double /*xScale*/, double /*yScale*/)
 {
-    return currentWorksheet()->insertImage(row, column, image, QPointF(xOffset, yOffset), xScale, yScale);
+    return currentWorksheet()->insertImage(row, column, image);
 }
 
 /*!

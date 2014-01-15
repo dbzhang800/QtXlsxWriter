@@ -23,52 +23,46 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_DRAWING_H
-#define QXLSX_DRAWING_H
+#ifndef QXLSX_XLSXMEDIAFILE_H
+#define QXLSX_XLSXMEDIAFILE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
+#include "xlsxglobal.h"
 
-#include "xlsxrelationships_p.h"
-
-#include <QList>
 #include <QString>
-#include <QSharedPointer>
-
-class QIODevice;
-class QXmlStreamWriter;
+#include <QByteArray>
 
 namespace QXlsx {
 
-class DrawingAnchor;
-class Workbook;
-class MediaFile;
-
-class Drawing
+class MediaFile
 {
 public:
-    Drawing(Workbook *workbook);
-    ~Drawing();
-    void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
-    bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
+    MediaFile(const QString &fileName);
+    MediaFile(const QByteArray &bytes, const QString &suffix, const QString &mimeType=QString());
 
-    Workbook *workbook;
-    QList<DrawingAnchor *> anchors;
-    mutable Relationships relationships;
+    void set(const QByteArray &bytes, const QString &suffix, const QString &mimeType=QString());
+    QString suffix() const;
+    QString mimeType() const;
+    QByteArray contents() const;
 
-    QString pathInPackage;
+    bool isIndexValid() const;
+    int index() const;
+    void setIndex(int idx);
+    QByteArray hashKey() const;
+
+    void setFileName(const QString &name);
+    QString fileName() const;
+
+private:
+    QString m_fileName; //...
+    QByteArray m_contents;
+    QString m_suffix;
+    QString m_mimeType;
+
+    bool m_indexValid;
+    int m_index;
+    QByteArray m_hashKey;
 };
 
 } // namespace QXlsx
 
-#endif // QXLSX_DRAWING_H
+#endif // QXLSX_XLSXMEDIAFILE_H

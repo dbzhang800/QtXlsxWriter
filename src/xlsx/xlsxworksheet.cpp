@@ -36,6 +36,7 @@
 #include "xlsxcell_p.h"
 #include "xlsxcellrange.h"
 #include "xlsxconditionalformatting_p.h"
+#include "xlsxdrawinganchor_p.h"
 
 #include <QVariant>
 #include <QDateTime>
@@ -453,12 +454,6 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 {
     Q_D(Worksheet);
     d->showWhiteSpace = visible;
-}
-
-QList<QPair<QString, QString> > Worksheet::drawingLinks() const
-{
-    Q_D(const Worksheet);
-    return d->drawingLinks;
 }
 
 /*!
@@ -1024,12 +1019,33 @@ bool Worksheet::addConditionalFormatting(const ConditionalFormatting &cf)
     return true;
 }
 
-int Worksheet::insertImage(int row, int column, const QImage &image, const QPointF &offset, double xScale, double yScale)
+bool Worksheet::insertImage(int row, int column, const QImage &image)
 {
     Q_D(Worksheet);
 
-    d->imageList.append(new XlsxImageData(row, column, image, offset, xScale, yScale));
-    return 0;
+    if (image.isNull())
+        return false;
+
+    if (!d->drawing)
+        d->drawing = new Drawing(d->workbook);
+
+    DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing, DrawingAnchor::Picture);
+
+    /*
+        The size are expressed as English Metric Units (EMUs). There are
+        12,700 EMUs per point. Therefore, 12,700 * 3 /4 = 9,525 EMUs per
+        pixel
+    */
+    anchor->from = XlsxMarker(row, column, 0, 0);
+    anchor->ext = QSize(image.width() * 9525, image.height() * 9525);
+
+    anchor->setObjectPicture(image);
+    return true;
+}
+
+int Worksheet::insertImage(int row, int column, const QImage &image, const QPointF & /*offset*/, double /*xScale*/, double /*yScale*/)
+{
+    return insertImage(row, column, image);
 }
 
 /*!
@@ -1678,61 +1694,38 @@ CellRange Worksheet::dimension() const
     return d->dimension;
 }
 
+/*!
+ * \internal
+ */
 Drawing *Worksheet::drawing() const
 {
     Q_D(const Worksheet);
     return d->drawing;
 }
 
-QList<XlsxImageData *> Worksheet::images() const
+/*!
+ * \internal
+ *
+ * When loading the .xlsx package, the drawing{x}.xml file path
+ * is extracted when we parse the sheet{x}.xml file.
+ */
+QString Worksheet::drawingPath() const
 {
     Q_D(const Worksheet);
-    return d->imageList;
+    return d->drawingPath_in_zip;
 }
 
-void Worksheet::clearExtraDrawingInfo()
+/*!
+ * \internal
+ *
+ * Note, the object will be managed by this sheet.
+ */
+void Worksheet::setDrawing(Drawing *draw)
 {
     Q_D(Worksheet);
-    if (d->drawing) {
-        delete d->drawing;
-        d->drawing = 0;
-        d->drawingLinks.clear();
-    }
-}
+    Q_ASSERT(!d->drawing);
 
-void Worksheet::prepareImage(int index, int image_id)
-{
-    Q_D(Worksheet);
-    if (!d->drawing) {
-        d->drawing = new Drawing;
-        d->drawing->embedded = true;
-    }
-
-    XlsxImageData *imageData = d->imageList[index];
-
-    XlsxDrawingDimensionData *data = new XlsxDrawingDimensionData;
-    data->drawing_type = 2;
-
-    double width = imageData->image.width() * imageData->xScale;
-    double height = imageData->image.height() * imageData->yScale;
-
-    XlsxObjectPositionData posData = d->pixelsToEMUs(d->objectPixelsPosition(imageData->col, imageData->row, imageData->offset.x(), imageData->offset.y(), width, height));
-    data->col_from = posData.col_start;
-    data->col_from_offset = posData.x1;
-    data->row_from = posData.row_start;
-    data->row_from_offset = posData.y1;
-    data->col_to = posData.col_end;
-    data->col_to_offset = posData.x2;
-    data->row_to = posData.row_end;
-    data->row_to_offset = posData.y2;
-    data->width = posData.width;
-    data->height = posData.height;
-    data->col_absolute = posData.x_abs;
-    data->row_absolute = posData.y_abs;
-
-    d->drawing->dimensionList.append(data);
-
-    d->drawingLinks.append(QPair<QString, QString>(QStringLiteral("/image"), QStringLiteral("../media/image%1.png").arg(image_id)));
+    d->drawing = draw;
 }
 
 /*
@@ -1772,96 +1765,6 @@ int WorksheetPrivate::colPixelsSize(int col) const
         pixels = 64;
     }
     return pixels;
-}
-
-/*
-        col_start     Col containing upper left corner of object.
-        x1            Distance to left side of object.
-        row_start     Row containing top left corner of object.
-        y1            Distance to top of object.
-        col_end       Col containing lower right corner of object.
-        x2            Distance to right side of object.
-        row_end       Row containing bottom right corner of object.
-        y2            Distance to bottom of object.
-        width         Width of object frame.
-        height        Height of object frame.
-        x_abs         Absolute distance to left side of object.
-        y_abs         Absolute distance to top side of object.
-*/
-XlsxObjectPositionData WorksheetPrivate::objectPixelsPosition(int col_start, int row_start, double x1, double y1, double width, double height) const
-{
-    double x_abs = 0;
-    double y_abs = 0;
-    for (int col_id = 1; col_id < col_start; ++col_id)
-        x_abs += colPixelsSize(col_id);
-    x_abs += x1;
-    for (int row_id = 1; row_id < row_start; ++row_id)
-        y_abs += rowPixelsSize(row_id);
-    y_abs += y1;
-
-    // Adjust start column for offsets that are greater than the col width.
-    while (x1 > colPixelsSize(col_start)) {
-        x1 -= colPixelsSize(col_start);
-        col_start += 1;
-    }
-    while (y1 > rowPixelsSize(row_start)) {
-        y1 -= rowPixelsSize(row_start);
-        row_start += 1;
-    }
-
-    int col_end = col_start;
-    int row_end = row_start;
-    double x2 = width + x1;
-    double y2 = height + y1;
-
-    while (x2 > colPixelsSize(col_end)) {
-        x2 -= colPixelsSize(col_end);
-        col_end += 1;
-    }
-
-    while (y2 > rowPixelsSize(row_end)) {
-        y2 -= rowPixelsSize(row_end);
-        row_end += 1;
-    }
-
-    XlsxObjectPositionData data;
-    data.col_start = col_start;
-    data.x1 = x1;
-    data.row_start = row_start;
-    data.y1 = y1;
-    data.col_end = col_end;
-    data.x2 = x2;
-    data.row_end = row_end;
-    data.y2 = y2;
-    data.x_abs = x_abs;
-    data.y_abs = y_abs;
-    data.width = width;
-    data.height = height;
-
-    return data;
-}
-
-/*
-        Calculate the vertices that define the position of a graphical
-        object within the worksheet in EMUs.
-
-        The vertices are expressed as English Metric Units (EMUs). There are
-        12,700 EMUs per point. Therefore, 12,700 * 3 /4 = 9,525 EMUs per
-        pixel
-*/
-XlsxObjectPositionData WorksheetPrivate::pixelsToEMUs(const XlsxObjectPositionData &data) const
-{
-    XlsxObjectPositionData result = data;
-    result.x1 = static_cast<int>(data.x1 * 9525 + 0.5);
-    result.y1 = static_cast<int>(data.y1 * 9525 + 0.5);
-    result.x2 = static_cast<int>(data.x2 * 9525 + 0.5);
-    result.y2 = static_cast<int>(data.y2 * 9525 + 0.5);
-    result.x_abs = static_cast<int>(data.x_abs * 9525 + 0.5);
-    result.y_abs = static_cast<int>(data.y_abs * 9525 + 0.5);
-    result.width = static_cast<int>(data.width * 9525 + 0.5);
-    result.height = static_cast<int>(data.height * 9525 + 0.5);
-
-    return result;
 }
 
 QByteArray Worksheet::saveToXmlData() const
@@ -2220,6 +2123,9 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 d->conditionalFormattingList.append(cf);
             } else if (reader.name() == QLatin1String("hyperlinks")) {
                 d->loadXmlHyperlinks(reader);
+            } else if (reader.name() == QLatin1String("drawing")) {
+                QString rId = reader.attributes().value(QStringLiteral("r:id")).toString();
+                d->drawingPath_in_zip = d->relationships.getRelationshipById(rId).target;
             }
         }
     }

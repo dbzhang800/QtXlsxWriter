@@ -87,8 +87,7 @@ public:
     QStringList worksheetNames;
     QSharedPointer<Styles> styles;
     QSharedPointer<Theme> theme;
-    QList<QImage> images;
-    QList<Drawing *> drawings;
+    QList<QSharedPointer<MediaFile> > mediaFiles;
     QList<XlsxDefineNameData> definedNamesList;
 
     QList<XlsxSheetItemInfo> sheetItemInfoList;//Data from xml file

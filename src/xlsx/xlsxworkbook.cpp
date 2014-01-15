@@ -30,6 +30,7 @@
 #include "xlsxformat.h"
 #include "xlsxworksheet_p.h"
 #include "xlsxformat_p.h"
+#include "xlsxmediafile_p.h"
 
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
@@ -370,41 +371,22 @@ Theme *Workbook::theme()
     return d->theme.data();
 }
 
-QList<QImage> Workbook::images()
-{
-    Q_D(Workbook);
-    return d->images;
-}
-
+/*!
+ * \internal
+ *
+ * Unlike media files, drawing file is a property of the sheet.
+ */
 QList<Drawing *> Workbook::drawings()
 {
     Q_D(Workbook);
-    return d->drawings;
-}
-
-void Workbook::prepareDrawings()
-{
-    Q_D(Workbook);
-    int image_ref_id = 0;
-    d->images.clear();
-    d->drawings.clear();
-
+    QList<Drawing *> ds;
     for (int i=0; i<d->worksheets.size(); ++i) {
         QSharedPointer<Worksheet> sheet = d->worksheets[i];
-        if (sheet->images().isEmpty()) //No drawing (such as Image, ...)
-            continue;
-
-        sheet->clearExtraDrawingInfo();
-
-        //At present, only picture type supported
-        for (int idx = 0; idx < sheet->images().size(); ++idx) {
-            image_ref_id += 1;
-            sheet->prepareImage(idx, image_ref_id);
-            d->images.append(sheet->images()[idx]->image);
-        }
-
-        d->drawings.append(sheet->drawing());
+        if (sheet->drawing())
+        ds.append(sheet->drawing());
     }
+
+    return ds;
 }
 
 void Workbook::saveToXmlFile(QIODevice *device) const
@@ -583,6 +565,34 @@ Relationships &Workbook::relationships()
 {
     Q_D(Workbook);
     return d->relationships;
+}
+
+/*!
+ * \internal
+ */
+QList<QSharedPointer<MediaFile> > Workbook::mediaFiles() const
+{
+    Q_D(const Workbook);
+
+    return d->mediaFiles;
+}
+
+/*!
+ * \internal
+ */
+void Workbook::addMediaFile(QSharedPointer<MediaFile> media, bool force)
+{
+    Q_D(Workbook);
+    if (!force) {
+        for (int i=0; i<d->mediaFiles.size(); ++i) {
+            if (d->mediaFiles[i]->hashKey() == media->hashKey()) {
+                media->setIndex(i);
+                return;
+            }
+        }
+    }
+    media->setIndex(d->mediaFiles.size());
+    d->mediaFiles.append(media);
 }
 
 QT_END_NAMESPACE_XLSX

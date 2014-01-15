@@ -42,6 +42,7 @@ class Document;
 class Theme;
 class Relationships;
 class DocumentPrivate;
+class MediaFile;
 
 class WorkbookPrivate;
 class Q_XLSX_EXPORT Workbook
@@ -75,6 +76,10 @@ public:
     QString defaultDateFormat() const;
     void setDefaultDateFormat(const QString &format);
 
+    //internal used member
+    void addMediaFile(QSharedPointer<MediaFile> media, bool force=false);
+    QList<QSharedPointer<MediaFile> > mediaFiles() const;
+
 private:
     friend class Worksheet;
     friend class WorksheetPrivate;
@@ -94,9 +99,9 @@ private:
     Theme *theme();
     QList<QImage> images();
     QList<Drawing *> drawings();
-    void prepareDrawings();
     QStringList worksheetNames() const;
     Worksheet *addWorksheet(const QString &name, int sheetId);
+
     WorkbookPrivate * const d_ptr;
 };
 

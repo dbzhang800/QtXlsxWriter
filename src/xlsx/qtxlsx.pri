@@ -34,7 +34,9 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxconditionalformatting.h \
     $$PWD/xlsxconditionalformatting_p.h \
     $$PWD/xlsxcolor_p.h \
-    $$PWD/xlsxnumformatparser_p.h
+    $$PWD/xlsxnumformatparser_p.h \
+    $$PWD/xlsxdrawinganchor_p.h \
+    $$PWD/xlsxmediafile_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -57,4 +59,6 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxrichstring.cpp \
     $$PWD/xlsxconditionalformatting.cpp \
     $$PWD/xlsxcolor.cpp \
-    $$PWD/xlsxnumformatparser.cpp
+    $$PWD/xlsxnumformatparser.cpp \
+    $$PWD/xlsxdrawinganchor.cpp \
+    $$PWD/xlsxmediafile.cpp

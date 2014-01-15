@@ -90,7 +90,8 @@ public:
     Cell *cellAt(const QString &row_column) const;
     Cell *cellAt(int row, int column) const;
 
-    int insertImage(int row, int column, const QImage &image, const QPointF &offset=QPointF(), double xScale=1, double yScale=1);
+    bool insertImage(int row, int column, const QImage &image);
+    Q_DECL_DEPRECATED int insertImage(int row, int column, const QImage &image, const QPointF &offset, double xScale=1, double yScale=1);
 
     int mergeCells(const QString &range, const Format &format=Format());
     int mergeCells(const CellRange &range, const Format &format=Format());
@@ -149,11 +150,10 @@ private:
     bool isHidden() const;
     void setHidden(bool hidden);
     int sheetId() const;
-    QList<QPair<QString, QString> > drawingLinks() const;
+
     Drawing *drawing() const;
-    QList<XlsxImageData *> images() const;
-    void prepareImage(int index, int image_id);
-    void clearExtraDrawingInfo();
+    void setDrawing(Drawing *d);
+    QString drawingPath() const;
 
     WorksheetPrivate * const d_ptr;
 };

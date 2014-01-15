@@ -23,52 +23,77 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_DRAWING_H
-#define QXLSX_DRAWING_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include "xlsxrelationships_p.h"
-
-#include <QList>
-#include <QString>
-#include <QSharedPointer>
-
-class QIODevice;
-class QXmlStreamWriter;
+#include "xlsxmediafile_p.h"
+#include <QCryptographicHash>
 
 namespace QXlsx {
 
-class DrawingAnchor;
-class Workbook;
-class MediaFile;
-
-class Drawing
+MediaFile::MediaFile(const QByteArray &bytes, const QString &suffix, const QString &mimeType)
+    : m_contents(bytes), m_suffix(suffix), m_mimeType(mimeType)
+      , m_index(0), m_indexValid(false)
 {
-public:
-    Drawing(Workbook *workbook);
-    ~Drawing();
-    void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
-    bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
+    m_hashKey = QCryptographicHash::hash(m_contents, QCryptographicHash::Md5);
+}
 
-    Workbook *workbook;
-    QList<DrawingAnchor *> anchors;
-    mutable Relationships relationships;
+MediaFile::MediaFile(const QString &fileName)
+    :m_fileName(fileName), m_index(0), m_indexValid(false)
+{
 
-    QString pathInPackage;
-};
+}
+
+void MediaFile::set(const QByteArray &bytes, const QString &suffix, const QString &mimeType)
+{
+    m_contents = bytes;
+    m_suffix = suffix;
+    m_mimeType = mimeType;
+    m_hashKey = QCryptographicHash::hash(m_contents, QCryptographicHash::Md5);
+    m_indexValid = false;
+}
+
+void MediaFile::setFileName(const QString &name)
+{
+    m_fileName = name;
+}
+
+QString MediaFile::fileName() const
+{
+    return m_fileName;
+}
+
+QString MediaFile::suffix() const
+{
+    return m_suffix;
+}
+
+QString MediaFile::mimeType() const
+{
+    return m_mimeType;
+}
+
+QByteArray MediaFile::contents() const
+{
+    return m_contents;
+}
+
+int MediaFile::index() const
+{
+    return m_index;
+}
+
+bool MediaFile::isIndexValid() const
+{
+    return m_indexValid;
+}
+
+void MediaFile::setIndex(int idx)
+{
+    m_index = idx;
+    m_indexValid = true;
+}
+
+QByteArray MediaFile::hashKey() const
+{
+    return m_hashKey;
+}
 
 } // namespace QXlsx
-
-#endif // QXLSX_DRAWING_H
