@@ -146,8 +146,7 @@ public:
 
     Workbook *workbook;
     mutable Relationships relationships;
-    Drawing *drawing;
-    QString drawingPath_in_zip;
+    QSharedPointer<Drawing> drawing;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, QSharedPointer<XlsxHyperlinkData> > > urlTable;

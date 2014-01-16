@@ -31,11 +31,13 @@
 #include "xlsxworksheet_p.h"
 #include "xlsxformat_p.h"
 #include "xlsxmediafile_p.h"
+#include "xlsxutility_p.h"
 
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QFile>
 #include <QBuffer>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -485,14 +487,17 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("sheet")) {
-                 XlsxSheetItemInfo info;
                  QXmlStreamAttributes attributes = reader.attributes();
-                 info.name = attributes.value(QLatin1String("name")).toString();
-                 info.sheetId = attributes.value(QLatin1String("sheetId")).toString().toInt();
-                 info.rId = attributes.value(QLatin1String("r:id")).toString();
-                 if (attributes.hasAttribute(QLatin1String("state")))
-                     info.state = attributes.value(QLatin1String("state")).toString();
-                 d->sheetItemInfoList.append(info);
+                 const QString name = attributes.value(QLatin1String("name")).toString();
+                 int sheetId = attributes.value(QLatin1String("sheetId")).toString().toInt();
+                 const QString rId = attributes.value(QLatin1String("r:id")).toString();
+//                 if (attributes.hasAttribute(QLatin1String("state")))
+//                     QString state = attributes.value(QLatin1String("state")).toString();
+
+                 Worksheet *sheet = addWorksheet(name, sheetId);
+                 const QString path = d->relationships.getRelationshipById(rId).target;
+                 const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ path);
+                 sheet->setFilePath(fullPath);
              } else if (reader.name() == QLatin1String("workbookPr")) {
                 QXmlStreamAttributes attrs = reader.attributes();
                 if (attrs.hasAttribute(QLatin1String("date1904")))

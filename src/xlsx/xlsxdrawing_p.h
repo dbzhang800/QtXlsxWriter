@@ -64,8 +64,6 @@ public:
     Workbook *workbook;
     QList<DrawingAnchor *> anchors;
     mutable Relationships relationships;
-
-    QString pathInPackage;
 };
 
 } // namespace QXlsx

@@ -151,8 +151,6 @@ private:
     int sheetId() const;
 
     Drawing *drawing() const;
-    void setDrawing(Drawing *d);
-    QString drawingPath() const;
 };
 
 QT_END_NAMESPACE_XLSX

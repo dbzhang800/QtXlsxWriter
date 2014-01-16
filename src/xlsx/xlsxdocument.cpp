@@ -145,9 +145,9 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     if (rels_xl.isEmpty())
         return false;
     QString xlworkbook_Path = rels_xl[0].target;
-    QStringList xlworkbook_PathList = splitPath(xlworkbook_Path);
-    QString xlworkbook_Dir = xlworkbook_PathList[0];
+    QString xlworkbook_Dir = splitPath(xlworkbook_Path)[0];
     workbook->relationships().loadFromXmlData(zipReader.fileData(getRelFilePath(xlworkbook_Path)));
+    workbook->setFilePath(xlworkbook_Path);
     workbook->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
 
     //load styles
@@ -180,33 +180,22 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load worksheets
-    QList<XlsxRelationship> rels_worksheets = workbook->relationships().documentRelationships(QStringLiteral("/worksheet"));
-    if (rels_worksheets.isEmpty())
-        return false;
-
-    QList<XlsxSheetItemInfo> sheetNameIdPairList = workbook->d_func()->sheetItemInfoList;
-
-    for (int i=0; i<sheetNameIdPairList.size(); ++i) {
-        XlsxSheetItemInfo info = sheetNameIdPairList[i];
-        QString worksheet_path = xlworkbook_Dir + QLatin1String("/") + workbook->relationships().getRelationshipById(info.rId).target;
-        QString rel_path = getRelFilePath(worksheet_path);
-        Worksheet *sheet = workbook->addWorksheet(info.name, info.sheetId);
+    for (int i=0; i<workbook->worksheetCount(); ++i) {
+        Worksheet *sheet = workbook->worksheet(i);
+        QString rel_path = getRelFilePath(sheet->filePath());
         //If the .rel file exists, load it.
         if (zipReader.filePaths().contains(rel_path))
             sheet->relationships().loadFromXmlData(zipReader.fileData(rel_path));
-        sheet->loadFromXmlData(zipReader.fileData(worksheet_path));
+        sheet->loadFromXmlData(zipReader.fileData(sheet->filePath()));
+    }
 
-        //load drawing if exists
-        if (!sheet->drawingPath().isEmpty()) {
-            QString drawingPath = QDir::cleanPath(splitPath(worksheet_path)[0] + QLatin1String("/") + sheet->drawingPath());
-            Drawing *drawing = new Drawing(workbook.data());
-            drawing->pathInPackage = drawingPath;
-            QString drawing_rel_path = getRelFilePath(drawingPath);
-            if (zipReader.filePaths().contains(drawing_rel_path))
-                drawing->relationships.loadFromXmlData(zipReader.fileData(drawing_rel_path));
-            drawing->loadFromXmlData(zipReader.fileData(drawingPath));
-            sheet->setDrawing(drawing);
-        }
+    //load drawings
+    for (int i=0; i<workbook->drawings().size(); ++i) {
+        Drawing *drawing = workbook->drawings()[i];
+        QString rel_path = getRelFilePath(drawing->filePath());
+        if (zipReader.filePaths().contains(rel_path))
+            drawing->relationships.loadFromXmlData(zipReader.fileData(rel_path));
+        drawing->loadFromXmlData(zipReader.fileData(drawing->filePath()));
     }
 
     //load charts

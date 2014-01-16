@@ -49,6 +49,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QTextDocument>
+#include <QDir>
 
 #include <math.h>
 
@@ -60,8 +61,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
   , showOutlineSymbols(true), showWhiteSpace(true)
 {
-    drawing = 0;
-
     previous_row = 0;
 
     outline_row_level = 0;
@@ -75,8 +74,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p)
 
 WorksheetPrivate::~WorksheetPrivate()
 {
-    if (drawing)
-        delete drawing;
 }
 
 /*
@@ -1026,9 +1023,9 @@ bool Worksheet::insertImage(int row, int column, const QImage &image)
         return false;
 
     if (!d->drawing)
-        d->drawing = new Drawing(d->workbook);
+        d->drawing = QSharedPointer<Drawing>(new Drawing(d->workbook));
 
-    DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing, DrawingAnchor::Picture);
+    DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing.data(), DrawingAnchor::Picture);
 
     /*
         The size are expressed as English Metric Units (EMUs). There are
@@ -1451,7 +1448,7 @@ void WorksheetPrivate::saveXmlDrawings(QXmlStreamWriter &writer) const
     if (!drawing)
         return;
 
-    int idx = workbook->drawings().indexOf(drawing);
+    int idx = workbook->drawings().indexOf(drawing.data());
     relationships.addWorksheetRelationship(QStringLiteral("/drawing"), QStringLiteral("../drawings/drawing%1.xml").arg(idx+1));
 
     writer.writeEmptyElement(QStringLiteral("drawing"));
@@ -1699,32 +1696,7 @@ CellRange Worksheet::dimension() const
 Drawing *Worksheet::drawing() const
 {
     Q_D(const Worksheet);
-    return d->drawing;
-}
-
-/*!
- * \internal
- *
- * When loading the .xlsx package, the drawing{x}.xml file path
- * is extracted when we parse the sheet{x}.xml file.
- */
-QString Worksheet::drawingPath() const
-{
-    Q_D(const Worksheet);
-    return d->drawingPath_in_zip;
-}
-
-/*!
- * \internal
- *
- * Note, the object will be managed by this sheet.
- */
-void Worksheet::setDrawing(Drawing *draw)
-{
-    Q_D(Worksheet);
-    Q_ASSERT(!d->drawing);
-
-    d->drawing = draw;
+    return d->drawing.data();
 }
 
 /*
@@ -2114,7 +2086,10 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 d->loadXmlHyperlinks(reader);
             } else if (reader.name() == QLatin1String("drawing")) {
                 QString rId = reader.attributes().value(QStringLiteral("r:id")).toString();
-                d->drawingPath_in_zip = d->relationships.getRelationshipById(rId).target;
+                QString name = d->relationships.getRelationshipById(rId).target;
+                QString path = QDir::cleanPath(splitPath(filePath())[0] + QLatin1String("/") + name);
+                d->drawing = QSharedPointer<Drawing>(new Drawing(d->workbook));
+                d->drawing->filePath() = path;
             }
         }
     }
