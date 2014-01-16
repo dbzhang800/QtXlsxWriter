@@ -35,20 +35,22 @@
 //
 // We mean it.
 //
+#include "xlsxooxmlfile.h"
 
 #include <QString>
 class QIODevice;
 
 namespace QXlsx {
 
-class Theme
+class Theme : public OOXmlFile
 {
 public:
     Theme();
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;
-    void loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlFile(QIODevice *device);
 
     QByteArray xmlData;
 };

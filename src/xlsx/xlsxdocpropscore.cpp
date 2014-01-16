@@ -124,19 +124,8 @@ void DocPropsCore::saveToXmlFile(QIODevice *device) const
     writer.writeEndDocument();
 }
 
-QByteArray DocPropsCore::saveToXmlData() const
+bool DocPropsCore::loadFromXmlFile(QIODevice *device)
 {
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-
-    return data;
-}
-
-DocPropsCore DocPropsCore::loadFromXmlFile(QIODevice *device)
-{
-    DocPropsCore props;
     QXmlStreamReader reader(device);
 
     const QString cp = QStringLiteral("http://schemas.openxmlformats.org/package/2006/metadata/core-properties");
@@ -149,21 +138,21 @@ DocPropsCore DocPropsCore::loadFromXmlFile(QIODevice *device)
              const QStringRef nsUri = reader.namespaceUri();
              const QStringRef name = reader.name();
              if (name == QStringLiteral("subject") && nsUri == dc) {
-                 props.setProperty(QStringLiteral("subject"), reader.readElementText());
+                 setProperty(QStringLiteral("subject"), reader.readElementText());
              } else if (name == QStringLiteral("title") && nsUri == dc) {
-                 props.setProperty(QStringLiteral("title"), reader.readElementText());
+                 setProperty(QStringLiteral("title"), reader.readElementText());
              } else if (name == QStringLiteral("creator") && nsUri == dc) {
-                 props.setProperty(QStringLiteral("creator"), reader.readElementText());
+                 setProperty(QStringLiteral("creator"), reader.readElementText());
              } else if (name == QStringLiteral("description") && nsUri == dc) {
-                 props.setProperty(QStringLiteral("description"), reader.readElementText());
+                 setProperty(QStringLiteral("description"), reader.readElementText());
              } else if (name == QStringLiteral("keywords") && nsUri == cp) {
-                 props.setProperty(QStringLiteral("keywords"), reader.readElementText());
+                 setProperty(QStringLiteral("keywords"), reader.readElementText());
              } else if (name == QStringLiteral("created") && nsUri == dcterms) {
-                 props.setProperty(QStringLiteral("created"), reader.readElementText());
+                 setProperty(QStringLiteral("created"), reader.readElementText());
              } else if (name == QStringLiteral("category") && nsUri == cp) {
-                 props.setProperty(QStringLiteral("category"), reader.readElementText());
+                 setProperty(QStringLiteral("category"), reader.readElementText());
              } else if (name == QStringLiteral("contentStatus") && nsUri == cp) {
-                 props.setProperty(QStringLiteral("status"), reader.readElementText());
+                 setProperty(QStringLiteral("status"), reader.readElementText());
              }
          }
 
@@ -172,16 +161,7 @@ DocPropsCore DocPropsCore::loadFromXmlFile(QIODevice *device)
 
          }
     }
-    return props;
+    return true;
 }
-
-DocPropsCore DocPropsCore::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-    return loadFromXmlFile(&buffer);
-}
-
 
 } //namespace

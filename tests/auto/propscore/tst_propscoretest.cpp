@@ -32,7 +32,8 @@ void DocPropsCoreTest::testCase1()
     f1.close();
 
     f1.open(QFile::ReadOnly);
-    QXlsx::DocPropsCore props2 = QXlsx::DocPropsCore::loadFromXmlFile(&f1);
+    QXlsx::DocPropsCore props2;
+    props2.loadFromXmlFile(&f1);
 
     QCOMPARE(props2.property("creator"), QString("Debao"));
     QCOMPARE(props2.property("keywords"), QString("Test, test, TEST"));

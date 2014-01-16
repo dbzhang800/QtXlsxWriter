@@ -119,7 +119,8 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         //In normal case, this should be "docProps/core.xml"
         QString docPropsCore_Name = rels_core[0].target;
 
-        DocPropsCore props = DocPropsCore::loadFromXmlData(zipReader.fileData(docPropsCore_Name));
+        DocPropsCore props;
+        props.loadFromXmlData(zipReader.fileData(docPropsCore_Name));
         foreach (QString name, props.propertyNames())
             q->setDocumentProperty(name, props.property(name));
     }
@@ -131,7 +132,8 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         //In normal case, this should be "docProps/app.xml"
         QString docPropsApp_Name = rels_app[0].target;
 
-        DocPropsApp props = DocPropsApp::loadFromXmlData(zipReader.fileData(docPropsApp_Name));
+        DocPropsApp props;
+        props.loadFromXmlData(zipReader.fileData(docPropsApp_Name));
         foreach (QString name, props.propertyNames())
             q->setDocumentProperty(name, props.property(name));
     }
@@ -146,7 +148,6 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     QString xlworkbook_Dir = xlworkbook_PathList[0];
     workbook->relationships().loadFromXmlData(zipReader.fileData(getRelFilePath(xlworkbook_Path)));
     workbook->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
-    QList<XlsxSheetItemInfo> sheetNameIdPairList = workbook->d_func()->sheetItemInfoList;
 
     //load styles
     QList<XlsxRelationship> rels_styles = workbook->relationships().documentRelationships(QStringLiteral("/styles"));
@@ -156,7 +157,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
         QSharedPointer<Styles> styles (new Styles(true));
         styles->loadFromXmlData(zipReader.fileData(path));
-        workbook->d_ptr->styles = styles;
+        workbook->d_func()->styles = styles;
     }
 
     //load sharedStrings
@@ -165,7 +166,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         //In normal case this should be sharedStrings.xml which in xl
         QString name = rels_sharedStrings[0].target;
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
-        workbook->d_ptr->sharedStrings->loadFromXmlData(zipReader.fileData(path));
+        workbook->d_func()->sharedStrings->loadFromXmlData(zipReader.fileData(path));
     }
 
     //load theme
@@ -181,6 +182,8 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     QList<XlsxRelationship> rels_worksheets = workbook->relationships().documentRelationships(QStringLiteral("/worksheet"));
     if (rels_worksheets.isEmpty())
         return false;
+
+    QList<XlsxSheetItemInfo> sheetNameIdPairList = workbook->d_func()->sheetItemInfoList;
 
     for (int i=0; i<sheetNameIdPairList.size(); ++i) {
         XlsxSheetItemInfo info = sheetNameIdPairList[i];

@@ -38,6 +38,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxrichstring.h"
+#include "xlsxooxmlfile.h"
 #include <QHash>
 #include <QStringList>
 #include <QSharedPointer>
@@ -60,7 +61,7 @@ public:
     int count;
 };
 
-class XLSX_AUTOTEST_EXPORT SharedStrings
+class XLSX_AUTOTEST_EXPORT SharedStrings : public OOXmlFile
 {
 public:
     SharedStrings();
@@ -79,9 +80,7 @@ public:
     QList<RichString> getSharedStrings() const;
 
     void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
 
 private:
     void readString(QXmlStreamReader &reader); // <si>

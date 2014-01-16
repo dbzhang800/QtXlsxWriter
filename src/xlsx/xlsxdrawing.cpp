@@ -43,15 +43,6 @@ Drawing::~Drawing()
     qDeleteAll(anchors);
 }
 
-QByteArray Drawing::saveToXmlData() const
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-    return data;
-}
-
 void Drawing::saveToXmlFile(QIODevice *device) const
 {
     relationships.clear();
@@ -90,15 +81,6 @@ bool Drawing::loadFromXmlFile(QIODevice *device)
     }
 
     return true;
-}
-
-bool Drawing::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
 }
 
 } // namespace QXlsx

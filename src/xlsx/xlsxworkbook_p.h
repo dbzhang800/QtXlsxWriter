@@ -37,6 +37,7 @@
 //
 
 #include "xlsxworkbook.h"
+#include "xlsxooxmlfile_p.h"
 #include "xlsxtheme_p.h"
 #include "xlsxrelationships_p.h"
 
@@ -73,13 +74,12 @@ struct XlsxDefineNameData
     int sheetId;
 };
 
-class WorkbookPrivate
+class WorkbookPrivate : public OOXmlFilePrivate
 {
     Q_DECLARE_PUBLIC(Workbook)
 public:
     WorkbookPrivate(Workbook *q);
 
-    Workbook *q_ptr;
     mutable Relationships relationships;
 
     QSharedPointer<SharedStrings> sharedStrings;

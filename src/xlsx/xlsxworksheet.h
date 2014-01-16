@@ -28,6 +28,7 @@
 #include "xlsxglobal.h"
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
+#include "xlsxooxmlfile.h"
 #include <QStringList>
 #include <QMap>
 #include <QVariant>
@@ -52,7 +53,7 @@ class RichString;
 class Relationships;
 
 class WorksheetPrivate;
-class Q_XLSX_EXPORT Worksheet
+class Q_XLSX_EXPORT Worksheet : public OOXmlFile
 {
     Q_DECLARE_PRIVATE(Worksheet)
 public:
@@ -142,9 +143,7 @@ private:
     void setSheetName(const QString &sheetName);
 
     void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
 
     bool isChartsheet() const;
     bool isHidden() const;
@@ -154,8 +153,6 @@ private:
     Drawing *drawing() const;
     void setDrawing(Drawing *d);
     QString drawingPath() const;
-
-    WorksheetPrivate * const d_ptr;
 };
 
 QT_END_NAMESPACE_XLSX

@@ -54,8 +54,8 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-WorksheetPrivate::WorksheetPrivate(Worksheet *p) :
-    q_ptr(p)
+WorksheetPrivate::WorksheetPrivate(Worksheet *p)
+    : OOXmlFilePrivate(p)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
   , showOutlineSymbols(true), showWhiteSpace(true)
@@ -174,13 +174,13 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
  *             (Note: id is not the index of the sheet in workbook)
  */
 Worksheet::Worksheet(const QString &name, int id, Workbook *workbook) :
-    d_ptr(new WorksheetPrivate(this))
+    OOXmlFile(new WorksheetPrivate(this))
 {
-    d_ptr->name = name;
-    d_ptr->id = id;
+    d_func()->name = name;
+    d_func()->id = id;
     if (!workbook) //For unit test propose only. Ignore the memery leak.
         workbook = new Workbook;
-    d_ptr->workbook = workbook;
+    d_func()->workbook = workbook;
 }
 
 QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) const
@@ -188,7 +188,7 @@ QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) c
     Q_D(const Worksheet);
     QSharedPointer<Worksheet> sheet(new Worksheet(distName, distId, d->workbook));
 
-    WorksheetPrivate *sheet_d = sheet->d_ptr;
+    WorksheetPrivate *sheet_d = sheet->d_func();
 
     sheet_d->dimension = d->dimension;
 
@@ -223,7 +223,6 @@ QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) c
 
 Worksheet::~Worksheet()
 {
-    delete d_ptr;
 }
 
 bool Worksheet::isChartsheet() const
@@ -1767,16 +1766,6 @@ int WorksheetPrivate::colPixelsSize(int col) const
     return pixels;
 }
 
-QByteArray Worksheet::saveToXmlData() const
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-
-    return data;
-}
-
 QSharedPointer<Cell> WorksheetPrivate::loadXmlNumericCellData(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("c"));
@@ -2131,15 +2120,6 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
     }
 
     return true;
-}
-
-bool Worksheet::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
 }
 
 /*!

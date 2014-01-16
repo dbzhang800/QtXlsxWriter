@@ -36,7 +36,9 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxcolor_p.h \
     $$PWD/xlsxnumformatparser_p.h \
     $$PWD/xlsxdrawinganchor_p.h \
-    $$PWD/xlsxmediafile_p.h
+    $$PWD/xlsxmediafile_p.h \
+    $$PWD/xlsxooxmlfile.h \
+    $$PWD/xlsxooxmlfile_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -61,4 +63,5 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxcolor.cpp \
     $$PWD/xlsxnumformatparser.cpp \
     $$PWD/xlsxdrawinganchor.cpp \
-    $$PWD/xlsxmediafile.cpp
+    $$PWD/xlsxmediafile.cpp \
+    $$PWD/xlsxooxmlfile.cpp

@@ -132,15 +132,6 @@ void ContentTypes::clearOverrides()
     m_overrides.clear();
 }
 
-QByteArray ContentTypes::saveToXmlData() const
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-    return data;
-}
-
 void ContentTypes::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
@@ -203,15 +194,6 @@ bool ContentTypes::loadFromXmlFile(QIODevice *device)
         }
     }
     return true;
-}
-
-bool ContentTypes::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
 }
 
 } //namespace QXlsx

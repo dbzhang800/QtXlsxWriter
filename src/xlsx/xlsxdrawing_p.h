@@ -38,6 +38,7 @@
 //
 
 #include "xlsxrelationships_p.h"
+#include "xlsxooxmlfile.h"
 
 #include <QList>
 #include <QString>
@@ -52,15 +53,13 @@ class DrawingAnchor;
 class Workbook;
 class MediaFile;
 
-class Drawing
+class Drawing : public OOXmlFile
 {
 public:
     Drawing(Workbook *workbook);
     ~Drawing();
     void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
 
     Workbook *workbook;
     QList<DrawingAnchor *> anchors;

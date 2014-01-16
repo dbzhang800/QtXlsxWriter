@@ -22,51 +22,37 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXDOCPROPSAPP_H
-#define XLSXDOCPROPSAPP_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
+#ifndef QXLSX_XLSXOOXMLFILE_H
+#define QXLSX_XLSXOOXMLFILE_H
 
 #include "xlsxglobal.h"
-#include "xlsxooxmlfile.h"
-#include <QList>
-#include <QPair>
-#include <QStringList>
-#include <QMap>
 
 class QIODevice;
+class QByteArray;
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
-class XLSX_AUTOTEST_EXPORT DocPropsApp : public OOXmlFile
+class OOXmlFilePrivate;
+
+class Q_XLSX_EXPORT OOXmlFile
 {
 public:
-    DocPropsApp();
-    
-    void addPartTitle(const QString &title);
-    void addHeadingPair(const QString &name, int value);
+    virtual ~OOXmlFile();
 
-    bool setProperty(const QString &name, const QString &value);
-    QString property(const QString &name) const;
-    QStringList propertyNames() const;
+    virtual void saveToXmlFile(QIODevice *device) const = 0;
+    virtual bool loadFromXmlFile(QIODevice *device) = 0;
 
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
+    virtual QByteArray saveToXmlData() const;
+    virtual bool loadFromXmlData(const QByteArray &data);
 
-private:
-    QStringList m_titlesOfPartsList;
-    QList<QPair<QString, int> > m_headingPairsList;
-    QMap<QString, QString> m_properties;
+protected:
+    OOXmlFile();
+    OOXmlFile(OOXmlFilePrivate *d);
+
+    OOXmlFilePrivate *d_ptr;
 };
 
-}
-#endif // XLSXDOCPROPSAPP_H
+QT_END_NAMESPACE_XLSX
+
+#endif // QXLSX_XLSXOOXMLFILE_H

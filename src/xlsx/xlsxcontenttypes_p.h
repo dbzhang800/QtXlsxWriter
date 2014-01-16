@@ -36,6 +36,8 @@
 // We mean it.
 //
 
+#include "xlsxooxmlfile.h"
+
 #include <QString>
 #include <QStringList>
 #include <QMap>
@@ -44,7 +46,7 @@ class QIODevice;
 
 namespace QXlsx {
 
-class ContentTypes
+class ContentTypes : public OOXmlFile
 {
 public:
     ContentTypes();
@@ -71,11 +73,8 @@ public:
 
     void clearOverrides();
 
-    QByteArray saveToXmlData() const;
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
-
 private:
     QMap<QString, QString> m_defaults;
     QMap<QString, QString> m_overrides;

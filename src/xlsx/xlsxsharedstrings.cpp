@@ -242,16 +242,6 @@ void SharedStrings::saveToXmlFile(QIODevice *device) const
     writer.writeEndDocument();
 }
 
-QByteArray SharedStrings::saveToXmlData() const
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-
-    return data;
-}
-
 void SharedStrings::readString(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("si"));
@@ -382,15 +372,6 @@ bool SharedStrings::loadFromXmlFile(QIODevice *device)
     }
 
     return true;
-}
-
-bool SharedStrings::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
 }
 
 } //namespace

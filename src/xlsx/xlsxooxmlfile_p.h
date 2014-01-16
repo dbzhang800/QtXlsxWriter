@@ -22,8 +22,9 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXDOCPROPSAPP_H
-#define XLSXDOCPROPSAPP_H
+
+#ifndef XLSXOOXMLFILE_P_H
+#define XLSXOOXMLFILE_P_H
 
 //
 //  W A R N I N G
@@ -36,37 +37,20 @@
 // We mean it.
 //
 
-#include "xlsxglobal.h"
 #include "xlsxooxmlfile.h"
-#include <QList>
-#include <QPair>
-#include <QStringList>
-#include <QMap>
 
-class QIODevice;
+QT_BEGIN_NAMESPACE_XLSX
 
-namespace QXlsx {
-
-class XLSX_AUTOTEST_EXPORT DocPropsApp : public OOXmlFile
+class XLSX_AUTOTEST_EXPORT OOXmlFilePrivate
 {
+    Q_DECLARE_PUBLIC(OOXmlFile)
+
 public:
-    DocPropsApp();
-    
-    void addPartTitle(const QString &title);
-    void addHeadingPair(const QString &name, int value);
+    OOXmlFilePrivate(OOXmlFile *q);
 
-    bool setProperty(const QString &name, const QString &value);
-    QString property(const QString &name) const;
-    QStringList propertyNames() const;
-
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
-
-private:
-    QStringList m_titlesOfPartsList;
-    QList<QPair<QString, int> > m_headingPairsList;
-    QMap<QString, QString> m_properties;
+    OOXmlFile *q_ptr;
 };
 
-}
-#endif // XLSXDOCPROPSAPP_H
+QT_END_NAMESPACE_XLSX
+
+#endif // XLSXOOXMLFILE_P_H

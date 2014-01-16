@@ -38,6 +38,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxworksheet.h"
+#include "xlsxooxmlfile_p.h"
 #include "xlsxcell.h"
 #include "xlsxdatavalidation.h"
 #include "xlsxconditionalformatting.h"
@@ -112,7 +113,7 @@ struct XlsxColumnInfo
     bool collapsed;
 };
 
-class XLSX_AUTOTEST_EXPORT WorksheetPrivate
+class XLSX_AUTOTEST_EXPORT WorksheetPrivate : public OOXmlFilePrivate
 {
     Q_DECLARE_PUBLIC(Worksheet)
 public:
@@ -143,7 +144,6 @@ public:
 
     SharedStrings *sharedStrings() const;
 
-    Worksheet *q_ptr;
     Workbook *workbook;
     mutable Relationships relationships;
     Drawing *drawing;

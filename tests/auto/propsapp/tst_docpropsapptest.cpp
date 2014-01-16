@@ -31,7 +31,8 @@ void DocPropsAppTest::testCase1()
     f1.close();
 
     f1.open(QFile::ReadOnly);
-    QXlsx::DocPropsApp props2 = QXlsx::DocPropsApp::loadFromXmlFile(&f1);
+    QXlsx::DocPropsApp props2;
+    props2.loadFromXmlFile(&f1);
 
     QCOMPARE(props2.property("company"), QString("HMI CN"));
     QCOMPARE(props2.property("manager"), QString("Debao"));

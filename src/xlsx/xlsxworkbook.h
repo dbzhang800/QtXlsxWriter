@@ -26,6 +26,7 @@
 #define XLSXWORKBOOK_H
 
 #include "xlsxglobal.h"
+#include "xlsxooxmlfile.h"
 #include <QList>
 #include <QImage>
 #include <QSharedPointer>
@@ -45,7 +46,7 @@ class DocumentPrivate;
 class MediaFile;
 
 class WorkbookPrivate;
-class Q_XLSX_EXPORT Workbook
+class Q_XLSX_EXPORT Workbook : public OOXmlFile
 {
     Q_DECLARE_PRIVATE(Workbook)
 public:
@@ -89,9 +90,7 @@ private:
     Workbook();
 
     void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
     bool loadFromXmlFile(QIODevice *device);
-    bool loadFromXmlData(const QByteArray &data);
     Relationships &relationships();
 
     SharedStrings *sharedStrings() const;
@@ -101,8 +100,6 @@ private:
     QList<Drawing *> drawings();
     QStringList worksheetNames() const;
     Worksheet *addWorksheet(const QString &name, int sheetId);
-
-    WorkbookPrivate * const d_ptr;
 };
 
 QT_END_NAMESPACE_XLSX

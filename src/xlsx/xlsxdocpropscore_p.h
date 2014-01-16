@@ -37,6 +37,7 @@
 //
 
 #include "xlsxglobal.h"
+#include "xlsxooxmlfile.h"
 #include <QMap>
 #include <QStringList>
 
@@ -44,7 +45,7 @@ class QIODevice;
 
 namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT DocPropsCore
+class XLSX_AUTOTEST_EXPORT DocPropsCore : public OOXmlFile
 {
 public:
     explicit DocPropsCore();
@@ -54,9 +55,7 @@ public:
     QStringList propertyNames() const;
         
     void saveToXmlFile(QIODevice *device) const;
-    QByteArray saveToXmlData() const;
-    static DocPropsCore loadFromXmlFile(QIODevice *device);
-    static DocPropsCore loadFromXmlData(const QByteArray &data);
+    bool loadFromXmlFile(QIODevice *device);
 
 private:
     QMap<QString, QString> m_properties;

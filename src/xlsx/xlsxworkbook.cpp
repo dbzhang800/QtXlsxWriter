@@ -40,7 +40,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 WorkbookPrivate::WorkbookPrivate(Workbook *q) :
-    q_ptr(q)
+    OOXmlFilePrivate(q)
 {
     sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings);
     styles = QSharedPointer<Styles>(new Styles);
@@ -63,15 +63,14 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     last_sheet_id = 0;
 }
 
-Workbook::Workbook() :
-    d_ptr(new WorkbookPrivate(this))
+Workbook::Workbook()
+    : OOXmlFile(new WorkbookPrivate(this))
 {
 
 }
 
 Workbook::~Workbook()
 {
-    delete d_ptr;
 }
 
 bool Workbook::isDate1904() const
@@ -477,16 +476,6 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     writer.writeEndDocument();
 }
 
-QByteArray Workbook::saveToXmlData() const
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-
-    return data;
-}
-
 bool Workbook::loadFromXmlFile(QIODevice *device)
 {
     Q_D(Workbook);
@@ -547,15 +536,6 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
          }
     }
     return true;
-}
-
-bool Workbook::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
 }
 
 /*!

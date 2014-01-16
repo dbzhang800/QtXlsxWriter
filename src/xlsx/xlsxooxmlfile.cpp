@@ -22,51 +22,62 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXDOCPROPSAPP_H
-#define XLSXDOCPROPSAPP_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include "xlsxglobal.h"
 #include "xlsxooxmlfile.h"
-#include <QList>
-#include <QPair>
-#include <QStringList>
-#include <QMap>
+#include "xlsxooxmlfile_p.h"
 
-class QIODevice;
+#include <QBuffer>
+#include <QByteArray>
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
-class XLSX_AUTOTEST_EXPORT DocPropsApp : public OOXmlFile
+OOXmlFilePrivate::OOXmlFilePrivate(OOXmlFile *q)
+    :q_ptr(q)
 {
-public:
-    DocPropsApp();
-    
-    void addPartTitle(const QString &title);
-    void addHeadingPair(const QString &name, int value);
-
-    bool setProperty(const QString &name, const QString &value);
-    QString property(const QString &name) const;
-    QStringList propertyNames() const;
-
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
-
-private:
-    QStringList m_titlesOfPartsList;
-    QList<QPair<QString, int> > m_headingPairsList;
-    QMap<QString, QString> m_properties;
-};
 
 }
-#endif // XLSXDOCPROPSAPP_H
+
+/*!
+ * \internal
+ *
+ * \class OOXmlFile
+ *
+ * Base class of all the ooxml part file.
+ */
+
+OOXmlFile::OOXmlFile()
+    :d_ptr(new OOXmlFilePrivate(this))
+{
+}
+
+OOXmlFile::OOXmlFile(OOXmlFilePrivate *d)
+    :d_ptr(d)
+{
+
+}
+
+OOXmlFile::~OOXmlFile()
+{
+    delete d_ptr;
+}
+
+QByteArray OOXmlFile::saveToXmlData() const
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    saveToXmlFile(&buffer);
+
+    return data;
+}
+
+bool OOXmlFile::loadFromXmlData(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+
+    return loadFromXmlFile(&buffer);
+}
+
+QT_END_NAMESPACE_XLSX

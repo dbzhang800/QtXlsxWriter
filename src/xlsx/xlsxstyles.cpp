@@ -265,17 +265,7 @@ void Styles::addDxfFormat(const Format &format, bool force)
     }
 }
 
-QByteArray Styles::saveToXmlData()
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-
-    return data;
-}
-
-void Styles::saveToXmlFile(QIODevice *device)
+void Styles::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
 
@@ -321,7 +311,7 @@ void Styles::saveToXmlFile(QIODevice *device)
     writer.writeEndDocument();
 }
 
-void Styles::writeNumFmts(QXmlStreamWriter &writer)
+void Styles::writeNumFmts(QXmlStreamWriter &writer) const
 {
     if (m_customNumFmtIdMap.size() == 0)
         return;
@@ -341,7 +331,7 @@ void Styles::writeNumFmts(QXmlStreamWriter &writer)
 
 /*
 */
-void Styles::writeFonts(QXmlStreamWriter &writer)
+void Styles::writeFonts(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement(QStringLiteral("fonts"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fontsList.count()));
@@ -350,7 +340,7 @@ void Styles::writeFonts(QXmlStreamWriter &writer)
     writer.writeEndElement();//fonts
 }
 
-void Styles::writeFont(QXmlStreamWriter &writer, const Format &format, bool isDxf)
+void Styles::writeFont(QXmlStreamWriter &writer, const Format &format, bool isDxf) const
 {
     writer.writeStartElement(QStringLiteral("font"));
 
@@ -431,7 +421,7 @@ void Styles::writeFont(QXmlStreamWriter &writer, const Format &format, bool isDx
     writer.writeEndElement(); //font
 }
 
-void Styles::writeFills(QXmlStreamWriter &writer)
+void Styles::writeFills(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement(QStringLiteral("fills"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_fillsList.size()));
@@ -442,7 +432,7 @@ void Styles::writeFills(QXmlStreamWriter &writer)
     writer.writeEndElement(); //fills
 }
 
-void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf)
+void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf) const
 {
     static QMap<int, QString> patternStrings;
     if (patternStrings.isEmpty()) {
@@ -491,7 +481,7 @@ void Styles::writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf)
     writer.writeEndElement();//fill
 }
 
-void Styles::writeBorders(QXmlStreamWriter &writer)
+void Styles::writeBorders(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement(QStringLiteral("borders"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_bordersList.count()));
@@ -500,7 +490,7 @@ void Styles::writeBorders(QXmlStreamWriter &writer)
     writer.writeEndElement();//borders
 }
 
-void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool isDxf)
+void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool isDxf) const
 {
     writer.writeStartElement(QStringLiteral("border"));
     if (border.hasProperty(FormatPrivate::P_Border_DiagonalType)) {
@@ -532,7 +522,7 @@ void Styles::writeBorder(QXmlStreamWriter &writer, const Format &border, bool is
     writer.writeEndElement();//border
 }
 
-void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const XlsxColor &color)
+void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const XlsxColor &color) const
 {
     if (style == Format::BorderNone) {
         writer.writeEmptyElement(type);
@@ -564,7 +554,7 @@ void Styles::writeSubBorder(QXmlStreamWriter &writer, const QString &type, int s
     writer.writeEndElement();//type
 }
 
-void Styles::writeCellXfs(QXmlStreamWriter &writer)
+void Styles::writeCellXfs(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement(QStringLiteral("cellXfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_xf_formatsList.size()));
@@ -650,7 +640,7 @@ void Styles::writeCellXfs(QXmlStreamWriter &writer)
     writer.writeEndElement();//cellXfs
 }
 
-void Styles::writeDxfs(QXmlStreamWriter &writer)
+void Styles::writeDxfs(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement(QStringLiteral("dxfs"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_dxf_formatsList.size()));
@@ -659,7 +649,7 @@ void Styles::writeDxfs(QXmlStreamWriter &writer)
     writer.writeEndElement(); //dxfs
 }
 
-void Styles::writeDxf(QXmlStreamWriter &writer, const Format &format)
+void Styles::writeDxf(QXmlStreamWriter &writer, const Format &format) const
 {
     writer.writeStartElement(QStringLiteral("dxf"));
 
@@ -1257,15 +1247,6 @@ bool Styles::loadFromXmlFile(QIODevice *device)
         }
     }
     return true;
-}
-
-bool Styles::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
 }
 
 QColor Styles::getColorByIndex(int idx)
