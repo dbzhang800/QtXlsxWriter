@@ -39,7 +39,11 @@ HEADERS += $$PWD/xlsxdocpropscore_p.h \
     $$PWD/xlsxmediafile_p.h \
     $$PWD/xlsxooxmlfile.h \
     $$PWD/xlsxooxmlfile_p.h \
-    $$PWD/xlsxchartfile_p.h
+    $$PWD/xlsxchartfile_p.h \
+    $$PWD/xlsxabstractchart.h \
+    $$PWD/xlsxabstractchart_p.h \
+    $$PWD/xlsxpiechart.h \
+    $$PWD/xlsxpiechart_p.h
 
 SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdocpropsapp.cpp \
@@ -66,4 +70,6 @@ SOURCES += $$PWD/xlsxdocpropscore.cpp \
     $$PWD/xlsxdrawinganchor.cpp \
     $$PWD/xlsxmediafile.cpp \
     $$PWD/xlsxooxmlfile.cpp \
-    $$PWD/xlsxchartfile.cpp
+    $$PWD/xlsxchartfile.cpp \
+    $$PWD/xlsxabstractchart.cpp \
+    $$PWD/xlsxpiechart.cpp

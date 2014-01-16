@@ -48,9 +48,9 @@ class Drawing;
 class DataValidation;
 class ConditionalFormatting;
 class CellRange;
-struct XlsxImageData;
 class RichString;
 class Relationships;
+class AbstractChart;
 
 class WorksheetPrivate;
 class Q_XLSX_EXPORT Worksheet : public OOXmlFile
@@ -93,6 +93,7 @@ public:
 
     bool insertImage(int row, int column, const QImage &image);
     Q_DECL_DEPRECATED int insertImage(int row, int column, const QImage &image, const QPointF &offset, double xScale=1, double yScale=1);
+    bool insertChart(int row, int column, AbstractChart *chart, const QSize &size);
 
     int mergeCells(const QString &range, const Format &format=Format());
     int mergeCells(const CellRange &range, const Format &format=Format());

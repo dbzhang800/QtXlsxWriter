@@ -284,6 +284,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
 
     // save chart xml files
     for (int i=0; i<workbook->chartFiles().size(); ++i) {
+        contentTypes.addChartName(QStringLiteral("chart%1").arg(i+1));
         QSharedPointer<ChartFile> cf = workbook->chartFiles()[i];
         zipWriter.addFile(QStringLiteral("xl/charts/chart%1.xml").arg(i+1), cf->saveToXmlData());
     }

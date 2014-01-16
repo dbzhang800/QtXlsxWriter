@@ -76,6 +76,7 @@ public:
     DrawingAnchor(Drawing *drawing, ObjectType objectType);
     virtual ~DrawingAnchor();
     void setObjectPicture(const QImage &img);
+    void setObjectGraphicFrame(QSharedPointer<ChartFile> chart);
 
     virtual bool loadFromXml(QXmlStreamReader &reader) = 0;
     virtual void saveToXml(QXmlStreamWriter &writer) const = 0;

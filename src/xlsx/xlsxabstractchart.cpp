@@ -23,56 +23,64 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_CHARTFILE_P_H
-#define QXLSX_CHARTFILE_P_H
+#include "xlsxabstractchart.h"
+#include "xlsxabstractchart_p.h"
+#include "xlsxchartfile_p.h"
+#include "xlsxcellrange.h"
+#include "xlsxutility_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
+QT_BEGIN_NAMESPACE_XLSX
 
-#include "xlsxooxmlfile.h"
-
-#include <QSharedPointer>
-
-class QXmlStreamReader;
-class QXmlStreamWriter;
-
-namespace QXlsx {
-
-class AbstractChart;
-
-class ChartFile : public OOXmlFile
+AbstractChartPrivate::AbstractChartPrivate(AbstractChart *chart)
+    :q_ptr(chart)
 {
-public:
-    ChartFile();
-    ~ChartFile();
 
-    AbstractChart *chart() const;
-    void setChart(AbstractChart *chart);
+}
 
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
+AbstractChartPrivate::~AbstractChartPrivate()
+{
 
-private:
-    bool loadXmlChart(QXmlStreamReader &reader);
-    bool loadXmlPlotArea(QXmlStreamReader &reader);
-    AbstractChart *loadXmlPieChart(QXmlStreamReader &reader);
+}
 
-    bool saveXmlChart(QXmlStreamWriter &writer) const;
+/*!
+ * \class AbstractChart
+ *
+ * Base class for all the charts.
+ */
 
-    friend class AbstractChart;
-    // Don't use sharedpointer here,
-    // in case some users create AbstractChart in the stack.
-    AbstractChart *m_chart;
-};
 
-} // namespace QXlsx
+AbstractChart::AbstractChart()
+    :d_ptr(new AbstractChartPrivate(this))
+{
+}
 
-#endif // QXLSX_CHARTFILE_P_H
+AbstractChart::AbstractChart(AbstractChartPrivate *d)
+    :d_ptr(d)
+{
+
+}
+
+AbstractChart::~AbstractChart()
+{
+    Q_D(AbstractChart);
+    if (d->cf)
+        d->cf->m_chart = 0;
+}
+
+void AbstractChart::addSeries(const CellRange &range, const QString &sheet)
+{
+    Q_D(AbstractChart);
+
+    QString serRef = sheet;
+    serRef += QLatin1String("!");
+    serRef += xl_rowcol_to_cell(range.firstRow(), range.firstColumn(), true, true);
+    serRef += QLatin1String(":");
+    serRef += xl_rowcol_to_cell(range.lastRow(), range.lastColumn(), true, true);
+
+    XlsxSeries *series = new XlsxSeries;
+    series->numRef = serRef;
+
+    d->seriesList.append(QSharedPointer<XlsxSeries>(series));
+}
+
+QT_END_NAMESPACE_XLSX

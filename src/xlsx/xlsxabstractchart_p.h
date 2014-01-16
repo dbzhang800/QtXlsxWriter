@@ -23,8 +23,8 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_CHARTFILE_P_H
-#define QXLSX_CHARTFILE_P_H
+#ifndef XLSXABSTRACTCHART_P_H
+#define XLSXABSTRACTCHART_P_H
 
 //
 //  W A R N I N G
@@ -37,42 +37,30 @@
 // We mean it.
 //
 
-#include "xlsxooxmlfile.h"
-
+#include "xlsxabstractchart.h"
+#include <QList>
 #include <QSharedPointer>
 
-class QXmlStreamReader;
-class QXmlStreamWriter;
+QT_BEGIN_NAMESPACE_XLSX
 
-namespace QXlsx {
-
-class AbstractChart;
-
-class ChartFile : public OOXmlFile
+class XlsxSeries
 {
 public:
-    ChartFile();
-    ~ChartFile();
 
-    AbstractChart *chart() const;
-    void setChart(AbstractChart *chart);
-
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
-
-private:
-    bool loadXmlChart(QXmlStreamReader &reader);
-    bool loadXmlPlotArea(QXmlStreamReader &reader);
-    AbstractChart *loadXmlPieChart(QXmlStreamReader &reader);
-
-    bool saveXmlChart(QXmlStreamWriter &writer) const;
-
-    friend class AbstractChart;
-    // Don't use sharedpointer here,
-    // in case some users create AbstractChart in the stack.
-    AbstractChart *m_chart;
+    QString numRef;
 };
 
-} // namespace QXlsx
+class AbstractChartPrivate
+{
+    Q_DECLARE_PUBLIC(AbstractChart)
+public:
+    AbstractChartPrivate(AbstractChart *chart);
+    virtual ~AbstractChartPrivate();
 
-#endif // QXLSX_CHARTFILE_P_H
+    QList<QSharedPointer<XlsxSeries> > seriesList;
+    ChartFile *cf;
+    AbstractChart *q_ptr;
+};
+
+QT_END_NAMESPACE_XLSX
+#endif // XLSXABSTRACTCHART_P_H

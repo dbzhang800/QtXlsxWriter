@@ -23,56 +23,41 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_CHARTFILE_P_H
-#define QXLSX_CHARTFILE_P_H
+#ifndef QXLSX_XLSXABSTRACTCHART_H
+#define QXLSX_XLSXABSTRACTCHART_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
+#include "xlsxglobal.h"
 
-#include "xlsxooxmlfile.h"
-
-#include <QSharedPointer>
+#include <QString>
 
 class QXmlStreamReader;
 class QXmlStreamWriter;
 
-namespace QXlsx {
+QT_BEGIN_NAMESPACE_XLSX
 
-class AbstractChart;
+class ChartFile;
+class AbstractChartPrivate;
+class CellRange;
 
-class ChartFile : public OOXmlFile
+class Q_XLSX_EXPORT AbstractChart
 {
+    Q_DECLARE_PRIVATE(AbstractChart)
+
 public:
-    ChartFile();
-    ~ChartFile();
+    AbstractChart();
+    virtual ~AbstractChart();
 
-    AbstractChart *chart() const;
-    void setChart(AbstractChart *chart);
+    void addSeries(const CellRange &range, const QString &sheet=QString());
 
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
+protected:
+    friend class ChartFile;
+    AbstractChart(AbstractChartPrivate *d);
+    virtual bool loadFromXml(QXmlStreamReader &reader) = 0;
+    virtual void saveToXml(QXmlStreamWriter &writer) const = 0;
 
-private:
-    bool loadXmlChart(QXmlStreamReader &reader);
-    bool loadXmlPlotArea(QXmlStreamReader &reader);
-    AbstractChart *loadXmlPieChart(QXmlStreamReader &reader);
-
-    bool saveXmlChart(QXmlStreamWriter &writer) const;
-
-    friend class AbstractChart;
-    // Don't use sharedpointer here,
-    // in case some users create AbstractChart in the stack.
-    AbstractChart *m_chart;
+    AbstractChartPrivate * d_ptr;
 };
 
-} // namespace QXlsx
+QT_END_NAMESPACE_XLSX
 
-#endif // QXLSX_CHARTFILE_P_H
+#endif // QXLSX_XLSXABSTRACTCHART_H

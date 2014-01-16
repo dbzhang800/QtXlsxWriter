@@ -91,6 +91,16 @@ void DrawingAnchor::setObjectPicture(const QImage &img)
 
     m_pictureFile = QSharedPointer<MediaFile>(new MediaFile(ba, QStringLiteral("png"), QStringLiteral("image/png")));
     m_drawing->workbook->addMediaFile(m_pictureFile);
+
+    m_objectType = Picture;
+}
+
+void DrawingAnchor::setObjectGraphicFrame(QSharedPointer<ChartFile> chart)
+{
+    m_chartFile = chart;
+    m_drawing->workbook->addChartFile(chart);
+
+    m_objectType = GraphicFrame;
 }
 
 QPoint DrawingAnchor::loadXmlPos(QXmlStreamReader &reader)
@@ -316,13 +326,15 @@ void DrawingAnchor::saveXmlObjectGraphicFrame(QXmlStreamWriter &writer) const
     writer.writeAttribute(QStringLiteral("uri"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/chart"));
 
     int idx = m_drawing->workbook->chartFiles().indexOf(m_chartFile);
-    m_drawing->relationships.addDocumentRelationship(QStringLiteral("/chart"), QStringLiteral("../charts/chart%1.xml").arg(idx));
+    m_drawing->relationships.addDocumentRelationship(QStringLiteral("/chart"), QStringLiteral("../charts/chart%1.xml").arg(idx+1));
 
     writer.writeEmptyElement(QStringLiteral("c:chart"));
     writer.writeAttribute(QStringLiteral("xmlns:c"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/chart"));
     writer.writeAttribute(QStringLiteral("xmlns:r"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships"));
     writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(m_drawing->relationships.count()));
 
+    writer.writeEndElement(); //a:graphicData
+    writer.writeEndElement(); //a:graphic
     writer.writeEndElement(); //xdr:graphicFrame
 }
 
