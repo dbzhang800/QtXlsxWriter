@@ -38,6 +38,7 @@
 #include "xlsxworkbook_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxmediafile_p.h"
+#include "xlsxchartfile_p.h"
 #include "xlsxzipreader_p.h"
 #include "xlsxzipwriter_p.h"
 
@@ -208,6 +209,13 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         }
     }
 
+    //load charts
+    QList<QSharedPointer<ChartFile> > chartFileToLoad = workbook->chartFiles();
+    for (int i=0; i<chartFileToLoad.size(); ++i) {
+        QSharedPointer<ChartFile> cf = chartFileToLoad[i];
+        cf->loadFromXmlData(zipReader.fileData(cf->filePath()));
+    }
+
     //load media files
     QList<QSharedPointer<MediaFile> > mediaFileToLoad = workbook->mediaFiles();
     for (int i=0; i<mediaFileToLoad.size(); ++i) {
@@ -284,6 +292,12 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     // save theme xml file
     contentTypes.addTheme();
     zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), workbook->theme()->saveToXmlData());
+
+    // save chart xml files
+    for (int i=0; i<workbook->chartFiles().size(); ++i) {
+        QSharedPointer<ChartFile> cf = workbook->chartFiles()[i];
+        zipWriter.addFile(QStringLiteral("xl/charts/chart%1.xml").arg(i+1), cf->saveToXmlData());
+    }
 
     // save image files
     for (int i=0; i<workbook->mediaFiles().size(); ++i) {

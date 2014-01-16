@@ -80,4 +80,22 @@ bool OOXmlFile::loadFromXmlData(const QByteArray &data)
     return loadFromXmlFile(&buffer);
 }
 
+/*!
+ * \internal
+ */
+void OOXmlFile::setFilePath(const QString path)
+{
+    Q_D(OOXmlFile);
+    d->filePathInPackage = path;
+}
+
+/*!
+ * \internal
+ */
+QString OOXmlFile::filePath() const
+{
+    Q_D(const OOXmlFile);
+    return d->filePathInPackage;
+}
+
 QT_END_NAMESPACE_XLSX

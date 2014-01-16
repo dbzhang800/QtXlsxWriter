@@ -23,38 +23,27 @@
 **
 ****************************************************************************/
 
-#ifndef XLSXOOXMLFILE_P_H
-#define XLSXOOXMLFILE_P_H
+#include "xlsxchartfile_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <QIODevice>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
-#include "xlsxooxmlfile.h"
-#include <QString>
+namespace QXlsx {
 
-QT_BEGIN_NAMESPACE_XLSX
-
-class XLSX_AUTOTEST_EXPORT OOXmlFilePrivate
+ChartFile::ChartFile()
 {
-    Q_DECLARE_PUBLIC(OOXmlFile)
+}
 
-public:
-    OOXmlFilePrivate(OOXmlFile *q);
+void ChartFile::saveToXmlFile(QIODevice *device) const
+{
 
-    QString filePathInPackage;//such as "xl/worksheets/sheet1.xml"
-                              //used when load the .xlsx file
+}
 
-    OOXmlFile *q_ptr;
-};
+bool ChartFile::loadFromXmlFile(QIODevice *device)
+{
 
-QT_END_NAMESPACE_XLSX
+    return false;
+}
 
-#endif // XLSXOOXMLFILE_P_H
+} // namespace QXlsx

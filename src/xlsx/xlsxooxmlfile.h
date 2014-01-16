@@ -37,6 +37,7 @@ class OOXmlFilePrivate;
 
 class Q_XLSX_EXPORT OOXmlFile
 {
+    Q_DECLARE_PRIVATE(OOXmlFile)
 public:
     virtual ~OOXmlFile();
 
@@ -46,6 +47,8 @@ public:
     virtual QByteArray saveToXmlData() const;
     virtual bool loadFromXmlData(const QByteArray &data);
 
+    void setFilePath(const QString path);
+    QString filePath() const;
 protected:
     OOXmlFile();
     OOXmlFile(OOXmlFilePrivate *d);

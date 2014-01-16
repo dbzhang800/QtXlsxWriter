@@ -26,6 +26,7 @@
 #include "xlsxdrawinganchor_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxmediafile_p.h"
+#include "xlsxchartfile_p.h"
 #include "xlsxworkbook.h"
 #include "xlsxutility_p.h"
 
@@ -172,7 +173,38 @@ void DrawingAnchor::loadXmlObjectConnectionShape(QXmlStreamReader &reader)
 
 void DrawingAnchor::loadXmlObjectGraphicFrame(QXmlStreamReader &reader)
 {
-    Q_UNUSED(reader)
+    Q_ASSERT(reader.name() == QLatin1String("graphicFrame"));
+
+    while (!reader.atEnd()) {
+        reader.readNextStartElement();
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+            if (reader.name() == QLatin1String("chart")) {
+                QString rId = reader.attributes().value(QLatin1String("r:id")).toString();
+                QString name = m_drawing->relationships.getRelationshipById(rId).target;
+                QString path = QDir::cleanPath(splitPath(m_drawing->pathInPackage)[0] + QLatin1String("/") + name);
+
+                bool exist = false;
+                QList<QSharedPointer<ChartFile> > cfs = m_drawing->workbook->chartFiles();
+                for (int i=0; i<cfs.size(); ++i) {
+                    if (cfs[i]->filePath() == path) {
+                        //already exist
+                        exist = true;
+                        m_chartFile = cfs[i];
+                    }
+                }
+                if (!exist) {
+                    m_chartFile = QSharedPointer<ChartFile> (new ChartFile);
+                    m_chartFile->setFilePath(path);
+                    m_drawing->workbook->addChartFile(m_chartFile);
+                }
+            }
+        } else if (reader.tokenType() == QXmlStreamReader::EndElement
+                   && reader.name() == QLatin1String("graphicFrame")) {
+            break;
+        }
+    }
+
+    return;
 }
 
 void DrawingAnchor::loadXmlObjectGroupShape(QXmlStreamReader &reader)
@@ -266,7 +298,32 @@ void DrawingAnchor::saveXmlObjectConnectionShape(QXmlStreamWriter &writer) const
 
 void DrawingAnchor::saveXmlObjectGraphicFrame(QXmlStreamWriter &writer) const
 {
-    Q_UNUSED(writer)
+    writer.writeStartElement(QStringLiteral("xdr:graphicFrame"));
+    writer.writeAttribute(QStringLiteral("macro"), QString());
+
+    writer.writeStartElement(QStringLiteral("xdr:nvGraphicFramePr"));
+    writer.writeEmptyElement(QStringLiteral("xdr:cNvPr"));
+    writer.writeAttribute(QStringLiteral("id"), QString::number(m_id));
+    writer.writeAttribute(QStringLiteral("name"),QStringLiteral("Chart %1").arg(m_id));
+    writer.writeEmptyElement(QStringLiteral("xdr:cNvGraphicFramePr"));
+    writer.writeEndElement();//xdr:nvGraphicFramePr
+
+    writer.writeStartElement(QStringLiteral("xdr:xfrm"));
+    writer.writeEndElement(); //xdr:xfrm
+
+    writer.writeStartElement(QStringLiteral("a:graphic"));
+    writer.writeStartElement(QStringLiteral("a:graphicData"));
+    writer.writeAttribute(QStringLiteral("uri"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/chart"));
+
+    int idx = m_drawing->workbook->chartFiles().indexOf(m_chartFile);
+    m_drawing->relationships.addDocumentRelationship(QStringLiteral("/chart"), QStringLiteral("../charts/chart%1.xml").arg(idx));
+
+    writer.writeEmptyElement(QStringLiteral("c:chart"));
+    writer.writeAttribute(QStringLiteral("xmlns:c"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/chart"));
+    writer.writeAttribute(QStringLiteral("xmlns:r"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships"));
+    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(m_drawing->relationships.count()));
+
+    writer.writeEndElement(); //xdr:graphicFrame
 }
 
 void DrawingAnchor::saveXmlObjectGroupShape(QXmlStreamWriter &writer) const

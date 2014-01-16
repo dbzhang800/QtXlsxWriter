@@ -575,4 +575,25 @@ void Workbook::addMediaFile(QSharedPointer<MediaFile> media, bool force)
     d->mediaFiles.append(media);
 }
 
+/*!
+ * \internal
+ */
+QList<QSharedPointer<ChartFile> > Workbook::chartFiles() const
+{
+    Q_D(const Workbook);
+
+    return d->chartFiles;
+}
+
+/*!
+ * \internal
+ */
+void Workbook::addChartFile(QSharedPointer<ChartFile> chart)
+{
+    Q_D(Workbook);
+
+    if (!d->chartFiles.contains(chart))
+        d->chartFiles.append(chart);
+}
+
 QT_END_NAMESPACE_XLSX

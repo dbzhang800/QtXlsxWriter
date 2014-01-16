@@ -23,8 +23,8 @@
 **
 ****************************************************************************/
 
-#ifndef XLSXOOXMLFILE_P_H
-#define XLSXOOXMLFILE_P_H
+#ifndef QXLSX_CHARTFILE_P_H
+#define QXLSX_CHARTFILE_P_H
 
 //
 //  W A R N I N G
@@ -38,23 +38,18 @@
 //
 
 #include "xlsxooxmlfile.h"
-#include <QString>
 
-QT_BEGIN_NAMESPACE_XLSX
+namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT OOXmlFilePrivate
+class ChartFile : public OOXmlFile
 {
-    Q_DECLARE_PUBLIC(OOXmlFile)
-
 public:
-    OOXmlFilePrivate(OOXmlFile *q);
+    ChartFile();
 
-    QString filePathInPackage;//such as "xl/worksheets/sheet1.xml"
-                              //used when load the .xlsx file
-
-    OOXmlFile *q_ptr;
+    void saveToXmlFile(QIODevice *device) const;
+    bool loadFromXmlFile(QIODevice *device);
 };
 
-QT_END_NAMESPACE_XLSX
+} // namespace QXlsx
 
-#endif // XLSXOOXMLFILE_P_H
+#endif // QXLSX_CHARTFILE_P_H
