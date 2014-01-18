@@ -46,7 +46,7 @@ PieChart::PieChart()
 {
 }
 
-bool PieChart::loadFromXml(QXmlStreamReader &reader)
+bool PieChart::loadXxxChartFromXml(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("pieChart"));
 
@@ -66,28 +66,7 @@ bool PieChart::loadFromXml(QXmlStreamReader &reader)
     return true;
 }
 
-bool PieChartPrivate::loadXmlSer(QXmlStreamReader &reader)
-{
-    Q_ASSERT(reader.name() == QLatin1String("ser"));
-
-    while (!reader.atEnd()) {
-        reader.readNextStartElement();
-        if (reader.tokenType() == QXmlStreamReader::StartElement) {
-            if (reader.name() == QLatin1String("f")) {
-                XlsxSeries *series = new XlsxSeries;
-                series->numRef = reader.readElementText();
-                seriesList.append(QSharedPointer<XlsxSeries>(series));
-            }
-        } else if (reader.tokenType() == QXmlStreamReader::EndElement
-                   && reader.name() == QLatin1String("ser")) {
-            break;
-        }
-    }
-
-    return true;
-}
-
-void PieChart::saveToXml(QXmlStreamWriter &writer) const
+void PieChart::saveXxxChartToXml(QXmlStreamWriter &writer) const
 {
     Q_D(const PieChart);
 

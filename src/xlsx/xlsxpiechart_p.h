@@ -48,8 +48,6 @@ class PieChartPrivate : public AbstractChartPrivate
 
 public:
     PieChartPrivate(PieChart *chart);
-
-    bool loadXmlSer(QXmlStreamReader &reader);
 };
 
 QT_END_NAMESPACE_XLSX

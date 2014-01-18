@@ -50,6 +50,38 @@ public:
     QString numRef;
 };
 
+class XlsxAxis
+{
+public:
+    enum Type
+    {
+        T_Cat,
+        T_Val,
+        T_Date,
+        T_Ser
+    };
+
+    enum Pos
+    {
+        Left,
+        Right,
+        Top,
+        Bottom
+    };
+
+    XlsxAxis(){}
+
+    XlsxAxis(Type t, Pos p)
+        :type(t), axisPos(p)
+    {
+        axisId = -1;
+    }
+
+    int axisId;
+    Type type;
+    Pos axisPos; //l,r,b,t
+};
+
 class AbstractChartPrivate
 {
     Q_DECLARE_PUBLIC(AbstractChart)
@@ -57,7 +89,10 @@ public:
     AbstractChartPrivate(AbstractChart *chart);
     virtual ~AbstractChartPrivate();
 
+    bool loadXmlSer(QXmlStreamReader &reader);
+
     QList<QSharedPointer<XlsxSeries> > seriesList;
+    QList<QSharedPointer<XlsxAxis>> axisList;
     ChartFile *cf;
     AbstractChart *q_ptr;
 };

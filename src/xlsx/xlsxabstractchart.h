@@ -52,8 +52,14 @@ public:
 protected:
     friend class ChartFile;
     AbstractChart(AbstractChartPrivate *d);
-    virtual bool loadFromXml(QXmlStreamReader &reader) = 0;
-    virtual void saveToXml(QXmlStreamWriter &writer) const = 0;
+    virtual bool loadXxxChartFromXml(QXmlStreamReader &reader) = 0;
+    virtual void saveXxxChartToXml(QXmlStreamWriter &writer) const = 0;
+
+    bool loadAxisFromXml(QXmlStreamReader &reader);
+    void saveAxisToXml(QXmlStreamWriter &writer) const;
+
+    bool loadLegendFromXml(QXmlStreamReader &reader);
+    void saveLegendToXml(QXmlStreamWriter &writer) const;
 
     AbstractChartPrivate * d_ptr;
 };

@@ -27,6 +27,7 @@
 #include "xlsxabstractchart.h"
 #include "xlsxabstractchart_p.h"
 #include "xlsxpiechart.h"
+#include "xlsxbarchart.h"
 #include <QIODevice>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -77,7 +78,8 @@ bool ChartFile::loadFromXmlFile(QIODevice *device)
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("chart")) {
-                loadXmlChart(reader);
+                if (!loadXmlChart(reader))
+                    return false;
             }
         }
     }
@@ -92,7 +94,10 @@ bool ChartFile::loadXmlChart(QXmlStreamReader &reader)
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("plotArea")) {
-                loadXmlPlotArea(reader);
+                if (!loadXmlPlotArea(reader))
+                    return false;
+            } else if (reader.name() == QLatin1String("legend")) {
+                m_chart->loadLegendFromXml(reader);
             }
         } else if (reader.tokenType() == QXmlStreamReader::EndElement &&
                    reader.name() == QLatin1String("chart")) {
@@ -109,20 +114,28 @@ bool ChartFile::loadXmlPlotArea(QXmlStreamReader &reader)
     while (!reader.atEnd()) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
-            AbstractChart *chart = 0;
             if (reader.name() == QLatin1String("layout")) {
                 //...
-            } else if (reader.name() == QLatin1String("pieChart")) {
-                chart = new PieChart;
-                chart->loadFromXml(reader);
-            } else if (reader.name() == QLatin1String("")) {
-
+            } else if (reader.name().endsWith(QLatin1String("Chart"))) {
+                //!Todo: each plotArea can have more than one xxxChart
+                AbstractChart *chart = 0;
+                if (reader.name() == QLatin1String("pieChart")) {
+                    chart = new PieChart;
+                } else if (reader.name() == QLatin1String("barChart")) {
+                    chart = new BarChart;
+                } else {
+                    //Not support
+                    return false;
+                }
+                if (chart) {
+                    chart->loadXxxChartFromXml(reader);
+                    setChart(chart);
+                }
+            } else if (reader.name().endsWith(QLatin1String("Ax"))) {
+                //For valAx, catAx, serAx, dateAx
+                m_chart->loadAxisFromXml(reader);
             }
 
-            if (chart) {
-                chart->loadFromXml(reader);
-                setChart(chart);
-            }
         } else if (reader.tokenType() == QXmlStreamReader::EndElement &&
                    reader.name() == QLatin1String("plotArea")) {
             break;
@@ -135,11 +148,11 @@ bool ChartFile::saveXmlChart(QXmlStreamWriter &writer) const
 {
     writer.writeStartElement(QStringLiteral("c:chart"));
     writer.writeStartElement(QStringLiteral("c:plotArea"));
-    m_chart->saveToXml(writer);
+    m_chart->saveXxxChartToXml(writer);
+    m_chart->saveAxisToXml(writer);
     writer.writeEndElement(); //plotArea
 
-//    writer.writeStartElement(QStringLiteral("c:legend"));
-//    writer.writeEndElement(); //legend
+    m_chart->saveLegendToXml(writer);
 
     writer.writeEndElement(); //chart
     return true;

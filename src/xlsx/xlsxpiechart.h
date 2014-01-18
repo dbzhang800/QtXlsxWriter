@@ -40,8 +40,8 @@ public:
     PieChart();
 
 protected:
-    bool loadFromXml(QXmlStreamReader &reader);
-    void saveToXml(QXmlStreamWriter &writer) const;
+    bool loadXxxChartFromXml(QXmlStreamReader &reader);
+    void saveXxxChartToXml(QXmlStreamWriter &writer) const;
 };
 
 QT_END_NAMESPACE_XLSX
