@@ -70,8 +70,8 @@ private:
     QString m_suffix;
     QString m_mimeType;
 
-    bool m_indexValid;
     int m_index;
+    bool m_indexValid;
     QByteArray m_hashKey;
 };
 
