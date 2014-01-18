@@ -41,6 +41,7 @@ class Cell;
 class CellRange;
 class DataValidation;
 class ConditionalFormatting;
+class Chart;
 
 class DocumentPrivate;
 class Q_XLSX_EXPORT Document : public QObject
@@ -60,6 +61,7 @@ public:
     QVariant read(int row, int col) const;
     bool insertImage(int row, int col, const QImage &image);
     Q_DECL_DEPRECATED int insertImage(int row, int column, const QImage &image, double xOffset, double yOffset, double xScale=1, double yScale=1);
+    Chart *insertChart(int row, int col, const QSize &size);
     int mergeCells(const CellRange &range, const Format &format=Format());
     int mergeCells(const QString &range, const Format &format=Format());
     int unmergeCells(const CellRange &range);

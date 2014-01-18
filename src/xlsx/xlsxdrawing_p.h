@@ -51,16 +51,18 @@ namespace QXlsx {
 
 class DrawingAnchor;
 class Workbook;
+class Worksheet;
 class MediaFile;
 
 class Drawing : public OOXmlFile
 {
 public:
-    Drawing(Workbook *workbook);
+    Drawing(Worksheet *workbook);
     ~Drawing();
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
 
+    Worksheet *worksheet;
     Workbook *workbook;
     QList<DrawingAnchor *> anchors;
     mutable Relationships relationships;

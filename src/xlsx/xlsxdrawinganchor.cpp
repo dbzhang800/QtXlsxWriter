@@ -26,7 +26,7 @@
 #include "xlsxdrawinganchor_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxmediafile_p.h"
-#include "xlsxchartfile_p.h"
+#include "xlsxchart.h"
 #include "xlsxworkbook.h"
 #include "xlsxutility_p.h"
 
@@ -95,7 +95,7 @@ void DrawingAnchor::setObjectPicture(const QImage &img)
     m_objectType = Picture;
 }
 
-void DrawingAnchor::setObjectGraphicFrame(QSharedPointer<ChartFile> chart)
+void DrawingAnchor::setObjectGraphicFrame(QSharedPointer<Chart> chart)
 {
     m_chartFile = chart;
     m_drawing->workbook->addChartFile(chart);
@@ -194,7 +194,7 @@ void DrawingAnchor::loadXmlObjectGraphicFrame(QXmlStreamReader &reader)
                 QString path = QDir::cleanPath(splitPath(m_drawing->filePath())[0] + QLatin1String("/") + name);
 
                 bool exist = false;
-                QList<QSharedPointer<ChartFile> > cfs = m_drawing->workbook->chartFiles();
+                QList<QSharedPointer<Chart> > cfs = m_drawing->workbook->chartFiles();
                 for (int i=0; i<cfs.size(); ++i) {
                     if (cfs[i]->filePath() == path) {
                         //already exist
@@ -203,7 +203,7 @@ void DrawingAnchor::loadXmlObjectGraphicFrame(QXmlStreamReader &reader)
                     }
                 }
                 if (!exist) {
-                    m_chartFile = QSharedPointer<ChartFile> (new ChartFile);
+                    m_chartFile = QSharedPointer<Chart> (new Chart(m_drawing->worksheet));
                     m_chartFile->setFilePath(path);
                     m_drawing->workbook->addChartFile(m_chartFile);
                 }

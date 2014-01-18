@@ -44,7 +44,7 @@ class Theme;
 class Relationships;
 class DocumentPrivate;
 class MediaFile;
-class ChartFile;
+class Chart;
 
 class WorkbookPrivate;
 class Q_XLSX_EXPORT Workbook : public OOXmlFile
@@ -81,8 +81,8 @@ public:
     //internal used member
     void addMediaFile(QSharedPointer<MediaFile> media, bool force=false);
     QList<QSharedPointer<MediaFile> > mediaFiles() const;
-    void addChartFile(QSharedPointer<ChartFile> chartFile);
-    QList<QSharedPointer<ChartFile> > chartFiles() const;
+    void addChartFile(QSharedPointer<Chart> chartFile);
+    QList<QSharedPointer<Chart> > chartFiles() const;
 
 private:
     friend class Worksheet;

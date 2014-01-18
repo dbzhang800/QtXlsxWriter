@@ -40,7 +40,7 @@ namespace QXlsx {
 
 class Drawing;
 class MediaFile;
-class ChartFile;
+class Chart;
 
 //Helper class
 struct XlsxMarker
@@ -76,7 +76,7 @@ public:
     DrawingAnchor(Drawing *drawing, ObjectType objectType);
     virtual ~DrawingAnchor();
     void setObjectPicture(const QImage &img);
-    void setObjectGraphicFrame(QSharedPointer<ChartFile> chart);
+    void setObjectGraphicFrame(QSharedPointer<Chart> chart);
 
     virtual bool loadFromXml(QXmlStreamReader &reader) = 0;
     virtual void saveToXml(QXmlStreamWriter &writer) const = 0;
@@ -105,7 +105,7 @@ protected:
     Drawing *m_drawing;
     ObjectType m_objectType;
     QSharedPointer<MediaFile> m_pictureFile;
-    QSharedPointer<ChartFile> m_chartFile;
+    QSharedPointer<Chart> m_chartFile;
 
     int m_id;
 };

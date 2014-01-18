@@ -88,7 +88,7 @@ public:
     QSharedPointer<Styles> styles;
     QSharedPointer<Theme> theme;
     QList<QSharedPointer<MediaFile> > mediaFiles;
-    QList<QSharedPointer<ChartFile> > chartFiles;
+    QList<QSharedPointer<Chart> > chartFiles;
     QList<XlsxDefineNameData> definedNamesList;
 
     QList<XlsxSheetItemInfo> sheetItemInfoList;//Data from xml file

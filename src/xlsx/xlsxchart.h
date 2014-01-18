@@ -23,27 +23,64 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_XLSXPIECHART_H
-#define QXLSX_XLSXPIECHART_H
+#ifndef QXLSX_CHART_H
+#define QXLSX_CHART_H
 
-#include "xlsxabstractchart.h"
+#include "xlsxooxmlfile.h"
+
+#include <QSharedPointer>
+
+class QXmlStreamReader;
+class QXmlStreamWriter;
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class PieChartPrivate;
+class Worksheet;
+class ChartPrivate;
+class CellRange;
+class DrawingAnchor;
 
-class Q_XLSX_EXPORT PieChart : public AbstractChart
+class Q_XLSX_EXPORT Chart : public OOXmlFile
 {
-    Q_DECLARE_PRIVATE(PieChart)
+    Q_DECLARE_PRIVATE(Chart)
 
 public:
-    PieChart();
+    enum ChartType {
+        CT_Area,
+        CT_Area3D,
+        CT_Line,
+        CT_Line3D,
+        CT_Stock,
+        CT_Radar,
+        CT_Scatter,
+        CT_Pie,
+        CT_Pie3D,
+        CT_Doughnut,
+        CT_Bar,
+        CT_Bar3D,
+        CT_OfPie,
+        CT_Surface,
+        CT_Surface3D,
+        CT_Bubble
+    };
 
-protected:
-    bool loadXxxChartFromXml(QXmlStreamReader &reader);
-    void saveXxxChartToXml(QXmlStreamWriter &writer) const;
+    ~Chart();
+
+    void addSeries(const CellRange &range, Worksheet *sheet=0);
+    void setChartType(ChartType type);
+    void setChartStyle(int id);
+
+    void saveToXmlFile(QIODevice *device) const;
+    bool loadFromXmlFile(QIODevice *device);
+
+private:
+    friend class Worksheet;
+    friend class DrawingAnchor;
+
+    Chart(Worksheet *parent);
 };
 
 QT_END_NAMESPACE_XLSX
 
-#endif // QXLSX_XLSXPIECHART_H
+#endif // QXLSX_CHART_H
+

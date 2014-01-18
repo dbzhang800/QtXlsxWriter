@@ -37,8 +37,7 @@
 #include "xlsxcellrange.h"
 #include "xlsxconditionalformatting_p.h"
 #include "xlsxdrawinganchor_p.h"
-#include "xlsxabstractchart.h"
-#include "xlsxchartfile_p.h"
+#include "xlsxchart.h"
 
 #include <QVariant>
 #include <QDateTime>
@@ -1025,7 +1024,7 @@ bool Worksheet::insertImage(int row, int column, const QImage &image)
         return false;
 
     if (!d->drawing)
-        d->drawing = QSharedPointer<Drawing>(new Drawing(d->workbook));
+        d->drawing = QSharedPointer<Drawing>(new Drawing(this));
 
     DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing.data(), DrawingAnchor::Picture);
 
@@ -1046,16 +1045,12 @@ int Worksheet::insertImage(int row, int column, const QImage &image, const QPoin
     return insertImage(row, column, image);
 }
 
-bool Worksheet::insertChart(int row, int column, AbstractChart *chart, const QSize &size)
+Chart *Worksheet::insertChart(int row, int column, const QSize &size)
 {
     Q_D(Worksheet);
-    for (int i=0; i< d->workbook->chartFiles().size(); ++i) {
-        if (d->workbook->chartFiles()[i]->chart() == chart)
-            return false;
-    }
 
     if (!d->drawing)
-        d->drawing = QSharedPointer<Drawing>(new Drawing(d->workbook));
+        d->drawing = QSharedPointer<Drawing>(new Drawing(this));
 
     DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing.data(), DrawingAnchor::Picture);
 
@@ -1067,10 +1062,10 @@ bool Worksheet::insertChart(int row, int column, AbstractChart *chart, const QSi
     anchor->from = XlsxMarker(row, column, 0, 0);
     anchor->ext = size * 9525;
 
-    QSharedPointer<ChartFile> chartFile = QSharedPointer<ChartFile>(new ChartFile);
-    chartFile->setChart(chart);
-    anchor->setObjectGraphicFrame(chartFile);
-    return true;
+    QSharedPointer<Chart> chart = QSharedPointer<Chart>(new Chart(this));
+    anchor->setObjectGraphicFrame(chart);
+
+    return chart.data();
 }
 
 /*!
@@ -2117,7 +2112,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QString rId = reader.attributes().value(QStringLiteral("r:id")).toString();
                 QString name = d->relationships.getRelationshipById(rId).target;
                 QString path = QDir::cleanPath(splitPath(filePath())[0] + QLatin1String("/") + name);
-                d->drawing = QSharedPointer<Drawing>(new Drawing(d->workbook));
+                d->drawing = QSharedPointer<Drawing>(new Drawing(this));
                 d->drawing->setFilePath(path);
             }
         }

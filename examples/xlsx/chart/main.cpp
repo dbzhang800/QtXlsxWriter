@@ -1,7 +1,6 @@
 #include <QtCore>
 #include "xlsxdocument.h"
-#include "xlsxpiechart.h"
-#include "xlsxbarchart.h"
+#include "xlsxchart.h"
 #include "xlsxworksheet.h"
 
 using namespace QXlsx;
@@ -17,13 +16,14 @@ int main()
     //![0]
 
     //![1]
-    PieChart *pieChart = new PieChart;
-    pieChart->addSeries(CellRange("A1:A9"), sheet->sheetName());
-    sheet->insertChart(3, 3, pieChart, QSize(300, 300));
+    Chart *pieChart = sheet->insertChart(3, 3, QSize(300, 300));
+    pieChart->setChartType(Chart::CT_Pie);
+    pieChart->addSeries(CellRange("A1:A9"));
 
-    BarChart *barChart = new BarChart;
-    barChart->addSeries(CellRange("A1:A9"), sheet->sheetName());
-    sheet->insertChart(6, 6, barChart, QSize(300, 300));
+    Chart *barChart = sheet->insertChart(6, 6, QSize(300, 300));
+    barChart->setChartType(Chart::CT_Bar);
+    barChart->addSeries(CellRange("A1:A9"));
+
     //![1]
 
     //![2]

@@ -583,7 +583,7 @@ void Workbook::addMediaFile(QSharedPointer<MediaFile> media, bool force)
 /*!
  * \internal
  */
-QList<QSharedPointer<ChartFile> > Workbook::chartFiles() const
+QList<QSharedPointer<Chart> > Workbook::chartFiles() const
 {
     Q_D(const Workbook);
 
@@ -593,7 +593,7 @@ QList<QSharedPointer<ChartFile> > Workbook::chartFiles() const
 /*!
  * \internal
  */
-void Workbook::addChartFile(QSharedPointer<ChartFile> chart)
+void Workbook::addChartFile(QSharedPointer<Chart> chart)
 {
     Q_D(Workbook);
 

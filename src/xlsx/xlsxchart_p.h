@@ -23,8 +23,8 @@
 **
 ****************************************************************************/
 
-#ifndef XLSXABSTRACTCHART_P_H
-#define XLSXABSTRACTCHART_P_H
+#ifndef QXLSX_CHART_P_H
+#define QXLSX_CHART_P_H
 
 //
 //  W A R N I N G
@@ -37,11 +37,15 @@
 // We mean it.
 //
 
-#include "xlsxabstractchart.h"
-#include <QList>
+#include "xlsxooxmlfile_p.h"
+#include "xlsxchart.h"
+
 #include <QSharedPointer>
 
-QT_BEGIN_NAMESPACE_XLSX
+class QXmlStreamReader;
+class QXmlStreamWriter;
+
+namespace QXlsx {
 
 class XlsxSeries
 {
@@ -82,20 +86,33 @@ public:
     Pos axisPos; //l,r,b,t
 };
 
-class AbstractChartPrivate
+class ChartPrivate : public OOXmlFilePrivate
 {
-    Q_DECLARE_PUBLIC(AbstractChart)
-public:
-    AbstractChartPrivate(AbstractChart *chart);
-    virtual ~AbstractChartPrivate();
+    Q_DECLARE_PUBLIC(Chart)
 
+public:
+    ChartPrivate(Chart *q);
+    ~ChartPrivate();
+
+    bool loadXmlChart(QXmlStreamReader &reader);
+    bool loadXmlPlotArea(QXmlStreamReader &reader);
+    bool loadXmlXxxChart(QXmlStreamReader &reader);
     bool loadXmlSer(QXmlStreamReader &reader);
+    bool loadXmlAxis(QXmlStreamReader &reader);
+
+    void saveXmlChart(QXmlStreamWriter &writer) const;
+    void saveXmlXxxChart(QXmlStreamWriter &writer) const;
+    void saveXmlSer(QXmlStreamWriter &writer, XlsxSeries *ser, int id) const;
+    void saveXmlAxes(QXmlStreamWriter &writer) const;
+
+    Chart::ChartType chartType;
 
     QList<QSharedPointer<XlsxSeries> > seriesList;
-    QList<QSharedPointer<XlsxAxis>> axisList;
-    ChartFile *cf;
-    AbstractChart *q_ptr;
+    QList<QSharedPointer<XlsxAxis> > axisList;
+
+    Worksheet *sheet;
 };
 
-QT_END_NAMESPACE_XLSX
-#endif // XLSXABSTRACTCHART_P_H
+} // namespace QXlsx
+
+#endif // QXLSX_CHART_P_H

@@ -38,7 +38,7 @@
 #include "xlsxworkbook_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxmediafile_p.h"
-#include "xlsxchartfile_p.h"
+#include "xlsxchart.h"
 #include "xlsxzipreader_p.h"
 #include "xlsxzipwriter_p.h"
 
@@ -199,9 +199,9 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load charts
-    QList<QSharedPointer<ChartFile> > chartFileToLoad = workbook->chartFiles();
+    QList<QSharedPointer<Chart> > chartFileToLoad = workbook->chartFiles();
     for (int i=0; i<chartFileToLoad.size(); ++i) {
-        QSharedPointer<ChartFile> cf = chartFileToLoad[i];
+        QSharedPointer<Chart> cf = chartFileToLoad[i];
         cf->loadFromXmlData(zipReader.fileData(cf->filePath()));
     }
 
@@ -285,7 +285,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     // save chart xml files
     for (int i=0; i<workbook->chartFiles().size(); ++i) {
         contentTypes.addChartName(QStringLiteral("chart%1").arg(i+1));
-        QSharedPointer<ChartFile> cf = workbook->chartFiles()[i];
+        QSharedPointer<Chart> cf = workbook->chartFiles()[i];
         zipWriter.addFile(QStringLiteral("xl/charts/chart%1.xml").arg(i+1), cf->saveToXmlData());
     }
 
@@ -401,6 +401,11 @@ QVariant Document::read(int row, int col) const
 bool Document::insertImage(int row, int column, const QImage &image)
 {
     return currentWorksheet()->insertImage(row, column, image);
+}
+
+Chart *Document::insertChart(int row, int col, const QSize &size)
+{
+    return currentWorksheet()->insertChart(row, col, size);
 }
 
 /*!
