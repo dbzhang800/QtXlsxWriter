@@ -51,7 +51,8 @@ class XlsxSeries
 {
 public:
 
-    QString numRef;
+    QString numRef;// For scatterChart, means y values
+    QString numRef_x;
 };
 
 class XlsxAxis
@@ -75,15 +76,15 @@ public:
 
     XlsxAxis(){}
 
-    XlsxAxis(Type t, Pos p)
-        :type(t), axisPos(p)
+    XlsxAxis(Type t, Pos p, int id, int crossId)
+        :type(t), axisPos(p), axisId(id), crossAx(crossId)
     {
-        axisId = -1;
     }
 
-    int axisId;
     Type type;
     Pos axisPos; //l,r,b,t
+    int axisId;
+    int crossAx;
 };
 
 class ChartPrivate : public OOXmlFilePrivate
@@ -101,7 +102,12 @@ public:
     bool loadXmlAxis(QXmlStreamReader &reader);
 
     void saveXmlChart(QXmlStreamWriter &writer) const;
-    void saveXmlXxxChart(QXmlStreamWriter &writer) const;
+    void saveXmlPieChart(QXmlStreamWriter &writer) const;
+    void saveXmlBarChart(QXmlStreamWriter &writer) const;
+    void saveXmlLineChart(QXmlStreamWriter &writer) const;
+    void saveXmlScatterChart(QXmlStreamWriter &writer) const;
+    void saveXmlAreaChart(QXmlStreamWriter &writer) const;
+    void saveXmlDoughnutChart(QXmlStreamWriter &writer) const;
     void saveXmlSer(QXmlStreamWriter &writer, XlsxSeries *ser, int id) const;
     void saveXmlAxes(QXmlStreamWriter &writer) const;
 

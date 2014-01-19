@@ -30,6 +30,29 @@ int main()
     bar3DChart->setChartType(Chart::CT_Bar3D);
     bar3DChart->addSeries(CellRange("A1:A9"));
 
+    Chart *lineChart = xlsx.insertChart(43, 3, QSize(300, 300));
+    lineChart->setChartType(Chart::CT_Line);
+    lineChart->addSeries(CellRange("A1:A9"));
+
+    Chart *line3DChart = xlsx.insertChart(43, 7, QSize(300, 300));
+    line3DChart->setChartType(Chart::CT_Line3D);
+    line3DChart->addSeries(CellRange("A1:A9"));
+
+    Chart *areaChart = xlsx.insertChart(63, 3, QSize(300, 300));
+    areaChart->setChartType(Chart::CT_Area);
+    areaChart->addSeries(CellRange("A1:A9"));
+
+    Chart *area3DChart = xlsx.insertChart(63, 7, QSize(300, 300));
+    area3DChart->setChartType(Chart::CT_Area3D);
+    area3DChart->addSeries(CellRange("A1:A9"));
+
+    Chart *scatterChart = xlsx.insertChart(83, 3, QSize(300, 300));
+    scatterChart->setChartType(Chart::CT_Scatter);
+    scatterChart->addSeries(CellRange("A1:A9"));
+
+    Chart *doughnutChart = xlsx.insertChart(103, 3, QSize(300, 300));
+    doughnutChart->setChartType(Chart::CT_Doughnut);
+    doughnutChart->addSeries(CellRange("A1:A9"));
     //![1]
 
     //![2]
