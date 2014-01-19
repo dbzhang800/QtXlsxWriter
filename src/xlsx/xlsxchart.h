@@ -46,7 +46,7 @@ class Q_XLSX_EXPORT Chart : public OOXmlFile
 
 public:
     enum ChartType {
-        CT_Area,
+        CT_Area = 1, //Zero is internally used for unknown types
         CT_Area3D,
         CT_Line,
         CT_Line3D,

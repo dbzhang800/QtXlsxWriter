@@ -1,7 +1,7 @@
 #include <QtCore>
 #include "xlsxdocument.h"
+#include "xlsxcellrange.h"
 #include "xlsxchart.h"
-#include "xlsxworksheet.h"
 
 using namespace QXlsx;
 
@@ -9,20 +9,26 @@ int main()
 {
     //![0]
     Document xlsx;
-
-    Worksheet *sheet = xlsx.currentWorksheet();
     for (int i=1; i<10; ++i)
-        sheet->write(i, 1, i*i);
+        xlsx.write(i, 1, i*i);
     //![0]
 
     //![1]
-    Chart *pieChart = sheet->insertChart(3, 3, QSize(300, 300));
+    Chart *pieChart = xlsx.insertChart(3, 3, QSize(300, 300));
     pieChart->setChartType(Chart::CT_Pie);
     pieChart->addSeries(CellRange("A1:A9"));
 
-    Chart *barChart = sheet->insertChart(6, 6, QSize(300, 300));
+    Chart *pie3DChart = xlsx.insertChart(3, 7, QSize(300, 300));
+    pie3DChart->setChartType(Chart::CT_Pie3D);
+    pie3DChart->addSeries(CellRange("A1:A9"));
+
+    Chart *barChart = xlsx.insertChart(23, 3, QSize(300, 300));
     barChart->setChartType(Chart::CT_Bar);
     barChart->addSeries(CellRange("A1:A9"));
+
+    Chart *bar3DChart = xlsx.insertChart(23, 7, QSize(300, 300));
+    bar3DChart->setChartType(Chart::CT_Bar3D);
+    bar3DChart->addSeries(CellRange("A1:A9"));
 
     //![1]
 

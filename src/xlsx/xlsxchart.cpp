@@ -35,7 +35,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 ChartPrivate::ChartPrivate(Chart *q)
-    :OOXmlFilePrivate(q)
+    :OOXmlFilePrivate(q), chartType(static_cast<Chart::ChartType>(0))
 {
 
 }
@@ -184,8 +184,9 @@ bool ChartPrivate::loadXmlXxxChart(QXmlStreamReader &reader)
 {
     QStringRef name = reader.name();
     if (name == QLatin1String("pieChart")) chartType = Chart::CT_Pie;
+    else if (name == QLatin1String("pie3DChart")) chartType = Chart::CT_Pie3D;
     else if (name == QLatin1String("barChart")) chartType = Chart::CT_Bar;
-
+    else if (name == QLatin1String("bar3DChart")) chartType = Chart::CT_Bar3D;
 
     while (!reader.atEnd()) {
         reader.readNextStartElement();
@@ -242,7 +243,9 @@ void ChartPrivate::saveXmlXxxChart(QXmlStreamWriter &writer) const
     QString t;
     switch (chartType) {
     case Chart::CT_Pie: t = QStringLiteral("c:pieChart"); break;
+    case Chart::CT_Pie3D: t = QStringLiteral("c:pie3DChart"); break;
     case Chart::CT_Bar: t = QStringLiteral("c:barChart"); break;
+    case Chart::CT_Bar3D: t = QStringLiteral("c:bar3DChart"); break;
     default: break;
     }
 
@@ -253,18 +256,23 @@ void ChartPrivate::saveXmlXxxChart(QXmlStreamWriter &writer) const
         writer.writeAttribute(QStringLiteral("val"), QStringLiteral("col"));
     }
 
-    writer.writeEmptyElement(QStringLiteral("c:varyColors"));
-    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("1"));
+    if (chartType==Chart::CT_Pie || chartType==Chart::CT_Pie3D) {
+        //Do the same behavior as Excel, Pie prefer varyColors
+        writer.writeEmptyElement(QStringLiteral("c:varyColors"));
+        writer.writeAttribute(QStringLiteral("val"), QStringLiteral("1"));
+    }
+
     for (int i=0; i<seriesList.size(); ++i)
         saveXmlSer(writer, seriesList[i].data(), i);
 
-    if (chartType == Chart::CT_Bar) {
+    if (chartType == Chart::CT_Bar || chartType==Chart::CT_Bar3D) {
         if (axisList.isEmpty()) {
             const_cast<ChartPrivate*>(this)->axisList.append(QSharedPointer<XlsxAxis>(new XlsxAxis(XlsxAxis::T_Cat, XlsxAxis::Left)));
             const_cast<ChartPrivate*>(this)->axisList.append(QSharedPointer<XlsxAxis>(new XlsxAxis(XlsxAxis::T_Val, XlsxAxis::Bottom)));
         }
 
-        Q_ASSERT(axisList.size()==2);
+        Q_ASSERT(axisList.size()==2 || (axisList.size()==3 && chartType==Chart::CT_Bar3D));
+
         for (int i=0; i<axisList.size(); ++i) {
             writer.writeEmptyElement(QStringLiteral("c:axId"));
             writer.writeAttribute(QStringLiteral("val"), QString::number(i+1));
