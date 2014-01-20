@@ -692,6 +692,7 @@ bool Document::moveWorksheet(const QString &srcName, int distIndex)
 
 /*!
    Delete the worksheet \a name.
+   Returns true if current sheet was deleted successfully.
  */
 bool Document::deleteWorksheet(const QString &name)
 {
@@ -738,7 +739,8 @@ void Document::setCurrentWorksheet(const QString &name)
 }
 
 /*!
- * \brief Set current selected worksheet to be the sheet named \a name.
+ * \brief Set worksheet named \a name to be active sheet.
+ * Returns true if success.
  */
 bool Document::selectWorksheet(const QString &name)
 {

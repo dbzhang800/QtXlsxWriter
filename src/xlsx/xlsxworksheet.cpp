@@ -165,11 +165,13 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
 }
 
 /*!
- * \brief Worksheet::Worksheet
- * \param name Name of the worksheet
- * \param id : An integer representing the internal id of the
- *             sheet which is used by .xlsx revision part.
- *             (Note: id is not the index of the sheet in workbook)
+  \class Worksheet
+  \inmodule QtXlsx
+  \brief Represent one worksheet in the workbook.
+*/
+
+/*!
+ * \internal
  */
 Worksheet::Worksheet(const QString &name, int id, Workbook *workbook) :
     OOXmlFile(new WorksheetPrivate(this))
@@ -180,6 +182,12 @@ Worksheet::Worksheet(const QString &name, int id, Workbook *workbook) :
         workbook = new Workbook;
     d_func()->workbook = workbook;
 }
+
+/*!
+ * \internal
+ *
+ * Make a copy of this sheet.
+ */
 
 QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) const
 {
@@ -219,15 +227,24 @@ QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) c
     return sheet;
 }
 
+/*!
+ * Destroys this workssheet.
+ */
 Worksheet::~Worksheet()
 {
 }
 
+/*!
+ * \internal
+ */
 bool Worksheet::isChartsheet() const
 {
     return false;
 }
 
+/*!
+ * Returns the name of the sheet.
+ */
 QString Worksheet::sheetName() const
 {
     Q_D(const Worksheet);
@@ -252,18 +269,27 @@ Relationships &Worksheet::relationships()
     return d->relationships;
 }
 
+/*!
+ * \internal
+ */
 bool Worksheet::isHidden() const
 {
     Q_D(const Worksheet);
     return d->hidden;
 }
 
+/*!
+ * \internal
+ */
 void Worksheet::setHidden(bool hidden)
 {
     Q_D(Worksheet);
     d->hidden = hidden;
 }
 
+/*!
+ * \internal
+ */
 int Worksheet::sheetId() const
 {
     Q_D(const Worksheet);
@@ -280,7 +306,7 @@ bool Worksheet::isWindowProtected() const
 }
 
 /*!
- * Protects/unprotects the sheet.
+ * Protects/unprotects the sheet based on \a protect.
  */
 void Worksheet::setWindowProtected(bool protect)
 {
@@ -298,7 +324,7 @@ bool Worksheet::isFormulasVisible() const
 }
 
 /*!
- * Show formulas in cells instead of their calculated results
+ * Show formulas in cells instead of their calculated results when \a visible is true.
  */
 void Worksheet::setFormulasVisible(bool visible)
 {
@@ -353,7 +379,7 @@ bool Worksheet::isRightToLeft() const
 }
 
 /*!
- * Enable or disable the right-to-left.
+ * Enable or disable the right-to-left based on \a enable.
  */
 void Worksheet::setRightToLeft(bool enable)
 {
@@ -371,7 +397,7 @@ bool Worksheet::isZerosVisible() const
 }
 
 /*!
- * Show a zero in cells that have zero value.
+ * Show a zero in cells that have zero value if \a visible is true.
  */
 void Worksheet::setZerosVisible(bool visible)
 {
@@ -389,7 +415,7 @@ bool Worksheet::isSelected() const
 }
 
 /*!
- * Set
+ * Select this sheet if \a select is true.
  */
 void Worksheet::setSelected(bool select)
 {
@@ -408,7 +434,7 @@ bool Worksheet::isRulerVisible() const
 }
 
 /*!
- * Show or hide the ruler.
+ * Show or hide the ruler based on \a visible.
  */
 void Worksheet::setRulerVisible(bool visible)
 {
@@ -427,7 +453,7 @@ bool Worksheet::isOutlineSymbolsVisible() const
 }
 
 /*!
- * Show or hide the outline symbols.
+ * Show or hide the outline symbols based ib \a visible.
  */
 void Worksheet::setOutlineSymbolsVisible(bool visible)
 {
@@ -445,7 +471,7 @@ bool Worksheet::isWhiteSpaceVisible() const
 }
 
 /*!
- * Show or hide the white space.
+ * Show or hide the white space based on \a visible.
  */
 void Worksheet::setWhiteSpaceVisible(bool visible)
 {
@@ -460,45 +486,59 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 int Worksheet::write(int row, int column, const QVariant &value, const Format &format)
 {
     Q_D(Worksheet);
-    bool ok;
     int ret = 0;
 
     if (d->checkDimensions(row, column))
         return -1;
 
-    if (value.isNull()) { //blank
+    if (value.isNull()) {
+        //Blank
         ret = writeBlank(row, column, format);
     } else if (value.userType() == qMetaTypeId<RichString>()) {
         ret = writeString(row, column, value.value<RichString>(), format);
-    } else if (value.userType() == QMetaType::Bool) { //Bool
+    } else if (value.userType() == QMetaType::Bool) {
+        //Bool
         ret = writeBool(row,column, value.toBool(), format);
-    } else if (value.toDateTime().isValid()) { //DateTime
+    } else if (value.userType() == QMetaType::QDateTime || value.userType() == QMetaType::QDate) {
+        //DateTime, Date
+        //  note that, QTime cann't convert to QDateTime
         ret = writeDateTime(row, column, value.toDateTime(), format);
-    } else if (value.toTime().isValid()) { //Time
+    } else if (value.userType() == QMetaType::QTime) {
+        //Time
         ret = writeTime(row, column, value.toTime(), format);
-    } else if (value.toDouble(&ok), ok) { //Number
-        if (!d->workbook->isStringsToNumbersEnabled() && value.userType() == QMetaType::QString) {
-            //Don't convert string to number if the flag not enabled.
-            ret = writeString(row, column, value.toString(), format);
-        } else {
-            ret = writeNumeric(row, column, value.toDouble(), format);
-        }
-    } else if (value.userType() == QMetaType::QUrl) { //url
+    } else if (value.userType() == QMetaType::Int || value.userType() == QMetaType::UInt
+               || value.userType() == QMetaType::LongLong || value.userType() == QMetaType::ULongLong
+               || value.userType() == QMetaType::Double || value.userType() == QMetaType::Float) {
+        //Number
+
+        ret = writeNumeric(row, column, value.toDouble(), format);
+    } else if (value.userType() == QMetaType::QUrl) {
+        //Url
         ret = writeHyperlink(row, column, value.toUrl(), format);
-    } else if (value.userType() == QMetaType::QString) { //string
+    } else if (value.userType() == QMetaType::QString) {
+        //String
         QString token = value.toString();
+        bool ok;
         QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"));
+
         if (token.startsWith(QLatin1String("="))) {
+            //convert to formula
             ret = writeFormula(row, column, token, format);
         } else if (token.startsWith(QLatin1String("{=")) && token.endsWith(QLatin1Char('}'))) {
+            //convert to array formula
             ret = writeArrayFormula(CellRange(row, column, row, column), token, format);
         } else if (token.contains(urlPattern)) {
+            //convert to url
             ret = writeHyperlink(row, column, QUrl(token));
+        } else if (d->workbook->isStringsToNumbersEnabled() && (value.toDouble(&ok), ok)) {
+            //Try convert string to number if the flag enabled.
+            ret = writeString(row, column, value.toString(), format);
         } else {
+            //normal string now
             ret = writeString(row, column, token, format);
         }
-    } else { //Wrong type
-
+    } else {
+        //Wrong type
         return -1;
     }
 
@@ -506,7 +546,9 @@ int Worksheet::write(int row, int column, const QVariant &value, const Format &f
 }
 
 /*!
-    \overload
+ * \overload
+ * Write \a value to cell \a row_column with the \a format.
+ * Both row and column are all 1-indexed value.
  */
 int Worksheet::write(const QString &row_column, const QVariant &value, const Format &format)
 {
@@ -520,6 +562,7 @@ int Worksheet::write(const QString &row_column, const QVariant &value, const For
 
 /*!
     \overload
+    Return the contents of the cell \a row_column.
  */
 QVariant Worksheet::read(const QString &row_column) const
 {
@@ -553,6 +596,11 @@ QVariant Worksheet::read(int row, int column) const
     return cell->value();
 }
 
+/*!
+ * \overload
+ * Returns the cell at the position \a row_column.
+ * 0 will be returned if the cell doesn't exist.
+ */
 Cell *Worksheet::cellAt(const QString &row_column) const
 {
     QPoint pos = xl_cell_to_rowcol(row_column);
@@ -562,6 +610,10 @@ Cell *Worksheet::cellAt(const QString &row_column) const
     return cellAt(pos.x(), pos.y());
 }
 
+/*!
+ * Returns the cell at the position (\a row \a column).
+ * 0 will be returned if the cell doesn't exist.
+ */
 Cell *Worksheet::cellAt(int row, int column) const
 {
     Q_D(const Worksheet);
@@ -584,6 +636,7 @@ Format WorksheetPrivate::cellFormat(int row, int col) const
 
 /*!
     \overload
+    Write string \a value to the cell \a row_column with the \a format
  */
 int Worksheet::writeString(const QString &row_column, const RichString &value, const Format &format)
 {
@@ -624,6 +677,7 @@ int Worksheet::writeString(int row, int column, const RichString &value, const F
 
 /*!
     \overload
+    Write string \a value to the cell \a row_column with the \a format
  */
 int Worksheet::writeString(const QString &row_column, const QString &value, const Format &format)
 {
@@ -657,6 +711,7 @@ int Worksheet::writeString(int row, int column, const QString &value, const Form
 
 /*!
     \overload
+    Write string \a value to the cell \a row_column with the \a format
  */
 int Worksheet::writeInlineString(const QString &row_column, const QString &value, const Format &format)
 {
@@ -692,6 +747,7 @@ int Worksheet::writeInlineString(int row, int column, const QString &value, cons
 
 /*!
     \overload
+    Write numeric \a value to the cell \a row_column with the \a format
  */
 int Worksheet::writeNumeric(const QString &row_column, double value, const Format &format)
 {
@@ -720,6 +776,7 @@ int Worksheet::writeNumeric(int row, int column, double value, const Format &for
 
 /*!
     \overload
+    Write \a formula to the cell \a row_column with the \a format and \a result.
  */
 int Worksheet::writeFormula(const QString &row_column, const QString &formula, const Format &format, double result)
 {
@@ -732,7 +789,7 @@ int Worksheet::writeFormula(const QString &row_column, const QString &formula, c
 }
 
 /*!
-    Write \a formula to the cell (\a row, \a column) with the \a format
+    Write \a formula to the cell (\a row, \a column) with the \a format and \a result.
 */
 int Worksheet::writeFormula(int row, int column, const QString &formula, const Format &format, double result)
 {
@@ -794,6 +851,7 @@ int Worksheet::writeArrayFormula(const CellRange &range, const QString &formula,
 
 /*!
     \overload
+    Write \a formula to the \a range with the \a format
  */
 int Worksheet::writeArrayFormula(const QString &range, const QString &formula, const Format &format)
 {
@@ -802,6 +860,7 @@ int Worksheet::writeArrayFormula(const QString &range, const QString &formula, c
 
 /*!
     \overload
+    Write a empty cell \a row_column with the \a format
  */
 int Worksheet::writeBlank(const QString &row_column, const Format &format)
 {
@@ -831,6 +890,7 @@ int Worksheet::writeBlank(int row, int column, const Format &format)
 }
 /*!
     \overload
+    Write a bool \a value to the cell \a row_column with the \a format
  */
 int Worksheet::writeBool(const QString &row_column, bool value, const Format &format)
 {
@@ -859,6 +919,7 @@ int Worksheet::writeBool(int row, int column, bool value, const Format &format)
 }
 /*!
     \overload
+    Write a QDateTime \a dt to the cell \a row_column with the \a format
  */
 int Worksheet::writeDateTime(const QString &row_column, const QDateTime &dt, const Format &format)
 {
@@ -871,7 +932,7 @@ int Worksheet::writeDateTime(const QString &row_column, const QDateTime &dt, con
 }
 
 /*!
-    Write a QDateTime \a value to the cell (\a row, \a column) with the \a format
+    Write a QDateTime \a dt to the cell (\a row, \a column) with the \a format
  */
 int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const Format &format)
 {
@@ -893,6 +954,7 @@ int Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const For
 
 /*!
     \overload
+    Write a QTime \a t to the cell \a row_column with the \a format
  */
 int Worksheet::writeTime(const QString &row_column, const QTime &t, const Format &format)
 {
@@ -905,7 +967,7 @@ int Worksheet::writeTime(const QString &row_column, const QTime &t, const Format
 }
 
 /*!
-    Write a QTime \a value to the cell (\a row, \a column) with the \a format
+    Write a QTime \a t to the cell (\a row, \a column) with the \a format
  */
 int Worksheet::writeTime(int row, int column, const QTime &t, const Format &format)
 {
@@ -925,6 +987,7 @@ int Worksheet::writeTime(int row, int column, const QTime &t, const Format &form
 
 /*!
     \overload
+    Write a QUrl \a url to the cell \a row_column with the given \a format \a display and \a tip
  */
 int Worksheet::writeHyperlink(const QString &row_column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
 {
@@ -937,7 +1000,7 @@ int Worksheet::writeHyperlink(const QString &row_column, const QUrl &url, const 
 }
 
 /*!
-    Write a QUrl \a url to the cell (\a row, \a column) with the given \a format
+    Write a QUrl \a url to the cell (\a row, \a column) with the given \a format \a display and \a tip.
  */
 int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
 {
@@ -990,6 +1053,10 @@ int Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format
     return error;
 }
 
+/*!
+ * Add one DataValidation \a validation to the sheet.
+ * Return true if it's successful.
+ */
 bool Worksheet::addDataValidation(const DataValidation &validation)
 {
     Q_D(Worksheet);
@@ -1000,6 +1067,10 @@ bool Worksheet::addDataValidation(const DataValidation &validation)
     return true;
 }
 
+/*!
+ * Add one ConditionalFormatting \a cf to the sheet.
+ * Return true if it's successful.
+ */
 bool Worksheet::addConditionalFormatting(const ConditionalFormatting &cf)
 {
     Q_D(Worksheet);
@@ -1480,8 +1551,11 @@ void WorksheetPrivate::saveXmlDrawings(QXmlStreamWriter &writer) const
 }
 
 /*!
-  Sets row \a height and \a format. Row height measured in point size. If format
+  Sets the \a height and \a format of the row \a row. Row height measured in point size. If format
   equals 0 then format is ignored. \a row is 1-indexed.
+  Hides the row if \a hidden is true.
+
+  Returns true if success.
  */
 bool Worksheet::setRow(int row, double height, const Format &format, bool hidden)
 {
@@ -1543,6 +1617,9 @@ void WorksheetPrivate::splitColsInfo(int colFirst, int colLast)
   width measured as the number of characters of the maximum digit width of the
   numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
   equals 0 then format is ignored. Both \a colFirst and \a colLast are all 1-indexed.
+  Hides the column if \a hidden is true.
+
+  Return true if success.
  */
 bool Worksheet::setColumn(int colFirst, int colLast, double width, const Format &format, bool hidden)
 {
@@ -1610,7 +1687,9 @@ bool Worksheet::setColumn(const QString &colFirst, const QString &colLast, doubl
 }
 
 /*!
-   Groups rows from rowFirst to rowLast. Returns false if error occurs.
+   Groups rows from \a rowFirst to \a rowLast with the given \a collapsed.
+
+   Returns false if error occurs.
  */
 bool Worksheet::groupRows(int rowFirst, int rowLast, bool collapsed)
 {
@@ -1650,7 +1729,8 @@ bool Worksheet::groupColumns(const QString &colFirst, const QString &colLast, bo
 }
 
 /*!
-   Groups columns from colFirst to colLast. Returns false if error occurs.
+   Groups columns from \a colFirst to \a colLast with the given \a collapsed.
+   Returns false if error occurs.
 */
 bool Worksheet::groupColumns(int colFirst, int colLast, bool collapsed)
 {

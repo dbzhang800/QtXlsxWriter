@@ -56,11 +56,15 @@ void DocumentTest::testReadWriteString()
 
     Document xlsx1;
     xlsx1.write("A1", "Hello Qt!");
+
     Format format;
     format.setFontColor(Qt::blue);
     format.setBorderStyle(Format::BorderDashDotDot);
     format.setFillPattern(Format::PatternSolid);
     xlsx1.write("A2", "Hello Qt again!", format);
+
+    xlsx1.write("A3", "12345");
+
     xlsx1.saveAs(&device);
 
     device.open(QIODevice::ReadOnly);
@@ -74,6 +78,9 @@ void DocumentTest::testReadWriteString()
 //    qDebug()<<format2;
 //    qDebug()<<format;
     QCOMPARE(format2, format);
+
+    QCOMPARE(xlsx2.cellAt("A3")->dataType(), Cell::String);
+    QCOMPARE(xlsx2.cellAt("A3")->value().toString(), QString("12345"));
 }
 
 void DocumentTest::testReadWriteNumeric()
@@ -198,7 +205,7 @@ void DocumentTest::testReadWriteDateTime()
     format3.setNumberFormat("dd/mm/yyyy");
     xlsx1.write("A3", dt, format3);
 
-    xlsx1.write("A4", "2013-12-14T12:30"); //Auto convert to QDateTime, by QVariant
+//    xlsx1.write("A4", "2013-12-14T12:30"); //Auto convert to QDateTime, by QVariant
 
     xlsx1.saveAs(&device);
 
@@ -220,10 +227,10 @@ void DocumentTest::testReadWriteDateTime()
     QCOMPARE(xlsx2.cellAt("A3")->dateTime(), dt);
     QCOMPARE(xlsx2.cellAt("A3")->format().numberFormat(), QString("dd/mm/yyyy"));
 
-    QCOMPARE(xlsx2.cellAt("A4")->dataType(), Cell::Numeric);
-    QCOMPARE(xlsx2.cellAt("A4")->isDateTime(), true);
-    QCOMPARE(xlsx2.cellAt("A4")->dateTime(), QDateTime(QDate(2013,12,14), QTime(12, 30)));
-    QVERIFY(xlsx2.read("A4").userType() == QMetaType::QDateTime);
+//    QCOMPARE(xlsx2.cellAt("A4")->dataType(), Cell::Numeric);
+//    QCOMPARE(xlsx2.cellAt("A4")->isDateTime(), true);
+//    QCOMPARE(xlsx2.cellAt("A4")->dateTime(), QDateTime(QDate(2013,12,14), QTime(12, 30)));
+//    QVERIFY(xlsx2.read("A4").userType() == QMetaType::QDateTime);
 }
 
 void DocumentTest::testReadWriteDate()
@@ -246,7 +253,7 @@ void DocumentTest::testReadWriteDate()
     format3.setNumberFormat("dd/mm/yyyy");
     xlsx1.write("A3", d, format3);
 
-    xlsx1.write("A4", "2013-12-14"); //Auto convert to QDateTime, by QVariant
+//    xlsx1.write("A4", "2013-12-14"); //Auto convert to QDateTime, by QVariant
 
     xlsx1.saveAs(&device);
 
@@ -268,11 +275,11 @@ void DocumentTest::testReadWriteDate()
     QVERIFY(xlsx2.read("A3").userType() == QMetaType::QDate);
     QCOMPARE(xlsx2.read("A3").toDate(), d);
 
-    QCOMPARE(xlsx2.cellAt("A4")->dataType(), Cell::Numeric);
-    QCOMPARE(xlsx2.cellAt("A4")->isDateTime(), true);
-    QCOMPARE(xlsx2.cellAt("A4")->dateTime(), QDateTime(QDate(2013,12,14)));
-    QVERIFY(xlsx2.read("A4").userType() == QMetaType::QDate);
-    QCOMPARE(xlsx2.read("A4").toDate(), QDate(2013,12,14));
+//    QCOMPARE(xlsx2.cellAt("A4")->dataType(), Cell::Numeric);
+//    QCOMPARE(xlsx2.cellAt("A4")->isDateTime(), true);
+//    QCOMPARE(xlsx2.cellAt("A4")->dateTime(), QDateTime(QDate(2013,12,14)));
+//    QVERIFY(xlsx2.read("A4").userType() == QMetaType::QDate);
+//    QCOMPARE(xlsx2.read("A4").toDate(), QDate(2013,12,14));
 }
 
 void DocumentTest::testReadWriteTime()
