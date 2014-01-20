@@ -16,7 +16,7 @@
 <li>Qt 0.2</li>
 <li>ConditionalFormatting</li>
 <li id="buildversion">
-Qt 0.2.1 Reference Documentation</li>
+Qt 0.2.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -118,6 +118,14 @@ Qt 0.2.1 Reference Documentation</li>
 <!-- @@@HighlightRuleType -->
 <!-- $$$ValueObjectType$$$VOT_Formula$$$VOT_Max$$$VOT_Min$$$VOT_Num$$$VOT_Percent$$$VOT_Percentile -->
 <h3 class="fn"><a name="ValueObjectType-enum"></a>enum ConditionalFormatting::<span class="name">ValueObjectType</span></h3>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::VOT_Formula</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::VOT_Max</tt></td><td class="topAlign"><tt>1</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::VOT_Min</tt></td><td class="topAlign"><tt>2</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::VOT_Num</tt></td><td class="topAlign"><tt>3</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::VOT_Percent</tt></td><td class="topAlign"><tt>4</tt></td></tr>
+<tr><td class="topAlign"><tt>ConditionalFormatting::VOT_Percentile</tt></td><td class="topAlign"><tt>5</tt></td></tr>
+</table>
 <!-- @@@ValueObjectType -->
 </div>
 <div class="func">
@@ -135,15 +143,15 @@ Qt 0.2.1 Reference Documentation</li>
 <p>Destroy the object.</p>
 <!-- @@@~ConditionalFormatting -->
 <!-- $$$add2ColorScaleRule[overload1]$$$add2ColorScaleRuleconstQColor&constQColor&bool -->
-<h3 class="fn"><a name="add2ColorScaleRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">add2ColorScaleRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> minColor</i>, const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> maxColor</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
-<p>Add a colorScale rule with the given <i>minColor</i>, <i>maxColor</i> and <i>stopIfTrue</i>.</p>
+<h3 class="fn"><a name="add2ColorScaleRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">add2ColorScaleRule</span>(const <span class="type">QColor</span> &amp;<i> minColor</i>, const <span class="type">QColor</span> &amp;<i> maxColor</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a colorScale rule with the given <i>minColor</i>, <i>maxColor</i> and <i>stopIfTrue</i>. Return false if failed.</p>
 <!-- @@@add2ColorScaleRule -->
 <!-- $$$add3ColorScaleRule[overload1]$$$add3ColorScaleRuleconstQColor&constQColor&constQColor&bool -->
-<h3 class="fn"><a name="add3ColorScaleRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">add3ColorScaleRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> minColor</i>, const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> midColor</i>, const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> maxColor</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
-<p>Add a colorScale rule with the given <i>minColor</i>, <i>midColor</i>, <i>maxColor</i> and <i>stopIfTrue</i>.</p>
+<h3 class="fn"><a name="add3ColorScaleRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">add3ColorScaleRule</span>(const <span class="type">QColor</span> &amp;<i> minColor</i>, const <span class="type">QColor</span> &amp;<i> midColor</i>, const <span class="type">QColor</span> &amp;<i> maxColor</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a colorScale rule with the given <i>minColor</i>, <i>midColor</i>, <i>maxColor</i> and <i>stopIfTrue</i>. Return false if failed.</p>
 <!-- @@@add3ColorScaleRule -->
 <!-- $$$addCell[overload1]$$$addCellconstQString& -->
-<h3 class="fn"><a name="addCell"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addCell</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> cell</i>)</h3>
+<h3 class="fn"><a name="addCell"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addCell</span>(const <span class="type">QString</span> &amp;<i> cell</i>)</h3>
 <p>Add the <i>cell</i> on which the conditional formatting will apply to.</p>
 <!-- @@@addCell -->
 <!-- $$$addCell$$$addCellintint -->
@@ -152,17 +160,17 @@ Qt 0.2.1 Reference Documentation</li>
 <p>Add the cell(<i>row</i>, <i>col</i>) on which the conditional formatting will apply to.</p>
 <!-- @@@addCell -->
 <!-- $$$addDataBarRule[overload1]$$$addDataBarRuleconstQColor&ValueObjectTypeconstQString&ValueObjectTypeconstQString&boolbool -->
-<h3 class="fn"><a name="addDataBarRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addDataBarRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> color</i>, <span class="type"><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></span><i> type1</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> val1</i>, <span class="type"><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></span><i> type2</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> val2</i>, <span class="type">bool</span><i> showData</i> = true, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
-<p>Add a dataBar rule with the given <i>color</i>, <i>type1</i>, <i>val1</i> , <i>type2</i>, <i>val2</i>, <i>showData</i> and <i>stopIfTrue</i>.</p>
+<h3 class="fn"><a name="addDataBarRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addDataBarRule</span>(const <span class="type">QColor</span> &amp;<i> color</i>, <span class="type"><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></span><i> type1</i>, const <span class="type">QString</span> &amp;<i> val1</i>, <span class="type"><a href="conditionalformatting.html#ValueObjectType-enum">ValueObjectType</a></span><i> type2</i>, const <span class="type">QString</span> &amp;<i> val2</i>, <span class="type">bool</span><i> showData</i> = true, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a dataBar rule with the given <i>color</i>, <i>type1</i>, <i>val1</i> , <i>type2</i>, <i>val2</i>, <i>showData</i> and <i>stopIfTrue</i>. Return false if failed.</p>
 <!-- @@@addDataBarRule -->
 <!-- $$$addDataBarRule$$$addDataBarRuleconstQColor&boolbool -->
-<h3 class="fn"><a name="addDataBarRule-2"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addDataBarRule</span>(const <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> &amp;<i> color</i>, <span class="type">bool</span><i> showData</i> = true, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<h3 class="fn"><a name="addDataBarRule-2"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addDataBarRule</span>(const <span class="type">QColor</span> &amp;<i> color</i>, <span class="type">bool</span><i> showData</i> = true, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
 <p>This is an overloaded function.</p>
 <p>Add a dataBar rule with the given <i>color</i>, <i>showData</i> and <i>stopIfTrue</i>.</p>
 <!-- @@@addDataBarRule -->
 <!-- $$$addHighlightCellsRule[overload1]$$$addHighlightCellsRuleHighlightRuleTypeconstQString&constQString&constFormat&bool -->
-<h3 class="fn"><a name="addHighlightCellsRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula1</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula2</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
-<p>Add a hightlight rule with the given <i>type</i>, <i>formula1</i>, <i>formula2</i>, <i>format</i> and <i>stopIfTrue</i>.</p>
+<h3 class="fn"><a name="addHighlightCellsRule"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type">QString</span> &amp;<i> formula1</i>, const <span class="type">QString</span> &amp;<i> formula2</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<p>Add a hightlight rule with the given <i>type</i>, <i>formula1</i>, <i>formula2</i>, <i>format</i> and <i>stopIfTrue</i>. Return false if failed.</p>
 <!-- @@@addHighlightCellsRule -->
 <!-- $$$addHighlightCellsRule$$$addHighlightCellsRuleHighlightRuleTypeconstFormat&bool -->
 <h3 class="fn"><a name="addHighlightCellsRule-2"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
@@ -170,12 +178,12 @@ Qt 0.2.1 Reference Documentation</li>
 <p>Add a hightlight rule with the given <i>type</i> <i>format</i> and <i>stopIfTrue</i>.</p>
 <!-- @@@addHighlightCellsRule -->
 <!-- $$$addHighlightCellsRule$$$addHighlightCellsRuleHighlightRuleTypeconstQString&constFormat&bool -->
-<h3 class="fn"><a name="addHighlightCellsRule-3"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> formula</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
+<h3 class="fn"><a name="addHighlightCellsRule-3"></a><span class="type">bool</span> ConditionalFormatting::<span class="name">addHighlightCellsRule</span>(<span class="type"><a href="conditionalformatting.html#HighlightRuleType-enum">HighlightRuleType</a></span><i> type</i>, const <span class="type">QString</span> &amp;<i> formula</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>, <span class="type">bool</span><i> stopIfTrue</i> = false)</h3>
 <p>This is an overloaded function.</p>
-<p>Add a hightlight rule with the given <i>type</i>, <i>formula</i>, <i>format</i> and <i>stopIfTrue</i>.</p>
+<p>Add a hightlight rule with the given <i>type</i>, <i>formula</i>, <i>format</i> and <i>stopIfTrue</i>. Return false if failed.</p>
 <!-- @@@addHighlightCellsRule -->
 <!-- $$$addRange[overload1]$$$addRangeconstQString& -->
-<h3 class="fn"><a name="addRange"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addRange</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> range</i>)</h3>
+<h3 class="fn"><a name="addRange"></a><span class="type">void</span> ConditionalFormatting::<span class="name">addRange</span>(const <span class="type">QString</span> &amp;<i> range</i>)</h3>
 <p>Add the <i>range</i> on which the conditional formatting will apply to.</p>
 <!-- @@@addRange -->
 <!-- $$$addRange$$$addRangeintintintint -->
@@ -189,7 +197,7 @@ Qt 0.2.1 Reference Documentation</li>
 <p>Add the <i>range</i> on which the conditional formatting will apply to.</p>
 <!-- @@@addRange -->
 <!-- $$$ranges[overload1]$$$ranges -->
-<h3 class="fn"><a name="ranges"></a><span class="type"><a href="../qtcore/qlist.html">QList</a></span>&lt;<span class="type">CellRange</span>&gt; ConditionalFormatting::<span class="name">ranges</span>() const</h3>
+<h3 class="fn"><a name="ranges"></a><span class="type">QList</span>&lt;<span class="type">CellRange</span>&gt; ConditionalFormatting::<span class="name">ranges</span>() const</h3>
 <p>Returns the ranges on which the validation will be applied.</p>
 <!-- @@@ranges -->
 <!-- $$$operator=[overload1]$$$operator=constConditionalFormatting& -->

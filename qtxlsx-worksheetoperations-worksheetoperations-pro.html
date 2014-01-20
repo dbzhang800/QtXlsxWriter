@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (mergecells/main.cpp) | QtXlsx 0.2</title>
+  <title>worksheetoperations.pro Example File (worksheetoperations/worksheetoperations.pro) | QtXlsx 0.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.2</li>
-<li>main.cpp Example File (mergecells/main.cpp)</li>
+<li>worksheetoperations.pro Example File (worksheetoperations/worksheetoperations.pro)</li>
 <li id="buildversion">
 Qt 0.2.2 Reference Documentation</li>
     </ul>
@@ -22,33 +22,21 @@ Qt 0.2.2 Reference Documentation</li>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">mergecells/main.cpp</span>
-<!-- $$$mergecells/main.cpp-description -->
+<h1 class="title">worksheetoperations.pro Example File</h1>
+<span class="small-subtitle">worksheetoperations/worksheetoperations.pro</span>
+<!-- $$$worksheetoperations/worksheetoperations.pro-description -->
 <div class="descr"> <a name="details"></a>
-<pre class="cpp"><span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
-<span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
+<pre class="cpp">TARGET = worksheetoperations
 
-QTXLSX_USE_NAMESPACE
+#include(../../../src/xlsx/qtxlsx.pri)
+QT+=xlsx
 
-<span class="type">int</span> main()
-{
-    Document xlsx;
-    Format format;
-    format<span class="operator">.</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignHCenter);
-    format<span class="operator">.</span>setVerticalAlignment(Format<span class="operator">::</span>AlignVCenter);
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="string">&quot;Hello Qt!&quot;</span>);
-    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B4:F6&quot;</span><span class="operator">,</span> format);
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;B8&quot;</span><span class="operator">,</span> <span class="number">1</span>);
-    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;B8:C21&quot;</span><span class="operator">,</span> format);
-    xlsx<span class="operator">.</span>write(<span class="string">&quot;E8&quot;</span><span class="operator">,</span> <span class="number">2</span>);
-    xlsx<span class="operator">.</span>mergeCells(<span class="string">&quot;E8:F21&quot;</span><span class="operator">,</span> format);
-    xlsx<span class="operator">.</span>save();
+CONFIG   += console
+CONFIG   -= app_bundle
 
-    <span class="keyword">return</span> <span class="number">0</span>;
-}</pre>
+SOURCES += main.cpp</pre>
 </div>
-<!-- @@@mergecells/main.cpp -->
+<!-- @@@worksheetoperations/worksheetoperations.pro -->
         </div>
        </div>
    </div>

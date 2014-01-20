@@ -15,7 +15,7 @@
 <li>Qt 0.2</li>
 <li>main.cpp Example File (formulas/main.cpp)</li>
 <li id="buildversion">
-Qt 0.2.1 Reference Documentation</li>
+Qt 0.2.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -73,9 +73,16 @@ QTXLSX_USE_NAMESPACE
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A21&quot;</span><span class="operator">,</span> <span class="string">&quot;LEN(\&quot;Hello Qt!\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;B21&quot;</span><span class="operator">,</span> <span class="string">&quot;=LEN(\&quot;Hello Qt!\&quot;)&quot;</span><span class="operator">,</span> lAlign);
 
-    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">22</span>; row<span class="operator">&lt;</span><span class="operator">=</span><span class="number">30</span>; <span class="operator">+</span><span class="operator">+</span>row)
-        xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">100.0</span> <span class="operator">-</span> row);
-    xlsx<span class="operator">.</span>currentWorksheet()<span class="operator">-</span><span class="operator">&gt;</span>writeArrayFormula(<span class="string">&quot;B22:B30&quot;</span><span class="operator">,</span> <span class="string">&quot;{=A22:A30*10}&quot;</span>);
+    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;ArrayFormula&quot;</span>);
+    Worksheet <span class="operator">*</span>sheet <span class="operator">=</span> xlsx<span class="operator">.</span>currentWorksheet();
+
+    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type">QString</span>(row<span class="operator">%</span><span class="number">5</span><span class="operator">+</span><span class="number">1</span><span class="operator">,</span> <span class="char">'X'</span>)); <span class="comment">//B2:B19</span>
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="type">QString</span>(row<span class="operator">%</span><span class="number">5</span><span class="operator">+</span><span class="number">1</span><span class="operator">,</span> <span class="char">'X'</span>)); <span class="comment">//C2:C19</span>
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">5</span><span class="operator">,</span> <span class="number">100.0</span> <span class="operator">-</span> row); <span class="comment">//E2:E19</span>
+    }
+    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeArrayFormula(<span class="string">&quot;C20&quot;</span><span class="operator">,</span> <span class="string">&quot;{=SUM(IF((C2:C19=\&quot;X\&quot;)*(B2:B19=\&quot;X\&quot;),1,0))}&quot;</span>);
+    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeArrayFormula(<span class="string">&quot;F2:F19&quot;</span><span class="operator">,</span> <span class="string">&quot;{=E2:E19*10}&quot;</span>);
 
     xlsx<span class="operator">.</span>save();
 

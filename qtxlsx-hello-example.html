@@ -16,7 +16,7 @@
 <li>Qt 0.2</li>
 <li>Hello QtXlsx Example</li>
 <li id="buildversion">
-Qt 0.2.1 Reference Documentation</li>
+Qt 0.2.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -35,7 +35,9 @@ Qt 0.2.1 Reference Documentation</li>
 xlsx<span class="operator">.</span>write(<span class="string">&quot;A2&quot;</span><span class="operator">,</span> <span class="number">12345</span>);
 xlsx<span class="operator">.</span>write(<span class="string">&quot;A3&quot;</span><span class="operator">,</span> <span class="string">&quot;=44+33&quot;</span>);
 xlsx<span class="operator">.</span>write(<span class="string">&quot;A4&quot;</span><span class="operator">,</span> <span class="keyword">true</span>);
-xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="string">&quot;http://qt-project.org&quot;</span>);</pre>
+xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="string">&quot;http://qt-project.org&quot;</span>);
+xlsx<span class="operator">.</span>write(<span class="string">&quot;A6&quot;</span><span class="operator">,</span> <span class="type">QDate</span>(<span class="number">2013</span><span class="operator">,</span> <span class="number">12</span><span class="operator">,</span> <span class="number">27</span>));
+xlsx<span class="operator">.</span>write(<span class="string">&quot;A7&quot;</span><span class="operator">,</span> <span class="type">QTime</span>(<span class="number">6</span><span class="operator">,</span> <span class="number">30</span>));</pre>
 <p>Now save the file and all its components.</p>
 <pre class="cpp">xlsx<span class="operator">.</span>save();</pre>
 <p>Files:</p>

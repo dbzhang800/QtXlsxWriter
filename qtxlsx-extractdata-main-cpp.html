@@ -15,7 +15,7 @@
 <li>Qt 0.2</li>
 <li>main.cpp Example File (extractdata/main.cpp)</li>
 <li id="buildversion">
-Qt 0.2.1 Reference Documentation</li>
+Qt 0.2.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -39,16 +39,20 @@ Qt 0.2.1 Reference Documentation</li>
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A3&quot;</span><span class="operator">,</span> <span class="string">&quot;=44+33&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A4&quot;</span><span class="operator">,</span> <span class="keyword">true</span>);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="string">&quot;http://qt-project.org&quot;</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A6&quot;</span><span class="operator">,</span> <span class="type">QDate</span>(<span class="number">2013</span><span class="operator">,</span> <span class="number">12</span><span class="operator">,</span> <span class="number">27</span>));
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A7&quot;</span><span class="operator">,</span> <span class="type">QTime</span>(<span class="number">6</span><span class="operator">,</span> <span class="number">30</span>));
     xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Book1.xlsx&quot;</span>);
     }
 
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx(<span class="string">&quot;Book1.xlsx&quot;</span>);
 
-    <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A1&quot;</span>);
-    <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A2&quot;</span>);
-    <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A3&quot;</span>);
-    <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A4&quot;</span>);
-    <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A5&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A1&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A2&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A3&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A4&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A5&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A6&quot;</span>);
+    qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A7&quot;</span>);
 
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>
