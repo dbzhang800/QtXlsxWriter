@@ -1124,6 +1124,10 @@ void Format::setLocked(bool locked)
     setProperty(FormatPrivate::P_Protection_Locked, locked);
 }
 
+/*!
+    \internal
+    Return true if the format has protection data, otherwise return false.
+ */
 bool Format::hasProtectionData() const
 {
     if (!d)

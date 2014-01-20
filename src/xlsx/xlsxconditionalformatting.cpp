@@ -126,6 +126,17 @@ void ConditionalFormattingPrivate::writeCfVo(QXmlStreamWriter &writer, const Xls
 */
 
 /*!
+    \enum ConditionalFormatting::ValueObjectType
+
+    \value VOT_Formula
+    \value VOT_Max
+    \value VOT_Min
+    \value VOT_Num
+    \value VOT_Percent
+    \value VOT_Percentile
+*/
+
+/*!
     Construct a conditional formatting object
 */
 ConditionalFormatting::ConditionalFormatting()
@@ -164,6 +175,7 @@ ConditionalFormatting::~ConditionalFormatting()
 /*!
  * Add a hightlight rule with the given \a type, \a formula1, \a formula2,
  * \a format and \a stopIfTrue.
+ * Return false if failed.
  */
 bool ConditionalFormatting::addHighlightCellsRule(HighlightRuleType type, const QString &formula1, const QString &formula2, const Format &format, bool stopIfTrue)
 {
@@ -290,6 +302,7 @@ bool ConditionalFormatting::addHighlightCellsRule(HighlightRuleType type, const 
  * \overload
  *
  * Add a hightlight rule with the given \a type, \a formula, \a format and \a stopIfTrue.
+ * Return false if failed.
  */
 bool ConditionalFormatting::addHighlightCellsRule(HighlightRuleType type, const QString &formula, const Format &format, bool stopIfTrue)
 {
@@ -302,6 +315,7 @@ bool ConditionalFormatting::addHighlightCellsRule(HighlightRuleType type, const 
 /*!
  * Add a dataBar rule with the given \a color, \a type1, \a val1
  * , \a type2, \a val2, \a showData and \a stopIfTrue.
+ * Return false if failed.
  */
 bool ConditionalFormatting::addDataBarRule(const QColor &color, ValueObjectType type1, const QString &val1, ValueObjectType type2, const QString &val2, bool showData, bool stopIfTrue)
 {
@@ -334,6 +348,7 @@ bool ConditionalFormatting::addDataBarRule(const QColor &color, bool showData, b
 
 /*!
  * Add a colorScale rule with the given \a minColor, \a maxColor and \a stopIfTrue.
+ * Return false if failed.
  */
 bool ConditionalFormatting::add2ColorScaleRule(const QColor &minColor, const QColor &maxColor, bool stopIfTrue)
 {
@@ -361,6 +376,7 @@ bool ConditionalFormatting::add2ColorScaleRule(const QColor &minColor, const QCo
 
 /*!
  * Add a colorScale rule with the given \a minColor, \a midColor, \a maxColor and \a stopIfTrue.
+ * Return false if failed.
  */
 bool ConditionalFormatting::add3ColorScaleRule(const QColor &minColor, const QColor &midColor, const QColor &maxColor, bool stopIfTrue)
 {
