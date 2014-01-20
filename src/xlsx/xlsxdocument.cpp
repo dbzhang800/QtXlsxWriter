@@ -396,20 +396,28 @@ QVariant Document::read(int row, int col) const
 }
 
 /*!
- * \brief Insert an \a image to current active worksheet at the position \a row, \a column
+ * Insert an \a image to current active worksheet at the position \a row, \a column
+ * Returns ture if success.
  */
 bool Document::insertImage(int row, int column, const QImage &image)
 {
     return currentWorksheet()->insertImage(row, column, image);
 }
 
+/*!
+ * Creates an chart with the given \a size and insert it to the current
+ * active worksheet at the position \a row, \a col.
+ * The chart will be returned.
+ */
 Chart *Document::insertChart(int row, int col, const QSize &size)
 {
     return currentWorksheet()->insertChart(row, col, size);
 }
 
 /*!
- * \brief Insert an \a image to current active worksheet to the position \a row, \a column with the given
+ * \overload
+ * \deprecated
+ * Insert an \a image to current active worksheet to the position \a row, \a column with the given
  * \a xOffset, \a yOffset, \a xScale and \a yScale.
  */
 int Document::insertImage(int row, int column, const QImage &image, double /*xOffset*/, double /*yOffset*/, double /*xScale*/, double /*yScale*/)
@@ -701,8 +709,11 @@ bool Document::deleteWorksheet(const QString &name)
 }
 
 /*!
+   \deprecated
    Rename current worksheet to new \a name.
    Returns true if the name defined successful.
+
+   \sa renameWorksheet()
  */
 bool Document::setSheetName(const QString &name)
 {
@@ -722,7 +733,9 @@ Worksheet *Document::currentWorksheet() const
 }
 
 /*!
- * \brief Set current worksheet to be the sheet at \a index.
+ *  \deprecated
+ *  Set current worksheet to be the sheet at \a index.
+ *  \sa selectWorksheet()
  */
 void Document::setCurrentWorksheet(int index)
 {
@@ -731,7 +744,9 @@ void Document::setCurrentWorksheet(int index)
 }
 
 /*!
- * \brief Set current selected worksheet to be the sheet named \a name.
+ *  \deprecated
+ *  Set current selected worksheet to be the sheet named \a name.
+ *  \sa selectWorksheet()
  */
 void Document::setCurrentWorksheet(const QString &name)
 {

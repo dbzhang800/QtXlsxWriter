@@ -48,20 +48,51 @@ ChartPrivate::~ChartPrivate()
 
 /*!
  * \class Chart
- *
- * Main class for the charts.
+ * \inmodule QtXlsx
+ * \brief Main class for the charts.
  */
 
+/*!
+  \enum Chart::ChartType
+
+  \value CT_Area
+  \value CT_Area3D,
+  \value CT_Line,
+  \value CT_Line3D,
+  \value CT_Scatter,
+  \value CT_Pie,
+  \value CT_Pie3D,
+  \value CT_Doughnut,
+  \value CT_Bar,
+  \value CT_Bar3D,
+
+  \omitvalue CT_Stock,
+  \omitvalue CT_Radar,
+  \omitvalue CT_OfPie,
+  \omitvalue CT_Surface,
+  \omitvalue CT_Surface3D,
+  \omitvalue CT_Bubble
+*/
+
+/*!
+ * \internal
+ */
 Chart::Chart(Worksheet *parent)
     :OOXmlFile(new ChartPrivate(this))
 {
     d_func()->sheet = parent;
 }
 
+/*!
+ * Destroys the chart.
+ */
 Chart::~Chart()
 {
 }
 
+/*!
+ * Add the data series which is in the range \a range of the \a sheet.
+ */
 void Chart::addSeries(const CellRange &range, Worksheet *sheet)
 {
     Q_D(Chart);
@@ -88,6 +119,10 @@ void Chart::setChartType(ChartType type)
     d->chartType = type;
 }
 
+/*!
+ * \internal
+ *
+ */
 void Chart::setChartStyle(int id)
 {
     Q_UNUSED(id)

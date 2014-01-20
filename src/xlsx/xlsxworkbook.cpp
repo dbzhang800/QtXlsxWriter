@@ -328,6 +328,9 @@ bool Workbook::copyWorksheet(int index, const QString &newName)
     return false;
 }
 
+/*!
+  \deprecated
+*/
 QList<QSharedPointer<Worksheet> > Workbook::worksheets() const
 {
     Q_D(const Workbook);

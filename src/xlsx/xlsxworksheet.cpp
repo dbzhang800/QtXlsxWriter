@@ -1087,6 +1087,10 @@ bool Worksheet::addConditionalFormatting(const ConditionalFormatting &cf)
     return true;
 }
 
+/*!
+ * Insert an \a image  at the position \a row, \a column
+ * Returns ture if success.
+ */
 bool Worksheet::insertImage(int row, int column, const QImage &image)
 {
     Q_D(Worksheet);
@@ -1111,11 +1115,21 @@ bool Worksheet::insertImage(int row, int column, const QImage &image)
     return true;
 }
 
+/*!
+ * \overload
+ * Insert an \a image at the position \a row, \a column with the given
+ * \a offset \a xScale and \a yScale.
+ */
 int Worksheet::insertImage(int row, int column, const QImage &image, const QPointF & /*offset*/, double /*xScale*/, double /*yScale*/)
 {
     return insertImage(row, column, image);
 }
 
+/*!
+ * Creates an chart with the given \a size and insert
+ * at the position \a row, \a column.
+ * The chart will be returned.
+ */
 Chart *Worksheet::insertChart(int row, int column, const QSize &size)
 {
     Q_D(Worksheet);
