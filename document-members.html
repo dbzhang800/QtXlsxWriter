@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxdocument.cpp -->
-  <title>List of All Members for Document | QtXlsx 0.2</title>
+  <title>List of All Members for Document | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.2</li>
+<li>Qt 0.3</li>
 <li>Document</li>
 <li id="buildversion">
-Qt 0.2.2 Reference Documentation</li>
+Qt 0.3.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -45,11 +45,12 @@ Qt 0.2.2 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="document.html#documentPropertyNames">documentPropertyNames</a></b></span>() const : QStringList</li>
 <li class="fn"><span class="name"><b><a href="document.html#groupColumns">groupColumns</a></b></span>(int, int, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#groupRows">groupRows</a></b></span>(int, int, bool) : bool</li>
-<li class="fn"><span class="name"><b><a href="document.html#insertImage">insertImage</a></b></span>(int, int, const QImage &amp;, double, double, double, double) : int</li>
+<li class="fn"><span class="name"><b><a href="document.html#insertChart">insertChart</a></b></span>(int, int, const QSize &amp;) : Chart *</li>
+<li class="fn"><span class="name"><b><a href="document.html#insertImage">insertImage</a></b></span>(int, int, const QImage &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#insertWorkSheet">insertWorkSheet</a></b></span>(int, const QString &amp;) : bool</li>
+</ul></td><td class="topAlign"><ul>
 <li class="fn"><span class="name"><b><a href="document.html#mergeCells">mergeCells</a></b></span>(const CellRange &amp;, const Format &amp;) : int</li>
 <li class="fn"><span class="name"><b><a href="document.html#mergeCells-2">mergeCells</a></b></span>(const QString &amp;, const Format &amp;) : int</li>
-</ul></td><td class="topAlign"><ul>
 <li class="fn"><span class="name"><b><a href="document.html#moveWorksheet">moveWorksheet</a></b></span>(const QString &amp;, int) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#read">read</a></b></span>(int, int) const : QVariant</li>
 <li class="fn"><span class="name"><b><a href="document.html#read-2">read</a></b></span>(const QString &amp;) const : QVariant</li>
@@ -60,11 +61,8 @@ Qt 0.2.2 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="document.html#selectWorksheet">selectWorksheet</a></b></span>(const QString &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#setColumn">setColumn</a></b></span>(int, int, double, const Format &amp;, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#setColumn-2">setColumn</a></b></span>(const QString &amp;, const QString &amp;, double, const Format &amp;, bool) : bool</li>
-<li class="fn"><span class="name"><b><a href="document.html#setCurrentWorksheet">setCurrentWorksheet</a></b></span>(int)</li>
-<li class="fn"><span class="name"><b><a href="document.html#setCurrentWorksheet-2">setCurrentWorksheet</a></b></span>(const QString &amp;)</li>
 <li class="fn"><span class="name"><b><a href="document.html#setDocumentProperty">setDocumentProperty</a></b></span>(const QString &amp;, const QString &amp;)</li>
 <li class="fn"><span class="name"><b><a href="document.html#setRow">setRow</a></b></span>(int, double, const Format &amp;, bool) : bool</li>
-<li class="fn"><span class="name"><b><a href="document.html#setSheetName">setSheetName</a></b></span>(const QString &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="document.html#unmergeCells">unmergeCells</a></b></span>(const CellRange &amp;) : int</li>
 <li class="fn"><span class="name"><b><a href="document.html#unmergeCells-2">unmergeCells</a></b></span>(const QString &amp;) : int</li>
 <li class="fn"><span class="name"><b><a href="document.html#workbook">workbook</a></b></span>() const : Workbook *</li>

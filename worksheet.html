@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxworksheet.cpp -->
-  <title>Worksheet Class | QtXlsx 0.2</title>
+  <title>Worksheet Class | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.2</li>
+<li>Qt 0.3</li>
 <li>Worksheet</li>
 <li id="buildversion">
-Qt 0.2.2 Reference Documentation</li>
+Qt 0.3.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -51,6 +51,9 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#groupColumns">groupColumns</a></b>(int<i> colFirst</i>, int<i> colLast</i>, bool<i> collapsed</i> = true)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#groupColumns-2">groupColumns</a></b>(const QString &amp;<i> colFirst</i>, const QString &amp;<i> colLast</i>, bool<i> collapsed</i> = true)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#groupRows">groupRows</a></b>(int<i> rowFirst</i>, int<i> rowLast</i>, bool<i> collapsed</i> = true)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Chart * </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#insertChart">insertChart</a></b>(int<i> row</i>, int<i> column</i>, const QSize &amp;<i> size</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#insertImage">insertImage</a></b>(int<i> row</i>, int<i> column</i>, const QImage &amp;<i> image</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#insertImage-2">insertImage</a></b>(int<i> row</i>, int<i> column</i>, const QImage &amp;<i> image</i>, const QPointF &amp;<i> offset</i>, double<i> xScale</i> = 1, double<i> yScale</i> = 1)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#isFormulasVisible">isFormulasVisible</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#isGridLinesVisible">isGridLinesVisible</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#isOutlineSymbolsVisible">isOutlineSymbolsVisible</a></b>() const</td></tr>
@@ -101,10 +104,10 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeInlineString-2">writeInlineString</a></b>(const QString &amp;<i> row_column</i>, const QString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeNumeric">writeNumeric</a></b>(int<i> row</i>, int<i> column</i>, double<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeNumeric-2">writeNumeric</a></b>(const QString &amp;<i> row_column</i>, double<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString">writeString</a></b>(int<i> row</i>, int<i> column</i>, const QString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString-2">writeString</a></b>(int<i> row</i>, int<i> column</i>, const RichString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString-3">writeString</a></b>(const QString &amp;<i> row_column</i>, const RichString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString-4">writeString</a></b>(const QString &amp;<i> row_column</i>, const QString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString">writeString</a></b>(int<i> row</i>, int<i> column</i>, const RichString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString-2">writeString</a></b>(const QString &amp;<i> row_column</i>, const RichString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString-3">writeString</a></b>(const QString &amp;<i> row_column</i>, const QString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeString-4">writeString</a></b>(int<i> row</i>, int<i> column</i>, const QString &amp;<i> value</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeTime">writeTime</a></b>(int<i> row</i>, int<i> column</i>, const QTime &amp;<i> t</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#writeTime-2">writeTime</a></b>(const QString &amp;<i> row_column</i>, const QTime &amp;<i> t</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 </table>
@@ -155,6 +158,19 @@ Qt 0.2.2 Reference Documentation</li>
 <p>Groups rows from <i>rowFirst</i> to <i>rowLast</i> with the given <i>collapsed</i>.</p>
 <p>Returns false if error occurs.</p>
 <!-- @@@groupRows -->
+<!-- $$$insertChart[overload1]$$$insertChartintintconstQSize& -->
+<h3 class="fn"><a name="insertChart"></a><span class="type"><a href="chart.html">Chart</a></span> * Worksheet::<span class="name">insertChart</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QSize</span> &amp;<i> size</i>)</h3>
+<p>Creates an chart with the given <i>size</i> and insert at the position <i>row</i>, <i>column</i>. The chart will be returned.</p>
+<!-- @@@insertChart -->
+<!-- $$$insertImage[overload1]$$$insertImageintintconstQImage& -->
+<h3 class="fn"><a name="insertImage"></a><span class="type">bool</span> Worksheet::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QImage</span> &amp;<i> image</i>)</h3>
+<p>Insert an <i>image</i> at the position <i>row</i>, <i>column</i> Returns ture if success.</p>
+<!-- @@@insertImage -->
+<!-- $$$insertImage$$$insertImageintintconstQImage&constQPointF&doubledouble -->
+<h3 class="fn"><a name="insertImage-2"></a><span class="type">int</span> Worksheet::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QImage</span> &amp;<i> image</i>, const <span class="type">QPointF</span> &amp;<i> offset</i>, <span class="type">double</span><i> xScale</i> = 1, <span class="type">double</span><i> yScale</i> = 1)</h3>
+<p>This is an overloaded function.</p>
+<p>Insert an <i>image</i> at the position <i>row</i>, <i>column</i> with the given <i>offset</i> <i>xScale</i> and <i>yScale</i>.</p>
+<!-- @@@insertImage -->
 <!-- $$$isFormulasVisible[overload1]$$$isFormulasVisible -->
 <h3 class="fn"><a name="isFormulasVisible"></a><span class="type">bool</span> Worksheet::<span class="name">isFormulasVisible</span>() const</h3>
 <p>Return whether formulas instead of their calculated results shown in cells</p>
@@ -379,23 +395,24 @@ Qt 0.2.2 Reference Documentation</li>
 <p>This is an overloaded function.</p>
 <p>Write numeric <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
 <!-- @@@writeNumeric -->
-<!-- $$$writeString[overload1]$$$writeStringintintconstQString&constFormat& -->
-<h3 class="fn"><a name="writeString"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QString</span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
-<!-- @@@writeString -->
-<!-- $$$writeString$$$writeStringintintconstRichString&constFormat& -->
-<h3 class="fn"><a name="writeString-2"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="richstring.html">RichString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<!-- $$$writeString[overload1]$$$writeStringintintconstRichString&constFormat& -->
+<h3 class="fn"><a name="writeString"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="richstring.html">RichString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
 <!-- @@@writeString -->
 <!-- $$$writeString$$$writeStringconstQString&constRichString&constFormat& -->
-<h3 class="fn"><a name="writeString-3"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(const <span class="type">QString</span> &amp;<i> row_column</i>, const <span class="type"><a href="richstring.html">RichString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<h3 class="fn"><a name="writeString-2"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(const <span class="type">QString</span> &amp;<i> row_column</i>, const <span class="type"><a href="richstring.html">RichString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
 <p>Write string <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
 <!-- @@@writeString -->
 <!-- $$$writeString$$$writeStringconstQString&constQString&constFormat& -->
-<h3 class="fn"><a name="writeString-4"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(const <span class="type">QString</span> &amp;<i> row_column</i>, const <span class="type">QString</span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<h3 class="fn"><a name="writeString-3"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(const <span class="type">QString</span> &amp;<i> row_column</i>, const <span class="type">QString</span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
 <p>Write string <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<!-- @@@writeString -->
+<!-- $$$writeString$$$writeStringintintconstQString&constFormat& -->
+<h3 class="fn"><a name="writeString-4"></a><span class="type">int</span> Worksheet::<span class="name">writeString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QString</span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
+<p>This is an overloaded function.</p>
+<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
 <!-- @@@writeString -->
 <!-- $$$writeTime[overload1]$$$writeTimeintintconstQTime&constFormat& -->
 <h3 class="fn"><a name="writeTime"></a><span class="type">int</span> Worksheet::<span class="name">writeTime</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QTime</span> &amp;<i> t</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>

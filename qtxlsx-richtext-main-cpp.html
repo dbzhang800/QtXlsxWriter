@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (richtext/main.cpp) | QtXlsx 0.2</title>
+  <title>main.cpp Example File (richtext/main.cpp) | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -12,10 +12,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.2</li>
+<li>Qt 0.3</li>
 <li>main.cpp Example File (richtext/main.cpp)</li>
 <li id="buildversion">
-Qt 0.2.2 Reference Documentation</li>
+Qt 0.3.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -29,7 +29,9 @@ Qt 0.2.2 Reference Documentation</li>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
 <span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
 <span class="preprocessor">#include &quot;xlsxrichstring.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxworkbook.h&quot;</span>
 <span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
+
 <span class="type">int</span> main()
 {
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
@@ -47,6 +49,12 @@ Qt 0.2.2 Reference Documentation</li>
     rich<span class="operator">.</span>addFragment(<span class="string">&quot;Qt &quot;</span><span class="operator">,</span> red);
     rich<span class="operator">.</span>addFragment(<span class="string">&quot;Xlsx&quot;</span><span class="operator">,</span> bold);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;B2&quot;</span><span class="operator">,</span> rich);
+
+    xlsx<span class="operator">.</span>workbook()<span class="operator">-</span><span class="operator">&gt;</span>setHtmlToRichStringEnabled(<span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B4&quot;</span><span class="operator">,</span> <span class="string">&quot;&lt;b&gt;Hello&lt;/b&gt; &lt;font color=\&quot;red\&quot;&gt;Qt&lt;/font&gt; &lt;i&gt;Xlsx&lt;/i&gt;&quot;</span>);
+
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;B6&quot;</span><span class="operator">,</span> <span class="string">&quot;&lt;font color=\&quot;red\&quot;&gt;&lt;b&gt;&lt;u&gt;&lt;i&gt;Qt Xlsx&lt;/i&gt;&lt;/u&gt;&lt;/b&gt;&lt;/font&gt;&quot;</span>);
+
 
     xlsx<span class="operator">.</span>saveAs(<span class="string">&quot;Test1.xlsx&quot;</span>);
 

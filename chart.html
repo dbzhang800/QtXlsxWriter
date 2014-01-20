@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- xlsxchart.cpp -->
+  <title>Chart Class | QtXlsx 0.3</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li>Qt 0.3</li>
+<li>Chart</li>
+<li id="buildversion">
+Qt 0.3.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#public-types">Public Types</a></li>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<h1 class="title">Chart Class</h1>
+<!-- $$$Chart-brief -->
+<p>Main class for the charts. <a href="#details">More...</a></p>
+<!-- @@@Chart -->
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;Chart&gt;</span>
+</tt></td></tr></table><ul>
+<li><a href="chart-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h2>Public Types</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="chart.html#ChartType-enum">ChartType</a></b> { CT_Area, CT_Area3D, CT_Line, CT_Line3D, ..., CT_Bar3D }</td></tr>
+</table>
+<a name="public-functions"></a>
+<h2>Public Functions</h2>
+<table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="chart.html#dtor.Chart">~Chart</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="chart.html#addSeries">addSeries</a></b>(const CellRange &amp;<i> range</i>, Worksheet *<i> sheet</i> = 0)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="chart.html#setChartType">setChartType</a></b>(ChartType<i> type</i>)</td></tr>
+</table>
+<a name="details"></a>
+<!-- $$$Chart-description -->
+<div class="descr">
+<h2>Detailed Description</h2>
+<p>Main class for the charts.</p>
+</div>
+<!-- @@@Chart -->
+<div class="types">
+<h2>Member Type Documentation</h2>
+<!-- $$$ChartType$$$CT_Area$$$CT_Area3D$$$CT_Line$$$CT_Line3D$$$CT_Stock$$$CT_Radar$$$CT_Scatter$$$CT_Pie$$$CT_Pie3D$$$CT_Doughnut$$$CT_Bar$$$CT_Bar3D$$$CT_OfPie$$$CT_Surface$$$CT_Surface3D$$$CT_Bubble -->
+<h3 class="fn"><a name="ChartType-enum"></a>enum Chart::<span class="name">ChartType</span></h3>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Area</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">&nbsp;</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Area3D</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Line</tt></td><td class="topAlign"><tt>3</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Line3D</tt></td><td class="topAlign"><tt>4</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Scatter</tt></td><td class="topAlign"><tt>7</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Pie</tt></td><td class="topAlign"><tt>8</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Pie3D</tt></td><td class="topAlign"><tt>9</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Doughnut</tt></td><td class="topAlign"><tt>10</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Bar</tt></td><td class="topAlign"><tt>11</tt></td><td class="topAlign">,</td></tr>
+<tr><td class="topAlign"><tt>Chart::CT_Bar3D</tt></td><td class="topAlign"><tt>12</tt></td><td class="topAlign">,</td></tr>
+</table>
+<p>, , , , ,</p>
+<!-- @@@ChartType -->
+</div>
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$~Chart[overload1]$$$~Chart -->
+<h3 class="fn"><a name="dtor.Chart"></a>Chart::<span class="name">~Chart</span>()</h3>
+<p>Destroys the chart.</p>
+<!-- @@@~Chart -->
+<!-- $$$addSeries[overload1]$$$addSeriesconstCellRange&Worksheet* -->
+<h3 class="fn"><a name="addSeries"></a><span class="type">void</span> Chart::<span class="name">addSeries</span>(const <span class="type">CellRange</span> &amp;<i> range</i>, <span class="type"><a href="worksheet.html">Worksheet</a></span> *<i> sheet</i> = 0)</h3>
+<p>Add the data series which is in the range <i>range</i> of the <i>sheet</i>.</p>
+<!-- @@@addSeries -->
+<!-- $$$setChartType[overload1]$$$setChartTypeChartType -->
+<h3 class="fn"><a name="setChartType"></a><span class="type">void</span> Chart::<span class="name">setChartType</span>(<span class="type"><a href="chart.html#ChartType-enum">ChartType</a></span><i> type</i>)</h3>
+<p>Set the type of the chart to <i>type</i></p>
+<!-- @@@setChartType -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+        <div class="qt13a-copyright" id="copyright">
+            <div class="qt13a-container">
+            <p>
+              <acronym title="Copyright">&copy;</acronym> 2013 Debao Zhang. 
+              Documentation contributions included herein are the copyrights of
+              their respective owners.</p>
+            <p>
+              The documentation provided herein is licensed under the terms of the
+              <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation
+              License version 1.3</a> as published by the Free Software Foundation.</p>
+            <p>
+              Documentation sources may be obtained from <a href="https://github.com/dbzhang800/QtXlsxWriter">
+              github.com/dbzhang800</a>.</p>
+            <p>
+              Qt and their respective logos are trademarks of Digia Plc 
+              in Finland and/or other countries worldwide. All other trademarks are property
+              of their respective owners. <a title="Privacy Policy"
+              href="http://en.gitorious.org/privacy_policy/">Privacy Policy</a></p>
+            </div>
+        </div>
+</div>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxformat.cpp -->
-  <title>Format Class | QtXlsx 0.2</title>
+  <title>Format Class | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.2</li>
+<li>Qt 0.3</li>
 <li>Format</li>
 <li id="buildversion">
-Qt 0.2.2 Reference Documentation</li>
+Qt 0.3.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -82,6 +82,7 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#leftBorderColor">leftBorderColor</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> BorderStyle </td><td class="memItemRight bottomAlign"><b><a href="format.html#leftBorderStyle">leftBorderStyle</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="format.html#locked">locked</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="format.html#mergeFormat">mergeFormat</a></b>(const Format &amp;<i> modifier</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="format.html#numberFormat">numberFormat</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="format.html#numberFormatIndex">numberFormatIndex</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QColor </td><td class="memItemRight bottomAlign"><b><a href="format.html#patternBackgroundColor">patternBackgroundColor</a></b>() const</td></tr>
@@ -380,6 +381,10 @@ Qt 0.2.2 Reference Documentation</li>
 <p>Returns whether the locked protection property is set to true.</p>
 <p><b>See also </b><a href="format.html#setLocked">setLocked</a>().</p>
 <!-- @@@locked -->
+<!-- $$$mergeFormat[overload1]$$$mergeFormatconstFormat& -->
+<h3 class="fn"><a name="mergeFormat"></a><span class="type">void</span> Format::<span class="name">mergeFormat</span>(const <span class="type">Format</span> &amp;<i> modifier</i>)</h3>
+<p>Merges the current format with the properties described by format <i>modifier</i>.</p>
+<!-- @@@mergeFormat -->
 <!-- $$$numberFormat[overload1]$$$numberFormat -->
 <h3 class="fn"><a name="numberFormat"></a><span class="type">QString</span> Format::<span class="name">numberFormat</span>() const</h3>
 <p>Returns the number format string.</p>

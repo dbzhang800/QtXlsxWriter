@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxdocument.cpp -->
-  <title>Document Class | QtXlsx 0.2</title>
+  <title>Document Class | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.2</li>
+<li>Qt 0.3</li>
 <li>Document</li>
 <li id="buildversion">
-Qt 0.2.2 Reference Documentation</li>
+Qt 0.3.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -38,6 +38,7 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> </b><tt><span class="preprocessor">#include &lt;Document&gt;</span>
 </tt></td></tr></table><ul>
 <li><a href="document-members.html">List of all members, including inherited members</a></li>
+<li><a href="document-obsolete.html">Obsolete members</a></li>
 </ul>
 <a name="public-functions"></a>
 <h2>Public Functions</h2>
@@ -60,7 +61,8 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> QStringList </td><td class="memItemRight bottomAlign"><b><a href="document.html#documentPropertyNames">documentPropertyNames</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#groupColumns">groupColumns</a></b>(int<i> colFirst</i>, int<i> colLast</i>, bool<i> collapsed</i> = true)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#groupRows">groupRows</a></b>(int<i> rowFirst</i>, int<i> rowLast</i>, bool<i> collapsed</i> = true)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#insertImage">insertImage</a></b>(int<i> row</i>, int<i> column</i>, const QImage &amp;<i> image</i>, double<i> xOffset</i> = 0, double<i> yOffset</i> = 0, double<i> xScale</i> = 1, double<i> yScale</i> = 1)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Chart * </td><td class="memItemRight bottomAlign"><b><a href="document.html#insertChart">insertChart</a></b>(int<i> row</i>, int<i> col</i>, const QSize &amp;<i> size</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#insertImage">insertImage</a></b>(int<i> row</i>, int<i> column</i>, const QImage &amp;<i> image</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#insertWorkSheet">insertWorkSheet</a></b>(int<i> index</i>, const QString &amp;<i> name</i> = QString())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#mergeCells">mergeCells</a></b>(const CellRange &amp;<i> range</i>, const Format &amp;<i> format</i> = Format())</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#mergeCells-2">mergeCells</a></b>(const QString &amp;<i> range</i>, const Format &amp;<i> format</i> = Format())</td></tr>
@@ -74,11 +76,8 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#selectWorksheet">selectWorksheet</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setColumn">setColumn</a></b>(int<i> colFirst</i>, int<i> colLast</i>, double<i> width</i>, const Format &amp;<i> format</i> = Format(), bool<i> hidden</i> = false)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setColumn-2">setColumn</a></b>(const QString &amp;<i> colFirst</i>, const QString &amp;<i> colLast</i>, double<i> width</i>, const Format &amp;<i> format</i> = Format(), bool<i> hidden</i> = false)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="document.html#setCurrentWorksheet">setCurrentWorksheet</a></b>(int<i> index</i>)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="document.html#setCurrentWorksheet-2">setCurrentWorksheet</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="document.html#setDocumentProperty">setDocumentProperty</a></b>(const QString &amp;<i> key</i>, const QString &amp;<i> property</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setRow">setRow</a></b>(int<i> row</i>, double<i> height</i>, const Format &amp;<i> format</i> = Format(), bool<i> hidden</i> = false)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="document.html#setSheetName">setSheetName</a></b>(const QString &amp;<i> name</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#unmergeCells">unmergeCells</a></b>(const CellRange &amp;<i> range</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="document.html#unmergeCells-2">unmergeCells</a></b>(const QString &amp;<i> range</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Workbook * </td><td class="memItemRight bottomAlign"><b><a href="document.html#workbook">workbook</a></b>() const</td></tr>
@@ -141,7 +140,7 @@ Qt 0.2.2 Reference Documentation</li>
 <!-- $$$currentWorksheet[overload1]$$$currentWorksheet -->
 <h3 class="fn"><a name="currentWorksheet"></a><span class="type"><a href="worksheet.html">Worksheet</a></span> * Document::<span class="name">currentWorksheet</span>() const</h3>
 <p>Return pointer of current worksheet.</p>
-<p><b>See also </b><a href="document.html#setCurrentWorksheet">setCurrentWorksheet</a>().</p>
+<p><b>See also </b><a href="document-obsolete.html#setCurrentWorksheet" class="obsolete">setCurrentWorksheet</a>().</p>
 <!-- @@@currentWorksheet -->
 <!-- $$$defineName[overload1]$$$defineNameconstQString&constQString&constQString&constQString& -->
 <h3 class="fn"><a name="defineName"></a><span class="type">bool</span> Document::<span class="name">defineName</span>(const <span class="type">QString</span> &amp;<i> name</i>, const <span class="type">QString</span> &amp;<i> formula</i>, const <span class="type">QString</span> &amp;<i> comment</i> = QString(), const <span class="type">QString</span> &amp;<i> scope</i> = QString())</h3>
@@ -173,9 +172,13 @@ Qt 0.2.2 Reference Documentation</li>
 <h3 class="fn"><a name="groupRows"></a><span class="type">bool</span> Document::<span class="name">groupRows</span>(<span class="type">int</span><i> rowFirst</i>, <span class="type">int</span><i> rowLast</i>, <span class="type">bool</span><i> collapsed</i> = true)</h3>
 <p>Groups rows from <i>rowFirst</i> to <i>rowLast</i> with the given <i>collapsed</i>. Returns false if error occurs.</p>
 <!-- @@@groupRows -->
-<!-- $$$insertImage[overload1]$$$insertImageintintconstQImage&doubledoubledoubledouble -->
-<h3 class="fn"><a name="insertImage"></a><span class="type">int</span> Document::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QImage</span> &amp;<i> image</i>, <span class="type">double</span><i> xOffset</i> = 0, <span class="type">double</span><i> yOffset</i> = 0, <span class="type">double</span><i> xScale</i> = 1, <span class="type">double</span><i> yScale</i> = 1)</h3>
-<p>Insert an <i>image</i> to current active worksheet to the position <i>row</i>, <i>column</i> with the given <i>xOffset</i>, <i>yOffset</i>, <i>xScale</i> and <i>yScale</i>.</p>
+<!-- $$$insertChart[overload1]$$$insertChartintintconstQSize& -->
+<h3 class="fn"><a name="insertChart"></a><span class="type"><a href="chart.html">Chart</a></span> * Document::<span class="name">insertChart</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> col</i>, const <span class="type">QSize</span> &amp;<i> size</i>)</h3>
+<p>Creates an chart with the given <i>size</i> and insert it to the current active worksheet at the position <i>row</i>, <i>col</i>. The chart will be returned.</p>
+<!-- @@@insertChart -->
+<!-- $$$insertImage[overload1]$$$insertImageintintconstQImage& -->
+<h3 class="fn"><a name="insertImage"></a><span class="type">bool</span> Document::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type">QImage</span> &amp;<i> image</i>)</h3>
+<p>Insert an <i>image</i> to current active worksheet at the position <i>row</i>, <i>column</i> Returns ture if success.</p>
 <!-- @@@insertImage -->
 <!-- $$$insertWorkSheet[overload1]$$$insertWorkSheetintconstQString& -->
 <h3 class="fn"><a name="insertWorkSheet"></a><span class="type">bool</span> Document::<span class="name">insertWorkSheet</span>(<span class="type">int</span><i> index</i>, const <span class="type">QString</span> &amp;<i> name</i> = QString())</h3>
@@ -234,15 +237,6 @@ Qt 0.2.2 Reference Documentation</li>
 <p>This is an overloaded function.</p>
 <p>Sets column width and format for all columns from <i>colFirst</i> to <i>colLast</i> with the given <i>width</i> and <i>format</i>. Column <i>width</i> measured as the number of characters of the maximum digit width of the numbers 0, 1, 2, ..&#x2e;, 9 as rendered in the normal style's font. <i>colFirst</i> and <i>colLast</i> should be &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, ..&#x2e;</p>
 <!-- @@@setColumn -->
-<!-- $$$setCurrentWorksheet[overload1]$$$setCurrentWorksheetint -->
-<h3 class="fn"><a name="setCurrentWorksheet"></a><span class="type">void</span> Document::<span class="name">setCurrentWorksheet</span>(<span class="type">int</span><i> index</i>)</h3>
-<p>Set current worksheet to be the sheet at <i>index</i>.</p>
-<p><b>See also </b><a href="document.html#currentWorksheet">currentWorksheet</a>().</p>
-<!-- @@@setCurrentWorksheet -->
-<!-- $$$setCurrentWorksheet$$$setCurrentWorksheetconstQString& -->
-<h3 class="fn"><a name="setCurrentWorksheet-2"></a><span class="type">void</span> Document::<span class="name">setCurrentWorksheet</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>
-<p>Set current selected worksheet to be the sheet named <i>name</i>.</p>
-<!-- @@@setCurrentWorksheet -->
 <!-- $$$setDocumentProperty[overload1]$$$setDocumentPropertyconstQString&constQString& -->
 <h3 class="fn"><a name="setDocumentProperty"></a><span class="type">void</span> Document::<span class="name">setDocumentProperty</span>(const <span class="type">QString</span> &amp;<i> key</i>, const <span class="type">QString</span> &amp;<i> property</i>)</h3>
 <p>Set the document properties such as Title, Author etc.</p>
@@ -266,10 +260,6 @@ Qt 0.2.2 Reference Documentation</li>
 <p>Sets the properties of <i>row</i> with the given <i>height</i>, <i>format</i> and <i>hidden</i>. <i>row</i> is 1-indexed.</p>
 <p>Returns false if failed.</p>
 <!-- @@@setRow -->
-<!-- $$$setSheetName[overload1]$$$setSheetNameconstQString& -->
-<h3 class="fn"><a name="setSheetName"></a><span class="type">bool</span> Document::<span class="name">setSheetName</span>(const <span class="type">QString</span> &amp;<i> name</i>)</h3>
-<p>Rename current worksheet to new <i>name</i>. Returns true if the name defined successful.</p>
-<!-- @@@setSheetName -->
 <!-- $$$unmergeCells[overload1]$$$unmergeCellsconstCellRange& -->
 <h3 class="fn"><a name="unmergeCells"></a><span class="type">int</span> Document::<span class="name">unmergeCells</span>(const <span class="type">CellRange</span> &amp;<i> range</i>)</h3>
 <p>Unmerge the cells in the <i>range</i>.</p>

@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- xlsxrichstring.cpp -->
-  <title>RichString Class | QtXlsx 0.2</title>
+  <title>RichString Class | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="main-rounded">
         <div class="navigationbar">
         <ul>
-<li>Qt 0.2</li>
+<li>Qt 0.3</li>
 <li>RichString</li>
 <li id="buildversion">
-Qt 0.2.2 Reference Documentation</li>
+Qt 0.3.0 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -53,6 +53,8 @@ Qt 0.2.2 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#isEmtpy">isEmtpy</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#isNull">isNull</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#isRichString">isRichString</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#setHtml">setHtml</a></b>(const QString &amp;<i> text</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#toHtml">toHtml</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#toPlainString">toPlainString</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#operator-QVariant">operator QVariant</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> RichString &amp; </td><td class="memItemRight bottomAlign"><b><a href="richstring.html#operator-eq">operator=</a></b>(const RichString &amp;<i> other</i>)</td></tr>
@@ -110,6 +112,14 @@ Qt 0.2.2 Reference Documentation</li>
 <h3 class="fn"><a name="isRichString"></a><span class="type">bool</span> RichString::<span class="name">isRichString</span>() const</h3>
 <p>Returns true if this is rich text string.</p>
 <!-- @@@isRichString -->
+<!-- $$$setHtml[overload1]$$$setHtmlconstQString& -->
+<h3 class="fn"><a name="setHtml"></a><span class="type">void</span> RichString::<span class="name">setHtml</span>(const <span class="type">QString</span> &amp;<i> text</i>)</h3>
+<p>Replaces the entire contents of the document with the given HTML-formatted text in the <i>text</i> string</p>
+<!-- @@@setHtml -->
+<!-- $$$toHtml[overload1]$$$toHtml -->
+<h3 class="fn"><a name="toHtml"></a><span class="type">QString</span> RichString::<span class="name">toHtml</span>() const</h3>
+<p>Converts to html string</p>
+<!-- @@@toHtml -->
 <!-- $$$toPlainString[overload1]$$$toPlainString -->
 <h3 class="fn"><a name="toPlainString"></a><span class="type">QString</span> RichString::<span class="name">toPlainString</span>() const</h3>
 <p>Converts to plain text string.</p>
