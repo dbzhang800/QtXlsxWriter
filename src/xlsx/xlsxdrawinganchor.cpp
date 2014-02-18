@@ -129,7 +129,10 @@ XlsxMarker DrawingAnchor::loadXmlMarker(QXmlStreamReader &reader, const QString 
 {
     Q_ASSERT(reader.name() == node);
 
-    int col, colOffset, row, rowOffset;
+    int col = 0;
+    int colOffset = 0;
+    int row = 0;
+    int rowOffset = 0;
     while (!reader.atEnd()) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
