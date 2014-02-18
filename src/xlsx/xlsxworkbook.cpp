@@ -205,10 +205,10 @@ Worksheet *Workbook::addWorksheet(const QString &name, int sheetId)
 Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
 {
     Q_D(Workbook);
-    QString worksheetName = name;
-    if (!name.isEmpty()) {
+    QString worksheetName = createSafeSheetName(name);
+    if (!worksheetName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
-        if (d->worksheetNames.contains(name))
+        if (d->worksheetNames.contains(worksheetName))
             return 0;
     } else {
         do {

@@ -49,6 +49,9 @@ private Q_SLOTS:
 
     void test_datetimeFromNumber_data();
     void test_datetimeFromNumber();
+
+    void test_createSafeSheetName_data();
+    void test_createSafeSheetName();
 };
 
 UtilityTest::UtilityTest()
@@ -179,6 +182,32 @@ void UtilityTest::test_datetimeFromNumber()
     QFETCH(double, num);
 
     QCOMPARE(QXlsx::datetimeFromNumber(num, is1904), dt);
+}
+
+void UtilityTest::test_createSafeSheetName_data()
+{
+    QTest::addColumn<QString>("original");
+    QTest::addColumn<QString>("result");
+
+    QTest::newRow("[Hello]") << QString("[Hello]")<<QString("Hello");
+    QTest::newRow("[Hello:Qt]") << QString("[Hello:Qt]")<<QString("Hello Qt");
+    QTest::newRow("[Hello\\Qt/Xlsx]") << QString("[Hello\\Qt/Xlsx]")<<QString("Hello Qt Xlsx");
+    QTest::newRow("[Hello\\Qt/Xlsx:Lib]") << QString("[Hello\\Qt/Xlsx:Lib]")<<QString("Hello Qt Xlsx Lib");
+    QTest::newRow("'He'llo'") << QString("'He'llo'")<<QString("He'llo");
+    QTest::newRow("'He'llo*Qt'") << QString("'He'llo*Qt'")<<QString("He'llo Qt");
+    QTest::newRow("'He'llo*Qt?Lib'") << QString("'He'llo*Qt?Lib'")<<QString("He'llo Qt Lib");
+
+    QTest::newRow(":'[Hello']") << QString(":'[Hello']")<<QString("Hello");
+    QTest::newRow("':'[Hello']") << QString("':'[Hello']")<<QString("Hello");
+    QTest::newRow("  ' : '[ Hello ' ]  ") << QString("  ' : '[ Hello ' ]  ")<<QString("Hello");
+}
+
+void UtilityTest::test_createSafeSheetName()
+{
+    QFETCH(QString, original);
+    QFETCH(QString, result);
+
+    QCOMPARE(QXlsx::createSafeSheetName(original), result);
 }
 
 QTEST_APPLESS_MAIN(UtilityTest)

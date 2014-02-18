@@ -60,5 +60,7 @@ XLSX_AUTOTEST_EXPORT int xl_col_name_to_value(const QString &col_str);
 XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell(int row, int col, bool row_abs=false, bool col_abs=false);
 XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell_fast(int row, int col);
 
+XLSX_AUTOTEST_EXPORT QString createSafeSheetName(const QString &nameProposal);
+
 } //QXlsx
 #endif // XLSXUTILITY_H

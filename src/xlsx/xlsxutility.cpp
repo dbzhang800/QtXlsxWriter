@@ -177,4 +177,30 @@ QString xl_rowcol_to_cell_fast(int row, int col)
     return col_str + QString::number(row);
 }
 
+/*
+  Creates a valid sheet name
+    minimum length is 1
+    maximum length is 31
+    doesn't contain special chars: / \ ? * ] [ :
+    Sheet names must not begin or end with ' (apostrophe)
+
+  Invalid characters are replaced by one space character ' '.
+ */
+QString createSafeSheetName(const QString &nameProposal)
+{
+    if (nameProposal.isEmpty())
+        return QString();
+
+    QString ret = nameProposal;
+    if (nameProposal.contains(QRegularExpression(QStringLiteral("[/\\\\?*\\][:]+"))))
+        ret.replace(QRegularExpression(QStringLiteral("[/\\\\?*\\][:]+")), QStringLiteral(" "));
+    while(ret.contains(QRegularExpression(QStringLiteral("^\\s*'\\s*|\\s*'\\s*$"))))
+        ret.remove(QRegularExpression(QStringLiteral("^\\s*'\\s*|\\s*'\\s*$")));
+    ret = ret.trimmed();
+    if (ret.size() > 31)
+        ret = ret.left(31);
+    return ret;
+}
+
+
 } //namespace QXlsx
