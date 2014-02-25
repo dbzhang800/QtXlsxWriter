@@ -48,6 +48,7 @@ class XLSX_AUTOTEST_EXPORT OOXmlFilePrivate
 
 public:
     OOXmlFilePrivate(OOXmlFile *q);
+    virtual ~OOXmlFilePrivate();
 
     QString filePathInPackage;//such as "xl/worksheets/sheet1.xml"
                               //used when load the .xlsx file

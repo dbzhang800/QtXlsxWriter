@@ -57,7 +57,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 WorksheetPrivate::WorksheetPrivate(Worksheet *p)
-    : OOXmlFilePrivate(p)
+    : AbstractSheetPrivate(p)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
   , showOutlineSymbols(true), showWhiteSpace(true)
@@ -69,8 +69,6 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p)
 
     default_row_height = 15;
     default_row_zeroed = false;
-
-    hidden = false;
 }
 
 WorksheetPrivate::~WorksheetPrivate()
@@ -173,14 +171,11 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
 /*!
  * \internal
  */
-Worksheet::Worksheet(const QString &name, int id, Workbook *workbook) :
-    OOXmlFile(new WorksheetPrivate(this))
+Worksheet::Worksheet(const QString &name, int id, Workbook *workbook)
+    :AbstractSheet(name, id, workbook, new WorksheetPrivate(this))
 {
-    d_func()->name = name;
-    d_func()->id = id;
     if (!workbook) //For unit test propose only. Ignore the memery leak.
-        workbook = new Workbook;
-    d_func()->workbook = workbook;
+        d_func()->workbook = new Workbook;
 }
 
 /*!
@@ -237,63 +232,10 @@ Worksheet::~Worksheet()
 /*!
  * \internal
  */
-bool Worksheet::isChartsheet() const
-{
-    return false;
-}
-
-/*!
- * Returns the name of the sheet.
- */
-QString Worksheet::sheetName() const
-{
-    Q_D(const Worksheet);
-    return d->name;
-}
-
-/*!
- * \internal
- */
-void Worksheet::setSheetName(const QString &sheetName)
-{
-    Q_D(Worksheet);
-    d->name = sheetName;
-}
-
-/*!
- * \internal
- */
 Relationships &Worksheet::relationships()
 {
     Q_D(Worksheet);
     return d->relationships;
-}
-
-/*!
- * \internal
- */
-bool Worksheet::isHidden() const
-{
-    Q_D(const Worksheet);
-    return d->hidden;
-}
-
-/*!
- * \internal
- */
-void Worksheet::setHidden(bool hidden)
-{
-    Q_D(Worksheet);
-    d->hidden = hidden;
-}
-
-/*!
- * \internal
- */
-int Worksheet::sheetId() const
-{
-    Q_D(const Worksheet);
-    return d->id;
 }
 
 /*!
@@ -1808,15 +1750,6 @@ CellRange Worksheet::dimension() const
     return d->dimension;
 }
 
-/*!
- * \internal
- */
-Drawing *Worksheet::drawing() const
-{
-    Q_D(const Worksheet);
-    return d->drawing.data();
-}
-
 /*
  Convert the height of a cell from user's units to pixels. If the
  height hasn't been set by the user we use the default value. If
@@ -2222,15 +2155,6 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
 SharedStrings *WorksheetPrivate::sharedStrings() const
 {
     return workbook->sharedStrings();
-}
-
-/*!
- * Return the workbook
- */
-Workbook *Worksheet::workbook() const
-{
-    Q_D(const Worksheet);
-    return d->workbook;
 }
 
 QT_END_NAMESPACE_XLSX

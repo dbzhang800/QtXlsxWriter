@@ -22,85 +22,44 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
+#ifndef XLSXABSTRACTSHEET_P_H
+#define XLSXABSTRACTSHEET_P_H
 
-#include "xlsxooxmlfile.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt Xlsx API.  It exists for the convenience
+// of the Qt Xlsx.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "xlsxglobal.h"
+#include "xlsxabstractsheet.h"
 #include "xlsxooxmlfile_p.h"
+#include "xlsxrelationships_p.h"
 
-#include <QBuffer>
-#include <QByteArray>
+#include <QSharedPointer>
 
-QT_BEGIN_NAMESPACE_XLSX
+namespace QXlsx {
 
-OOXmlFilePrivate::OOXmlFilePrivate(OOXmlFile *q)
-    :q_ptr(q)
+class XLSX_AUTOTEST_EXPORT AbstractSheetPrivate : public OOXmlFilePrivate
 {
+    Q_DECLARE_PUBLIC(AbstractSheet)
+public:
+    AbstractSheetPrivate(AbstractSheet *p);
+    ~AbstractSheetPrivate();
+
+    Workbook *workbook;
+    QSharedPointer<Drawing> drawing;
+
+    QString name;
+    int id;
+    bool hidden;
+    AbstractSheet::SheetType type;
+};
 
 }
-
-OOXmlFilePrivate::~OOXmlFilePrivate()
-{
-
-}
-
-/*!
- * \internal
- *
- * \class OOXmlFile
- *
- * Base class of all the ooxml part file.
- */
-
-OOXmlFile::OOXmlFile()
-    :d_ptr(new OOXmlFilePrivate(this))
-{
-}
-
-OOXmlFile::OOXmlFile(OOXmlFilePrivate *d)
-    :d_ptr(d)
-{
-
-}
-
-OOXmlFile::~OOXmlFile()
-{
-    delete d_ptr;
-}
-
-QByteArray OOXmlFile::saveToXmlData() const
-{
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    saveToXmlFile(&buffer);
-
-    return data;
-}
-
-bool OOXmlFile::loadFromXmlData(const QByteArray &data)
-{
-    QBuffer buffer;
-    buffer.setData(data);
-    buffer.open(QIODevice::ReadOnly);
-
-    return loadFromXmlFile(&buffer);
-}
-
-/*!
- * \internal
- */
-void OOXmlFile::setFilePath(const QString path)
-{
-    Q_D(OOXmlFile);
-    d->filePathInPackage = path;
-}
-
-/*!
- * \internal
- */
-QString OOXmlFile::filePath() const
-{
-    Q_D(const OOXmlFile);
-    return d->filePathInPackage;
-}
-
-QT_END_NAMESPACE_XLSX
+#endif // XLSXABSTRACTSHEET_P_H

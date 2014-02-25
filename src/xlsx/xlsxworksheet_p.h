@@ -36,9 +36,8 @@
 // We mean it.
 //
 
-#include "xlsxglobal.h"
 #include "xlsxworksheet.h"
-#include "xlsxooxmlfile_p.h"
+#include "xlsxabstractsheet_p.h"
 #include "xlsxcell.h"
 #include "xlsxdatavalidation.h"
 #include "xlsxconditionalformatting.h"
@@ -113,7 +112,7 @@ struct XlsxColumnInfo
     bool collapsed;
 };
 
-class XLSX_AUTOTEST_EXPORT WorksheetPrivate : public OOXmlFilePrivate
+class XLSX_AUTOTEST_EXPORT WorksheetPrivate : public AbstractSheetPrivate
 {
     Q_DECLARE_PUBLIC(Worksheet)
 public:
@@ -144,9 +143,7 @@ public:
 
     SharedStrings *sharedStrings() const;
 
-    Workbook *workbook;
     mutable Relationships relationships;
-    QSharedPointer<Drawing> drawing;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, QSharedPointer<XlsxHyperlinkData> > > urlTable;
@@ -170,10 +167,6 @@ public:
 
     int default_row_height;
     bool default_row_zeroed;
-
-    QString name;
-    int id;
-    bool hidden;
 
     bool windowProtection;
     bool showFormulas;

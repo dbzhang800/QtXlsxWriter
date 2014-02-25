@@ -25,10 +25,9 @@
 #ifndef XLSXWORKSHEET_H
 #define XLSXWORKSHEET_H
 
-#include "xlsxglobal.h"
+#include "xlsxabstractsheet.h"
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
-#include "xlsxooxmlfile.h"
 #include <QStringList>
 #include <QMap>
 #include <QVariant>
@@ -53,7 +52,7 @@ class Relationships;
 class Chart;
 
 class WorksheetPrivate;
-class Q_XLSX_EXPORT Worksheet : public OOXmlFile
+class Q_XLSX_EXPORT Worksheet : public AbstractSheet
 {
     Q_DECLARE_PRIVATE(Worksheet)
 public:
@@ -130,9 +129,6 @@ public:
     bool isWhiteSpaceVisible() const;
     void setWhiteSpaceVisible(bool visible);
 
-    QString sheetName() const;
-
-    Workbook *workbook() const;
     Relationships &relationships();
     ~Worksheet();
 private:
@@ -141,17 +137,9 @@ private:
     friend class ::WorksheetTest;
     Worksheet(const QString &sheetName, int sheetId, Workbook *book);
     QSharedPointer<Worksheet> copy(const QString &distName, int distId) const;
-    void setSheetName(const QString &sheetName);
 
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
-
-    bool isChartsheet() const;
-    bool isHidden() const;
-    void setHidden(bool hidden);
-    int sheetId() const;
-
-    Drawing *drawing() const;
 };
 
 QT_END_NAMESPACE_XLSX
