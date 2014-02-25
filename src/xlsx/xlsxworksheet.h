@@ -129,14 +129,13 @@ public:
     bool isWhiteSpaceVisible() const;
     void setWhiteSpaceVisible(bool visible);
 
-    Relationships &relationships();
     ~Worksheet();
 private:
     friend class DocumentPrivate;
     friend class Workbook;
     friend class ::WorksheetTest;
     Worksheet(const QString &sheetName, int sheetId, Workbook *book);
-    QSharedPointer<Worksheet> copy(const QString &distName, int distId) const;
+    Worksheet *copy(const QString &distName, int distId) const;
 
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);

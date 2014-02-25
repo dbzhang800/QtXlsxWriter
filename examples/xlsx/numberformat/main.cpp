@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     }
 
     //Builtin number formats
-    xlsx.addWorksheet();
+    xlsx.addSheet();
     xlsx.setColumn(1, 4, 20.0);
     xlsx.write(1, 1, "Raw data", header);
     xlsx.write(1, 2, "Builtin Format", header);

@@ -41,7 +41,6 @@
 #include "xlsxcell.h"
 #include "xlsxdatavalidation.h"
 #include "xlsxconditionalformatting.h"
-#include "xlsxrelationships_p.h"
 
 #include <QImage>
 #include <QSharedPointer>
@@ -143,7 +142,6 @@ public:
 
     SharedStrings *sharedStrings() const;
 
-    mutable Relationships relationships;
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;
     QMap<int, QMap<int, QString> > comments;
     QMap<int, QMap<int, QSharedPointer<XlsxHyperlinkData> > > urlTable;

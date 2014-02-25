@@ -94,7 +94,7 @@ int main()
 
     //---------------------------------------------------------------
     //The default sheet is "Sheet1"
-    xlsx.renameWorksheet("Sheet1", "Aligns & Borders");
+    xlsx.renameSheet("Sheet1", "Aligns & Borders");
     xlsx.setColumn("B", "B", 20);
     xlsx.setColumn("H", "H", 12);
     xlsx.currentWorksheet()->setGridLinesVisible(false);
@@ -138,7 +138,7 @@ int main()
 
     //---------------------------------------------------------------
     //Create the second sheet.
-    xlsx.addWorksheet("Fonts");
+    xlsx.addSheet("Fonts");
 
     xlsx.write("B3", "Normal");
     Format font_bold;
@@ -178,7 +178,7 @@ int main()
 
     //---------------------------------------------------------------
     //Create the third sheet.
-    xlsx.addWorksheet("Formulas");
+    xlsx.addSheet("Formulas");
     xlsx.setColumn("A", "B", 40);
     Format rAlign;
     rAlign.setHorizontalAlignment(Format::AlignRight);
@@ -241,7 +241,7 @@ int main()
 
     //---------------------------------------------------------------
     //Create the fourth sheet.
-    xlsx.addWorksheet("NumFormats");
+    xlsx.addSheet("NumFormats");
     xlsx.setColumn("B", "B", 40);
     writeInternalNumFormatsCell(xlsx, 4, 2.5681, 2);
     writeInternalNumFormatsCell(xlsx, 5, 2500000, 3);
@@ -259,7 +259,7 @@ int main()
 
     //---------------------------------------------------------------
     //Create the fifth sheet.
-    xlsx.addWorksheet("Merging");
+    xlsx.addSheet("Merging");
     Format centerAlign;
     centerAlign.setHorizontalAlignment(Format::AlignHCenter);
     centerAlign.setVerticalAlignment(Format::AlignVCenter);
@@ -272,7 +272,7 @@ int main()
 
     //---------------------------------------------------------------
     //Create the fifth sheet.
-    xlsx.addWorksheet("Grouping");
+    xlsx.addSheet("Grouping");
     qsrand(QDateTime::currentMSecsSinceEpoch());
     for (int row=2; row<31; ++row) {
         for (int col=1; col<=10; ++col)

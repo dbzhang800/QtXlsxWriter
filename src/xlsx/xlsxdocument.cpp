@@ -92,8 +92,8 @@ DocumentPrivate::DocumentPrivate(Document *p) :
 
 void DocumentPrivate::init()
 {
-    if (workbook->worksheetCount() == 0)
-        workbook->addWorksheet();
+    if (workbook->sheetCount() == 0)
+        workbook->addSheet();
 }
 
 bool DocumentPrivate::loadPackage(QIODevice *device)
@@ -179,9 +179,9 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         workbook->theme()->loadFromXmlData(zipReader.fileData(path));
     }
 
-    //load worksheets
-    for (int i=0; i<workbook->worksheetCount(); ++i) {
-        Worksheet *sheet = workbook->worksheet(i);
+    //load sheets
+    for (int i=0; i<workbook->sheetCount(); ++i) {
+        AbstractSheet *sheet = workbook->sheet(i);
         QString rel_path = getRelFilePath(sheet->filePath());
         //If the .rel file exists, load it.
         if (zipReader.filePaths().contains(rel_path))
@@ -229,16 +229,18 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     DocPropsApp docPropsApp;
     DocPropsCore docPropsCore;
 
-    // save worksheet xml files
-    for (int i=0; i<workbook->worksheetCount(); ++i) {
-        Worksheet *sheet = workbook->worksheet(i);
-        contentTypes.addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
-        docPropsApp.addPartTitle(sheet->sheetName());
+    // save sheet xml files
+    for (int i=0; i<workbook->sheetCount(); ++i) {
+        AbstractSheet *sheet = workbook->sheet(i);
+        if (sheet->sheetType() == AbstractSheet::ST_WorkSheet) {
+            contentTypes.addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+            docPropsApp.addPartTitle(sheet->sheetName());
 
-        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
-        Relationships &rel = sheet->relationships();
-        if (!rel.isEmpty())
-            zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel.saveToXmlData());
+            zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+            Relationships &rel = sheet->relationships();
+            if (!rel.isEmpty())
+                zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel.saveToXmlData());
+        }
     }
 
     // save workbook xml file
@@ -261,8 +263,8 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
         docPropsApp.setProperty(name, q->documentProperty(name));
         docPropsCore.setProperty(name, q->documentProperty(name));
     }
-    if (workbook->worksheetCount())
-        docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), workbook->worksheetCount());
+    if (workbook->sheetCount())
+        docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), workbook->sheetCount());
     contentTypes.addDocPropApp();
     contentTypes.addDocPropCore();
     zipWriter.addFile(QStringLiteral("docProps/app.xml"), docPropsApp.saveToXmlData());
@@ -412,17 +414,6 @@ bool Document::insertImage(int row, int column, const QImage &image)
 Chart *Document::insertChart(int row, int col, const QSize &size)
 {
     return currentWorksheet()->insertChart(row, col, size);
-}
-
-/*!
- * \overload
- * \deprecated
- * Insert an \a image to current active worksheet to the position \a row, \a column with the given
- * \a xOffset, \a yOffset, \a xScale and \a yScale.
- */
-int Document::insertImage(int row, int column, const QImage &image, double /*xOffset*/, double /*yOffset*/, double /*xScale*/, double /*yScale*/)
-{
-    return currentWorksheet()->insertImage(row, column, image);
 }
 
 /*!
@@ -636,137 +627,128 @@ Workbook *Document::workbook() const
 }
 
 /*!
+ * Returns the sheet object named \a sheetName.
+ */
+AbstractSheet *Document::sheet(const QString &sheetName) const
+{
+    Q_D(const Document);
+    return d->workbook->sheet(sheetNames().indexOf(sheetName));
+}
+
+/*!
  * Returns the worksheet object named \a sheetName.
+ * If the type of sheet is not AbstractSheet::ST_WorkSheet, then 0 will be returned.
  */
 Worksheet *Document::worksheet(const QString &sheetName) const
 {
-    Q_D(const Document);
-    return d->workbook->worksheet(worksheetNames().indexOf(sheetName));
+    AbstractSheet *st = sheet(sheetName);
+    if (st && st->sheetType() == AbstractSheet::ST_WorkSheet)
+        return static_cast<Worksheet *>(st);
+    else
+        return 0;
 }
 
 /*!
  * Creates and append an document with name \a name.
  * Return true if success.
  */
-bool Document::addWorksheet(const QString &name)
+bool Document::addSheet(const QString &name, AbstractSheet::SheetType type)
 {
     Q_D(Document);
-    return d->workbook->addWorksheet(name);
+    return d->workbook->addSheet(name, type);
 }
 
 /*!
  * Creates and inserts an document with name \a name at the \a index.
  * Returns false if the \a name already used.
  */
-bool Document::insertWorkSheet(int index, const QString &name)
+bool Document::insertSheet(int index, const QString &name, AbstractSheet::SheetType type)
 {
     Q_D(Document);
-    return d->workbook->insertWorkSheet(index, name);
+    return d->workbook->insertSheet(index, name, type);
 }
 
 /*!
    Rename the worksheet from \a oldName to \a newName.
    Returns true if the success.
  */
-bool Document::renameWorksheet(const QString &oldName, const QString &newName)
+bool Document::renameSheet(const QString &oldName, const QString &newName)
 {
     Q_D(Document);
     if (oldName == newName)
         return false;
-    return d->workbook->renameWorksheet(worksheetNames().indexOf(oldName), newName);
+    return d->workbook->renameSheet(sheetNames().indexOf(oldName), newName);
 }
 
 /*!
    Make a copy of the worksheet \a srcName with the new name \a distName.
    Returns true if the success.
  */
-bool Document::copyWorksheet(const QString &srcName, const QString &distName)
+bool Document::copySheet(const QString &srcName, const QString &distName)
 {
     Q_D(Document);
     if (srcName == distName)
         return false;
-    return d->workbook->copyWorksheet(worksheetNames().indexOf(srcName), distName);
+    return d->workbook->copySheet(sheetNames().indexOf(srcName), distName);
 }
 
 /*!
    Move the worksheet \a srcName to the new pos \a distIndex.
    Returns true if the success.
  */
-bool Document::moveWorksheet(const QString &srcName, int distIndex)
+bool Document::moveSheet(const QString &srcName, int distIndex)
 {
     Q_D(Document);
-    return d->workbook->moveWorksheet(worksheetNames().indexOf(srcName), distIndex);
+    return d->workbook->moveSheet(sheetNames().indexOf(srcName), distIndex);
 }
 
 /*!
    Delete the worksheet \a name.
    Returns true if current sheet was deleted successfully.
  */
-bool Document::deleteWorksheet(const QString &name)
+bool Document::deleteSheet(const QString &name)
 {
     Q_D(Document);
-    return d->workbook->deleteWorksheet(worksheetNames().indexOf(name));
+    return d->workbook->deleteSheet(sheetNames().indexOf(name));
 }
 
 /*!
-   \deprecated
-   Rename current worksheet to new \a name.
-   Returns true if the name defined successful.
-
-   \sa renameWorksheet()
+ * \brief Return pointer of current sheet.
  */
-bool Document::setSheetName(const QString &name)
+AbstractSheet *Document::currentSheet() const
 {
-    return renameWorksheet(currentWorksheet()->sheetName(), name);
+    Q_D(const Document);
+
+    return d->workbook->activeSheet();
 }
 
 /*!
  * \brief Return pointer of current worksheet.
+ * If the type of sheet is not AbstractSheet::ST_WorkSheet, then 0 will be returned.
  */
 Worksheet *Document::currentWorksheet() const
 {
-    Q_D(const Document);
-    if (d->workbook->worksheetCount() == 0)
+    AbstractSheet *st = currentSheet();
+    if (st && st->sheetType() == AbstractSheet::ST_WorkSheet)
+        return static_cast<Worksheet *>(st);
+    else
         return 0;
-
-    return d->workbook->activeWorksheet();
-}
-
-/*!
- *  \deprecated
- *  Set current worksheet to be the sheet at \a index.
- *  \sa selectWorksheet()
- */
-void Document::setCurrentWorksheet(int index)
-{
-    Q_D(Document);
-    d->workbook->setActiveWorksheet(index);
-}
-
-/*!
- *  \deprecated
- *  Set current selected worksheet to be the sheet named \a name.
- *  \sa selectWorksheet()
- */
-void Document::setCurrentWorksheet(const QString &name)
-{
-    selectWorksheet(name);
 }
 
 /*!
  * \brief Set worksheet named \a name to be active sheet.
  * Returns true if success.
  */
-bool Document::selectWorksheet(const QString &name)
+bool Document::selectSheet(const QString &name)
 {
     Q_D(Document);
-    return d->workbook->setActiveWorksheet(worksheetNames().indexOf(name));
+    return d->workbook->setActiveSheet(sheetNames().indexOf(name));
 }
 
 /*!
  * Returns the names of worksheets contained in current document.
  */
-QStringList Document::worksheetNames() const
+QStringList Document::sheetNames() const
 {
     Q_D(const Document);
     return d->workbook->worksheetNames();

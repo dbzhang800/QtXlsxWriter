@@ -83,8 +83,8 @@ public:
     mutable Relationships relationships;
 
     QSharedPointer<SharedStrings> sharedStrings;
-    QList<QSharedPointer<Worksheet> > worksheets;
-    QStringList worksheetNames;
+    QList<QSharedPointer<AbstractSheet> > sheets;
+    QStringList sheetNames;
     QSharedPointer<Styles> styles;
     QSharedPointer<Theme> theme;
     QList<QSharedPointer<MediaFile> > mediaFiles;

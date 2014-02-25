@@ -32,6 +32,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 class Workbook;
 class Drawing;
+class Relationships;
 class AbstractSheetPrivate;
 class Q_XLSX_EXPORT AbstractSheet : public OOXmlFile
 {
@@ -49,11 +50,12 @@ public:
     QString sheetName() const;
     bool isHidden() const;
     Workbook *workbook() const;
-    //Relationships &relationships();
+    Relationships &relationships();
 
 protected:
+    friend class Workbook;
     AbstractSheet(const QString &sheetName, int sheetId, Workbook *book, AbstractSheetPrivate *d);
-    //QSharedPointer<AbstractSheet> copy(const QString &distName, int distId) const;
+    virtual AbstractSheet *copy(const QString &distName, int distId) const = 0;
     void setSheetName(const QString &sheetName);
     void setHidden(bool hidden);
     void setSheetType(SheetType type);

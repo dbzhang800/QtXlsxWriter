@@ -308,32 +308,32 @@ void DocumentTest::testReadWriteTime()
 void DocumentTest::testMoveWorksheet()
 {
     Document xlsx1;
-    xlsx1.addWorksheet();
+    xlsx1.addSheet();
 
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
-    xlsx1.moveWorksheet("Sheet2", 0);
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet2"<<"Sheet1");
-    xlsx1.moveWorksheet("Sheet2", 1);
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
+    xlsx1.moveSheet("Sheet2", 0);
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet2"<<"Sheet1");
+    xlsx1.moveSheet("Sheet2", 1);
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
 }
 
 void DocumentTest::testCopyWorksheet()
 {
     Document xlsx1;
-    xlsx1.addWorksheet();
+    xlsx1.addSheet();
     xlsx1.write("A1", "String");
     xlsx1.write("A2", 999);
     xlsx1.write("A3", true);
-    xlsx1.addWorksheet();
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3");
+    xlsx1.addSheet();
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3");
 
-    xlsx1.copyWorksheet("Sheet2");
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3"<<"Sheet2(2)");
+    xlsx1.copySheet("Sheet2");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3"<<"Sheet2(2)");
 
-    xlsx1.deleteWorksheet("Sheet2");
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet3"<<"Sheet2(2)");
+    xlsx1.deleteSheet("Sheet2");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet3"<<"Sheet2(2)");
 
-    xlsx1.selectWorksheet("Sheet2(2)");
+    xlsx1.selectSheet("Sheet2(2)");
     QCOMPARE(xlsx1.read("A1").toString(), QString("String"));
     QCOMPARE(xlsx1.read("A2").toInt(), 999);
     QCOMPARE(xlsx1.read("A3").toBool(), true);
@@ -342,18 +342,18 @@ void DocumentTest::testCopyWorksheet()
 void DocumentTest::testDeleteWorksheet()
 {
     Document xlsx1;
-    xlsx1.addWorksheet();
-    xlsx1.addWorksheet();
+    xlsx1.addSheet();
+    xlsx1.addSheet();
 
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3");
-    xlsx1.deleteWorksheet("Sheet2");
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet1"<<"Sheet3");
-    xlsx1.deleteWorksheet("Sheet1");
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet3");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet2"<<"Sheet3");
+    xlsx1.deleteSheet("Sheet2");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet3");
+    xlsx1.deleteSheet("Sheet1");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet3");
 
     //Cann't delete the last worksheet
-    xlsx1.deleteWorksheet("Sheet3");
-    QCOMPARE(xlsx1.worksheetNames(), QStringList()<<"Sheet3");
+    xlsx1.deleteSheet("Sheet3");
+    QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet3");
 }
 
 QTEST_APPLESS_MAIN(DocumentTest)

@@ -50,7 +50,7 @@ int main()
     //![1]
 
     //![2]
-    xlsx.addWorksheet("ArrayFormula");
+    xlsx.addSheet("ArrayFormula");
     Worksheet *sheet = xlsx.currentWorksheet();
 
     for (int row=2; row<20; ++row) {

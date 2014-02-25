@@ -24,13 +24,15 @@ int main(int argc, char **argv)
 
     //![2]
     Document xlsx(filePath);
-    foreach (QString sheetName, xlsx.worksheetNames()) {
-        Worksheet *sheet = xlsx.worksheet(sheetName);
-        QTableView *view = new QTableView(&tabWidget);
-        view->setModel(new SheetModel(sheet, view));
-        foreach (CellRange range, sheet->mergedCells())
-            view->setSpan(range.firstRow()-1, range.firstColumn()-1, range.rowCount(), range.columnCount());
-        tabWidget.addTab(view, sheetName);
+    foreach (QString sheetName, xlsx.sheetNames()) {
+        Worksheet *sheet = dynamic_cast<Worksheet *>(xlsx.sheet(sheetName));
+        if (sheet) {
+            QTableView *view = new QTableView(&tabWidget);
+            view->setModel(new SheetModel(sheet, view));
+            foreach (CellRange range, sheet->mergedCells())
+                view->setSpan(range.firstRow()-1, range.firstColumn()-1, range.rowCount(), range.columnCount());
+            tabWidget.addTab(view, sheetName);
+        }
     }
     //![2]
 

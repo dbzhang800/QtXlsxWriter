@@ -27,6 +27,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxooxmlfile.h"
+#include "xlsxabstractsheet.h"
 #include <QList>
 #include <QImage>
 #include <QSharedPointer>
@@ -35,7 +36,6 @@ class QIODevice;
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class Worksheet;
 class SharedStrings;
 class Styles;
 class Drawing;
@@ -53,19 +53,18 @@ class Q_XLSX_EXPORT Workbook : public OOXmlFile
 public:
     ~Workbook();
 
-    Q_DECL_DEPRECATED QList<QSharedPointer<Worksheet> > worksheets() const;
-    int worksheetCount() const;
-    Worksheet *worksheet(int sheetIndex) const;
+    int sheetCount() const;
+    AbstractSheet *sheet(int index) const;
 
-    Worksheet *addWorksheet(const QString &name = QString());
-    Worksheet *insertWorkSheet(int index, const QString &name = QString());
-    bool renameWorksheet(int index, const QString &name);
-    bool deleteWorksheet(int index);
-    bool copyWorksheet(int index, const QString &newName=QString());
-    bool moveWorksheet(int srcIndex, int distIndex);
+    AbstractSheet *addSheet(const QString &name = QString(), AbstractSheet::SheetType type = AbstractSheet::ST_WorkSheet);
+    AbstractSheet *insertSheet(int index, const QString &name = QString(), AbstractSheet::SheetType type = AbstractSheet::ST_WorkSheet);
+    bool renameSheet(int index, const QString &name);
+    bool deleteSheet(int index);
+    bool copySheet(int index, const QString &newName=QString());
+    bool moveSheet(int srcIndex, int distIndex);
 
-    Worksheet *activeWorksheet() const;
-    bool setActiveWorksheet(int index);
+    AbstractSheet *activeSheet() const;
+    bool setActiveSheet(int index);
 
 //    void addChart();
     bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());
@@ -102,7 +101,7 @@ private:
     QList<QImage> images();
     QList<Drawing *> drawings();
     QStringList worksheetNames() const;
-    Worksheet *addWorksheet(const QString &name, int sheetId);
+    AbstractSheet *addSheet(const QString &name, int sheetId, AbstractSheet::SheetType type = AbstractSheet::ST_WorkSheet);
 };
 
 QT_END_NAMESPACE_XLSX

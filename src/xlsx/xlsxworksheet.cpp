@@ -184,11 +184,10 @@ Worksheet::Worksheet(const QString &name, int id, Workbook *workbook)
  * Make a copy of this sheet.
  */
 
-QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) const
+Worksheet *Worksheet::copy(const QString &distName, int distId) const
 {
     Q_D(const Worksheet);
-    QSharedPointer<Worksheet> sheet(new Worksheet(distName, distId, d->workbook));
-
+    Worksheet *sheet = new Worksheet(distName, distId, d->workbook);
     WorksheetPrivate *sheet_d = sheet->d_func();
 
     sheet_d->dimension = d->dimension;
@@ -203,7 +202,7 @@ QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) c
             int col = it2.key();
 
             QSharedPointer<Cell> cell(new Cell(it2.value().data()));
-            cell->d_ptr->parent = sheet.data();
+            cell->d_ptr->parent = sheet;
 
             if (cell->dataType() == Cell::String)
                 d->workbook->sharedStrings()->addSharedString(cell->d_ptr->richString);
@@ -227,15 +226,6 @@ QSharedPointer<Worksheet> Worksheet::copy(const QString &distName, int distId) c
  */
 Worksheet::~Worksheet()
 {
-}
-
-/*!
- * \internal
- */
-Relationships &Worksheet::relationships()
-{
-    Q_D(Worksheet);
-    return d->relationships;
 }
 
 /*!

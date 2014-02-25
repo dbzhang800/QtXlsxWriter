@@ -159,9 +159,9 @@ bool Workbook::defineName(const QString &name, const QString &formula, const QSt
 
     int id=-1;
     if (!scope.isEmpty()) {
-        for (int i=0; i<d->worksheets.size(); ++i) {
-            if (d->worksheets[i]->sheetName() == scope) {
-                id = d->worksheets[i]->sheetId();
+        for (int i=0; i<d->sheets.size(); ++i) {
+            if (d->sheets[i]->sheetName() == scope) {
+                id = d->sheets[i]->sheetId();
                 break;
             }
         }
@@ -171,10 +171,10 @@ bool Workbook::defineName(const QString &name, const QString &formula, const QSt
     return true;
 }
 
-Worksheet *Workbook::addWorksheet(const QString &name)
+AbstractSheet *Workbook::addSheet(const QString &name, AbstractSheet::SheetType type)
 {
     Q_D(Workbook);
-    return insertWorkSheet(d->worksheets.size(), name);
+    return insertSheet(d->sheets.size(), name, type);
 }
 
 /*!
@@ -183,44 +183,44 @@ Worksheet *Workbook::addWorksheet(const QString &name)
 QStringList Workbook::worksheetNames() const
 {
     Q_D(const Workbook);
-    return d->worksheetNames;
+    return d->sheetNames;
 }
 
 /*!
  * \internal
  * Used only when load the xlsx file!!
  */
-Worksheet *Workbook::addWorksheet(const QString &name, int sheetId)
+AbstractSheet *Workbook::addSheet(const QString &name, int sheetId, AbstractSheet::SheetType type)
 {
     Q_D(Workbook);
     if (sheetId > d->last_sheet_id)
         d->last_sheet_id = sheetId;
 
     Worksheet *sheet = new Worksheet(name, sheetId, this);
-    d->worksheets.append(QSharedPointer<Worksheet>(sheet));
-    d->worksheetNames.append(name);
+    d->sheets.append(QSharedPointer<Worksheet>(sheet));
+    d->sheetNames.append(name);
     return sheet;
 }
 
-Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
+AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractSheet::SheetType type)
 {
     Q_D(Workbook);
     QString worksheetName = createSafeSheetName(name);
     if (!worksheetName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
-        if (d->worksheetNames.contains(worksheetName))
+        if (d->sheetNames.contains(worksheetName))
             return 0;
     } else {
         do {
             ++d->last_sheet_index;
             worksheetName = QStringLiteral("Sheet%1").arg(d->last_sheet_index);
-        } while (d->worksheetNames.contains(worksheetName));
+        } while (d->sheetNames.contains(worksheetName));
     }
 
     ++d->last_sheet_id;
     Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this);
-    d->worksheets.insert(index, QSharedPointer<Worksheet>(sheet));
-    d->worksheetNames.insert(index, worksheetName);
+    d->sheets.insert(index, QSharedPointer<Worksheet>(sheet));
+    d->sheetNames.insert(index, worksheetName);
     d->activesheetIndex = index;
     return sheet;
 }
@@ -228,16 +228,16 @@ Worksheet *Workbook::insertWorkSheet(int index, const QString &name)
 /*!
  * Returns current active worksheet.
  */
-Worksheet *Workbook::activeWorksheet() const
+AbstractSheet *Workbook::activeSheet() const
 {
     Q_D(const Workbook);
-    return d->worksheets[d->activesheetIndex].data();
+    return d->sheets[d->activesheetIndex].data();
 }
 
-bool Workbook::setActiveWorksheet(int index)
+bool Workbook::setActiveSheet(int index)
 {
     Q_D(Workbook);
-    if (index < 0 || index >= d->worksheets.size()) {
+    if (index < 0 || index >= d->sheets.size()) {
         //warning
         return false;
     }
@@ -248,113 +248,104 @@ bool Workbook::setActiveWorksheet(int index)
 /*!
  * Rename the worksheet at the \a index to \a name.
  */
-bool Workbook::renameWorksheet(int index, const QString &name)
+bool Workbook::renameSheet(int index, const QString &name)
 {
     Q_D(Workbook);
     //If user given an already in-used name, return false
-    for (int i=0; i<d->worksheets.size(); ++i) {
-        if (d->worksheets[i]->sheetName() == name)
+    for (int i=0; i<d->sheets.size(); ++i) {
+        if (d->sheets[i]->sheetName() == name)
             return false;
     }
 
-    d->worksheets[index]->setSheetName(name);
-    d->worksheetNames[index] = name;
+    d->sheets[index]->setSheetName(name);
+    d->sheetNames[index] = name;
     return true;
 }
 
 /*!
  * Remove the worksheet at pos \a index.
  */
-bool Workbook::deleteWorksheet(int index)
+bool Workbook::deleteSheet(int index)
 {
     Q_D(Workbook);
-    if (d->worksheets.size() <= 1)
+    if (d->sheets.size() <= 1)
         return false;
-    if (index < 0 || index >= d->worksheets.size())
+    if (index < 0 || index >= d->sheets.size())
         return false;
-    d->worksheets.removeAt(index);
-    d->worksheetNames.removeAt(index);
+    d->sheets.removeAt(index);
+    d->sheetNames.removeAt(index);
     return true;
 }
 
 /*!
  * Moves the worksheet form \a srcIndex to \a distIndex.
  */
-bool Workbook::moveWorksheet(int srcIndex, int distIndex)
+bool Workbook::moveSheet(int srcIndex, int distIndex)
 {
     Q_D(Workbook);
     if (srcIndex == distIndex)
         return false;
 
-    if (srcIndex < 0 || srcIndex >= d->worksheets.size())
+    if (srcIndex < 0 || srcIndex >= d->sheets.size())
         return false;
 
-    QSharedPointer<Worksheet> sheet = d->worksheets.takeAt(srcIndex);
-    d->worksheetNames.takeAt(srcIndex);
-    if (distIndex >= 0 || distIndex <= d->worksheets.size()) {
-        d->worksheets.insert(distIndex, sheet);
-        d->worksheetNames.insert(distIndex, sheet->sheetName());
+    QSharedPointer<AbstractSheet> sheet = d->sheets.takeAt(srcIndex);
+    d->sheetNames.takeAt(srcIndex);
+    if (distIndex >= 0 || distIndex <= d->sheets.size()) {
+        d->sheets.insert(distIndex, sheet);
+        d->sheetNames.insert(distIndex, sheet->sheetName());
     } else {
-        d->worksheets.append(sheet);
-        d->worksheetNames.append(sheet->sheetName());
+        d->sheets.append(sheet);
+        d->sheetNames.append(sheet->sheetName());
     }
     return true;
 }
 
-bool Workbook::copyWorksheet(int index, const QString &newName)
+bool Workbook::copySheet(int index, const QString &newName)
 {
     Q_D(Workbook);
-    if (index < 0 || index >= d->worksheets.size())
+    if (index < 0 || index >= d->sheets.size())
         return false;
 
     QString worksheetName = newName;
     if (!newName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
-        if (d->worksheetNames.contains(newName))
+        if (d->sheetNames.contains(newName))
             return false;
     } else {
         int copy_index = 1;
         do {
             ++copy_index;
-            worksheetName = QStringLiteral("%1(%2)").arg(d->worksheets[index]->sheetName()).arg(copy_index);
-        } while (d->worksheetNames.contains(worksheetName));
+            worksheetName = QStringLiteral("%1(%2)").arg(d->sheets[index]->sheetName()).arg(copy_index);
+        } while (d->sheetNames.contains(worksheetName));
     }
 
     ++d->last_sheet_id;
-    QSharedPointer<Worksheet> sheet = d->worksheets[index]->copy(worksheetName, d->last_sheet_id);
-    d->worksheets.append(sheet);
-    d->worksheetNames.append(sheet->sheetName());
+    AbstractSheet *sheet = d->sheets[index]->copy(worksheetName, d->last_sheet_id);
+    d->sheets.append(QSharedPointer<AbstractSheet> (sheet));
+    d->sheetNames.append(sheet->sheetName());
 
     return false;
 }
 
 /*!
-  \deprecated
-*/
-QList<QSharedPointer<Worksheet> > Workbook::worksheets() const
-{
-    Q_D(const Workbook);
-    return d->worksheets;
-}
-
-/*!
  * Returns count of worksheets.
  */
-int Workbook::worksheetCount() const
+int Workbook::sheetCount() const
 {
     Q_D(const Workbook);
-    return d->worksheets.count();
+    return d->sheets.count();
 }
 
 /*!
  * Returns the sheet object at index \a sheetIndex.
  */
-Worksheet *Workbook::worksheet(int index) const
+AbstractSheet *Workbook::sheet(int index) const
 {
     Q_D(const Workbook);
-    if (index < 0 || index >= d->worksheets.size())
+    if (index < 0 || index >= d->sheets.size())
         return 0;
-    return d->worksheets.at(index).data();
+    return d->sheets.at(index).data();
 }
 
 SharedStrings *Workbook::sharedStrings() const
@@ -384,8 +375,8 @@ QList<Drawing *> Workbook::drawings()
 {
     Q_D(Workbook);
     QList<Drawing *> ds;
-    for (int i=0; i<d->worksheets.size(); ++i) {
-        QSharedPointer<Worksheet> sheet = d->worksheets[i];
+    for (int i=0; i<d->sheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = d->sheets[i];
         if (sheet->drawing())
         ds.append(sheet->drawing());
     }
@@ -398,7 +389,7 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     Q_D(const Workbook);
     d->relationships.clear();
 
-    for (int i=0; i<worksheetCount(); ++i)
+    for (int i=0; i<sheetCount(); ++i)
         d->relationships.addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
     d->relationships.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
     d->relationships.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
@@ -440,8 +431,8 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     writer.writeEndElement();//bookViews
 
     writer.writeStartElement(QStringLiteral("sheets"));
-    for (int i=0; i<d->worksheets.size(); ++i) {
-        QSharedPointer<Worksheet> sheet = d->worksheets[i];
+    for (int i=0; i<d->sheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = d->sheets[i];
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
@@ -460,8 +451,8 @@ void Workbook::saveToXmlFile(QIODevice *device) const
                 writer.writeAttribute(QStringLiteral("comment"), data.comment);
             if (data.sheetId != -1) {
                 //find the local index of the sheet.
-                for (int i=0; i<d->worksheets.size(); ++i) {
-                    if (d->worksheets[i]->sheetId() == data.sheetId) {
+                for (int i=0; i<d->sheets.size(); ++i) {
+                    if (d->sheets[i]->sheetId() == data.sheetId) {
                         writer.writeAttribute(QStringLiteral("localSheetId"), QString::number(i));
                         break;
                     }
@@ -497,9 +488,22 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
 //                 if (attributes.hasAttribute(QLatin1String("state")))
 //                     QString state = attributes.value(QLatin1String("state")).toString();
 
-                 Worksheet *sheet = addWorksheet(name, sheetId);
-                 const QString path = d->relationships.getRelationshipById(rId).target;
-                 const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ path);
+                 XlsxRelationship relationship = d->relationships.getRelationshipById(rId);
+
+                 AbstractSheet::SheetType type = AbstractSheet::ST_WorkSheet;
+                 if (relationship.type.endsWith(QLatin1String("/worksheet")))
+                     type = AbstractSheet::ST_WorkSheet;
+                 else if (relationship.type.endsWith(QLatin1String("/chartsheet")))
+                     type = AbstractSheet::ST_ChartSheet;
+                 else if (relationship.type.endsWith(QLatin1String("/dialogsheet")))
+                     type = AbstractSheet::ST_DialogSheet;
+                 else if (relationship.type.endsWith(QLatin1String("/xlMacrosheet")))
+                     type = AbstractSheet::ST_MacroSheet;
+                 else
+                     qWarning("unknown sheet type");
+
+                 AbstractSheet *sheet = addSheet(name, sheetId, type);
+                 const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ relationship.target);
                  sheet->setFilePath(fullPath);
              } else if (reader.name() == QLatin1String("workbookPr")) {
                 QXmlStreamAttributes attrs = reader.attributes();

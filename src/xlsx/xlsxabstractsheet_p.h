@@ -54,6 +54,7 @@ public:
 
     Workbook *workbook;
     QSharedPointer<Drawing> drawing;
+    mutable Relationships relationships;
 
     QString name;
     int id;
