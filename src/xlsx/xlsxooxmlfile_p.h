@@ -38,6 +38,8 @@
 //
 
 #include "xlsxooxmlfile.h"
+#include "xlsxrelationships_p.h"
+
 #include <QString>
 
 QT_BEGIN_NAMESPACE_XLSX
@@ -52,7 +54,7 @@ public:
 
     QString filePathInPackage;//such as "xl/worksheets/sheet1.xml"
                               //used when load the .xlsx file
-
+    Relationships *relationships;
     OOXmlFile *q_ptr;
 };
 

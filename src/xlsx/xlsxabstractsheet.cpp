@@ -147,13 +147,4 @@ Workbook *AbstractSheet::workbook() const
     return d->workbook;
 }
 
-/*!
- * \internal
- */
-Relationships &AbstractSheet::relationships()
-{
-    Q_D(AbstractSheet);
-    return d->relationships;
-}
-
 QT_END_NAMESPACE_XLSX

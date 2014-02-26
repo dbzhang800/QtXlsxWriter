@@ -32,7 +32,6 @@
 QT_BEGIN_NAMESPACE_XLSX
 class Workbook;
 class Drawing;
-class Relationships;
 class AbstractSheetPrivate;
 class Q_XLSX_EXPORT AbstractSheet : public OOXmlFile
 {
@@ -50,7 +49,6 @@ public:
     QString sheetName() const;
     bool isHidden() const;
     Workbook *workbook() const;
-    Relationships &relationships();
 
 protected:
     friend class Workbook;

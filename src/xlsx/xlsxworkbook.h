@@ -93,7 +93,6 @@ private:
 
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
-    Relationships &relationships();
 
     SharedStrings *sharedStrings() const;
     Styles *styles();

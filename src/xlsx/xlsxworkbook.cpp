@@ -387,14 +387,14 @@ QList<Drawing *> Workbook::drawings()
 void Workbook::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Workbook);
-    d->relationships.clear();
+    d->relationships->clear();
 
     for (int i=0; i<sheetCount(); ++i)
-        d->relationships.addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
-    d->relationships.addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
-    d->relationships.addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
+        d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
+    d->relationships->addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
+    d->relationships->addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
     if (!sharedStrings()->isEmpty())
-        d->relationships.addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
+        d->relationships->addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
 
     QXmlStreamWriter writer(device);
 
@@ -488,7 +488,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
 //                 if (attributes.hasAttribute(QLatin1String("state")))
 //                     QString state = attributes.value(QLatin1String("state")).toString();
 
-                 XlsxRelationship relationship = d->relationships.getRelationshipById(rId);
+                 XlsxRelationship relationship = d->relationships->getRelationshipById(rId);
 
                  AbstractSheet::SheetType type = AbstractSheet::ST_WorkSheet;
                  if (relationship.type.endsWith(QLatin1String("/worksheet")))
@@ -548,15 +548,6 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
          }
     }
     return true;
-}
-
-/*!
- * \internal
- */
-Relationships &Workbook::relationships()
-{
-    Q_D(Workbook);
-    return d->relationships;
 }
 
 /*!

@@ -32,7 +32,7 @@ class QIODevice;
 class QByteArray;
 
 QT_BEGIN_NAMESPACE_XLSX
-
+class Relationships;
 class OOXmlFilePrivate;
 
 class Q_XLSX_EXPORT OOXmlFile
@@ -46,6 +46,8 @@ public:
 
     virtual QByteArray saveToXmlData() const;
     virtual bool loadFromXmlData(const QByteArray &data);
+
+    Relationships *relationships() const;
 
     void setFilePath(const QString path);
     QString filePath() const;

@@ -32,7 +32,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 OOXmlFilePrivate::OOXmlFilePrivate(OOXmlFile *q)
-    :q_ptr(q)
+    :q_ptr(q), relationships(new Relationships)
 {
 
 }
@@ -63,6 +63,8 @@ OOXmlFile::OOXmlFile(OOXmlFilePrivate *d)
 
 OOXmlFile::~OOXmlFile()
 {
+    if (d_ptr->relationships)
+        delete d_ptr->relationships;
     delete d_ptr;
 }
 
@@ -102,5 +104,16 @@ QString OOXmlFile::filePath() const
     Q_D(const OOXmlFile);
     return d->filePathInPackage;
 }
+
+
+/*!
+ * \internal
+ */
+Relationships *OOXmlFile::relationships() const
+{
+    Q_D(const OOXmlFile);
+    return d->relationships;
+}
+
 
 QT_END_NAMESPACE_XLSX

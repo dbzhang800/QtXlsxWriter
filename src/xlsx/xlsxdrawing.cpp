@@ -46,7 +46,7 @@ Drawing::~Drawing()
 
 void Drawing::saveToXmlFile(QIODevice *device) const
 {
-    relationships.clear();
+    relationships()->clear();
 
     QXmlStreamWriter writer(device);
 

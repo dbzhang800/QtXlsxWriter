@@ -193,7 +193,7 @@ void DrawingAnchor::loadXmlObjectGraphicFrame(QXmlStreamReader &reader)
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("chart")) {
                 QString rId = reader.attributes().value(QLatin1String("r:id")).toString();
-                QString name = m_drawing->relationships.getRelationshipById(rId).target;
+                QString name = m_drawing->relationships()->getRelationshipById(rId).target;
                 QString path = QDir::cleanPath(splitPath(m_drawing->filePath())[0] + QLatin1String("/") + name);
 
                 bool exist = false;
@@ -234,7 +234,7 @@ void DrawingAnchor::loadXmlObjectPicture(QXmlStreamReader &reader)
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("blip")) {
                 QString rId = reader.attributes().value(QLatin1String("r:embed")).toString();
-                QString name = m_drawing->relationships.getRelationshipById(rId).target;
+                QString name = m_drawing->relationships()->getRelationshipById(rId).target;
                 QString path = QDir::cleanPath(splitPath(m_drawing->filePath())[0] + QLatin1String("/") + name);
 
                 bool exist = false;
@@ -329,12 +329,12 @@ void DrawingAnchor::saveXmlObjectGraphicFrame(QXmlStreamWriter &writer) const
     writer.writeAttribute(QStringLiteral("uri"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/chart"));
 
     int idx = m_drawing->workbook->chartFiles().indexOf(m_chartFile);
-    m_drawing->relationships.addDocumentRelationship(QStringLiteral("/chart"), QStringLiteral("../charts/chart%1.xml").arg(idx+1));
+    m_drawing->relationships()->addDocumentRelationship(QStringLiteral("/chart"), QStringLiteral("../charts/chart%1.xml").arg(idx+1));
 
     writer.writeEmptyElement(QStringLiteral("c:chart"));
     writer.writeAttribute(QStringLiteral("xmlns:c"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/chart"));
     writer.writeAttribute(QStringLiteral("xmlns:r"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships"));
-    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(m_drawing->relationships.count()));
+    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(m_drawing->relationships()->count()));
 
     writer.writeEndElement(); //a:graphicData
     writer.writeEndElement(); //a:graphic
@@ -364,14 +364,14 @@ void DrawingAnchor::saveXmlObjectPicture(QXmlStreamWriter &writer) const
 
     writer.writeEndElement(); //xdr:nvPicPr
 
-    m_drawing->relationships.addDocumentRelationship(QStringLiteral("/image"), QStringLiteral("../media/image%1.%2")
+    m_drawing->relationships()->addDocumentRelationship(QStringLiteral("/image"), QStringLiteral("../media/image%1.%2")
                                                      .arg(m_pictureFile->index()+1)
                                                      .arg(m_pictureFile->suffix()));
 
     writer.writeStartElement(QStringLiteral("xdr:blipFill"));
     writer.writeEmptyElement(QStringLiteral("a:blip"));
     writer.writeAttribute(QStringLiteral("xmlns:r"), QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships"));
-    writer.writeAttribute(QStringLiteral("r:embed"), QStringLiteral("rId%1").arg(m_drawing->relationships.count()));
+    writer.writeAttribute(QStringLiteral("r:embed"), QStringLiteral("rId%1").arg(m_drawing->relationships()->count()));
     writer.writeStartElement(QStringLiteral("a:stretch"));
     writer.writeEmptyElement(QStringLiteral("a:fillRect"));
     writer.writeEndElement(); //a:stretch

@@ -39,7 +39,6 @@
 #include "xlsxglobal.h"
 #include "xlsxabstractsheet.h"
 #include "xlsxooxmlfile_p.h"
-#include "xlsxrelationships_p.h"
 
 #include <QSharedPointer>
 
@@ -54,7 +53,6 @@ public:
 
     Workbook *workbook;
     QSharedPointer<Drawing> drawing;
-    mutable Relationships relationships;
 
     QString name;
     int id;

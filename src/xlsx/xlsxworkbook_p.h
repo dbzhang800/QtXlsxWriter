@@ -70,8 +70,6 @@ class WorkbookPrivate : public OOXmlFilePrivate
 public:
     WorkbookPrivate(Workbook *q);
 
-    mutable Relationships relationships;
-
     QSharedPointer<SharedStrings> sharedStrings;
     QList<QSharedPointer<AbstractSheet> > sheets;
     QStringList sheetNames;

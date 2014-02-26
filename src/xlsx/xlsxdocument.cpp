@@ -146,12 +146,12 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         return false;
     QString xlworkbook_Path = rels_xl[0].target;
     QString xlworkbook_Dir = splitPath(xlworkbook_Path)[0];
-    workbook->relationships().loadFromXmlData(zipReader.fileData(getRelFilePath(xlworkbook_Path)));
+    workbook->relationships()->loadFromXmlData(zipReader.fileData(getRelFilePath(xlworkbook_Path)));
     workbook->setFilePath(xlworkbook_Path);
     workbook->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
 
     //load styles
-    QList<XlsxRelationship> rels_styles = workbook->relationships().documentRelationships(QStringLiteral("/styles"));
+    QList<XlsxRelationship> rels_styles = workbook->relationships()->documentRelationships(QStringLiteral("/styles"));
     if (!rels_styles.isEmpty()) {
         //In normal case this should be styles.xml which in xl
         QString name = rels_styles[0].target;
@@ -162,7 +162,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load sharedStrings
-    QList<XlsxRelationship> rels_sharedStrings = workbook->relationships().documentRelationships(QStringLiteral("/sharedStrings"));
+    QList<XlsxRelationship> rels_sharedStrings = workbook->relationships()->documentRelationships(QStringLiteral("/sharedStrings"));
     if (!rels_sharedStrings.isEmpty()) {
         //In normal case this should be sharedStrings.xml which in xl
         QString name = rels_sharedStrings[0].target;
@@ -171,7 +171,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     }
 
     //load theme
-    QList<XlsxRelationship> rels_theme = workbook->relationships().documentRelationships(QStringLiteral("/theme"));
+    QList<XlsxRelationship> rels_theme = workbook->relationships()->documentRelationships(QStringLiteral("/theme"));
     if (!rels_theme.isEmpty()) {
         //In normal case this should be theme/theme1.xml which in xl
         QString name = rels_theme[0].target;
@@ -185,7 +185,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         QString rel_path = getRelFilePath(sheet->filePath());
         //If the .rel file exists, load it.
         if (zipReader.filePaths().contains(rel_path))
-            sheet->relationships().loadFromXmlData(zipReader.fileData(rel_path));
+            sheet->relationships()->loadFromXmlData(zipReader.fileData(rel_path));
         sheet->loadFromXmlData(zipReader.fileData(sheet->filePath()));
     }
 
@@ -194,7 +194,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         Drawing *drawing = workbook->drawings()[i];
         QString rel_path = getRelFilePath(drawing->filePath());
         if (zipReader.filePaths().contains(rel_path))
-            drawing->relationships.loadFromXmlData(zipReader.fileData(rel_path));
+            drawing->relationships()->loadFromXmlData(zipReader.fileData(rel_path));
         drawing->loadFromXmlData(zipReader.fileData(drawing->filePath()));
     }
 
@@ -237,16 +237,16 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
             docPropsApp.addPartTitle(sheet->sheetName());
 
             zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
-            Relationships &rel = sheet->relationships();
-            if (!rel.isEmpty())
-                zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel.saveToXmlData());
+            Relationships *rel = sheet->relationships();
+            if (!rel->isEmpty())
+                zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
         }
     }
 
     // save workbook xml file
     contentTypes.addWorkbook();
     zipWriter.addFile(QStringLiteral("xl/workbook.xml"), workbook->saveToXmlData());
-    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), workbook->relationships().saveToXmlData());
+    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), workbook->relationships()->saveToXmlData());
 
     // save drawing xml files
     for (int i=0; i<workbook->drawings().size(); ++i) {
@@ -254,8 +254,8 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
 
         Drawing *drawing = workbook->drawings()[i];
         zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), drawing->saveToXmlData());
-        if (!drawing->relationships.isEmpty())
-            zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), drawing->relationships.saveToXmlData());
+        if (!drawing->relationships()->isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), drawing->relationships()->saveToXmlData());
     }
 
     // save docProps app/core xml file

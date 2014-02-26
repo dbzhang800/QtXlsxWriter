@@ -1188,7 +1188,7 @@ QList<CellRange> Worksheet::mergedCells() const
 void Worksheet::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Worksheet);
-    d->relationships.clear();
+    d->relationships->clear();
 
     QXmlStreamWriter writer(device);
 
@@ -1467,9 +1467,9 @@ void WorksheetPrivate::saveXmlHyperlinks(QXmlStreamWriter &writer) const
             writer.writeAttribute(QStringLiteral("ref"), ref);
             if (data->linkType == XlsxHyperlinkData::External) {
                 //Update relationships
-                relationships.addWorksheetRelationship(QStringLiteral("/hyperlink"), data->target, QStringLiteral("External"));
+                relationships->addWorksheetRelationship(QStringLiteral("/hyperlink"), data->target, QStringLiteral("External"));
 
-                writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships.count()));
+                writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships->count()));
             }
 
             if (!data->location.isEmpty())
@@ -1490,10 +1490,10 @@ void WorksheetPrivate::saveXmlDrawings(QXmlStreamWriter &writer) const
         return;
 
     int idx = workbook->drawings().indexOf(drawing.data());
-    relationships.addWorksheetRelationship(QStringLiteral("/drawing"), QStringLiteral("../drawings/drawing%1.xml").arg(idx+1));
+    relationships->addWorksheetRelationship(QStringLiteral("/drawing"), QStringLiteral("../drawings/drawing%1.xml").arg(idx+1));
 
     writer.writeEmptyElement(QStringLiteral("drawing"));
-    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships.count()));
+    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(relationships->count()));
 }
 
 /*!
@@ -2083,7 +2083,7 @@ void WorksheetPrivate::loadXmlHyperlinks(QXmlStreamReader &reader)
 
                 if (attrs.hasAttribute(QLatin1String("r:id"))) {
                     link->linkType = XlsxHyperlinkData::External;
-                    XlsxRelationship ship = relationships.getRelationshipById(attrs.value(QLatin1String("r:id")).toString());
+                    XlsxRelationship ship = relationships->getRelationshipById(attrs.value(QLatin1String("r:id")).toString());
                     link->target = ship.target;
                 } else {
                     link->linkType = XlsxHyperlinkData::Internal;
@@ -2127,7 +2127,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 d->loadXmlHyperlinks(reader);
             } else if (reader.name() == QLatin1String("drawing")) {
                 QString rId = reader.attributes().value(QStringLiteral("r:id")).toString();
-                QString name = d->relationships.getRelationshipById(rId).target;
+                QString name = d->relationships->getRelationshipById(rId).target;
                 QString path = QDir::cleanPath(splitPath(filePath())[0] + QLatin1String("/") + name);
                 d->drawing = QSharedPointer<Drawing>(new Drawing(this));
                 d->drawing->setFilePath(path);
