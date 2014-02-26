@@ -389,13 +389,6 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     Q_D(const Workbook);
     d->relationships->clear();
 
-    for (int i=0; i<sheetCount(); ++i)
-        d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
-    d->relationships->addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
-    d->relationships->addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
-    if (!sharedStrings()->isEmpty())
-        d->relationships->addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
-
     QXmlStreamWriter writer(device);
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
@@ -438,9 +431,19 @@ void Workbook::saveToXmlFile(QIODevice *device) const
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
         if (sheet->isHidden())
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
-        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(i+1));
+
+        d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
+        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
     }
     writer.writeEndElement();//sheets
+
+    writer.writeStartElement(QStringLiteral("externalReferences"));
+    for (int i=0; i<d->externalLinks.size(); ++i) {
+        writer.writeEmptyElement(QStringLiteral("externalReference"));
+        d->relationships->addDocumentRelationship(QStringLiteral("/externalLink"), QStringLiteral("externalLinks/externalLink%1.xml").arg(i+1));
+        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
+    }
+    writer.writeEndElement();//externalReferences
 
     if (!d->definedNamesList.isEmpty()) {
         writer.writeStartElement(QStringLiteral("definedNames"));
@@ -470,6 +473,11 @@ void Workbook::saveToXmlFile(QIODevice *device) const
 
     writer.writeEndElement();//workbook
     writer.writeEndDocument();
+
+    d->relationships->addDocumentRelationship(QStringLiteral("/theme"), QStringLiteral("theme/theme1.xml"));
+    d->relationships->addDocumentRelationship(QStringLiteral("/styles"), QStringLiteral("styles.xml"));
+    if (!sharedStrings()->isEmpty())
+        d->relationships->addDocumentRelationship(QStringLiteral("/sharedStrings"), QStringLiteral("sharedStrings.xml"));
 }
 
 bool Workbook::loadFromXmlFile(QIODevice *device)
@@ -530,6 +538,15 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                         }
                     }
                 }
+             } else if (reader.name() == QLatin1String("externalReference")) {
+                 QXmlStreamAttributes attributes = reader.attributes();
+                 const QString rId = attributes.value(QLatin1String("r:id")).toString();
+                 XlsxRelationship relationship = d->relationships->getRelationshipById(rId);
+
+                 QSharedPointer<ExternalLinK> link(new ExternalLinK);
+                 const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ relationship.target);
+                 link->setFilePath(fullPath);
+                 d->externalLinks.append(link);
              } else if (reader.name() == QLatin1String("definedName")) {
                  QXmlStreamAttributes attrs = reader.attributes();
                  XlsxDefineNameData data;

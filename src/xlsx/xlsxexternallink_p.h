@@ -22,8 +22,8 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXCONTENTTYPES_H
-#define XLSXCONTENTTYPES_H
+#ifndef XLSXEXTERNALLINK_H
+#define XLSXEXTERNALLINK_H
 
 //
 //  W A R N I N G
@@ -35,54 +35,25 @@
 //
 // We mean it.
 //
-
 #include "xlsxooxmlfile.h"
 
 #include <QString>
-#include <QStringList>
-#include <QMap>
-
 class QIODevice;
 
 namespace QXlsx {
 
-class ContentTypes : public OOXmlFile
+class ExternalLinK : public OOXmlFile
 {
 public:
-    ContentTypes();
-
-    void addDefault(const QString &key, const QString &value);
-    void addOverride(const QString &key, const QString &value);
-
-    //Convenient funcation for addOverride()
-    void addDocPropCore();
-    void addDocPropApp();
-    void addStyles();
-    void addTheme();
-    void addWorkbook();
-    void addWorksheetName(const QString &name);
-    void addChartsheetName(const QString &name);
-    void addChartName(const QString &name);
-    void addDrawingName(const QString &name);
-    void addCommentName(const QString &name);
-    void addTableName(const QString &name);
-    void addExternalLinkName(const QString &name);
-    void addSharedString();
-    void addVmlName();
-    void addCalcChain();
-    void addVbaProject();
-
-    void clearOverrides();
+    ExternalLinK();
 
     void saveToXmlFile(QIODevice *device) const;
+    QByteArray saveToXmlData() const;
+    bool loadFromXmlData(const QByteArray &data);
     bool loadFromXmlFile(QIODevice *device);
-private:
-    QMap<QString, QString> m_defaults;
-    QMap<QString, QString> m_overrides;
 
-    QString m_package_prefix;
-    QString m_document_prefix;
+    QByteArray xmlData;
 };
 
 }
-#endif // XLSXCONTENTTYPES_H
+#endif // XLSXEXTERNALLINK_H

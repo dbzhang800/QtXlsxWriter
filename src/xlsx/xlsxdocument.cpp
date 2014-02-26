@@ -189,6 +189,16 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         sheet->loadFromXmlData(zipReader.fileData(sheet->filePath()));
     }
 
+    //load external links
+    for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
+        ExternalLinK *link = workbook->d_func()->externalLinks[i].data();
+        QString rel_path = getRelFilePath(link->filePath());
+        //If the .rel file exists, load it.
+        if (zipReader.filePaths().contains(rel_path))
+            link->relationships()->loadFromXmlData(zipReader.fileData(rel_path));
+        link->loadFromXmlData(zipReader.fileData(link->filePath()));
+    }
+
     //load drawings
     for (int i=0; i<workbook->drawings().size(); ++i) {
         Drawing *drawing = workbook->drawings()[i];
@@ -241,6 +251,17 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
             if (!rel->isEmpty())
                 zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
         }
+    }
+
+    // save external links xml files
+    for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
+        ExternalLinK *link = workbook->d_func()->externalLinks[i].data();
+        contentTypes.addExternalLinkName(QStringLiteral("externalLink%1").arg(i+1));
+
+        zipWriter.addFile(QStringLiteral("xl/externalLinks/externalLink%1.xml").arg(i+1), link->saveToXmlData());
+        Relationships *rel = link->relationships();
+        if (!rel->isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/externalLinks/_rels/externalLink%1.xml.rels").arg(i+1), rel->saveToXmlData());
     }
 
     // save workbook xml file

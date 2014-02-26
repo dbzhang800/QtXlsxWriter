@@ -106,6 +106,11 @@ void ContentTypes::addTableName(const QString &name)
     addOverride(QStringLiteral("/xl/tables/%1.xml").arg(name), m_document_prefix + QStringLiteral("spreadsheetml.table+xml"));
 }
 
+void ContentTypes::addExternalLinkName(const QString &name)
+{
+    addOverride(QStringLiteral("/xl/externalLinks/%1.xml").arg(name), m_document_prefix + QStringLiteral("spreadsheetml.externalLink+xml"));
+}
+
 void ContentTypes::addSharedString()
 {
     addOverride(QStringLiteral("/xl/sharedStrings.xml"), m_document_prefix + QStringLiteral("spreadsheetml.sharedStrings+xml"));
