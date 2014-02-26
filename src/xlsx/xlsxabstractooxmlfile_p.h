@@ -37,25 +37,25 @@
 // We mean it.
 //
 
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 #include "xlsxrelationships_p.h"
 
 #include <QString>
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class XLSX_AUTOTEST_EXPORT OOXmlFilePrivate
+class XLSX_AUTOTEST_EXPORT AbstractOOXmlFilePrivate
 {
-    Q_DECLARE_PUBLIC(OOXmlFile)
+    Q_DECLARE_PUBLIC(AbstractOOXmlFile)
 
 public:
-    OOXmlFilePrivate(OOXmlFile *q);
-    virtual ~OOXmlFilePrivate();
+    AbstractOOXmlFilePrivate(AbstractOOXmlFile *q);
+    virtual ~AbstractOOXmlFilePrivate();
 
     QString filePathInPackage;//such as "xl/worksheets/sheet1.xml"
                               //used when load the .xlsx file
     Relationships *relationships;
-    OOXmlFile *q_ptr;
+    AbstractOOXmlFile *q_ptr;
 };
 
 QT_END_NAMESPACE_XLSX

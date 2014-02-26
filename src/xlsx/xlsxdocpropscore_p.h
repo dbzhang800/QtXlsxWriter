@@ -37,7 +37,7 @@
 //
 
 #include "xlsxglobal.h"
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 #include <QMap>
 #include <QStringList>
 
@@ -45,7 +45,7 @@ class QIODevice;
 
 namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT DocPropsCore : public OOXmlFile
+class XLSX_AUTOTEST_EXPORT DocPropsCore : public AbstractOOXmlFile
 {
 public:
     explicit DocPropsCore();

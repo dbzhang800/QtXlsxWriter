@@ -38,7 +38,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxformat.h"
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 #include <QSharedPointer>
 #include <QHash>
 #include <QList>
@@ -64,7 +64,7 @@ struct XlsxFormatNumberData
     QString formatString;
 };
 
-class XLSX_AUTOTEST_EXPORT Styles : public OOXmlFile
+class XLSX_AUTOTEST_EXPORT Styles : public AbstractOOXmlFile
 {
 public:
     Styles(bool createEmpty=false);

@@ -25,7 +25,7 @@
 #ifndef XLSXABSTRACTSHEET_H
 #define XLSXABSTRACTSHEET_H
 
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 #include <QStringList>
 #include <QSharedPointer>
 
@@ -33,7 +33,7 @@ QT_BEGIN_NAMESPACE_XLSX
 class Workbook;
 class Drawing;
 class AbstractSheetPrivate;
-class Q_XLSX_EXPORT AbstractSheet : public OOXmlFile
+class Q_XLSX_EXPORT AbstractSheet : public AbstractOOXmlFile
 {
     Q_DECLARE_PRIVATE(AbstractSheet)
 public:

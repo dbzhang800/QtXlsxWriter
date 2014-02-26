@@ -37,7 +37,7 @@
 //
 
 #include "xlsxworkbook.h"
-#include "xlsxooxmlfile_p.h"
+#include "xlsxabstractooxmlfile_p.h"
 #include "xlsxtheme_p.h"
 #include "xlsxexternallink_p.h"
 #include "xlsxrelationships_p.h"
@@ -65,7 +65,7 @@ struct XlsxDefineNameData
     int sheetId;
 };
 
-class WorkbookPrivate : public OOXmlFilePrivate
+class WorkbookPrivate : public AbstractOOXmlFilePrivate
 {
     Q_DECLARE_PUBLIC(Workbook)
 public:

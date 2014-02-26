@@ -26,7 +26,7 @@
 #ifndef QXLSX_CHART_H
 #define QXLSX_CHART_H
 
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 
 #include <QSharedPointer>
 
@@ -40,7 +40,7 @@ class ChartPrivate;
 class CellRange;
 class DrawingAnchor;
 
-class Q_XLSX_EXPORT Chart : public OOXmlFile
+class Q_XLSX_EXPORT Chart : public AbstractOOXmlFile
 {
     Q_DECLARE_PRIVATE(Chart)
 

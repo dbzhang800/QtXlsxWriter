@@ -36,7 +36,7 @@
 // We mean it.
 //
 
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 
 #include <QString>
 #include <QStringList>
@@ -46,7 +46,7 @@ class QIODevice;
 
 namespace QXlsx {
 
-class ContentTypes : public OOXmlFile
+class ContentTypes : public AbstractOOXmlFile
 {
 public:
     ContentTypes();

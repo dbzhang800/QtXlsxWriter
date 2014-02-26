@@ -38,7 +38,7 @@
 
 #include "xlsxglobal.h"
 #include "xlsxrichstring.h"
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 #include <QHash>
 #include <QStringList>
 #include <QSharedPointer>
@@ -61,7 +61,7 @@ public:
     int count;
 };
 
-class XLSX_AUTOTEST_EXPORT SharedStrings : public OOXmlFile
+class XLSX_AUTOTEST_EXPORT SharedStrings : public AbstractOOXmlFile
 {
 public:
     SharedStrings();

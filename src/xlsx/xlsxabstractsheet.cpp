@@ -29,7 +29,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 AbstractSheetPrivate::AbstractSheetPrivate(AbstractSheet *p)
-    : OOXmlFilePrivate(p)
+    : AbstractOOXmlFilePrivate(p)
 {
     hidden = false;
     type = AbstractSheet::ST_WorkSheet;
@@ -58,7 +58,7 @@ AbstractSheetPrivate::~AbstractSheetPrivate()
  * \internal
  */
 AbstractSheet::AbstractSheet(const QString &name, int id, Workbook *workbook, AbstractSheetPrivate *d) :
-    OOXmlFile(d)
+    AbstractOOXmlFile(d)
 {
     d_func()->name = name;
     d_func()->id = id;

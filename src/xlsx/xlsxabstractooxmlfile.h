@@ -23,8 +23,8 @@
 **
 ****************************************************************************/
 
-#ifndef QXLSX_XLSXOOXMLFILE_H
-#define QXLSX_XLSXOOXMLFILE_H
+#ifndef QXLSX_XLSXABSTRACTOOXMLFILE_H
+#define QXLSX_XLSXABSTRACTOOXMLFILE_H
 
 #include "xlsxglobal.h"
 
@@ -33,13 +33,13 @@ class QByteArray;
 
 QT_BEGIN_NAMESPACE_XLSX
 class Relationships;
-class OOXmlFilePrivate;
+class AbstractOOXmlFilePrivate;
 
-class Q_XLSX_EXPORT OOXmlFile
+class Q_XLSX_EXPORT AbstractOOXmlFile
 {
-    Q_DECLARE_PRIVATE(OOXmlFile)
+    Q_DECLARE_PRIVATE(AbstractOOXmlFile)
 public:
-    virtual ~OOXmlFile();
+    virtual ~AbstractOOXmlFile();
 
     virtual void saveToXmlFile(QIODevice *device) const = 0;
     virtual bool loadFromXmlFile(QIODevice *device) = 0;
@@ -52,12 +52,12 @@ public:
     void setFilePath(const QString path);
     QString filePath() const;
 protected:
-    OOXmlFile();
-    OOXmlFile(OOXmlFilePrivate *d);
+    AbstractOOXmlFile();
+    AbstractOOXmlFile(AbstractOOXmlFilePrivate *d);
 
-    OOXmlFilePrivate *d_ptr;
+    AbstractOOXmlFilePrivate *d_ptr;
 };
 
 QT_END_NAMESPACE_XLSX
 
-#endif // QXLSX_XLSXOOXMLFILE_H
+#endif // QXLSX_XLSXABSTRACTOOXMLFILE_H

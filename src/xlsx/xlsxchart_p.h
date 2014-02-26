@@ -37,7 +37,7 @@
 // We mean it.
 //
 
-#include "xlsxooxmlfile_p.h"
+#include "xlsxabstractooxmlfile_p.h"
 #include "xlsxchart.h"
 
 #include <QSharedPointer>
@@ -87,7 +87,7 @@ public:
     int crossAx;
 };
 
-class ChartPrivate : public OOXmlFilePrivate
+class ChartPrivate : public AbstractOOXmlFilePrivate
 {
     Q_DECLARE_PUBLIC(Chart)
 

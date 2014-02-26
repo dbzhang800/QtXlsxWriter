@@ -26,7 +26,7 @@
 #define XLSXWORKBOOK_H
 
 #include "xlsxglobal.h"
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 #include "xlsxabstractsheet.h"
 #include <QList>
 #include <QImage>
@@ -47,7 +47,7 @@ class MediaFile;
 class Chart;
 
 class WorkbookPrivate;
-class Q_XLSX_EXPORT Workbook : public OOXmlFile
+class Q_XLSX_EXPORT Workbook : public AbstractOOXmlFile
 {
     Q_DECLARE_PRIVATE(Workbook)
 public:

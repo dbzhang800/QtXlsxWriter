@@ -35,14 +35,14 @@
 //
 // We mean it.
 //
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 
 #include <QString>
 class QIODevice;
 
 namespace QXlsx {
 
-class ExternalLinK : public OOXmlFile
+class ExternalLinK : public AbstractOOXmlFile
 {
 public:
     ExternalLinK();

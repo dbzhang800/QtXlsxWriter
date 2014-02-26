@@ -42,7 +42,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 WorkbookPrivate::WorkbookPrivate(Workbook *q) :
-    OOXmlFilePrivate(q)
+    AbstractOOXmlFilePrivate(q)
 {
     sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings);
     styles = QSharedPointer<Styles>(new Styles);
@@ -66,7 +66,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
 }
 
 Workbook::Workbook()
-    : OOXmlFile(new WorkbookPrivate(this))
+    : AbstractOOXmlFile(new WorkbookPrivate(this))
 {
 
 }

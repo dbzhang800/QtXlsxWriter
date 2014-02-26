@@ -38,7 +38,7 @@
 //
 
 #include "xlsxrelationships_p.h"
-#include "xlsxooxmlfile.h"
+#include "xlsxabstractooxmlfile.h"
 
 #include <QList>
 #include <QString>
@@ -54,7 +54,7 @@ class Workbook;
 class Worksheet;
 class MediaFile;
 
-class Drawing : public OOXmlFile
+class Drawing : public AbstractOOXmlFile
 {
 public:
     Drawing(Worksheet *workbook);

@@ -38,13 +38,13 @@
 
 #include "xlsxglobal.h"
 #include "xlsxabstractsheet.h"
-#include "xlsxooxmlfile_p.h"
+#include "xlsxabstractooxmlfile_p.h"
 
 #include <QSharedPointer>
 
 namespace QXlsx {
 
-class XLSX_AUTOTEST_EXPORT AbstractSheetPrivate : public OOXmlFilePrivate
+class XLSX_AUTOTEST_EXPORT AbstractSheetPrivate : public AbstractOOXmlFilePrivate
 {
     Q_DECLARE_PUBLIC(AbstractSheet)
 public:
