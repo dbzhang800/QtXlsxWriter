@@ -32,7 +32,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 OOXmlFilePrivate::OOXmlFilePrivate(OOXmlFile *q)
-    :q_ptr(q), relationships(new Relationships)
+    :relationships(new Relationships), q_ptr(q)
 {
 
 }

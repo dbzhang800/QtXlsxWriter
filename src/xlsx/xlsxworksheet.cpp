@@ -660,14 +660,14 @@ bool Worksheet::writeInlineString(const QString &row_column, const QString &valu
 bool Worksheet::writeInlineString(int row, int column, const QString &value, const Format &format)
 {
     Q_D(Worksheet);
-    int error = 0;
+    //int error = 0;
     QString content = value;
     if (d->checkDimensions(row, column))
         return false;
 
     if (value.size() > XLSX_STRING_MAX) {
         content = value.left(XLSX_STRING_MAX);
-        error = -2;
+        //error = -2;
     }
 
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
@@ -937,7 +937,7 @@ bool Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Forma
     if (d->checkDimensions(row, column))
         return false;
 
-    int error = 0;
+    //int error = 0;
 
     QString urlString = url.toString();
 
@@ -947,7 +947,7 @@ bool Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Forma
         displayString.replace(QLatin1String("mailto:"), QString());
     if (displayString.size() > XLSX_STRING_MAX) {
         displayString = displayString.left(XLSX_STRING_MAX);
-        error = -2;
+        //error = -2;
     }
 
     /*
