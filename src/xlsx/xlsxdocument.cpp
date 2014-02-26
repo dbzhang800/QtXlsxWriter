@@ -390,7 +390,9 @@ Document::Document(QIODevice *device, QObject *parent) :
  */
 bool Document::write(const QString &row_column, const QVariant &value, const Format &format)
 {
-    return currentWorksheet()->write(row_column, value, format);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->write(row_column, value, format);
+    return false;
 }
 
 /*!
@@ -398,7 +400,9 @@ bool Document::write(const QString &row_column, const QVariant &value, const For
  */
 bool Document::write(int row, int col, const QVariant &value, const Format &format)
 {
-    return currentWorksheet()->write(row, col, value, format);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->write(row, col, value, format);
+    return false;
 }
 
 /*!
@@ -407,7 +411,9 @@ bool Document::write(int row, int col, const QVariant &value, const Format &form
 */
 QVariant Document::read(const QString &cell) const
 {
-    return currentWorksheet()->read(cell);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->read(cell);
+    return QVariant();
 }
 
 /*!
@@ -415,7 +421,9 @@ QVariant Document::read(const QString &cell) const
  */
 QVariant Document::read(int row, int col) const
 {
-    return currentWorksheet()->read(row, col);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->read(row, col);
+    return QVariant();
 }
 
 /*!
@@ -424,7 +432,9 @@ QVariant Document::read(int row, int col) const
  */
 bool Document::insertImage(int row, int column, const QImage &image)
 {
-    return currentWorksheet()->insertImage(row, column, image);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->insertImage(row, column, image);
+    return false;
 }
 
 /*!
@@ -434,7 +444,9 @@ bool Document::insertImage(int row, int column, const QImage &image)
  */
 Chart *Document::insertChart(int row, int col, const QSize &size)
 {
-    return currentWorksheet()->insertChart(row, col, size);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->insertChart(row, col, size);
+    return 0;
 }
 
 /*!
@@ -445,7 +457,9 @@ Chart *Document::insertChart(int row, int col, const QSize &size)
  */
 bool Document::mergeCells(const CellRange &range, const Format &format)
 {
-    return currentWorksheet()->mergeCells(range, format);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->mergeCells(range, format);
+    return false;
 }
 
 /*!
@@ -457,7 +471,9 @@ bool Document::mergeCells(const CellRange &range, const Format &format)
  */
 bool Document::mergeCells(const QString &range, const Format &format)
 {
-    return currentWorksheet()->mergeCells(range, format);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->mergeCells(range, format);
+    return false;
 }
 
 /*!
@@ -465,7 +481,9 @@ bool Document::mergeCells(const QString &range, const Format &format)
 */
 bool Document::unmergeCells(const QString &range)
 {
-    return currentWorksheet()->unmergeCells(range);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->unmergeCells(range);
+    return false;
 }
 
 /*!
@@ -473,7 +491,9 @@ bool Document::unmergeCells(const QString &range)
 */
 bool Document::unmergeCells(const CellRange &range)
 {
-    return currentWorksheet()->unmergeCells(range);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->unmergeCells(range);
+    return false;
 }
 
 /*!
@@ -484,7 +504,9 @@ bool Document::unmergeCells(const CellRange &range)
  */
 bool Document::setRow(int row, double height, const Format &format, bool hidden)
 {
-    return currentWorksheet()->setRow(row, height, format, hidden);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setRow(row, height, format, hidden);
+    return false;
 }
 
 /*!
@@ -498,7 +520,9 @@ bool Document::setRow(int row, double height, const Format &format, bool hidden)
  */
 bool Document::setColumn(int colFirst, int colLast, double width, const Format &format, bool hidden)
 {
-    return currentWorksheet()->setColumn(colFirst, colLast, width, format, hidden);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumn(colFirst, colLast, width, format, hidden);
+    return false;
 }
 
 /*!
@@ -512,7 +536,9 @@ bool Document::setColumn(int colFirst, int colLast, double width, const Format &
  */
 bool Document::setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format, bool hidden)
 {
-    return currentWorksheet()->setColumn(colFirst, colLast, width, format, hidden);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumn(colFirst, colLast, width, format, hidden);
+    return false;
 }
 
 /*!
@@ -521,7 +547,9 @@ bool Document::setColumn(const QString &colFirst, const QString &colLast, double
  */
 bool Document::groupRows(int rowFirst, int rowLast, bool collapsed)
 {
-    return currentWorksheet()->groupRows(rowFirst, rowLast, collapsed);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->groupRows(rowFirst, rowLast, collapsed);
+    return false;
 }
 
 /*!
@@ -530,7 +558,9 @@ bool Document::groupRows(int rowFirst, int rowLast, bool collapsed)
  */
 bool Document::groupColumns(int colFirst, int colLast, bool collapsed)
 {
-    return currentWorksheet()->groupColumns(colFirst, colLast, collapsed);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->groupColumns(colFirst, colLast, collapsed);
+    return false;
 }
 
 /*!
@@ -538,7 +568,9 @@ bool Document::groupColumns(int colFirst, int colLast, bool collapsed)
  */
 bool Document::addDataValidation(const DataValidation &validation)
 {
-    return currentWorksheet()->addDataValidation(validation);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->addDataValidation(validation);
+    return false;
 }
 
 /*!
@@ -546,7 +578,9 @@ bool Document::addDataValidation(const DataValidation &validation)
  */
 bool Document::addConditionalFormatting(const ConditionalFormatting &cf)
 {
-    return currentWorksheet()->addConditionalFormatting(cf);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->addConditionalFormatting(cf);
+    return false;
 }
 
 /*!
@@ -554,7 +588,9 @@ bool Document::addConditionalFormatting(const ConditionalFormatting &cf)
  */
 Cell *Document::cellAt(const QString &pos) const
 {
-    return currentWorksheet()->cellAt(pos);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->cellAt(pos);
+    return 0;
 }
 
 /*!
@@ -562,7 +598,9 @@ Cell *Document::cellAt(const QString &pos) const
  */
 Cell *Document::cellAt(int row, int col) const
 {
-    return currentWorksheet()->cellAt(row, col);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->cellAt(row, col);
+    return 0;
 }
 
 /*!
@@ -586,7 +624,9 @@ bool Document::defineName(const QString &name, const QString &formula, const QSt
  */
 CellRange Document::dimension() const
 {
-    return currentWorksheet()->dimension();
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->dimension();
+    return CellRange();
 }
 
 /*!
