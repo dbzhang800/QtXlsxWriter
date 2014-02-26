@@ -437,13 +437,15 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     }
     writer.writeEndElement();//sheets
 
-    writer.writeStartElement(QStringLiteral("externalReferences"));
-    for (int i=0; i<d->externalLinks.size(); ++i) {
-        writer.writeEmptyElement(QStringLiteral("externalReference"));
-        d->relationships->addDocumentRelationship(QStringLiteral("/externalLink"), QStringLiteral("externalLinks/externalLink%1.xml").arg(i+1));
-        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
+    if (d->externalLinks.size() > 0) {
+        writer.writeStartElement(QStringLiteral("externalReferences"));
+        for (int i=0; i<d->externalLinks.size(); ++i) {
+            writer.writeEmptyElement(QStringLiteral("externalReference"));
+            d->relationships->addDocumentRelationship(QStringLiteral("/externalLink"), QStringLiteral("externalLinks/externalLink%1.xml").arg(i+1));
+            writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
+        }
+        writer.writeEndElement();//externalReferences
     }
-    writer.writeEndElement();//externalReferences
 
     if (!d->definedNamesList.isEmpty()) {
         writer.writeStartElement(QStringLiteral("definedNames"));
