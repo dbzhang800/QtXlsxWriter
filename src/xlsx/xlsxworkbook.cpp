@@ -545,7 +545,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                  const QString rId = attributes.value(QLatin1String("r:id")).toString();
                  XlsxRelationship relationship = d->relationships->getRelationshipById(rId);
 
-                 QSharedPointer<ExternalLinK> link(new ExternalLinK);
+                 QSharedPointer<SimpleOOXmlFile> link(new SimpleOOXmlFile);
                  const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ relationship.target);
                  link->setFilePath(fullPath);
                  d->externalLinks.append(link);

@@ -22,8 +22,8 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef XLSXEXTERNALLINK_H
-#define XLSXEXTERNALLINK_H
+#ifndef XLSXSIMPLEOOXMLFILE_H
+#define XLSXSIMPLEOOXMLFILE_H
 
 //
 //  W A R N I N G
@@ -42,10 +42,10 @@ class QIODevice;
 
 namespace QXlsx {
 
-class ExternalLinK : public AbstractOOXmlFile
+class SimpleOOXmlFile : public AbstractOOXmlFile
 {
 public:
-    ExternalLinK();
+    SimpleOOXmlFile();
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;
@@ -56,4 +56,4 @@ public:
 };
 
 }
-#endif // XLSXEXTERNALLINK_H
+#endif // XLSXSIMPLEOOXMLFILE_H

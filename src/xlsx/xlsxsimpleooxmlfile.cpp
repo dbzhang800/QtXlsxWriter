@@ -22,31 +22,31 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#include "xlsxexternallink_p.h"
+#include "xlsxsimpleooxmlfile_p.h"
 #include <QIODevice>
 
 namespace QXlsx {
-ExternalLinK::ExternalLinK()
+SimpleOOXmlFile::SimpleOOXmlFile()
 {
 }
 
-void ExternalLinK::saveToXmlFile(QIODevice *device) const
+void SimpleOOXmlFile::saveToXmlFile(QIODevice *device) const
 {
     device->write(xmlData);
 }
 
-QByteArray ExternalLinK::saveToXmlData() const
+QByteArray SimpleOOXmlFile::saveToXmlData() const
 {
     return xmlData;
 }
 
-bool ExternalLinK::loadFromXmlData(const QByteArray &data)
+bool SimpleOOXmlFile::loadFromXmlData(const QByteArray &data)
 {
     xmlData = data;
     return true;
 }
 
-bool ExternalLinK::loadFromXmlFile(QIODevice *device)
+bool SimpleOOXmlFile::loadFromXmlFile(QIODevice *device)
 {
     xmlData = device->readAll();
     return true;

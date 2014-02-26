@@ -191,7 +191,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
 
     //load external links
     for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
-        ExternalLinK *link = workbook->d_func()->externalLinks[i].data();
+        SimpleOOXmlFile *link = workbook->d_func()->externalLinks[i].data();
         QString rel_path = getRelFilePath(link->filePath());
         //If the .rel file exists, load it.
         if (zipReader.filePaths().contains(rel_path))
@@ -255,7 +255,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
 
     // save external links xml files
     for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
-        ExternalLinK *link = workbook->d_func()->externalLinks[i].data();
+        SimpleOOXmlFile *link = workbook->d_func()->externalLinks[i].data();
         contentTypes.addExternalLinkName(QStringLiteral("externalLink%1").arg(i+1));
 
         zipWriter.addFile(QStringLiteral("xl/externalLinks/externalLink%1.xml").arg(i+1), link->saveToXmlData());

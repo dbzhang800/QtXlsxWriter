@@ -39,7 +39,7 @@
 #include "xlsxworkbook.h"
 #include "xlsxabstractooxmlfile_p.h"
 #include "xlsxtheme_p.h"
-#include "xlsxexternallink_p.h"
+#include "xlsxsimpleooxmlfile_p.h"
 #include "xlsxrelationships_p.h"
 
 #include <QSharedPointer>
@@ -73,7 +73,7 @@ public:
 
     QSharedPointer<SharedStrings> sharedStrings;
     QList<QSharedPointer<AbstractSheet> > sheets;
-    QList<QSharedPointer<ExternalLinK> > externalLinks;
+    QList<QSharedPointer<SimpleOOXmlFile> > externalLinks;
     QStringList sheetNames;
     QSharedPointer<Styles> styles;
     QSharedPointer<Theme> theme;
