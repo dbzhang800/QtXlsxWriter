@@ -55,16 +55,16 @@ public:
     Document(QIODevice *device, QObject *parent=0);
     ~Document();
 
-    int write(const QString &cell, const QVariant &value, const Format &format=Format());
-    int write(int row, int col, const QVariant &value, const Format &format=Format());
+    bool write(const QString &cell, const QVariant &value, const Format &format=Format());
+    bool write(int row, int col, const QVariant &value, const Format &format=Format());
     QVariant read(const QString &cell) const;
     QVariant read(int row, int col) const;
     bool insertImage(int row, int col, const QImage &image);
     Chart *insertChart(int row, int col, const QSize &size);
-    int mergeCells(const CellRange &range, const Format &format=Format());
-    int mergeCells(const QString &range, const Format &format=Format());
-    int unmergeCells(const CellRange &range);
-    int unmergeCells(const QString &range);
+    bool mergeCells(const CellRange &range, const Format &format=Format());
+    bool mergeCells(const QString &range, const Format &format=Format());
+    bool unmergeCells(const CellRange &range);
+    bool unmergeCells(const QString &range);
     bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
     bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
     bool setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format=Format(), bool hidden=false);
@@ -96,7 +96,6 @@ public:
     Workbook *workbook() const;
     AbstractSheet *sheet(const QString &sheetName) const;
     AbstractSheet *currentSheet() const;
-    Worksheet *worksheet(const QString &sheetName) const;
     Worksheet *currentWorksheet() const;
 
     bool save() const;

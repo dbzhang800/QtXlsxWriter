@@ -388,7 +388,7 @@ Document::Document(QIODevice *device, QObject *parent) :
 
     Write \a value to cell \a row_column with the \a format.
  */
-int Document::write(const QString &row_column, const QVariant &value, const Format &format)
+bool Document::write(const QString &row_column, const QVariant &value, const Format &format)
 {
     return currentWorksheet()->write(row_column, value, format);
 }
@@ -396,7 +396,7 @@ int Document::write(const QString &row_column, const QVariant &value, const Form
 /*!
  * Write \a value to cell (\a row, \a col) with the \a format.
  */
-int Document::write(int row, int col, const QVariant &value, const Format &format)
+bool Document::write(int row, int col, const QVariant &value, const Format &format)
 {
     return currentWorksheet()->write(row, col, value, format);
 }
@@ -443,7 +443,7 @@ Chart *Document::insertChart(int row, int col, const QSize &size)
 
     \note All cells except the top-left one will be cleared.
  */
-int Document::mergeCells(const CellRange &range, const Format &format)
+bool Document::mergeCells(const CellRange &range, const Format &format)
 {
     return currentWorksheet()->mergeCells(range, format);
 }
@@ -455,7 +455,7 @@ int Document::mergeCells(const CellRange &range, const Format &format)
 
     \note All cells except the top-left one will be cleared.
  */
-int Document::mergeCells(const QString &range, const Format &format)
+bool Document::mergeCells(const QString &range, const Format &format)
 {
     return currentWorksheet()->mergeCells(range, format);
 }
@@ -463,7 +463,7 @@ int Document::mergeCells(const QString &range, const Format &format)
 /*!
     Unmerge the cells in the \a range.
 */
-int Document::unmergeCells(const QString &range)
+bool Document::unmergeCells(const QString &range)
 {
     return currentWorksheet()->unmergeCells(range);
 }
@@ -471,7 +471,7 @@ int Document::unmergeCells(const QString &range)
 /*!
     Unmerge the cells in the \a range.
 */
-int Document::unmergeCells(const CellRange &range)
+bool Document::unmergeCells(const CellRange &range)
 {
     return currentWorksheet()->unmergeCells(range);
 }
@@ -654,19 +654,6 @@ AbstractSheet *Document::sheet(const QString &sheetName) const
 {
     Q_D(const Document);
     return d->workbook->sheet(sheetNames().indexOf(sheetName));
-}
-
-/*!
- * Returns the worksheet object named \a sheetName.
- * If the type of sheet is not AbstractSheet::ST_WorkSheet, then 0 will be returned.
- */
-Worksheet *Document::worksheet(const QString &sheetName) const
-{
-    AbstractSheet *st = sheet(sheetName);
-    if (st && st->sheetType() == AbstractSheet::ST_WorkSheet)
-        return static_cast<Worksheet *>(st);
-    else
-        return 0;
 }
 
 /*!
