@@ -47,16 +47,6 @@
 
 namespace QXlsx {
 
-struct XlsxSheetItemInfo
-{
-    XlsxSheetItemInfo(){}
-
-    QString name;
-    int sheetId;
-    QString rId;
-    QString state;
-};
-
 struct XlsxDefineNameData
 {
     XlsxDefineNameData()
@@ -90,8 +80,6 @@ public:
     QList<QSharedPointer<MediaFile> > mediaFiles;
     QList<QSharedPointer<Chart> > chartFiles;
     QList<XlsxDefineNameData> definedNamesList;
-
-    QList<XlsxSheetItemInfo> sheetItemInfoList;//Data from xml file
 
     bool strings_to_numbers_enabled;
     bool html_to_richstring_enabled;

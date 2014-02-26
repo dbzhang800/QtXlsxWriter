@@ -539,7 +539,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                      data.comment = attrs.value(QLatin1String("comment")).toString();
                  if (attrs.hasAttribute(QLatin1String("localSheetId"))) {
                      int localId = attrs.value(QLatin1String("localSheetId")).toString().toInt();
-                     int sheetId = d->sheetItemInfoList[localId].sheetId;
+                     int sheetId = d->sheets.at(localId)->sheetId();
                      data.sheetId = sheetId;
                  }
                  data.formula = reader.readElementText();
