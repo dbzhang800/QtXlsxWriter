@@ -15,6 +15,7 @@ SUBDIRS = hello \
     worksheetoperations \
     hyperlinks \
     chart \
+    chartsheet \
     demo
 
 qtHaveModule(widgets): SUBDIRS += xlsxwidget

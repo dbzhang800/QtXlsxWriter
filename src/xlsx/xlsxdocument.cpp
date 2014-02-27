@@ -246,18 +246,34 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     DocPropsApp docPropsApp(DocPropsApp::F_NewFromScratch);
     DocPropsCore docPropsCore(DocPropsCore::F_NewFromScratch);
 
-    // save sheet xml files
-    for (int i=0; i<workbook->sheetCount(); ++i) {
-        AbstractSheet *sheet = workbook->sheet(i);
-        if (sheet->sheetType() == AbstractSheet::ST_WorkSheet) {
-            contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
-            docPropsApp.addPartTitle(sheet->sheetName());
+    // save worksheet xml files
+    QList<QSharedPointer<AbstractSheet> > worksheets = workbook->getSheetsByTypes(AbstractSheet::ST_WorkSheet);
+    if (!worksheets.isEmpty())
+        docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), worksheets.size());
+    for (int i=0; i<worksheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = worksheets[i];
+        contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+        docPropsApp.addPartTitle(sheet->sheetName());
 
-            zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
-            Relationships *rel = sheet->relationships();
-            if (!rel->isEmpty())
-                zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
-        }
+        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+        Relationships *rel = sheet->relationships();
+        if (!rel->isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
+    }
+
+    //save chartsheet xml files
+    QList<QSharedPointer<AbstractSheet> > chartsheets = workbook->getSheetsByTypes(AbstractSheet::ST_ChartSheet);
+    if (!chartsheets.isEmpty())
+        docPropsApp.addHeadingPair(QStringLiteral("Chartsheets"), chartsheets.size());
+    for (int i=0; i<chartsheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = chartsheets[i];
+        contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+        docPropsApp.addPartTitle(sheet->sheetName());
+
+        zipWriter.addFile(QStringLiteral("xl/chartsheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+        Relationships *rel = sheet->relationships();
+        if (!rel->isEmpty())
+            zipWriter.addFile(QStringLiteral("xl/chartsheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
     }
 
     // save external links xml files
@@ -291,8 +307,6 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
         docPropsApp.setProperty(name, q->documentProperty(name));
         docPropsCore.setProperty(name, q->documentProperty(name));
     }
-    if (workbook->sheetCount())
-        docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), workbook->sheetCount());
     contentTypes->addDocPropApp();
     contentTypes->addDocPropCore();
     zipWriter.addFile(QStringLiteral("docProps/app.xml"), docPropsApp.saveToXmlData());

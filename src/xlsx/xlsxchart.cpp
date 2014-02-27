@@ -93,9 +93,13 @@ Chart::~Chart()
 /*!
  * Add the data series which is in the range \a range of the \a sheet.
  */
-void Chart::addSeries(const CellRange &range, Worksheet *sheet)
+void Chart::addSeries(const CellRange &range, AbstractSheet *sheet)
 {
     Q_D(Chart);
+    if (sheet && sheet->sheetType() != AbstractSheet::ST_WorkSheet)
+        return;
+    if (!sheet && d->sheet->sheetType() != AbstractSheet::ST_WorkSheet)
+        return;
 
     QString serRef = sheet ? sheet->sheetName() : d->sheet->sheetName();
 

@@ -67,7 +67,7 @@ public:
 
     ~Chart();
 
-    void addSeries(const CellRange &range, Worksheet *sheet=0);
+    void addSeries(const CellRange &range, AbstractSheet *sheet=0);
     void setChartType(ChartType type);
     void setChartStyle(int id);
 

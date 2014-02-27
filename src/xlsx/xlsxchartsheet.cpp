@@ -28,6 +28,7 @@
 #include "xlsxutility_p.h"
 #include "xlsxdrawing_p.h"
 #include "xlsxdrawinganchor_p.h"
+#include "xlsxchart.h"
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -36,8 +37,9 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 ChartsheetPrivate::ChartsheetPrivate(Chartsheet *p, Chartsheet::CreateFlag flag)
-    : AbstractSheetPrivate(p, flag)
+    : AbstractSheetPrivate(p, flag), chart(0)
 {
+
 }
 
 ChartsheetPrivate::~ChartsheetPrivate()
@@ -57,6 +59,21 @@ Chartsheet::Chartsheet(const QString &name, int id, Workbook *workbook, CreateFl
     :AbstractSheet(name, id, workbook, new ChartsheetPrivate(this, flag))
 {
     setSheetType(ST_ChartSheet);
+
+    if (flag == Chartsheet::F_NewFromScratch) {
+        d_func()->drawing = QSharedPointer<Drawing>(new Drawing(this, flag));
+
+        DrawingAbsoluteAnchor *anchor = new DrawingAbsoluteAnchor(drawing(), DrawingAnchor::Picture);
+
+        anchor->pos = QPoint(0, 0);
+        anchor->ext = QSize(9293679, 6068786);
+
+        QSharedPointer<Chart> chart = QSharedPointer<Chart>(new Chart(this, flag));
+        chart->setChartType(Chart::CT_Bar);
+        anchor->setObjectGraphicFrame(chart);
+
+        d_func()->chart = chart.data();
+    }
 }
 
 /*!

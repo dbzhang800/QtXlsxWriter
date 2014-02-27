@@ -26,6 +26,7 @@
 #include "xlsxworkbook_p.h"
 #include "xlsxsharedstrings_p.h"
 #include "xlsxworksheet.h"
+#include "xlsxchartsheet.h"
 #include "xlsxstyles_p.h"
 #include "xlsxformat.h"
 #include "xlsxworksheet_p.h"
@@ -61,7 +62,8 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q, Workbook::CreateFlag flag) :
     firstsheet = 0;
     table_count = 0;
 
-    last_sheet_index = 0;
+    last_worksheet_index = 0;
+    last_chartsheet_index = 0;
     last_sheet_id = 0;
 }
 
@@ -195,9 +197,16 @@ AbstractSheet *Workbook::addSheet(const QString &name, int sheetId, AbstractShee
     Q_D(Workbook);
     if (sheetId > d->last_sheet_id)
         d->last_sheet_id = sheetId;
-
-    Worksheet *sheet = new Worksheet(name, sheetId, this, F_LoadFromExists);
-    d->sheets.append(QSharedPointer<Worksheet>(sheet));
+    AbstractSheet *sheet=0;
+    if (type == AbstractSheet::ST_WorkSheet) {
+        sheet = new Worksheet(name, sheetId, this, F_LoadFromExists);
+    } else if (type == AbstractSheet::ST_ChartSheet) {
+        sheet = new Chartsheet(name, sheetId, this, F_LoadFromExists);
+    } else {
+        qWarning("unsupported sheet type.");
+        Q_ASSERT(false);
+    }
+    d->sheets.append(QSharedPointer<AbstractSheet>(sheet));
     d->sheetNames.append(name);
     return sheet;
 }
@@ -205,22 +214,37 @@ AbstractSheet *Workbook::addSheet(const QString &name, int sheetId, AbstractShee
 AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractSheet::SheetType type)
 {
     Q_D(Workbook);
-    QString worksheetName = createSafeSheetName(name);
-    if (!worksheetName.isEmpty()) {
+    QString sheetName = createSafeSheetName(name);
+    if (!sheetName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
-        if (d->sheetNames.contains(worksheetName))
+        if (d->sheetNames.contains(sheetName))
             return 0;
     } else {
-        do {
-            ++d->last_sheet_index;
-            worksheetName = QStringLiteral("Sheet%1").arg(d->last_sheet_index);
-        } while (d->sheetNames.contains(worksheetName));
+        if (type == AbstractSheet::ST_WorkSheet) {
+            do {
+                ++d->last_worksheet_index;
+                sheetName = QStringLiteral("Sheet%1").arg(d->last_worksheet_index);
+            } while (d->sheetNames.contains(sheetName));
+        } else if (type == AbstractSheet::ST_ChartSheet) {
+            do {
+                ++d->last_chartsheet_index;
+                sheetName = QStringLiteral("Chart%1").arg(d->last_chartsheet_index);
+            } while (d->sheetNames.contains(sheetName));
+        } else {
+            qWarning("unsupported sheet type.");
+            return 0;
+        }
     }
 
     ++d->last_sheet_id;
-    Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this, F_NewFromScratch);
-    d->sheets.insert(index, QSharedPointer<Worksheet>(sheet));
-    d->sheetNames.insert(index, worksheetName);
+    AbstractSheet *sheet;
+    if (type == AbstractSheet::ST_WorkSheet)
+        sheet = new Worksheet(sheetName, d->last_sheet_id, this, F_NewFromScratch);
+    else
+        sheet = new Chartsheet(sheetName, d->last_sheet_id, this, F_NewFromScratch);
+
+    d->sheets.insert(index, QSharedPointer<AbstractSheet>(sheet));
+    d->sheetNames.insert(index, sheetName);
     d->activesheetIndex = index;
     return sheet;
 }
@@ -384,6 +408,20 @@ QList<Drawing *> Workbook::drawings()
     return ds;
 }
 
+/*!
+ * \internal
+ */
+QList<QSharedPointer<AbstractSheet> > Workbook::getSheetsByTypes(AbstractSheet::SheetType type) const
+{
+    Q_D(const Workbook);
+    QList<QSharedPointer<AbstractSheet> > list;
+    for (int i=0; i<d->sheets.size(); ++i) {
+        if (d->sheets[i]->sheetType() == type)
+            list.append(d->sheets[i]);
+    }
+    return list;
+}
+
 void Workbook::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Workbook);
@@ -424,8 +462,10 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     writer.writeEndElement();//bookViews
 
     writer.writeStartElement(QStringLiteral("sheets"));
-    for (int i=0; i<d->sheets.size(); ++i) {
-        QSharedPointer<AbstractSheet> sheet = d->sheets[i];
+    //work sheets
+    QList<QSharedPointer<AbstractSheet> > worksheets = getSheetsByTypes(AbstractSheet::ST_WorkSheet);
+    for (int i=0; i<worksheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = worksheets[i];
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
@@ -433,6 +473,20 @@ void Workbook::saveToXmlFile(QIODevice *device) const
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
 
         d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
+        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
+    }
+
+    //chart sheets
+    QList<QSharedPointer<AbstractSheet> > chartsheets = getSheetsByTypes(AbstractSheet::ST_ChartSheet);
+    for (int i=0; i<chartsheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = chartsheets[i];
+        writer.writeEmptyElement(QStringLiteral("sheet"));
+        writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
+        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
+        if (sheet->isHidden())
+            writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
+
+        d->relationships->addDocumentRelationship(QStringLiteral("/chartsheet"), QStringLiteral("chartsheets/sheet%1.xml").arg(i+1));
         writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
     }
     writer.writeEndElement();//sheets
