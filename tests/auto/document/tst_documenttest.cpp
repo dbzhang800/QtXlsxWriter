@@ -308,6 +308,7 @@ void DocumentTest::testReadWriteTime()
 void DocumentTest::testMoveWorksheet()
 {
     Document xlsx1;
+    xlsx1.addSheet();//Sheet1
     xlsx1.addSheet();
 
     QCOMPARE(xlsx1.sheetNames(), QStringList()<<"Sheet1"<<"Sheet2");
@@ -320,6 +321,7 @@ void DocumentTest::testMoveWorksheet()
 void DocumentTest::testCopyWorksheet()
 {
     Document xlsx1;
+    xlsx1.addSheet();//Sheet1
     xlsx1.addSheet();
     xlsx1.write("A1", "String");
     xlsx1.write("A2", 999);
@@ -342,6 +344,7 @@ void DocumentTest::testCopyWorksheet()
 void DocumentTest::testDeleteWorksheet()
 {
     Document xlsx1;
+    xlsx1.addSheet();//Sheet1
     xlsx1.addSheet();
     xlsx1.addSheet();
 

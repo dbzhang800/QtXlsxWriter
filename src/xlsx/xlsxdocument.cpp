@@ -96,9 +96,6 @@ void DocumentPrivate::init()
 
     if (workbook.isNull())
         workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_NewFromScratch));
-
-    if (workbook->sheetCount() == 0)
-        workbook->addSheet();
 }
 
 bool DocumentPrivate::loadPackage(QIODevice *device)

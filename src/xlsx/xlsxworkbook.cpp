@@ -255,6 +255,8 @@ AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractShe
 AbstractSheet *Workbook::activeSheet() const
 {
     Q_D(const Workbook);
+    if (d->sheets.isEmpty())
+        const_cast<Workbook*>(this)->addSheet();
     return d->sheets[d->activesheetIndex].data();
 }
 
@@ -426,6 +428,8 @@ void Workbook::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Workbook);
     d->relationships->clear();
+    if (d->sheets.isEmpty())
+        const_cast<Workbook *>(this)->addSheet();
 
     QXmlStreamWriter writer(device);
 
