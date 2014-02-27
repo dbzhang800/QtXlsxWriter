@@ -22,9 +22,8 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-
-#ifndef QXLSX_DRAWING_H
-#define QXLSX_DRAWING_H
+#ifndef XLSXCHARTSHEET_P_H
+#define XLSXCHARTSHEET_P_H
 
 //
 //  W A R N I N G
@@ -37,36 +36,21 @@
 // We mean it.
 //
 
-#include "xlsxrelationships_p.h"
-#include "xlsxabstractooxmlfile.h"
-
-#include <QList>
-#include <QString>
-#include <QSharedPointer>
-
-class QIODevice;
-class QXmlStreamWriter;
+#include "xlsxglobal.h"
+#include "xlsxchartsheet.h"
+#include "xlsxabstractsheet_p.h"
 
 namespace QXlsx {
 
-class DrawingAnchor;
-class Workbook;
-class AbstractSheet;
-class MediaFile;
-
-class Drawing : public AbstractOOXmlFile
+class XLSX_AUTOTEST_EXPORT ChartsheetPrivate : public AbstractSheetPrivate
 {
+    Q_DECLARE_PUBLIC(Chartsheet)
 public:
-    Drawing(AbstractSheet *sheet);
-    ~Drawing();
-    void saveToXmlFile(QIODevice *device) const;
-    bool loadFromXmlFile(QIODevice *device);
+    ChartsheetPrivate(Chartsheet *p);
+    ~ChartsheetPrivate();
 
-    AbstractSheet *sheet;
-    Workbook *workbook;
-    QList<DrawingAnchor *> anchors;
+    Chart *chart;
 };
 
-} // namespace QXlsx
-
-#endif // QXLSX_DRAWING_H
+}
+#endif // XLSXCHARTSHEET_P_H

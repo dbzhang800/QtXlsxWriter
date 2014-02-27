@@ -45,6 +45,8 @@ class Relationships;
 class DocumentPrivate;
 class MediaFile;
 class Chart;
+class Chartsheet;
+class Worksheet;
 
 class WorkbookPrivate;
 class Q_XLSX_EXPORT Workbook : public AbstractOOXmlFile
@@ -85,6 +87,7 @@ public:
 
 private:
     friend class Worksheet;
+    friend class Chartsheet;
     friend class WorksheetPrivate;
     friend class Document;
     friend class DocumentPrivate;

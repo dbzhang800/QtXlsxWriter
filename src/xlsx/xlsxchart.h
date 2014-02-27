@@ -35,6 +35,7 @@ class QXmlStreamWriter;
 
 QT_BEGIN_NAMESPACE_XLSX
 
+class AbstractSheet;
 class Worksheet;
 class ChartPrivate;
 class CellRange;
@@ -74,10 +75,12 @@ public:
     bool loadFromXmlFile(QIODevice *device);
 
 private:
+    friend class AbstractSheet;
     friend class Worksheet;
+    friend class Chartsheet;
     friend class DrawingAnchor;
 
-    Chart(Worksheet *parent);
+    Chart(AbstractSheet *parent);
 };
 
 QT_END_NAMESPACE_XLSX

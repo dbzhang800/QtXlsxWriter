@@ -116,7 +116,7 @@ public:
     QList<QSharedPointer<XlsxSeries> > seriesList;
     QList<QSharedPointer<XlsxAxis> > axisList;
 
-    Worksheet *sheet;
+    AbstractSheet *sheet;
 };
 
 } // namespace QXlsx

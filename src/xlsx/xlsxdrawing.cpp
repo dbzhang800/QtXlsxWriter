@@ -25,7 +25,7 @@
 
 #include "xlsxdrawing_p.h"
 #include "xlsxdrawinganchor_p.h"
-#include "xlsxworksheet.h"
+#include "xlsxabstractsheet.h"
 
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
@@ -33,10 +33,10 @@
 
 namespace QXlsx {
 
-Drawing::Drawing(Worksheet *worksheet)
-    :worksheet(worksheet)
+Drawing::Drawing(AbstractSheet *sheet)
+    :sheet(sheet)
 {
-    workbook = worksheet->workbook();
+    workbook = sheet->workbook();
 }
 
 Drawing::~Drawing()

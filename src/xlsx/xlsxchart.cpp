@@ -77,7 +77,7 @@ ChartPrivate::~ChartPrivate()
 /*!
  * \internal
  */
-Chart::Chart(Worksheet *parent)
+Chart::Chart(AbstractSheet *parent)
     :AbstractOOXmlFile(new ChartPrivate(this))
 {
     d_func()->sheet = parent;

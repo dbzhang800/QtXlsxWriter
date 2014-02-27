@@ -22,51 +22,35 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
+#ifndef XLSXCHARTSHEET_H
+#define XLSXCHARTSHEET_H
 
-#ifndef QXLSX_DRAWING_H
-#define QXLSX_DRAWING_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt Xlsx API.  It exists for the convenience
-// of the Qt Xlsx.  This header file may change from
-// version to version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include "xlsxrelationships_p.h"
-#include "xlsxabstractooxmlfile.h"
-
-#include <QList>
-#include <QString>
+#include "xlsxabstractsheet.h"
+#include <QStringList>
 #include <QSharedPointer>
 
-class QIODevice;
-class QXmlStreamWriter;
-
-namespace QXlsx {
-
-class DrawingAnchor;
+QT_BEGIN_NAMESPACE_XLSX
 class Workbook;
-class AbstractSheet;
-class MediaFile;
-
-class Drawing : public AbstractOOXmlFile
+class DocumentPrivate;
+class ChartsheetPrivate;
+class Chart;
+class Q_XLSX_EXPORT Chartsheet : public AbstractSheet
 {
+    Q_DECLARE_PRIVATE(Chartsheet)
 public:
-    Drawing(AbstractSheet *sheet);
-    ~Drawing();
+
+    ~Chartsheet();
+    Chart *chart();
+
+private:
+    friend class DocumentPrivate;
+    friend class Workbook;
+    Chartsheet(const QString &sheetName, int sheetId, Workbook *book);
+    Chartsheet *copy(const QString &distName, int distId) const;
+
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
-
-    AbstractSheet *sheet;
-    Workbook *workbook;
-    QList<DrawingAnchor *> anchors;
 };
 
-} // namespace QXlsx
-
-#endif // QXLSX_DRAWING_H
+QT_END_NAMESPACE_XLSX
+#endif // XLSXCHARTSHEET_H
