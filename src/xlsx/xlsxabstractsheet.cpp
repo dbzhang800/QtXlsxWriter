@@ -28,8 +28,8 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-AbstractSheetPrivate::AbstractSheetPrivate(AbstractSheet *p)
-    : AbstractOOXmlFilePrivate(p)
+AbstractSheetPrivate::AbstractSheetPrivate(AbstractSheet *p, AbstractSheet::CreateFlag flag)
+    : AbstractOOXmlFilePrivate(p, flag)
 {
     hidden = false;
     type = AbstractSheet::ST_WorkSheet;

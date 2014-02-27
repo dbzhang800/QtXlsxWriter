@@ -80,7 +80,7 @@ private:
     friend class Chartsheet;
     friend class DrawingAnchor;
 
-    Chart(AbstractSheet *parent);
+    Chart(AbstractSheet *parent, CreateFlag flag);
 };
 
 QT_END_NAMESPACE_XLSX

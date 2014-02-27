@@ -33,8 +33,8 @@
 
 namespace QXlsx {
 
-Drawing::Drawing(AbstractSheet *sheet)
-    :sheet(sheet)
+Drawing::Drawing(AbstractSheet *sheet, CreateFlag flag)
+    :AbstractOOXmlFile(flag), sheet(sheet)
 {
     workbook = sheet->workbook();
 }

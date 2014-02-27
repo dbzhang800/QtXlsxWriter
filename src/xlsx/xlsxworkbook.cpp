@@ -41,12 +41,12 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-WorkbookPrivate::WorkbookPrivate(Workbook *q) :
-    AbstractOOXmlFilePrivate(q)
+WorkbookPrivate::WorkbookPrivate(Workbook *q, Workbook::CreateFlag flag) :
+    AbstractOOXmlFilePrivate(q, flag)
 {
-    sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings);
-    styles = QSharedPointer<Styles>(new Styles);
-    theme = QSharedPointer<Theme>(new Theme);
+    sharedStrings = QSharedPointer<SharedStrings> (new SharedStrings(flag));
+    styles = QSharedPointer<Styles>(new Styles(flag));
+    theme = QSharedPointer<Theme>(new Theme(flag));
 
     x_window = 240;
     y_window = 15;
@@ -65,8 +65,8 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q) :
     last_sheet_id = 0;
 }
 
-Workbook::Workbook()
-    : AbstractOOXmlFile(new WorkbookPrivate(this))
+Workbook::Workbook(CreateFlag flag)
+    : AbstractOOXmlFile(new WorkbookPrivate(this, flag))
 {
 
 }
@@ -196,7 +196,7 @@ AbstractSheet *Workbook::addSheet(const QString &name, int sheetId, AbstractShee
     if (sheetId > d->last_sheet_id)
         d->last_sheet_id = sheetId;
 
-    Worksheet *sheet = new Worksheet(name, sheetId, this);
+    Worksheet *sheet = new Worksheet(name, sheetId, this, F_LoadFromExists);
     d->sheets.append(QSharedPointer<Worksheet>(sheet));
     d->sheetNames.append(name);
     return sheet;
@@ -218,7 +218,7 @@ AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractShe
     }
 
     ++d->last_sheet_id;
-    Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this);
+    Worksheet *sheet = new Worksheet(worksheetName, d->last_sheet_id, this, F_NewFromScratch);
     d->sheets.insert(index, QSharedPointer<Worksheet>(sheet));
     d->sheetNames.insert(index, worksheetName);
     d->activesheetIndex = index;
@@ -545,7 +545,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                  const QString rId = attributes.value(QLatin1String("r:id")).toString();
                  XlsxRelationship relationship = d->relationships->getRelationshipById(rId);
 
-                 QSharedPointer<SimpleOOXmlFile> link(new SimpleOOXmlFile);
+                 QSharedPointer<SimpleOOXmlFile> link(new SimpleOOXmlFile(F_LoadFromExists));
                  const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ relationship.target);
                  link->setFilePath(fullPath);
                  d->externalLinks.append(link);

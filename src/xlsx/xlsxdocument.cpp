@@ -87,11 +87,16 @@ QT_BEGIN_NAMESPACE_XLSX
 DocumentPrivate::DocumentPrivate(Document *p) :
     q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx"))
 {
-    workbook = QSharedPointer<Workbook>(new Workbook);
 }
 
 void DocumentPrivate::init()
 {
+    if (contentTypes.isNull())
+        contentTypes = QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_NewFromScratch));
+
+    if (workbook.isNull())
+        workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_NewFromScratch));
+
     if (workbook->sheetCount() == 0)
         workbook->addSheet();
 }
@@ -105,7 +110,8 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     //Load the Content_Types file
     if (!filePaths.contains(QLatin1String("[Content_Types].xml")))
         return false;
-    contentTypes.loadFromXmlData(zipReader.fileData(QStringLiteral("[Content_Types].xml")));
+    contentTypes = QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_LoadFromExists));
+    contentTypes->loadFromXmlData(zipReader.fileData(QStringLiteral("[Content_Types].xml")));
 
     //Load root rels file
     if (!filePaths.contains(QLatin1String("_rels/.rels")))
@@ -120,7 +126,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         //In normal case, this should be "docProps/core.xml"
         QString docPropsCore_Name = rels_core[0].target;
 
-        DocPropsCore props;
+        DocPropsCore props(DocPropsCore::F_LoadFromExists);
         props.loadFromXmlData(zipReader.fileData(docPropsCore_Name));
         foreach (QString name, props.propertyNames())
             q->setDocumentProperty(name, props.property(name));
@@ -133,7 +139,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         //In normal case, this should be "docProps/app.xml"
         QString docPropsApp_Name = rels_app[0].target;
 
-        DocPropsApp props;
+        DocPropsApp props(DocPropsApp::F_LoadFromExists);
         props.loadFromXmlData(zipReader.fileData(docPropsApp_Name));
         foreach (QString name, props.propertyNames())
             q->setDocumentProperty(name, props.property(name));
@@ -141,6 +147,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
 
     //load workbook now, Get the workbook file path from the root rels file
     //In normal case, this should be "xl/workbook.xml"
+    workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_LoadFromExists));
     QList<XlsxRelationship> rels_xl = rootRels.documentRelationships(QStringLiteral("/officeDocument"));
     if (rels_xl.isEmpty())
         return false;
@@ -156,7 +163,7 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         //In normal case this should be styles.xml which in xl
         QString name = rels_styles[0].target;
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
-        QSharedPointer<Styles> styles (new Styles(true));
+        QSharedPointer<Styles> styles (new Styles(Styles::F_LoadFromExists));
         styles->loadFromXmlData(zipReader.fileData(path));
         workbook->d_func()->styles = styles;
     }
@@ -234,16 +241,16 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     if (zipWriter.error())
         return false;
 
-    contentTypes.clearOverrides();
+    contentTypes->clearOverrides();
 
-    DocPropsApp docPropsApp;
-    DocPropsCore docPropsCore;
+    DocPropsApp docPropsApp(DocPropsApp::F_NewFromScratch);
+    DocPropsCore docPropsCore(DocPropsCore::F_NewFromScratch);
 
     // save sheet xml files
     for (int i=0; i<workbook->sheetCount(); ++i) {
         AbstractSheet *sheet = workbook->sheet(i);
         if (sheet->sheetType() == AbstractSheet::ST_WorkSheet) {
-            contentTypes.addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+            contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
             docPropsApp.addPartTitle(sheet->sheetName());
 
             zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
@@ -256,7 +263,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     // save external links xml files
     for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
         SimpleOOXmlFile *link = workbook->d_func()->externalLinks[i].data();
-        contentTypes.addExternalLinkName(QStringLiteral("externalLink%1").arg(i+1));
+        contentTypes->addExternalLinkName(QStringLiteral("externalLink%1").arg(i+1));
 
         zipWriter.addFile(QStringLiteral("xl/externalLinks/externalLink%1.xml").arg(i+1), link->saveToXmlData());
         Relationships *rel = link->relationships();
@@ -265,13 +272,13 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     }
 
     // save workbook xml file
-    contentTypes.addWorkbook();
+    contentTypes->addWorkbook();
     zipWriter.addFile(QStringLiteral("xl/workbook.xml"), workbook->saveToXmlData());
     zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), workbook->relationships()->saveToXmlData());
 
     // save drawing xml files
     for (int i=0; i<workbook->drawings().size(); ++i) {
-        contentTypes.addDrawingName(QStringLiteral("drawing%1").arg(i+1));
+        contentTypes->addDrawingName(QStringLiteral("drawing%1").arg(i+1));
 
         Drawing *drawing = workbook->drawings()[i];
         zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), drawing->saveToXmlData());
@@ -286,28 +293,28 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     }
     if (workbook->sheetCount())
         docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), workbook->sheetCount());
-    contentTypes.addDocPropApp();
-    contentTypes.addDocPropCore();
+    contentTypes->addDocPropApp();
+    contentTypes->addDocPropCore();
     zipWriter.addFile(QStringLiteral("docProps/app.xml"), docPropsApp.saveToXmlData());
     zipWriter.addFile(QStringLiteral("docProps/core.xml"), docPropsCore.saveToXmlData());
 
     // save sharedStrings xml file
     if (!workbook->sharedStrings()->isEmpty()) {
-        contentTypes.addSharedString();
+        contentTypes->addSharedString();
         zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), workbook->sharedStrings()->saveToXmlData());
     }
 
     // save styles xml file
-    contentTypes.addStyles();
+    contentTypes->addStyles();
     zipWriter.addFile(QStringLiteral("xl/styles.xml"), workbook->styles()->saveToXmlData());
 
     // save theme xml file
-    contentTypes.addTheme();
+    contentTypes->addTheme();
     zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), workbook->theme()->saveToXmlData());
 
     // save chart xml files
     for (int i=0; i<workbook->chartFiles().size(); ++i) {
-        contentTypes.addChartName(QStringLiteral("chart%1").arg(i+1));
+        contentTypes->addChartName(QStringLiteral("chart%1").arg(i+1));
         QSharedPointer<Chart> cf = workbook->chartFiles()[i];
         zipWriter.addFile(QStringLiteral("xl/charts/chart%1.xml").arg(i+1), cf->saveToXmlData());
     }
@@ -316,7 +323,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     for (int i=0; i<workbook->mediaFiles().size(); ++i) {
         QSharedPointer<MediaFile> mf = workbook->mediaFiles()[i];
         if (!mf->mimeType().isEmpty())
-            contentTypes.addDefault(mf->suffix(), mf->mimeType());
+            contentTypes->addDefault(mf->suffix(), mf->mimeType());
 
         zipWriter.addFile(QStringLiteral("xl/media/image%1.%2").arg(i+1).arg(mf->suffix()), mf->contents());
     }
@@ -329,7 +336,7 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     zipWriter.addFile(QStringLiteral("_rels/.rels"), rootrels.saveToXmlData());
 
     // save content types xml file
-    zipWriter.addFile(QStringLiteral("[Content_Types].xml"), contentTypes.saveToXmlData());
+    zipWriter.addFile(QStringLiteral("[Content_Types].xml"), contentTypes->saveToXmlData());
 
     zipWriter.close();
     return true;

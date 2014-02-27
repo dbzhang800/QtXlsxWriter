@@ -39,6 +39,12 @@ class Q_XLSX_EXPORT AbstractOOXmlFile
 {
     Q_DECLARE_PRIVATE(AbstractOOXmlFile)
 public:
+    enum CreateFlag
+    {
+        F_NewFromScratch,
+        F_LoadFromExists
+    };
+
     virtual ~AbstractOOXmlFile();
 
     virtual void saveToXmlFile(QIODevice *device) const = 0;
@@ -51,8 +57,9 @@ public:
 
     void setFilePath(const QString path);
     QString filePath() const;
+
 protected:
-    AbstractOOXmlFile();
+    AbstractOOXmlFile(CreateFlag flag);
     AbstractOOXmlFile(AbstractOOXmlFilePrivate *d);
 
     AbstractOOXmlFilePrivate *d_ptr;

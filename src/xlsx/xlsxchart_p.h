@@ -92,7 +92,7 @@ class ChartPrivate : public AbstractOOXmlFilePrivate
     Q_DECLARE_PUBLIC(Chart)
 
 public:
-    ChartPrivate(Chart *q);
+    ChartPrivate(Chart *q, Chart::CreateFlag flag);
     ~ChartPrivate();
 
     bool loadXmlChart(QXmlStreamReader &reader);

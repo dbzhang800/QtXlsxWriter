@@ -34,7 +34,8 @@
 
 namespace QXlsx {
 
-DocPropsCore::DocPropsCore()
+DocPropsCore::DocPropsCore(CreateFlag flag)
+    :AbstractOOXmlFile(flag)
 {
 }
 

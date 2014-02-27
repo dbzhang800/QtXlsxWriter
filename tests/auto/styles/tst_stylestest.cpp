@@ -32,7 +32,7 @@ StylesTest::StylesTest()
 
 void StylesTest::testEmptyStyle()
 {
-    QXlsx::Styles styles;
+    QXlsx::Styles styles(QXlsx::Styles::F_NewFromScratch);
     QByteArray xmlData = styles.saveToXmlData();
 
     QVERIFY2(xmlData.contains("<cellXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/></cellXfs>"), "Must have one cell style");
@@ -41,7 +41,7 @@ void StylesTest::testEmptyStyle()
 
 void StylesTest::testAddXfFormat()
 {
-    QXlsx::Styles styles;
+    QXlsx::Styles styles(QXlsx::Styles::F_NewFromScratch);
 
     for (int i=0; i<10; ++i) {
         QXlsx::Format format;
@@ -55,7 +55,7 @@ void StylesTest::testAddXfFormat()
 
 void StylesTest::testAddXfFormat2()
 {
-    QXlsx::Styles styles;
+    QXlsx::Styles styles(QXlsx::Styles::F_NewFromScratch);
 
     QXlsx::Format format;
     format.setNumberFormat("h:mm:ss AM/PM"); //builtin 19
@@ -73,7 +73,7 @@ void StylesTest::testAddXfFormat2()
 // For a solid fill, Excel reverses the role of foreground and background colours
 void StylesTest::testSolidFillBackgroundColor()
 {
-    QXlsx::Styles styles;
+    QXlsx::Styles styles(QXlsx::Styles::F_NewFromScratch);
     QXlsx::Format format;
     format.setPatternBackgroundColor(QColor(Qt::red));
     styles.addXfFormat(format);
@@ -85,7 +85,7 @@ void StylesTest::testSolidFillBackgroundColor()
 
 void StylesTest::testWriteBorders()
 {
-    QXlsx::Styles styles;
+    QXlsx::Styles styles(QXlsx::Styles::F_NewFromScratch);
     QXlsx::Format format;
     format.setRightBorderStyle(QXlsx::Format::BorderThin);
     styles.addXfFormat(format);
@@ -103,7 +103,7 @@ void StylesTest::testReadFonts()
             "<font><sz val=\"15\"/><color rgb=\"FFff0000\"/><name val=\"Calibri\"/><family val=\"2\"/><scheme val=\"minor\"/></font>"
             "<font><b/><u val=\"double\"/><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/><scheme val=\"minor\"/></font>"
             "</fonts>";
-    QXlsx::Styles styles(true);
+    QXlsx::Styles styles(QXlsx::Styles::F_LoadFromExists);
     QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is fonts
     styles.readFonts(reader);
@@ -122,7 +122,7 @@ void StylesTest::testReadFills()
             "<fill><patternFill patternType=\"lightUp\"/></fill>"
             "<fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFa0a0a4\"/></patternFill></fill>"
             "</fills>";
-    QXlsx::Styles styles(true);
+    QXlsx::Styles styles(QXlsx::Styles::F_LoadFromExists);
     QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is fills
     styles.readFills(reader);
@@ -139,7 +139,7 @@ void StylesTest::testReadBorders()
             "<border><left style=\"dashDotDot\"><color auto=\"1\"/></left><right style=\"dashDotDot\"><color auto=\"1\"/></right><top style=\"dashDotDot\"><color auto=\"1\"/></top><bottom style=\"dashDotDot\"><color auto=\"1\"/></bottom><diagonal/></border>"
             "</borders>";
 
-    QXlsx::Styles styles(true);
+    QXlsx::Styles styles(QXlsx::Styles::F_LoadFromExists);
     QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is borders
     styles.readBorders(reader);
@@ -154,7 +154,7 @@ void StylesTest::testReadNumFmts()
             "<numFmt numFmtId=\"165\" formatCode=\"dd/mm/yyyy\"/>"
             "</numFmts>";
 
-    QXlsx::Styles styles(true);
+    QXlsx::Styles styles(QXlsx::Styles::F_LoadFromExists);
     QXmlStreamReader reader(xmlData);
     reader.readNextStartElement();//So current node is numFmts
     styles.readNumFmts(reader);

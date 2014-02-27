@@ -31,8 +31,8 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-AbstractOOXmlFilePrivate::AbstractOOXmlFilePrivate(AbstractOOXmlFile *q)
-    :relationships(new Relationships), q_ptr(q)
+AbstractOOXmlFilePrivate::AbstractOOXmlFilePrivate(AbstractOOXmlFile *q, AbstractOOXmlFile::CreateFlag flag=AbstractOOXmlFile::F_NewFromScratch)
+    :relationships(new Relationships), flag(flag), q_ptr(q)
 {
 
 }
@@ -50,8 +50,8 @@ AbstractOOXmlFilePrivate::~AbstractOOXmlFilePrivate()
  * Base class of all the ooxml part file.
  */
 
-AbstractOOXmlFile::AbstractOOXmlFile()
-    :d_ptr(new AbstractOOXmlFilePrivate(this))
+AbstractOOXmlFile::AbstractOOXmlFile(CreateFlag flag)
+    :d_ptr(new AbstractOOXmlFilePrivate(this, flag))
 {
 }
 

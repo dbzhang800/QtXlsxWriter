@@ -37,7 +37,8 @@
 
 namespace QXlsx {
 
-SharedStrings::SharedStrings()
+SharedStrings::SharedStrings(CreateFlag flag)
+    :AbstractOOXmlFile(flag)
 {
     m_stringCount = 0;
 }

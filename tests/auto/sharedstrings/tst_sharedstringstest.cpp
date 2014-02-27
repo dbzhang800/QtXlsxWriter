@@ -27,7 +27,7 @@ SharedStringsTest::SharedStringsTest()
 
 void SharedStringsTest::testAddSharedString()
 {
-    QXlsx::SharedStrings sst;
+    QXlsx::SharedStrings sst(QXlsx::SharedStrings::F_NewFromScratch);
     sst.addSharedString("Hello Qt!");
     sst.addSharedString("Xlsx Writer");
 
@@ -68,7 +68,7 @@ void SharedStringsTest::testAddSharedString()
 
 void SharedStringsTest::testRemoveSharedString()
 {
-    QXlsx::SharedStrings sst;
+    QXlsx::SharedStrings sst(QXlsx::SharedStrings::F_NewFromScratch);
     sst.addSharedString("Hello Qt!");
     sst.addSharedString("Xlsx Writer");
     sst.addSharedString("Hello World");
@@ -101,7 +101,7 @@ void SharedStringsTest::testRemoveSharedString()
 
 void SharedStringsTest::testLoadXmlData()
 {
-    QXlsx::SharedStrings sst;
+    QXlsx::SharedStrings sst(QXlsx::SharedStrings::F_NewFromScratch);
     sst.addSharedString("Hello Qt!");
     sst.addSharedString("Xlsx Writer");
 
@@ -119,7 +119,7 @@ void SharedStringsTest::testLoadXmlData()
     sst.addSharedString("Hello Qt!");
     QByteArray xmlData = sst.saveToXmlData();
 
-    QSharedPointer<QXlsx::SharedStrings> sst2(new QXlsx::SharedStrings);
+    QSharedPointer<QXlsx::SharedStrings> sst2(new QXlsx::SharedStrings(QXlsx::SharedStrings::F_LoadFromExists));
     sst2->loadFromXmlData(xmlData);
 
     QCOMPARE(sst2->getSharedString(0).toPlainString(), QStringLiteral("Hello Qt!"));
@@ -147,7 +147,7 @@ void SharedStringsTest::testLoadRichStringXmlData()
             "</si>"
             "</sst>";
 
-    QSharedPointer<QXlsx::SharedStrings> sst(new QXlsx::SharedStrings);
+    QSharedPointer<QXlsx::SharedStrings> sst(new QXlsx::SharedStrings(QXlsx::SharedStrings::F_LoadFromExists));
     sst->loadFromXmlData(xmlData);
     QXlsx::RichString rs = sst->getSharedString(0);
     QVERIFY(rs.fragmentText(0) == "e=mc");

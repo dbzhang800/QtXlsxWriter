@@ -35,8 +35,8 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-ChartsheetPrivate::ChartsheetPrivate(Chartsheet *p)
-    : AbstractSheetPrivate(p)
+ChartsheetPrivate::ChartsheetPrivate(Chartsheet *p, Chartsheet::CreateFlag flag)
+    : AbstractSheetPrivate(p, flag)
 {
 }
 
@@ -53,8 +53,8 @@ ChartsheetPrivate::~ChartsheetPrivate()
 /*!
  * \internal
  */
-Chartsheet::Chartsheet(const QString &name, int id, Workbook *workbook)
-    :AbstractSheet(name, id, workbook, new ChartsheetPrivate(this))
+Chartsheet::Chartsheet(const QString &name, int id, Workbook *workbook, CreateFlag flag)
+    :AbstractSheet(name, id, workbook, new ChartsheetPrivate(this, flag))
 {
     setSheetType(ST_ChartSheet);
 }
@@ -130,7 +130,7 @@ bool Chartsheet::loadFromXmlFile(QIODevice *device)
                 QString rId = reader.attributes().value(QStringLiteral("r:id")).toString();
                 QString name = d->relationships->getRelationshipById(rId).target;
                 QString path = QDir::cleanPath(splitPath(filePath())[0] + QLatin1String("/") + name);
-                d->drawing = QSharedPointer<Drawing>(new Drawing(this));
+                d->drawing = QSharedPointer<Drawing>(new Drawing(this, F_LoadFromExists));
                 d->drawing->setFilePath(path);
             }
         }

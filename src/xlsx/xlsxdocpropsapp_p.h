@@ -50,7 +50,7 @@ namespace QXlsx {
 class XLSX_AUTOTEST_EXPORT DocPropsApp : public AbstractOOXmlFile
 {
 public:
-    DocPropsApp();
+    DocPropsApp(CreateFlag flag);
     
     void addPartTitle(const QString &title);
     void addHeadingPair(const QString &name, int value);

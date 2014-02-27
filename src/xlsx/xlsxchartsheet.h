@@ -45,7 +45,7 @@ public:
 private:
     friend class DocumentPrivate;
     friend class Workbook;
-    Chartsheet(const QString &sheetName, int sheetId, Workbook *book);
+    Chartsheet(const QString &sheetName, int sheetId, Workbook *book, CreateFlag flag);
     Chartsheet *copy(const QString &distName, int distId) const;
 
     void saveToXmlFile(QIODevice *device) const;

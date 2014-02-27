@@ -20,7 +20,7 @@ DocPropsAppTest::DocPropsAppTest()
 
 void DocPropsAppTest::testCase1()
 {
-    QXlsx::DocPropsApp props;
+    QXlsx::DocPropsApp props(QXlsx::DocPropsApp::F_NewFromScratch);
 
     props.setProperty("company", "HMI CN");
     props.setProperty("manager", "Debao");
@@ -31,7 +31,7 @@ void DocPropsAppTest::testCase1()
     f1.close();
 
     f1.open(QFile::ReadOnly);
-    QXlsx::DocPropsApp props2;
+    QXlsx::DocPropsApp props2(QXlsx::DocPropsApp::F_LoadFromExists);
     props2.loadFromXmlFile(&f1);
 
     QCOMPARE(props2.property("company"), QString("HMI CN"));

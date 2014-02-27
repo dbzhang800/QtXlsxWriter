@@ -35,8 +35,8 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-ChartPrivate::ChartPrivate(Chart *q)
-    :AbstractOOXmlFilePrivate(q), chartType(static_cast<Chart::ChartType>(0))
+ChartPrivate::ChartPrivate(Chart *q, Chart::CreateFlag flag)
+    :AbstractOOXmlFilePrivate(q, flag), chartType(static_cast<Chart::ChartType>(0))
 {
 
 }
@@ -77,8 +77,8 @@ ChartPrivate::~ChartPrivate()
 /*!
  * \internal
  */
-Chart::Chart(AbstractSheet *parent)
-    :AbstractOOXmlFile(new ChartPrivate(this))
+Chart::Chart(AbstractSheet *parent, CreateFlag flag)
+    :AbstractOOXmlFile(new ChartPrivate(this, flag))
 {
     d_func()->sheet = parent;
 }

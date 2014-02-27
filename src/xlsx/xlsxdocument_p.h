@@ -61,7 +61,7 @@ public:
 
     QMap<QString, QString> documentProperties; //core, app and custom properties
     QSharedPointer<Workbook> workbook;
-    mutable ContentTypes contentTypes;
+    QSharedPointer<ContentTypes> contentTypes;
 };
 
 }

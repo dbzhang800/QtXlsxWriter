@@ -49,12 +49,13 @@ class XLSX_AUTOTEST_EXPORT AbstractOOXmlFilePrivate
     Q_DECLARE_PUBLIC(AbstractOOXmlFile)
 
 public:
-    AbstractOOXmlFilePrivate(AbstractOOXmlFile *q);
+    AbstractOOXmlFilePrivate(AbstractOOXmlFile *q, AbstractOOXmlFile::CreateFlag flag);
     virtual ~AbstractOOXmlFilePrivate();
 
     QString filePathInPackage;//such as "xl/worksheets/sheet1.xml"
                               //used when load the .xlsx file
     Relationships *relationships;
+    AbstractOOXmlFile::CreateFlag flag;
     AbstractOOXmlFile *q_ptr;
 };
 

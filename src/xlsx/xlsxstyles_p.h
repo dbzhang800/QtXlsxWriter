@@ -67,7 +67,7 @@ struct XlsxFormatNumberData
 class XLSX_AUTOTEST_EXPORT Styles : public AbstractOOXmlFile
 {
 public:
-    Styles(bool createEmpty=false);
+    Styles(CreateFlag flag);
     ~Styles();
     void addXfFormat(const Format &format, bool force=false);
     Format xfFormat(int idx) const;

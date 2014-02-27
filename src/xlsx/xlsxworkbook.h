@@ -92,7 +92,7 @@ private:
     friend class Document;
     friend class DocumentPrivate;
 
-    Workbook();
+    Workbook(Workbook::CreateFlag flag);
 
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);

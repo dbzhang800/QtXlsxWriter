@@ -64,7 +64,7 @@ public:
 class XLSX_AUTOTEST_EXPORT SharedStrings : public AbstractOOXmlFile
 {
 public:
-    SharedStrings();
+    SharedStrings(CreateFlag flag);
     int count() const;
     bool isEmpty() const;
     

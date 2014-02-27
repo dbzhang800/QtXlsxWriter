@@ -45,7 +45,7 @@ namespace QXlsx {
 class SimpleOOXmlFile : public AbstractOOXmlFile
 {
 public:
-    SimpleOOXmlFile();
+    SimpleOOXmlFile(CreateFlag flag);
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;

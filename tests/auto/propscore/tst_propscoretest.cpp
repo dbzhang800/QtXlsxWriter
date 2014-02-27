@@ -20,7 +20,7 @@ DocPropsCoreTest::DocPropsCoreTest()
 
 void DocPropsCoreTest::testCase1()
 {
-    QXlsx::DocPropsCore props;
+    QXlsx::DocPropsCore props(QXlsx::DocPropsCore::F_NewFromScratch);
 
     props.setProperty("creator", "Debao");
     props.setProperty("keywords", "Test, test, TEST");
@@ -32,7 +32,7 @@ void DocPropsCoreTest::testCase1()
     f1.close();
 
     f1.open(QFile::ReadOnly);
-    QXlsx::DocPropsCore props2;
+    QXlsx::DocPropsCore props2(QXlsx::DocPropsCore::F_LoadFromExists);
     props2.loadFromXmlFile(&f1);
 
     QCOMPARE(props2.property("creator"), QString("Debao"));

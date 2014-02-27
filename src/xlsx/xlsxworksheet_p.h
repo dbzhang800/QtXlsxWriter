@@ -115,7 +115,7 @@ class XLSX_AUTOTEST_EXPORT WorksheetPrivate : public AbstractSheetPrivate
 {
     Q_DECLARE_PUBLIC(Worksheet)
 public:
-    WorksheetPrivate(Worksheet *p);
+    WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag);
     ~WorksheetPrivate();
     int checkDimensions(int row, int col, bool ignore_row=false, bool ignore_col=false);
     Format cellFormat(int row, int col) const;

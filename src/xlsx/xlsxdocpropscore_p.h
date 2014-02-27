@@ -48,7 +48,7 @@ namespace QXlsx {
 class XLSX_AUTOTEST_EXPORT DocPropsCore : public AbstractOOXmlFile
 {
 public:
-    explicit DocPropsCore();
+    explicit DocPropsCore(CreateFlag flag);
 
     bool setProperty(const QString &name, const QString &value);
     QString property(const QString &name) const;

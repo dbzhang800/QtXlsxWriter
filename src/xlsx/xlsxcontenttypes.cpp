@@ -32,7 +32,8 @@
 
 namespace QXlsx {
 
-ContentTypes::ContentTypes()
+ContentTypes::ContentTypes(CreateFlag flag)
+    :AbstractOOXmlFile(flag)
 {
     m_package_prefix = QStringLiteral("application/vnd.openxmlformats-package.");
     m_document_prefix = QStringLiteral("application/vnd.openxmlformats-officedocument.");

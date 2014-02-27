@@ -56,8 +56,8 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-WorksheetPrivate::WorksheetPrivate(Worksheet *p)
-    : AbstractSheetPrivate(p)
+WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
+    : AbstractSheetPrivate(p, flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
   , showOutlineSymbols(true), showWhiteSpace(true)
@@ -171,11 +171,11 @@ int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ig
 /*!
  * \internal
  */
-Worksheet::Worksheet(const QString &name, int id, Workbook *workbook)
-    :AbstractSheet(name, id, workbook, new WorksheetPrivate(this))
+Worksheet::Worksheet(const QString &name, int id, Workbook *workbook, CreateFlag flag)
+    :AbstractSheet(name, id, workbook, new WorksheetPrivate(this, flag))
 {
     if (!workbook) //For unit test propose only. Ignore the memery leak.
-        d_func()->workbook = new Workbook;
+        d_func()->workbook = new Workbook(flag);
 }
 
 /*!
@@ -187,7 +187,7 @@ Worksheet::Worksheet(const QString &name, int id, Workbook *workbook)
 Worksheet *Worksheet::copy(const QString &distName, int distId) const
 {
     Q_D(const Worksheet);
-    Worksheet *sheet = new Worksheet(distName, distId, d->workbook);
+    Worksheet *sheet = new Worksheet(distName, distId, d->workbook, F_NewFromScratch);
     WorksheetPrivate *sheet_d = sheet->d_func();
 
     sheet_d->dimension = d->dimension;
@@ -1028,7 +1028,7 @@ bool Worksheet::insertImage(int row, int column, const QImage &image)
         return false;
 
     if (!d->drawing)
-        d->drawing = QSharedPointer<Drawing>(new Drawing(this));
+        d->drawing = QSharedPointer<Drawing>(new Drawing(this, F_NewFromScratch));
 
     DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing.data(), DrawingAnchor::Picture);
 
@@ -1054,7 +1054,7 @@ Chart *Worksheet::insertChart(int row, int column, const QSize &size)
     Q_D(Worksheet);
 
     if (!d->drawing)
-        d->drawing = QSharedPointer<Drawing>(new Drawing(this));
+        d->drawing = QSharedPointer<Drawing>(new Drawing(this, F_NewFromScratch));
 
     DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(d->drawing.data(), DrawingAnchor::Picture);
 
@@ -1066,7 +1066,7 @@ Chart *Worksheet::insertChart(int row, int column, const QSize &size)
     anchor->from = XlsxMarker(row, column, 0, 0);
     anchor->ext = size * 9525;
 
-    QSharedPointer<Chart> chart = QSharedPointer<Chart>(new Chart(this));
+    QSharedPointer<Chart> chart = QSharedPointer<Chart>(new Chart(this, F_NewFromScratch));
     anchor->setObjectGraphicFrame(chart);
 
     return chart.data();
@@ -2116,7 +2116,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QString rId = reader.attributes().value(QStringLiteral("r:id")).toString();
                 QString name = d->relationships->getRelationshipById(rId).target;
                 QString path = QDir::cleanPath(splitPath(filePath())[0] + QLatin1String("/") + name);
-                d->drawing = QSharedPointer<Drawing>(new Drawing(this));
+                d->drawing = QSharedPointer<Drawing>(new Drawing(this, F_LoadFromExists));
                 d->drawing->setFilePath(path);
             }
         }

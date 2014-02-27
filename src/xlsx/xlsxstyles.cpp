@@ -41,12 +41,12 @@ namespace QXlsx {
   otherwise, default formats should be added.
 
 */
-Styles::Styles(bool createEmpty)
-    : m_nextCustomNumFmtId(176), m_emptyFormatAdded(false)
+Styles::Styles(CreateFlag flag)
+    : AbstractOOXmlFile(flag), m_nextCustomNumFmtId(176), m_emptyFormatAdded(false)
 {
     //!Fix me. Should the custom num fmt Id starts with 164 or 176 or others??
 
-    if (!createEmpty) {
+    if (flag == F_NewFromScratch) {
         //Add default Format
         Format defaultFmt;
         addXfFormat(defaultFmt);

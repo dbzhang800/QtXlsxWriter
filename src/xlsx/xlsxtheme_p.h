@@ -45,7 +45,7 @@ namespace QXlsx {
 class Theme : public AbstractOOXmlFile
 {
 public:
-    Theme();
+    Theme(CreateFlag flag);
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;

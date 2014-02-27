@@ -69,7 +69,7 @@ class WorkbookPrivate : public AbstractOOXmlFilePrivate
 {
     Q_DECLARE_PUBLIC(Workbook)
 public:
-    WorkbookPrivate(Workbook *q);
+    WorkbookPrivate(Workbook *q, Workbook::CreateFlag flag);
 
     QSharedPointer<SharedStrings> sharedStrings;
     QList<QSharedPointer<AbstractSheet> > sheets;

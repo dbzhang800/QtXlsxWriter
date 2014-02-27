@@ -57,7 +57,7 @@ class MediaFile;
 class Drawing : public AbstractOOXmlFile
 {
 public:
-    Drawing(AbstractSheet *sheet);
+    Drawing(AbstractSheet *sheet, CreateFlag flag);
     ~Drawing();
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);

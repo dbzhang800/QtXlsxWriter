@@ -206,7 +206,7 @@ void DrawingAnchor::loadXmlObjectGraphicFrame(QXmlStreamReader &reader)
                     }
                 }
                 if (!exist) {
-                    m_chartFile = QSharedPointer<Chart> (new Chart(m_drawing->sheet));
+                    m_chartFile = QSharedPointer<Chart> (new Chart(m_drawing->sheet, Chart::F_LoadFromExists));
                     m_chartFile->setFilePath(path);
                     m_drawing->workbook->addChartFile(m_chartFile);
                 }

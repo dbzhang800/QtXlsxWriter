@@ -26,7 +26,8 @@
 #include <QIODevice>
 
 namespace QXlsx {
-SimpleOOXmlFile::SimpleOOXmlFile()
+SimpleOOXmlFile::SimpleOOXmlFile(CreateFlag flag)
+    :AbstractOOXmlFile(flag)
 {
 }
 

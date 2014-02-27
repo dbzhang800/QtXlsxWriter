@@ -133,7 +133,7 @@ private:
     friend class DocumentPrivate;
     friend class Workbook;
     friend class ::WorksheetTest;
-    Worksheet(const QString &sheetName, int sheetId, Workbook *book);
+    Worksheet(const QString &sheetName, int sheetId, Workbook *book, CreateFlag flag);
     Worksheet *copy(const QString &distName, int distId) const;
 
     void saveToXmlFile(QIODevice *device) const;

@@ -48,7 +48,7 @@ class XLSX_AUTOTEST_EXPORT AbstractSheetPrivate : public AbstractOOXmlFilePrivat
 {
     Q_DECLARE_PUBLIC(AbstractSheet)
 public:
-    AbstractSheetPrivate(AbstractSheet *p);
+    AbstractSheetPrivate(AbstractSheet *p, AbstractSheet::CreateFlag flag);
     ~AbstractSheetPrivate();
 
     Workbook *workbook;

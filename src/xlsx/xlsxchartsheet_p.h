@@ -46,7 +46,7 @@ class XLSX_AUTOTEST_EXPORT ChartsheetPrivate : public AbstractSheetPrivate
 {
     Q_DECLARE_PUBLIC(Chartsheet)
 public:
-    ChartsheetPrivate(Chartsheet *p);
+    ChartsheetPrivate(Chartsheet *p, Chartsheet::CreateFlag flag);
     ~ChartsheetPrivate();
 
     Chart *chart;

@@ -201,7 +201,8 @@ const char *defaultXmlData =
         "</a:theme>"
         ;
 
-Theme::Theme()
+Theme::Theme(CreateFlag flag)
+    :AbstractOOXmlFile(flag)
 {
 }
 

@@ -49,7 +49,7 @@ namespace QXlsx {
 class ContentTypes : public AbstractOOXmlFile
 {
 public:
-    ContentTypes();
+    ContentTypes(CreateFlag flag);
 
     void addDefault(const QString &key, const QString &value);
     void addOverride(const QString &key, const QString &value);
