@@ -1495,7 +1495,7 @@ bool Worksheet::setRow(int row, double height, const Format &format, bool hidden
     Q_D(Worksheet);
     int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
-    if (d->checkDimensions(row, min_col))
+    if (d->checkDimensions(row, min_col, false, true))
         return false;
 
     d->rowsInfo[row] = QSharedPointer<XlsxRowInfo>(new XlsxRowInfo(height, format, hidden));
