@@ -42,7 +42,8 @@ namespace QXlsx {
 
 */
 Styles::Styles(CreateFlag flag)
-    : AbstractOOXmlFile(flag), m_nextCustomNumFmtId(176), m_emptyFormatAdded(false)
+    : AbstractOOXmlFile(flag), m_nextCustomNumFmtId(176), m_isIndexedColorsDefault(true)
+    , m_emptyFormatAdded(false)
 {
     //!Fix me. Should the custom num fmt Id starts with 164 or 176 or others??
 
@@ -306,6 +307,8 @@ void Styles::saveToXmlFile(QIODevice *device) const
     writer.writeAttribute(QStringLiteral("defaultTableStyle"), QStringLiteral("TableStyleMedium9"));
     writer.writeAttribute(QStringLiteral("defaultPivotStyle"), QStringLiteral("PivotStyleLight16"));
     writer.writeEndElement();//tableStyles
+
+    writeColors(writer);
 
     writer.writeEndElement();//styleSheet
     writer.writeEndDocument();
@@ -669,6 +672,24 @@ void Styles::writeDxf(QXmlStreamWriter &writer, const Format &format) const
         writeBorder(writer, format, true);
 
     writer.writeEndElement();//dxf
+}
+
+void Styles::writeColors(QXmlStreamWriter &writer) const
+{
+    if (m_isIndexedColorsDefault) //Don't output the default indexdeColors
+        return;
+
+    writer.writeStartElement(QStringLiteral("colors"));
+
+    writer.writeStartElement(QStringLiteral("indexedColors"));
+    foreach(QColor color, m_indexedColors) {
+        writer.writeEmptyElement(QStringLiteral("rgbColor"));
+        writer.writeAttribute(QStringLiteral("rgb"), XlsxColor::toARGBString(color));
+    }
+
+    writer.writeEndElement();//indexedColors
+
+    writer.writeEndElement();//colors
 }
 
 bool Styles::readNumFmts(QXmlStreamReader &reader)
@@ -1203,6 +1224,7 @@ bool Styles::readColors(QXmlStreamReader &reader)
 bool Styles::readIndexedColors(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("indexedColors"));
+    m_indexedColors.clear();
     while (!reader.atEnd() && !(reader.name() == QLatin1String("indexedColors") && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
@@ -1212,6 +1234,8 @@ bool Styles::readIndexedColors(QXmlStreamReader &reader)
             }
         }
     }
+    if (!m_indexedColors.isEmpty())
+        m_isIndexedColorsDefault = false;
     return true;
 }
 
@@ -1268,6 +1292,7 @@ QColor Styles::getColorByIndex(int idx)
           <<QColor("#FF9900") <<QColor("#FF6600") <<QColor("#666699") <<QColor("#969696")
          <<QColor("#003366") <<QColor("#339966") <<QColor("#003300") <<QColor("#333300")
         <<QColor("#993300") <<QColor("#993366") <<QColor("#333399") <<QColor("#333333");
+        m_isIndexedColorsDefault = true;
     }
     if (idx < 0 || idx >= m_indexedColors.size())
         return QColor();

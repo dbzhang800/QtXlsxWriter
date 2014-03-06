@@ -96,6 +96,7 @@ private:
     void writeCellXfs(QXmlStreamWriter &writer) const;
     void writeDxfs(QXmlStreamWriter &writer) const;
     void writeDxf(QXmlStreamWriter &writer, const Format &format) const;
+    void writeColors(QXmlStreamWriter &writer) const;
 
     bool readNumFmts(QXmlStreamReader &reader);
     bool readFonts(QXmlStreamReader &reader);
@@ -123,6 +124,7 @@ private:
     QHash<QByteArray, Format> m_bordersHash;
 
     QVector<QColor> m_indexedColors;
+    bool m_isIndexedColorsDefault;
 
     QList<Format> m_xf_formatsList;
     QHash<QByteArray, Format> m_xf_formatsHash;
