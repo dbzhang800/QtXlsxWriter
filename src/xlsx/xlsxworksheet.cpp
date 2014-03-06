@@ -147,7 +147,7 @@ QString WorksheetPrivate::generateDimensionString() const
 */
 int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ignore_col)
 {
-    if (row >= XLSX_ROW_MAX || col >= XLSX_COLUMN_MAX)
+    if (row > XLSX_ROW_MAX || row < 1 || col > XLSX_COLUMN_MAX || col < 1)
         return -1;
 
     if (!ignore_row) {
@@ -1493,7 +1493,7 @@ void WorksheetPrivate::saveXmlDrawings(QXmlStreamWriter &writer) const
 bool Worksheet::setRow(int row, double height, const Format &format, bool hidden)
 {
     Q_D(Worksheet);
-    int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
+    int min_col = d->dimension.firstColumn() < 1 ? 1 : d->dimension.firstColumn();
 
     if (d->checkDimensions(row, min_col, false, true))
         return false;
@@ -1563,9 +1563,9 @@ bool Worksheet::setColumn(int colFirst, int colLast, double width, const Format 
     if (colFirst > colLast)
         return false;
 
-    if (d->checkDimensions(0, colLast, ignore_row, ignore_col))
+    if (d->checkDimensions(1, colLast, ignore_row, ignore_col))
         return false;
-    if (d->checkDimensions(0, colFirst, ignore_row, ignore_col))
+    if (d->checkDimensions(1, colFirst, ignore_row, ignore_col))
         return false;
 
     d->splitColsInfo(colFirst, colLast);
