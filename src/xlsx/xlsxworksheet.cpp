@@ -147,6 +147,9 @@ QString WorksheetPrivate::generateDimensionString() const
 */
 int WorksheetPrivate::checkDimensions(int row, int col, bool ignore_row, bool ignore_col)
 {
+    Q_ASSERT_X(row!=0, "checkDimensions", "row should start from 1 instead of 0");
+    Q_ASSERT_X(col!=0, "checkDimensions", "column should start from 1 instead of 0");
+
     if (row > XLSX_ROW_MAX || row < 1 || col > XLSX_COLUMN_MAX || col < 1)
         return -1;
 
