@@ -55,6 +55,7 @@ WorkbookPrivate::WorkbookPrivate(Workbook *q, Workbook::CreateFlag flag) :
     window_height = 9660;
 
     strings_to_numbers_enabled = false;
+    strings_to_hyperlinks_enabled = true;
     html_to_richstring_enabled = false;
     date1904 = false;
     defaultDateFormat = QStringLiteral("yyyy-mm-dd");
@@ -116,6 +117,18 @@ bool Workbook::isStringsToNumbersEnabled() const
 {
     Q_D(const Workbook);
     return d->strings_to_numbers_enabled;
+}
+
+void Workbook::setStringsToHyperlinksEnabled(bool enable)
+{
+    Q_D(Workbook);
+    d->strings_to_hyperlinks_enabled = enable;
+}
+
+bool Workbook::isStringsToHyperlinksEnabled() const
+{
+    Q_D(const Workbook);
+    return d->strings_to_hyperlinks_enabled;
 }
 
 void Workbook::setHtmlToRichStringEnabled(bool enable)

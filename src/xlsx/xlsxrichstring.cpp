@@ -70,10 +70,7 @@ RichString::RichString()
 RichString::RichString(const QString text)
     :d(new RichStringPrivate)
 {
-    if (Qt::mightBeRichText(text))
-        setHtml(text);
-    else
-        addFragment(text, Format());
+    addFragment(text, Format());
 }
 
 /*!

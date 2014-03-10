@@ -60,7 +60,7 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
     : AbstractSheetPrivate(p, flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
-  , showOutlineSymbols(true), showWhiteSpace(true)
+  , showOutlineSymbols(true), showWhiteSpace(true), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
 {
     previous_row = 0;
 
@@ -429,8 +429,35 @@ bool Worksheet::write(int row, int column, const QVariant &value, const Format &
     if (value.isNull()) {
         //Blank
         ret = writeBlank(row, column, format);
+    } else if (value.userType() == QMetaType::QString) {
+        //String
+        QString token = value.toString();
+        bool ok;
+
+        if (token.startsWith(QLatin1String("="))) {
+            //convert to formula
+            ret = writeFormula(row, column, token, format);
+        } else if (token.startsWith(QLatin1String("{=")) && token.endsWith(QLatin1Char('}'))) {
+            //convert to array formula
+            ret = writeArrayFormula(CellRange(row, column, row, column), token, format);
+        } else if (d->workbook->isStringsToHyperlinksEnabled() && token.contains(d->urlPattern)) {
+            //convert to url
+            ret = writeHyperlink(row, column, QUrl(token));
+        } else if (d->workbook->isStringsToNumbersEnabled() && (value.toDouble(&ok), ok)) {
+            //Try convert string to number if the flag enabled.
+            ret = writeString(row, column, value.toString(), format);
+        } else {
+            //normal string now
+            ret = writeString(row, column, token, format);
+        }
     } else if (value.userType() == qMetaTypeId<RichString>()) {
         ret = writeString(row, column, value.value<RichString>(), format);
+    } else if (value.userType() == QMetaType::Int || value.userType() == QMetaType::UInt
+               || value.userType() == QMetaType::LongLong || value.userType() == QMetaType::ULongLong
+               || value.userType() == QMetaType::Double || value.userType() == QMetaType::Float) {
+        //Number
+
+        ret = writeNumeric(row, column, value.toDouble(), format);
     } else if (value.userType() == QMetaType::Bool) {
         //Bool
         ret = writeBool(row,column, value.toBool(), format);
@@ -441,37 +468,9 @@ bool Worksheet::write(int row, int column, const QVariant &value, const Format &
     } else if (value.userType() == QMetaType::QTime) {
         //Time
         ret = writeTime(row, column, value.toTime(), format);
-    } else if (value.userType() == QMetaType::Int || value.userType() == QMetaType::UInt
-               || value.userType() == QMetaType::LongLong || value.userType() == QMetaType::ULongLong
-               || value.userType() == QMetaType::Double || value.userType() == QMetaType::Float) {
-        //Number
-
-        ret = writeNumeric(row, column, value.toDouble(), format);
     } else if (value.userType() == QMetaType::QUrl) {
         //Url
         ret = writeHyperlink(row, column, value.toUrl(), format);
-    } else if (value.userType() == QMetaType::QString) {
-        //String
-        QString token = value.toString();
-        bool ok;
-        QRegularExpression urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"));
-
-        if (token.startsWith(QLatin1String("="))) {
-            //convert to formula
-            ret = writeFormula(row, column, token, format);
-        } else if (token.startsWith(QLatin1String("{=")) && token.endsWith(QLatin1Char('}'))) {
-            //convert to array formula
-            ret = writeArrayFormula(CellRange(row, column, row, column), token, format);
-        } else if (token.contains(urlPattern)) {
-            //convert to url
-            ret = writeHyperlink(row, column, QUrl(token));
-        } else if (d->workbook->isStringsToNumbersEnabled() && (value.toDouble(&ok), ok)) {
-            //Try convert string to number if the flag enabled.
-            ret = writeString(row, column, value.toString(), format);
-        } else {
-            //normal string now
-            ret = writeString(row, column, token, format);
-        }
     } else {
         //Wrong type
         return false;
@@ -635,7 +634,7 @@ bool Worksheet::writeString(int row, int column, const QString &value, const For
         return false;
 
     RichString rs;
-    if (Qt::mightBeRichText(value) && d->workbook->isHtmlToRichStringEnabled())
+    if (d->workbook->isHtmlToRichStringEnabled() && Qt::mightBeRichText(value))
         rs.setHtml(value);
     else
         rs.addFragment(value, Format());

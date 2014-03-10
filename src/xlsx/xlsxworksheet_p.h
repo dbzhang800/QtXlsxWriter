@@ -44,6 +44,7 @@
 
 #include <QImage>
 #include <QSharedPointer>
+#include <QRegularExpression>
 
 class QXmlStreamWriter;
 class QXmlStreamReader;
@@ -176,6 +177,8 @@ public:
     bool showRuler;
     bool showOutlineSymbols;
     bool showWhiteSpace;
+
+    QRegularExpression urlPattern;
 };
 
 }

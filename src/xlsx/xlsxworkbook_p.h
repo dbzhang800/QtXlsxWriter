@@ -82,6 +82,7 @@ public:
     QList<XlsxDefineNameData> definedNamesList;
 
     bool strings_to_numbers_enabled;
+    bool strings_to_hyperlinks_enabled;
     bool html_to_richstring_enabled;
     bool date1904;
     QString defaultDateFormat;

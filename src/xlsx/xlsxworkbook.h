@@ -74,6 +74,8 @@ public:
     void setDate1904(bool date1904);
     bool isStringsToNumbersEnabled() const;
     void setStringsToNumbersEnabled(bool enable=true);
+    bool isStringsToHyperlinksEnabled() const;
+    void setStringsToHyperlinksEnabled(bool enable=true);
     bool isHtmlToRichStringEnabled() const;
     void setHtmlToRichStringEnabled(bool enable=true);
     QString defaultDateFormat() const;
