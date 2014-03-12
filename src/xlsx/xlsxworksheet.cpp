@@ -1369,13 +1369,19 @@ void WorksheetPrivate::saveXmlCellData(QXmlStreamWriter &writer, int row, int co
                     writer.writeEndElement();// rPr
                 }
                 writer.writeStartElement(QStringLiteral("t"));
-                writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
+                if (isSpaceReserveNeeded(string.fragmentText(i)))
+                    writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
                 writer.writeCharacters(string.fragmentText(i));
                 writer.writeEndElement();// t
                 writer.writeEndElement(); // r
             }
         } else {
-            writer.writeTextElement(QStringLiteral("t"), cell->value().toString());
+            writer.writeStartElement(QStringLiteral("t"));
+            QString string = cell->value().toString();
+            if (isSpaceReserveNeeded(string))
+                writer.writeAttribute(QStringLiteral("xml:space"), QStringLiteral("preserve"));
+            writer.writeCharacters(string);
+            writer.writeEndElement(); // t
         }
         writer.writeEndElement();//is
     } else if (cell->dataType() == Cell::Numeric){

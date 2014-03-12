@@ -61,6 +61,7 @@ XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell(int row, int col, bool row_abs=fa
 XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell_fast(int row, int col);
 
 XLSX_AUTOTEST_EXPORT QString createSafeSheetName(const QString &nameProposal);
+XLSX_AUTOTEST_EXPORT bool isSpaceReserveNeeded(const QString &string);
 
 } //QXlsx
 #endif // XLSXUTILITY_H

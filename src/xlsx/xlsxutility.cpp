@@ -202,5 +202,13 @@ QString createSafeSheetName(const QString &nameProposal)
     return ret;
 }
 
+/*
+ * whether the string s starts or ends with space
+ */
+bool isSpaceReserveNeeded(const QString &s)
+{
+    QString spaces(QStringLiteral(" \t\n\r"));
+    return !s.isEmpty() && (spaces.contains(s.at(0))||spaces.contains(s.at(s.length()-1)));
+}
 
 } //namespace QXlsx
