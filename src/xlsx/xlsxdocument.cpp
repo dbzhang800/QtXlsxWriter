@@ -515,19 +515,6 @@ bool Document::unmergeCells(const CellRange &range)
 }
 
 /*!
-  Sets the properties of \a row with the given \a height, \a format and \a hidden.
-  \a row is 1-indexed.
-
-  Returns false if failed.
- */
-bool Document::setRow(int row, double height, const Format &format, bool hidden)
-{
-    if (Worksheet *sheet = currentWorksheet())
-        return sheet->setRow(row, height, format, hidden);
-    return false;
-}
-
-/*!
   Sets the column properties for all columns from \a colFirst to \a colLast with
   the given \a width, \a format and \a hidden. Column
   width measured as the number of characters of the maximum digit width of the
@@ -557,6 +544,169 @@ bool Document::setColumn(const QString &colFirst, const QString &colLast, double
     if (Worksheet *sheet = currentWorksheet())
         return sheet->setColumn(colFirst, colLast, width, format, hidden);
     return false;
+}
+
+bool Document::setColumnWidth(const QString &column, double width)
+{
+    return setColumnWidth(column,column,width);
+}
+
+bool Document::setColumnFormat(const QString &column, const Format &format)
+{
+    return setColumnFormat(column,column,format);
+}
+
+bool Document::setColumnHidden(const QString &column, bool hidden)
+{
+    return setColumnHidden(column,column,hidden);
+}
+
+bool Document::setColumnWidth(const QString &colFirst, const QString &colLast, double width)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumnWidth(colFirst, colLast, width);
+    return false;
+}
+
+bool Document::setColumnFormat(const QString &colFirst, const QString &colLast, const Format &format)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumnFormat(colFirst, colLast, format);
+    return false;
+}
+
+bool Document::setColumnHidden(const QString &colFirst, const QString &colLast, bool hidden)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumnWidth(colFirst, colLast, hidden);
+    return false;
+}
+
+bool Document::setColumnWidth(int column, double width)
+{
+    return setColumnWidth(column,column,width);
+}
+
+bool Document::setColumnFormat(int column, const Format &format)
+{
+    return setColumnFormat(column,column,format);
+}
+
+bool Document::setColumnHidden(int column, bool hidden)
+{
+    return setColumnHidden(column,column,hidden);
+}
+
+bool Document::setColumnWidth(int colFirst, int colLast, double width)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumnWidth(colFirst, colLast, width);
+    return false;
+}
+
+bool Document::setColumnFormat(int colFirst, int colLast, const Format &format)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumnFormat(colFirst, colLast, format);
+    return false;
+}
+
+bool Document::setColumnHidden(int colFirst, int colLast, bool hidden)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setColumnHidden(colFirst, colLast, hidden);
+    return false;
+}
+
+double Document::columnWidth(int column)
+{
+    if (Worksheet *sheet = currentWorksheet())
+      return sheet->columnWidth(column);
+    return 0.0;
+}
+
+Format Document::columnFormat(int column)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->columnFormat(column);
+    return Format();
+}
+
+bool Document::isColumnHidden(int column)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->isColumnHidden(column);
+    return false;
+}
+
+/*!
+  Sets the properties of \a row with the given \a height, \a format and \a hidden.
+  \a row is 1-indexed.
+
+  Returns false if failed.
+ */
+bool Document::setRow(int row, double height, const Format &format, bool hidden)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->setRow(row, height, format, hidden);
+    return false;
+}
+
+bool Document::setRowFormat(int row, const Format &format)
+{
+    return setRowFormat(row,row, format);
+}
+
+bool Document::setRowFormat(int rowFirst, int rowLast, const Format &format)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->setRowFormat(rowFirst, rowLast, format);
+    return false;
+}
+
+bool Document::setRowHidden(int row, bool hidden)
+{
+    return setRowHidden(row,row,hidden);
+}
+
+bool Document::setRowHidden(int rowFirst, int rowLast, bool hidden)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->setRowHidden(rowFirst, rowLast, hidden);
+    return false;
+}
+
+bool Document::setRowHeight(int row, double height)
+{
+    return setRowHeight(row,row,height);
+}
+
+bool Document::setRowHeight(int rowFirst, int rowLast, double height)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->setRowHeight(rowFirst, rowLast, height);
+    return false;
+}
+
+double Document::rowHeight(int row)
+{
+   if (Worksheet *sheet = currentWorksheet())
+      return sheet->rowHeight(row);
+    return 0.0; // ?
+}
+
+Format Document::rowFormat(int row)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->rowFormat(row);
+     return Format(); // ?
+}
+
+bool Document::isRowHidden(int row)
+{
+    if (Worksheet *sheet = currentWorksheet())
+       return sheet->isRowHidden(row);
+     return false; // ?
 }
 
 /*!

@@ -78,15 +78,50 @@ struct XlsxHyperlinkData
     QString tooltip;
 };
 
+// ECMA-376 Part1 18.3.1.81
+struct XlsxSheetFormatProps
+{
+    XlsxSheetFormatProps(int baseColWidth = 8,
+                         bool customHeight = false,
+                         double defaultColWidth = 0.0,
+                         double defaultRowHeight = 15,
+                         quint8 outlineLevelCol = 0,
+                         quint8 outlineLevelRow = 0,
+                         bool thickBottom = false,
+                         bool thickTop = false,
+                         bool zeroHeight = false) :
+        baseColWidth(baseColWidth),
+        customHeight(customHeight),
+        defaultColWidth(defaultColWidth),
+        defaultRowHeight(defaultRowHeight),
+        outlineLevelCol(outlineLevelCol),
+        outlineLevelRow(outlineLevelRow),
+        thickBottom(thickBottom),
+        thickTop(thickTop),
+        zeroHeight(zeroHeight) {
+    }
+
+    int baseColWidth;
+    bool customHeight;
+    double defaultColWidth;
+    double defaultRowHeight;
+    quint8 outlineLevelCol;
+    quint8 outlineLevelRow;
+    bool thickBottom;
+    bool thickTop;
+    bool zeroHeight;
+};
+
 struct XlsxRowInfo
 {
     XlsxRowInfo(double height=0, const Format &format=Format(), bool hidden=false) :
-        height(height), format(format), hidden(hidden), outlineLevel(0)
+        customHeight(false), height(height), format(format), hidden(hidden), outlineLevel(0)
       , collapsed(false)
     {
 
     }
 
+    bool customHeight;
     double height;
     Format format;
     bool hidden;
@@ -97,14 +132,15 @@ struct XlsxRowInfo
 struct XlsxColumnInfo
 {
     XlsxColumnInfo(int firstColumn=0, int lastColumn=1, double width=0, const Format &format=Format(), bool hidden=false) :
-        firstColumn(firstColumn), lastColumn(lastColumn), width(width), format(format), hidden(hidden)
+        firstColumn(firstColumn), lastColumn(lastColumn), customWidth(false), width(width), format(format), hidden(hidden)
       , outlineLevel(0), collapsed(false)
     {
 
     }
     int firstColumn;
     int lastColumn;
-    double width;
+    bool customWidth;
+    double width;    
     Format format;
     bool hidden;
     int outlineLevel;
@@ -137,6 +173,7 @@ public:
     void loadXmlColumnsInfo(QXmlStreamReader &reader);
     void loadXmlMergeCells(QXmlStreamReader &reader);
     void loadXmlDataValidations(QXmlStreamReader &reader);
+    void loadXmlSheetFormatProps(QXmlStreamReader &reader);
     void loadXmlSheetViews(QXmlStreamReader &reader);
     void loadXmlHyperlinks(QXmlStreamReader &reader);
 
@@ -166,6 +203,8 @@ public:
     int default_row_height;
     bool default_row_zeroed;
 
+    XlsxSheetFormatProps sheetFormatProps;
+
     bool windowProtection;
     bool showFormulas;
     bool showGridLines;
@@ -176,6 +215,9 @@ public:
     bool showRuler;
     bool showOutlineSymbols;
     bool showWhiteSpace;
+
+private:
+    static double calculateColWidth(int characters);
 };
 
 }

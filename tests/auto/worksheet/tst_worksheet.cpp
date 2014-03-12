@@ -82,10 +82,10 @@ void WorksheetTest::testSheetView()
 void WorksheetTest::testSetColumn()
 {
     QXlsx::Worksheet sheet("", 1, 0, QXlsx::Worksheet::F_NewFromScratch);
-    sheet.setColumn(1, 11, 20.0); //"A:K"
-    sheet.setColumn(4, 8, 10.0); //"D:H"
-    sheet.setColumn(6, 6, 15.0); //"F:F"
-    sheet.setColumn(1, 9, 8.8); //"A:H"
+    sheet.setColumnWidth(1, 11, 20.0); //"A:K"
+    sheet.setColumnWidth(4, 8, 10.0); //"D:H"
+    sheet.setColumnWidth(6, 6, 15.0); //"F:F"
+    sheet.setColumnWidth(1, 9, 8.8); //"A:H"
 
     QByteArray xmldata = sheet.saveToXmlData();
 
