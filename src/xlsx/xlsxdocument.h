@@ -96,8 +96,6 @@ public:
     Format rowFormat(int row);
     bool isRowHidden(int row);
 
-
-
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
     bool addDataValidation(const DataValidation &validation);

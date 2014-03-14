@@ -648,15 +648,27 @@ bool Document::isColumnHidden(int column)
 bool Document::setRow(int row, double height, const Format &format, bool hidden)
 {
     if (Worksheet *sheet = currentWorksheet())
-        return sheet->setRow(row, height, format, hidden);
+        return sheet->setRow(row, row, height, format, hidden);
     return false;
 }
 
+/*!
+  Sets the \a format of the row \a row.
+  Rows are 1-indexed.
+
+  Returns true if success.
+*/
 bool Document::setRowFormat(int row, const Format &format)
 {
     return setRowFormat(row,row, format);
 }
 
+/*!
+  Sets the \a format of the rows including and between \a rowFirst and \a rowLast.
+  Rows are 1-indexed.
+
+  Returns true if success.
+*/
 bool Document::setRowFormat(int rowFirst, int rowLast, const Format &format)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -664,11 +676,23 @@ bool Document::setRowFormat(int rowFirst, int rowLast, const Format &format)
     return false;
 }
 
+/*!
+  Sets the \a hidden property of the row \a row.
+  Rows are 1-indexed. If hidden is true rows will not be visible.
+
+  Returns true if success.
+*/
 bool Document::setRowHidden(int row, bool hidden)
 {
     return setRowHidden(row,row,hidden);
 }
 
+/*!
+  Sets the \a hidden property of the rows including and between \a rowFirst and \a rowLast.
+  Rows are 1-indexed. If hidden is true rows will not be visible.
+
+  Returns true if success.
+*/
 bool Document::setRowHidden(int rowFirst, int rowLast, bool hidden)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -676,11 +700,25 @@ bool Document::setRowHidden(int rowFirst, int rowLast, bool hidden)
     return false;
 }
 
+/*!
+  Sets the \a height of the row \a row.
+  Row height measured in point size.
+  Rows are 1-indexed.
+
+  Returns true if success.
+*/
 bool Document::setRowHeight(int row, double height)
 {
     return setRowHeight(row,row,height);
 }
 
+/*!
+  Sets the \a height of the rows including and between \a rowFirst and \a rowLast.
+  Row height measured in point size.
+  Rows are 1-indexed.
+
+  Returns true if success.
+*/
 bool Document::setRowHeight(int rowFirst, int rowLast, double height)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -688,6 +726,9 @@ bool Document::setRowHeight(int rowFirst, int rowLast, double height)
     return false;
 }
 
+/*!
+ Returns height of \a row in points.
+*/
 double Document::rowHeight(int row)
 {
    if (Worksheet *sheet = currentWorksheet())
@@ -695,6 +736,9 @@ double Document::rowHeight(int row)
     return 0.0; // ?
 }
 
+/*!
+ Returns format of \a row.
+*/
 Format Document::rowFormat(int row)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -702,6 +746,9 @@ Format Document::rowFormat(int row)
      return Format(); // ?
 }
 
+/*!
+ Returns true if \a row is hidden.
+*/
 bool Document::isRowHidden(int row)
 {
     if (Worksheet *sheet = currentWorksheet())

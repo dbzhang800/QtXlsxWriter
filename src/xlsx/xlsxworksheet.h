@@ -115,14 +115,13 @@ public:
     bool isColumnHidden(int column);
 
     bool setRow(int rowFirst, int rowLast, double height, const Format &format, bool hidden);
-    bool setRow(int row, double height, const Format &format, bool hidden);
     bool setRowHeight(int rowFirst,int rowLast, double height);
     bool setRowFormat(int rowFirst,int rowLast, const Format &format);
     bool setRowHidden(int rowFirst,int rowLast, bool hidden);
+
     double rowHeight(int row);
     Format rowFormat(int row);
     bool isRowHidden(int row);
-
 
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
