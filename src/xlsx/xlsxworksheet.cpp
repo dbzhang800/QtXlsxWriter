@@ -1289,51 +1289,44 @@ void WorksheetPrivate::saveXmlSheetData(QXmlStreamWriter &writer) const
         if (row_spans.contains(span_index))
             span = row_spans[span_index];
 
-        if (cellTable.contains(row_num)) {
-            writer.writeStartElement(QStringLiteral("row"));
-            writer.writeAttribute(QStringLiteral("r"), QString::number(row_num));
+        writer.writeStartElement(QStringLiteral("row"));
+        writer.writeAttribute(QStringLiteral("r"), QString::number(row_num));
 
-            if (!span.isEmpty())
-                writer.writeAttribute(QStringLiteral("spans"), span);
+        if (!span.isEmpty())
+            writer.writeAttribute(QStringLiteral("spans"), span);
 
-            if (rowsInfo.contains(row_num)) {
-                QSharedPointer<XlsxRowInfo> rowInfo = rowsInfo[row_num];
-                if (!rowInfo->format.isEmpty()) {
-                    writer.writeAttribute(QStringLiteral("s"), QString::number(rowInfo->format.xfIndex()));
-                    writer.writeAttribute(QStringLiteral("customFormat"), QStringLiteral("1"));
-                }
-                //!Todo: support customHeight from info struct
-                //!Todo: where does this magic number '15' come from?
-                if (rowInfo->customHeight) {
-                    writer.writeAttribute(QStringLiteral("ht"), QString::number(rowInfo->height));
-                    writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("1"));
-                    qDebug() << "custom height: " << rowInfo->height;
-                } else {
-                    writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("0"));
-                    qDebug() << "no height: ";
-                }
-
-
-
-                if (rowInfo->hidden)
-                    writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
-                if (rowInfo->outlineLevel > 0)
-                    writer.writeAttribute(QStringLiteral("outlineLevel"), QString::number(rowInfo->outlineLevel));
-                if (rowInfo->collapsed)
-                    writer.writeAttribute(QStringLiteral("collapsed"), QStringLiteral("1"));
+        if (rowsInfo.contains(row_num)) {
+            QSharedPointer<XlsxRowInfo> rowInfo = rowsInfo[row_num];
+            if (!rowInfo->format.isEmpty()) {
+                writer.writeAttribute(QStringLiteral("s"), QString::number(rowInfo->format.xfIndex()));
+                writer.writeAttribute(QStringLiteral("customFormat"), QStringLiteral("1"));
+            }
+            //!Todo: support customHeight from info struct
+            //!Todo: where does this magic number '15' come from?
+            if (rowInfo->customHeight) {
+                writer.writeAttribute(QStringLiteral("ht"), QString::number(rowInfo->height));
+                writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("1"));
+            } else {
+                writer.writeAttribute(QStringLiteral("customHeight"), QStringLiteral("0"));
             }
 
+            if (rowInfo->hidden)
+                writer.writeAttribute(QStringLiteral("hidden"), QStringLiteral("1"));
+            if (rowInfo->outlineLevel > 0)
+                writer.writeAttribute(QStringLiteral("outlineLevel"), QString::number(rowInfo->outlineLevel));
+            if (rowInfo->collapsed)
+                writer.writeAttribute(QStringLiteral("collapsed"), QStringLiteral("1"));
+        }
+
+        //Write cell data if row contains filled cells
+        if (cellTable.contains(row_num)) {
             for (int col_num = dimension.firstColumn(); col_num <= dimension.lastColumn(); col_num++) {
                 if (cellTable[row_num].contains(col_num)) {
                     saveXmlCellData(writer, row_num, col_num, cellTable[row_num][col_num]);
                 }
             }
-            writer.writeEndElement(); //row
-        } else if (comments.contains(row_num)){
-
-        } else {
-
         }
+        writer.writeEndElement(); //row
     }
 }
 
