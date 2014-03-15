@@ -177,6 +177,11 @@ public:
     void loadXmlSheetViews(QXmlStreamReader &reader);
     void loadXmlHyperlinks(QXmlStreamReader &reader);
 
+    QList<QSharedPointer<XlsxRowInfo> > getRowInfoList(int rowFirst, int rowLast);
+    QList <QSharedPointer<XlsxColumnInfo> > getColumnInfoList(int colFirst, int colLast);
+    QList<int> getColumnIndexes(int colFirst, int colLast);
+    bool isColumnRangeValid(int colFirst, int colLast);
+
     SharedStrings *sharedStrings() const;
 
     QMap<int, QMap<int, QSharedPointer<Cell> > > cellTable;

@@ -733,7 +733,7 @@ double Document::rowHeight(int row)
 {
    if (Worksheet *sheet = currentWorksheet())
       return sheet->rowHeight(row);
-    return 0.0; // ?
+    return 0.0;
 }
 
 /*!
@@ -743,7 +743,7 @@ Format Document::rowFormat(int row)
 {
     if (Worksheet *sheet = currentWorksheet())
        return sheet->rowFormat(row);
-     return Format(); // ?
+     return Format();
 }
 
 /*!
@@ -753,7 +753,7 @@ bool Document::isRowHidden(int row)
 {
     if (Worksheet *sheet = currentWorksheet())
        return sheet->isRowHidden(row);
-     return false; // ?
+     return false;
 }
 
 /*!

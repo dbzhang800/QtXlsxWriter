@@ -65,9 +65,10 @@ public:
     bool mergeCells(const QString &range, const Format &format=Format());
     bool unmergeCells(const CellRange &range);
     bool unmergeCells(const QString &range);
-    bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
 
+    Q_DECL_DEPRECATED
     bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
+    Q_DECL_DEPRECATED
     bool setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format=Format(), bool hidden=false);
     bool setColumnWidth(const QString &column, double width);
     bool setColumnFormat(const QString &column, const Format &format);
@@ -85,6 +86,8 @@ public:
     Format columnFormat(int column);
     bool isColumnHidden(int column);
 
+    Q_DECL_DEPRECATED
+    bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
     bool setRowHeight(int row, double height);
     bool setRowFormat(int row, const Format &format);
     bool setRowHidden(int row, bool hidden);
