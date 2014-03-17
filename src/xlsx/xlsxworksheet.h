@@ -99,9 +99,24 @@ public:
     bool unmergeCells(const CellRange &range);
     QList<CellRange> mergedCells() const;
 
-    bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
-    bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
-    bool setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format=Format(), bool hidden=false);
+    bool setColumnWidth(const CellRange& range, double width);
+    bool setColumnFormat(const CellRange& range, const Format &format);
+    bool setColumnHidden(const CellRange& range, bool hidden);
+    bool setColumnWidth(int colFirst, int colLast, double width);
+    bool setColumnFormat(int colFirst, int colLast, const Format &format);
+    bool setColumnHidden(int colFirst, int colLast, bool hidden);
+    double columnWidth(int column);
+    Format columnFormat(int column);
+    bool isColumnHidden(int column);
+
+    bool setRowHeight(int rowFirst,int rowLast, double height);
+    bool setRowFormat(int rowFirst,int rowLast, const Format &format);
+    bool setRowHidden(int rowFirst,int rowLast, bool hidden);
+
+    double rowHeight(int row);
+    Format rowFormat(int row);
+    bool isRowHidden(int row);
+
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
     bool groupColumns(const QString &colFirst, const QString &colLast, bool collapsed = true);
@@ -129,6 +144,8 @@ public:
     void setWhiteSpaceVisible(bool visible);
 
     ~Worksheet();
+
+
 private:
     friend class DocumentPrivate;
     friend class Workbook;
