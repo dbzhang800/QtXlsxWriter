@@ -25,7 +25,7 @@ int main(int argc, char **argv)
         headerStyle.setFontColor(Qt::darkBlue);
         headerStyle.setHorizontalAlignment(Format::AlignHCenter);
         headerStyle.setVerticalAlignment(Format::AlignVCenter);
-        xlsx.setRow(1, 80);
+        xlsx.setRowHeight(1, 80);
         xlsx.write("A1", QString("%1 %2").arg(QLocale().monthName(month)).arg(today.year()));
         xlsx.mergeCells("A1:N1", headerStyle);
 
@@ -40,8 +40,8 @@ int main(int argc, char **argv)
             monthStyle.setFillPattern(Format::PatternSolid);
             monthStyle.setPatternBackgroundColor(Qt::darkBlue);
 
-            xlsx.setColumn(day*2-1, day*2-1, 5);
-            xlsx.setColumn(day*2, day*2, 13);
+            xlsx.setColumnWidth(day*2-1, day*2-1, 5);
+            xlsx.setColumnWidth(day*2, day*2, 13);
             xlsx.write(2, day*2-1, QLocale().dayName(day));
             xlsx.mergeCells(CellRange(2, day*2-1, 2, day*2), monthStyle);
         }
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
             QDate date(today.year(), month, day);
             if (!date.isValid())
                 break;
-            xlsx.setRow(rownum, 100);
+            xlsx.setRowHeight(rownum, 100);
             int dow = date.dayOfWeek();
             int colnum = dow*2-1;
 

@@ -95,8 +95,8 @@ int main()
     //---------------------------------------------------------------
     //Create the first sheet (Otherwise, default "Sheet1" will be created)
     xlsx.addSheet("Aligns & Borders");
-    xlsx.setColumn("B", "B", 20);
-    xlsx.setColumn("H", "H", 12);
+    xlsx.setColumnWidth(2, 20); //Column B
+    xlsx.setColumnWidth(8, 12); //Column H
     xlsx.currentWorksheet()->setGridLinesVisible(false);
 
     //Alignment
@@ -179,7 +179,7 @@ int main()
     //---------------------------------------------------------------
     //Create the third sheet.
     xlsx.addSheet("Formulas");
-    xlsx.setColumn("A", "B", 40);
+    xlsx.setColumnWidth(1, 2, 40);
     Format rAlign;
     rAlign.setHorizontalAlignment(Format::AlignRight);
     Format lAlign;
@@ -242,7 +242,7 @@ int main()
     //---------------------------------------------------------------
     //Create the fourth sheet.
     xlsx.addSheet("NumFormats");
-    xlsx.setColumn("B", "B", 40);
+    xlsx.setColumnWidth(2, 40);
     writeInternalNumFormatsCell(xlsx, 4, 2.5681, 2);
     writeInternalNumFormatsCell(xlsx, 5, 2500000, 3);
     writeInternalNumFormatsCell(xlsx, 6, -500, 5);
@@ -282,7 +282,7 @@ int main()
     xlsx.groupRows(11, 26, false);
     xlsx.groupRows(15, 17, false);
     xlsx.groupRows(20, 22, false);
-    xlsx.setColumn(1, 10, 10.0);
+    xlsx.setColumnWidth(1, 10, 10.0);
     xlsx.groupColumns(1, 2);
     xlsx.groupColumns(5, 8, false);
 

@@ -12,7 +12,7 @@ int main()
     //![0]
 
     //![1]
-    xlsx.setColumn("A", "B", 40);
+    xlsx.setColumnWidth(1, 2, 40);
     Format rAlign;
     rAlign.setHorizontalAlignment(Format::AlignRight);
     Format lAlign;

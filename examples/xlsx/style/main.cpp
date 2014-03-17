@@ -26,7 +26,7 @@ int main()
     format3.setFontSize(20);
     xlsx.write(11, 1, "Hello Row Style");
     xlsx.write(11, 6, "Blue Color");
-    xlsx.setRow(11, 41, format3);
+    xlsx.setRowFormat(11, 41, format3);
 
     QXlsx::Format format4;
     format4.setFontBold(true);
@@ -34,7 +34,7 @@ int main()
     for (int row=21; row<=40; row++)
         for (int col=9; col<16; col++)
             xlsx.write(row, col, row+col);
-    xlsx.setColumn(9, 16, 5.0, format4);
+    xlsx.setColumnFormat(9, 16, format4);
 
     xlsx.write("A5", QDate(2013, 8, 29));
 
