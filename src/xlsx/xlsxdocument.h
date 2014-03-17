@@ -66,16 +66,9 @@ public:
     bool unmergeCells(const CellRange &range);
     bool unmergeCells(const QString &range);
 
-    Q_DECL_DEPRECATED
-    bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
-    Q_DECL_DEPRECATED
-    bool setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format=Format(), bool hidden=false);
-    bool setColumnWidth(const QString &column, double width);
-    bool setColumnFormat(const QString &column, const Format &format);
-    bool setColumnHidden(const QString &column, bool hidden);
-    bool setColumnWidth(const QString &colFirst, const QString &colLast, double width);
-    bool setColumnFormat(const QString &colFirst, const QString &colLast, const Format &format);
-    bool setColumnHidden(const QString &colFirst, const QString &colLast, bool hidden);
+    bool setColumnWidth(const CellRange &range, double width);
+    bool setColumnFormat(const CellRange &range, const Format &format);
+    bool setColumnHidden(const CellRange &range, bool hidden);
     bool setColumnWidth(int column, double width);
     bool setColumnFormat(int column, const Format &format);
     bool setColumnHidden(int column, bool hidden);
@@ -86,8 +79,6 @@ public:
     Format columnFormat(int column);
     bool isColumnHidden(int column);
 
-    Q_DECL_DEPRECATED
-    bool setRow(int row, double height, const Format &format=Format(), bool hidden=false);
     bool setRowHeight(int row, double height);
     bool setRowFormat(int row, const Format &format);
     bool setRowHidden(int row, bool hidden);

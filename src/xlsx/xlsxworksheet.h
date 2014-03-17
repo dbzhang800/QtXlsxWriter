@@ -101,13 +101,9 @@ public:
     bool unmergeCells(const CellRange &range);
     QList<CellRange> mergedCells() const;
 
-    Q_DECL_DEPRECATED
-    bool setColumn(int colFirst, int colLast, double width, const Format &format=Format(), bool hidden=false);
-    Q_DECL_DEPRECATED
-    bool setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format=Format(), bool hidden=false);
-    bool setColumnWidth(const QString &colFirst, const QString &colLast, double width);
-    bool setColumnFormat(const QString &colFirst, const QString &colLast, const Format &format);
-    bool setColumnHidden(const QString &colFirst, const QString &colLast, bool hidden);
+    bool setColumnWidth(const CellRange& range, double width);
+    bool setColumnFormat(const CellRange& range, const Format &format);
+    bool setColumnHidden(const CellRange& range, bool hidden);
     bool setColumnWidth(int colFirst, int colLast, double width);
     bool setColumnFormat(int colFirst, int colLast, const Format &format);
     bool setColumnHidden(int colFirst, int colLast, bool hidden);

@@ -1564,59 +1564,14 @@ QList<int> WorksheetPrivate ::getColumnIndexes(int colFirst, int colLast)
 }
 
 /*!
-  Sets column \a width and \a format for all columns from \a colFirst to \a colLast. Column
-  width measured as the number of characters of the maximum digit width of the
-  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
-  equals 0 then format is ignored. Both \a colFirst and \a colLast are all 1-indexed.
-  Hides the column if \a hidden is true.
-
-  Return true if success.
- */
-bool Worksheet::setColumn(int colFirst, int colLast, double width, const Format &format, bool hidden)
-{
-    Q_D(Worksheet);
-
-    QList <QSharedPointer<XlsxColumnInfo> > columnInfoList = d->getColumnInfoList(colFirst, colLast);
-    foreach(QSharedPointer<XlsxColumnInfo>  columnInfo, columnInfoList) {
-       columnInfo->width = width;
-       columnInfo->format = format;
-       columnInfo->hidden = hidden;
-    }
-
-    if(columnInfoList.count() > 0) {
-        d->workbook->styles()->addXfFormat(format);
-        return true;
-    }
-
-    return false;
-}
-
-/*!
-  Sets column width and format for all columns from colFirst to colLast. Column
-  width measured as the number of characters of the maximum digit width of the
-  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font. If format
-  equals 0 then format is ignored. \a colFirst and \a colLast should be "A", "B", "C", ...
- */
-bool Worksheet::setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format, bool hidden)
-{
-    int col1 = xl_col_name_to_value(colFirst);
-    int col2 = xl_col_name_to_value(colLast);
-
-    if (col1 == -1 || col2 == -1)
-        return false;
-
-    return setColumn(col1, col2, width, format, hidden);
-}
-
-/*!
-  Sets width in characters of a range of columns. Columns can be specified as "A", "B" ... "Z".
+  Sets width in characters of a range of columns.
   Returns true on success.
  */
-bool Worksheet::setColumnWidth(const QString &colFirst, const QString &colLast, double width)
+bool Worksheet::setColumnWidth(const CellRange &range, double width)
 {
-    int col1 = xl_col_name_to_value(colFirst);
-    int col2 = xl_col_name_to_value(colLast);
-    if (col1 == -1 || col2 == -1)
+    int col1 = range.firstColumn();
+    int col2 = range.lastColumn();
+    if (col1 < 0|| col2 < 0)
         return false;
 
     return setColumnWidth(col1, col2, width);
@@ -1626,11 +1581,11 @@ bool Worksheet::setColumnWidth(const QString &colFirst, const QString &colLast, 
   Sets format property of a range of columns. Columns are 1-indexed.
   Returns true on success.
  */
-bool Worksheet::setColumnFormat(const QString &colFirst, const QString &colLast, const Format &format)
+bool Worksheet::setColumnFormat(const CellRange& range, const Format &format)
 {
-    int col1 = xl_col_name_to_value(colFirst);
-    int col2 = xl_col_name_to_value(colLast);
-    if (col1 == -1 || col2 == -1)
+    int col1 = range.firstColumn();
+    int col2 = range.lastColumn();
+    if (col1 < 0|| col2 < 0)
         return false;
 
     return setColumnFormat(col1, col2, format);
@@ -1641,11 +1596,11 @@ bool Worksheet::setColumnFormat(const QString &colFirst, const QString &colLast,
   Hidden columns are not visible.
   Returns true on success.
  */
-bool Worksheet::setColumnHidden(const QString &colFirst, const QString &colLast, bool hidden)
+bool Worksheet::setColumnHidden(const CellRange &range, bool hidden)
 {
-    int col1 = xl_col_name_to_value(colFirst);
-    int col2 = xl_col_name_to_value(colLast);
-    if (col1 == -1 || col2 == -1)
+    int col1 = range.firstColumn();
+    int col2 = range.lastColumn();
+    if (col1 < 0|| col2 < 0)
         return false;
 
     return setColumnHidden(col1, col2, hidden);

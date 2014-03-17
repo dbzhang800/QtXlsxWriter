@@ -515,88 +515,68 @@ bool Document::unmergeCells(const CellRange &range)
 }
 
 /*!
-  Sets the column properties for all columns from \a colFirst to \a colLast with
-  the given \a width, \a format and \a hidden. Column
-  width measured as the number of characters of the maximum digit width of the
-  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font.
-  \a colFirst and \a colLast are all 1-indexed.
-
-  Return false if failed.
+  Sets width in characters of a range of columns.
+  Returns true on success.
  */
-bool Document::setColumn(int colFirst, int colLast, double width, const Format &format, bool hidden)
+bool Document::setColumnWidth(const CellRange &range, double width)
 {
     if (Worksheet *sheet = currentWorksheet())
-        return sheet->setColumn(colFirst, colLast, width, format, hidden);
+        return sheet->setColumnWidth(range, width);
     return false;
 }
 
 /*!
-  \overload
-
-  Sets column width and format for all columns from \a colFirst to \a colLast with
-  the given \a width and \a format. Column
-  \a width measured as the number of characters of the maximum digit width of the
-  numbers 0, 1, 2, ..., 9 as rendered in the normal style's font.
-  \a colFirst and \a colLast should be "A", "B", "C", ...
+  Sets format property of a range of columns.
+  Returns true on success.
  */
-bool Document::setColumn(const QString &colFirst, const QString &colLast, double width, const Format &format, bool hidden)
+bool Document::setColumnFormat(const CellRange &range, const Format &format)
 {
     if (Worksheet *sheet = currentWorksheet())
-        return sheet->setColumn(colFirst, colLast, width, format, hidden);
+        return sheet->setColumnFormat(range, format);
     return false;
 }
 
-bool Document::setColumnWidth(const QString &column, double width)
-{
-    return setColumnWidth(column,column,width);
-}
-
-bool Document::setColumnFormat(const QString &column, const Format &format)
-{
-    return setColumnFormat(column,column,format);
-}
-
-bool Document::setColumnHidden(const QString &column, bool hidden)
-{
-    return setColumnHidden(column,column,hidden);
-}
-
-bool Document::setColumnWidth(const QString &colFirst, const QString &colLast, double width)
+/*!
+  Sets hidden property of a range of columns. Columns are 1-indexed.
+  Hidden columns are not visible.
+  Returns true on success.
+ */
+bool Document::setColumnHidden(const CellRange &range, bool hidden)
 {
     if (Worksheet *sheet = currentWorksheet())
-        return sheet->setColumnWidth(colFirst, colLast, width);
+        return sheet->setColumnWidth(range, hidden);
     return false;
 }
 
-bool Document::setColumnFormat(const QString &colFirst, const QString &colLast, const Format &format)
-{
-    if (Worksheet *sheet = currentWorksheet())
-        return sheet->setColumnFormat(colFirst, colLast, format);
-    return false;
-}
-
-bool Document::setColumnHidden(const QString &colFirst, const QString &colLast, bool hidden)
-{
-    if (Worksheet *sheet = currentWorksheet())
-        return sheet->setColumnWidth(colFirst, colLast, hidden);
-    return false;
-}
-
+/*!
+  Sets width in characters of a range of columns. Columns are 1-indexed.
+  Returns true on success.
+ */
 bool Document::setColumnWidth(int column, double width)
 {
     return setColumnWidth(column,column,width);
 }
 
+/*!
+  Sets format property of a range of columns. Columns are 1-indexed.
+ */
 bool Document::setColumnFormat(int column, const Format &format)
 {
     return setColumnFormat(column,column,format);
 }
 
+/*!
+  Sets hidden property of a column. Columns are 1-indexed.
+ */
 bool Document::setColumnHidden(int column, bool hidden)
 {
     return setColumnHidden(column,column,hidden);
 }
 
+/*!
+  Sets width in characters of a range of columns. Columns are 1-indexed.
+  Returns true on success.
+ */
 bool Document::setColumnWidth(int colFirst, int colLast, double width)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -604,6 +584,9 @@ bool Document::setColumnWidth(int colFirst, int colLast, double width)
     return false;
 }
 
+/*!
+  Sets format property of a range of columns. Columns are 1-indexed.
+ */
 bool Document::setColumnFormat(int colFirst, int colLast, const Format &format)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -611,6 +594,10 @@ bool Document::setColumnFormat(int colFirst, int colLast, const Format &format)
     return false;
 }
 
+
+/*!
+  Sets hidden property of a range of columns. Columns are 1-indexed.
+ */
 bool Document::setColumnHidden(int colFirst, int colLast, bool hidden)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -618,6 +605,9 @@ bool Document::setColumnHidden(int colFirst, int colLast, bool hidden)
     return false;
 }
 
+/*!
+  Returns width of the column in characters of the normal font. Columns are 1-indexed.
+ */
 double Document::columnWidth(int column)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -625,6 +615,9 @@ double Document::columnWidth(int column)
     return 0.0;
 }
 
+/*!
+  Returns formatting of the column. Columns are 1-indexed.
+ */
 Format Document::columnFormat(int column)
 {
     if (Worksheet *sheet = currentWorksheet())
@@ -632,23 +625,13 @@ Format Document::columnFormat(int column)
     return Format();
 }
 
+/*!
+  Returns true if column is hidden. Columns are 1-indexed.
+ */
 bool Document::isColumnHidden(int column)
 {
     if (Worksheet *sheet = currentWorksheet())
        return sheet->isColumnHidden(column);
-    return false;
-}
-
-/*!
-  Sets the properties of \a row with the given \a height, \a format and \a hidden.
-  \a row is 1-indexed.
-
-  Returns false if failed.
- */
-bool Document::setRow(int row, double height, const Format &format, bool hidden)
-{
-    if (Worksheet *sheet = currentWorksheet())
-        return sheet->setRow(row, row, height, format, hidden);
     return false;
 }
 
