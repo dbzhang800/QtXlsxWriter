@@ -65,6 +65,20 @@ CellRange::CellRange(int top, int left, int bottom, int right)
 */
 CellRange::CellRange(const QString &range)
 {
+    init(range);
+}
+
+/*!
+    \overload
+    Constructs the range form the given \a range string.
+*/
+CellRange::CellRange(const char *range)
+{
+    init(QString::fromLatin1(range));
+}
+
+void CellRange::init(const QString &range)
+{
     QStringList rs = range.split(QLatin1Char(':'));
     if (rs.size() == 2) {
         QPoint start = xl_cell_to_rowcol(rs[0]);

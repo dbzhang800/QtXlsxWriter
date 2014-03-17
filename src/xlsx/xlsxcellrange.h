@@ -34,6 +34,7 @@ public:
     CellRange();
     CellRange(int firstRow, int firstColumn, int lastRow, int lastColumn);
     CellRange(const QString &range);
+    CellRange(const char *range);
     CellRange(const CellRange &other);
     ~CellRange();
 
@@ -61,6 +62,7 @@ public:
                 || left != other.left || right != other.right;
     }
 private:
+    void init(const QString &range);
     int top, left, bottom, right;
 };
 

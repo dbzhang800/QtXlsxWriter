@@ -93,9 +93,7 @@ public:
     bool insertImage(int row, int column, const QImage &image);
     Chart *insertChart(int row, int column, const QSize &size);
 
-    bool mergeCells(const QString &range, const Format &format=Format());
     bool mergeCells(const CellRange &range, const Format &format=Format());
-    bool unmergeCells(const QString &range);
     bool unmergeCells(const CellRange &range);
     QList<CellRange> mergedCells() const;
 

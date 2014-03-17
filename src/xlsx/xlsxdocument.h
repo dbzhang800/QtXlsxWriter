@@ -62,9 +62,7 @@ public:
     bool insertImage(int row, int col, const QImage &image);
     Chart *insertChart(int row, int col, const QSize &size);
     bool mergeCells(const CellRange &range, const Format &format=Format());
-    bool mergeCells(const QString &range, const Format &format=Format());
     bool unmergeCells(const CellRange &range);
-    bool unmergeCells(const QString &range);
 
     bool setColumnWidth(const CellRange &range, double width);
     bool setColumnFormat(const CellRange &range, const Format &format);

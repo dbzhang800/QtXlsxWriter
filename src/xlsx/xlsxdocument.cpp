@@ -481,30 +481,6 @@ bool Document::mergeCells(const CellRange &range, const Format &format)
 }
 
 /*!
-    \overload
-    Merge a \a range of cells. The first cell should contain the data and the others should
-    be blank. All cells will be applied the same style if a valid \a format is given.
-
-    \note All cells except the top-left one will be cleared.
- */
-bool Document::mergeCells(const QString &range, const Format &format)
-{
-    if (Worksheet *sheet = currentWorksheet())
-        return sheet->mergeCells(range, format);
-    return false;
-}
-
-/*!
-    Unmerge the cells in the \a range.
-*/
-bool Document::unmergeCells(const QString &range)
-{
-    if (Worksheet *sheet = currentWorksheet())
-        return sheet->unmergeCells(range);
-    return false;
-}
-
-/*!
     Unmerge the cells in the \a range.
 */
 bool Document::unmergeCells(const CellRange &range)

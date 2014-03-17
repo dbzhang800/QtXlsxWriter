@@ -1113,27 +1113,6 @@ bool Worksheet::mergeCells(const CellRange &range, const Format &format)
 }
 
 /*!
-    \overload
-    Merge a \a range of cells. The first cell should contain the data and the others should
-    be blank. All cells will be applied the same style if a valid \a format is given.
-
-    \note All cells except the top-left one will be cleared.
- */
-bool Worksheet::mergeCells(const QString &range, const Format &format)
-{
-    QStringList cells = range.split(QLatin1Char(':'));
-    if (cells.size() != 2)
-        return false;
-    QPoint cell1 = xl_cell_to_rowcol(cells[0]);
-    QPoint cell2 = xl_cell_to_rowcol(cells[1]);
-
-    if (cell1 == QPoint(-1,-1) || cell2 == QPoint(-1, -1))
-        return false;
-
-    return mergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()), format);
-}
-
-/*!
     Unmerge the cells in the \a range.
 */
 bool Worksheet::unmergeCells(const CellRange &range)
@@ -1145,25 +1124,6 @@ bool Worksheet::unmergeCells(const CellRange &range)
     d->merges.removeOne(range);
     return true;
 }
-
-/*!
-    \overload
-    Unmerge the cells in the \a range.
-*/
-bool Worksheet::unmergeCells(const QString &range)
-{
-    QStringList cells = range.split(QLatin1Char(':'));
-    if (cells.size() != 2)
-        return false;
-    QPoint cell1 = xl_cell_to_rowcol(cells[0]);
-    QPoint cell2 = xl_cell_to_rowcol(cells[1]);
-
-    if (cell1 == QPoint(-1,-1) || cell2 == QPoint(-1, -1))
-        return false;
-
-    return unmergeCells(CellRange(cell1.x(), cell1.y(), cell2.x(), cell2.y()));
-}
-
 
 /*!
   Returns all the merged cells
