@@ -121,10 +121,10 @@ QTXLSX_USE_NAMESPACE
     Document xlsx;
 
     <span class="comment">//---------------------------------------------------------------</span>
-    <span class="comment">//The default sheet is &quot;Sheet1&quot;</span>
-    xlsx<span class="operator">.</span>renameWorksheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;Aligns &amp; Borders&quot;</span>);
-    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">20</span>);
-    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;H&quot;</span><span class="operator">,</span> <span class="string">&quot;H&quot;</span><span class="operator">,</span> <span class="number">12</span>);
+    <span class="comment">//Create the first sheet (Otherwise, default &quot;Sheet1&quot; will be created)</span>
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;Aligns &amp; Borders&quot;</span>);
+    xlsx<span class="operator">.</span>setColumnWidth(<span class="number">2</span><span class="operator">,</span> <span class="number">20</span>); <span class="comment">//Column B</span>
+    xlsx<span class="operator">.</span>setColumnWidth(<span class="number">8</span><span class="operator">,</span> <span class="number">12</span>); <span class="comment">//Column H</span>
     xlsx<span class="operator">.</span>currentWorksheet()<span class="operator">-</span><span class="operator">&gt;</span>setGridLinesVisible(<span class="keyword">false</span>);
 
     <span class="comment">//Alignment</span>
@@ -166,7 +166,7 @@ QTXLSX_USE_NAMESPACE
 
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the second sheet.</span>
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Fonts&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;Fonts&quot;</span>);
 
     xlsx<span class="operator">.</span>write(<span class="string">&quot;B3&quot;</span><span class="operator">,</span> <span class="string">&quot;Normal&quot;</span>);
     Format font_bold;
@@ -206,8 +206,8 @@ QTXLSX_USE_NAMESPACE
 
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the third sheet.</span>
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Formulas&quot;</span>);
-    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;A&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">40</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;Formulas&quot;</span>);
+    xlsx<span class="operator">.</span>setColumnWidth(<span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">40</span>);
     Format rAlign;
     rAlign<span class="operator">.</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignRight);
     Format lAlign;
@@ -269,8 +269,8 @@ QTXLSX_USE_NAMESPACE
 
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the fourth sheet.</span>
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;NumFormats&quot;</span>);
-    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">40</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;NumFormats&quot;</span>);
+    xlsx<span class="operator">.</span>setColumnWidth(<span class="number">2</span><span class="operator">,</span> <span class="number">40</span>);
     writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">2.5681</span><span class="operator">,</span> <span class="number">2</span>);
     writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">5</span><span class="operator">,</span> <span class="number">2500000</span><span class="operator">,</span> <span class="number">3</span>);
     writeInternalNumFormatsCell(xlsx<span class="operator">,</span> <span class="number">6</span><span class="operator">,</span> <span class="operator">-</span><span class="number">500</span><span class="operator">,</span> <span class="number">5</span>);
@@ -287,7 +287,7 @@ QTXLSX_USE_NAMESPACE
 
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the fifth sheet.</span>
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Merging&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;Merging&quot;</span>);
     Format centerAlign;
     centerAlign<span class="operator">.</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignHCenter);
     centerAlign<span class="operator">.</span>setVerticalAlignment(Format<span class="operator">::</span>AlignVCenter);
@@ -300,7 +300,7 @@ QTXLSX_USE_NAMESPACE
 
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the fifth sheet.</span>
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;Grouping&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;Grouping&quot;</span>);
     qsrand(<span class="type">QDateTime</span><span class="operator">::</span>currentMSecsSinceEpoch());
     <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">31</span>; <span class="operator">+</span><span class="operator">+</span>row) {
         <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span><span class="number">1</span>; col<span class="operator">&lt;</span><span class="operator">=</span><span class="number">10</span>; <span class="operator">+</span><span class="operator">+</span>col)
@@ -310,7 +310,7 @@ QTXLSX_USE_NAMESPACE
     xlsx<span class="operator">.</span>groupRows(<span class="number">11</span><span class="operator">,</span> <span class="number">26</span><span class="operator">,</span> <span class="keyword">false</span>);
     xlsx<span class="operator">.</span>groupRows(<span class="number">15</span><span class="operator">,</span> <span class="number">17</span><span class="operator">,</span> <span class="keyword">false</span>);
     xlsx<span class="operator">.</span>groupRows(<span class="number">20</span><span class="operator">,</span> <span class="number">22</span><span class="operator">,</span> <span class="keyword">false</span>);
-    xlsx<span class="operator">.</span>setColumn(<span class="number">1</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> <span class="number">10.0</span>);
+    xlsx<span class="operator">.</span>setColumnWidth(<span class="number">1</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> <span class="number">10.0</span>);
     xlsx<span class="operator">.</span>groupColumns(<span class="number">1</span><span class="operator">,</span> <span class="number">2</span>);
     xlsx<span class="operator">.</span>groupColumns(<span class="number">5</span><span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="keyword">false</span>);
 

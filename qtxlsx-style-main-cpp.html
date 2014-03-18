@@ -54,7 +54,7 @@ Qt 0.3.0 Reference Documentation</li>
     format3<span class="operator">.</span>setFontSize(<span class="number">20</span>);
     xlsx<span class="operator">.</span>write(<span class="number">11</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="string">&quot;Hello Row Style&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="number">11</span><span class="operator">,</span> <span class="number">6</span><span class="operator">,</span> <span class="string">&quot;Blue Color&quot;</span>);
-    xlsx<span class="operator">.</span>setRow(<span class="number">11</span><span class="operator">,</span> <span class="number">41</span><span class="operator">,</span> format3);
+    xlsx<span class="operator">.</span>setRowFormat(<span class="number">11</span><span class="operator">,</span> <span class="number">41</span><span class="operator">,</span> format3);
 
     <span class="type">QXlsx</span><span class="operator">::</span>Format format4;
     format4<span class="operator">.</span>setFontBold(<span class="keyword">true</span>);
@@ -62,7 +62,7 @@ Qt 0.3.0 Reference Documentation</li>
     <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">21</span>; row<span class="operator">&lt;</span><span class="operator">=</span><span class="number">40</span>; row<span class="operator">+</span><span class="operator">+</span>)
         <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span><span class="number">9</span>; col<span class="operator">&lt;</span><span class="number">16</span>; col<span class="operator">+</span><span class="operator">+</span>)
             xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> row<span class="operator">+</span>col);
-    xlsx<span class="operator">.</span>setColumn(<span class="number">9</span><span class="operator">,</span> <span class="number">16</span><span class="operator">,</span> <span class="number">5.0</span><span class="operator">,</span> format4);
+    xlsx<span class="operator">.</span>setColumnFormat(<span class="number">9</span><span class="operator">,</span> <span class="number">16</span><span class="operator">,</span> format4);
 
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A5&quot;</span><span class="operator">,</span> <span class="type">QDate</span>(<span class="number">2013</span><span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="number">29</span>));
 

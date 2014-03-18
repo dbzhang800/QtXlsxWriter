@@ -31,7 +31,7 @@ Qt 0.3.0 Reference Documentation</li>
 <p>This creates a new instance of the all important Document class which gives you access to the Excel workbook and worksheets.</p>
 <pre class="cpp">Document xlsx;</pre>
 <p>A default worksheet have been created by Document. Let's start by adding some basic formulas.</p>
-<pre class="cpp">xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;A&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">40</span>);
+<pre class="cpp">xlsx<span class="operator">.</span>setColumnWidth(<span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">40</span>);
 Format rAlign;
 rAlign<span class="operator">.</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignRight);
 Format lAlign;
@@ -67,7 +67,7 @@ xlsx<span class="operator">.</span>write(<span class="string">&quot;B20&quot;</s
 xlsx<span class="operator">.</span>write(<span class="string">&quot;A21&quot;</span><span class="operator">,</span> <span class="string">&quot;LEN(\&quot;Hello Qt!\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
 xlsx<span class="operator">.</span>write(<span class="string">&quot;B21&quot;</span><span class="operator">,</span> <span class="string">&quot;=LEN(\&quot;Hello Qt!\&quot;)&quot;</span><span class="operator">,</span> lAlign);</pre>
 <p>Then add one array formula.</p>
-<pre class="cpp">xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;ArrayFormula&quot;</span>);
+<pre class="cpp">xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;ArrayFormula&quot;</span>);
 Worksheet <span class="operator">*</span>sheet <span class="operator">=</span> xlsx<span class="operator">.</span>currentWorksheet();
 
 <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {

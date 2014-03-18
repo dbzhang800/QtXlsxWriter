@@ -27,75 +27,87 @@ Qt 0.3.0 Reference Documentation</li>
 <p>This is the complete list of members for <a href="worksheet.html">Worksheet</a>, including inherited members.</p>
 <table class="propsummary">
 <tr><td class="topAlign"><ul>
+<li class="fn">enum <span class="name"><b><a href="abstractsheet.html#SheetType-enum">SheetType</a></b></span></li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#dtor.Worksheet">~Worksheet</a></b></span>()</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#addConditionalFormatting">addConditionalFormatting</a></b></span>(const ConditionalFormatting &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#addDataValidation">addDataValidation</a></b></span>(const DataValidation &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#cellAt">cellAt</a></b></span>(int, int) const : Cell *</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#cellAt-2">cellAt</a></b></span>(const QString &amp;) const : Cell *</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#columnFormat">columnFormat</a></b></span>(int) : Format</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#columnWidth">columnWidth</a></b></span>(int) : double</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#copy">copy</a></b></span>(const QString &amp;, int) const : AbstractSheet *</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#dimension">dimension</a></b></span>() const : CellRange</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#groupColumns">groupColumns</a></b></span>(int, int, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#groupColumns-2">groupColumns</a></b></span>(const QString &amp;, const QString &amp;, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#groupRows">groupRows</a></b></span>(int, int, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#insertChart">insertChart</a></b></span>(int, int, const QSize &amp;) : Chart *</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#insertImage">insertImage</a></b></span>(int, int, const QImage &amp;) : bool</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#insertImage-2">insertImage</a></b></span>(int, int, const QImage &amp;, const QPointF &amp;, double, double) : int</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#isColumnHidden">isColumnHidden</a></b></span>(int) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isFormulasVisible">isFormulasVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isGridLinesVisible">isGridLinesVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isOutlineSymbolsVisible">isOutlineSymbolsVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRightToLeft">isRightToLeft</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRowColumnHeadersVisible">isRowColumnHeadersVisible</a></b></span>() const : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#isRowHidden">isRowHidden</a></b></span>(int) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRulerVisible">isRulerVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isSelected">isSelected</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isWhiteSpaceVisible">isWhiteSpaceVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isWindowProtected">isWindowProtected</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isZerosVisible">isZerosVisible</a></b></span>() const : bool</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#mergeCells">mergeCells</a></b></span>(const CellRange &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#mergeCells-2">mergeCells</a></b></span>(const QString &amp;, const Format &amp;) : int</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#mergeCells">mergeCells</a></b></span>(const CellRange &amp;, const Format &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#mergedCells">mergedCells</a></b></span>() const : QList&lt;CellRange&gt;</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#read">read</a></b></span>(int, int) const : QVariant</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#read-2">read</a></b></span>(const QString &amp;) const : QVariant</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#setColumn">setColumn</a></b></span>(int, int, double, const Format &amp;, bool) : bool</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#setColumn-2">setColumn</a></b></span>(const QString &amp;, const QString &amp;, double, const Format &amp;, bool) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#rowFormat">rowFormat</a></b></span>(int) : Format</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#rowHeight">rowHeight</a></b></span>(int) : double</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setColumnFormat">setColumnFormat</a></b></span>(const CellRange &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setColumnFormat-2">setColumnFormat</a></b></span>(int, int, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setColumnHidden">setColumnHidden</a></b></span>(const CellRange &amp;, bool) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setColumnHidden-2">setColumnHidden</a></b></span>(int, int, bool) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setColumnWidth">setColumnWidth</a></b></span>(const CellRange &amp;, double) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setColumnWidth-2">setColumnWidth</a></b></span>(int, int, double) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setFormulasVisible">setFormulasVisible</a></b></span>(bool)</li>
+</ul></td><td class="topAlign"><ul>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setGridLinesVisible">setGridLinesVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setOutlineSymbolsVisible">setOutlineSymbolsVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRightToLeft">setRightToLeft</a></b></span>(bool)</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#setRow">setRow</a></b></span>(int, double, const Format &amp;, bool) : bool</li>
-</ul></td><td class="topAlign"><ul>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRowColumnHeadersVisible">setRowColumnHeadersVisible</a></b></span>(bool)</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setRowFormat">setRowFormat</a></b></span>(int, int, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setRowHeight">setRowHeight</a></b></span>(int, int, double) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#setRowHidden">setRowHidden</a></b></span>(int, int, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRulerVisible">setRulerVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setSelected">setSelected</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setWhiteSpaceVisible">setWhiteSpaceVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setWindowProtected">setWindowProtected</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setZerosVisible">setZerosVisible</a></b></span>(bool)</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#sheetName">sheetName</a></b></span>() const : QString</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#unmergeCells">unmergeCells</a></b></span>(const CellRange &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#unmergeCells-2">unmergeCells</a></b></span>(const QString &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#workbook">workbook</a></b></span>() const : Workbook *</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#write">write</a></b></span>(int, int, const QVariant &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#write-2">write</a></b></span>(const QString &amp;, const QVariant &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeArrayFormula">writeArrayFormula</a></b></span>(const CellRange &amp;, const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeArrayFormula-2">writeArrayFormula</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeBlank">writeBlank</a></b></span>(int, int, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeBlank-2">writeBlank</a></b></span>(const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeBool">writeBool</a></b></span>(int, int, bool, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeBool-2">writeBool</a></b></span>(const QString &amp;, bool, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeDateTime">writeDateTime</a></b></span>(int, int, const QDateTime &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeDateTime-2">writeDateTime</a></b></span>(const QString &amp;, const QDateTime &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeFormula">writeFormula</a></b></span>(int, int, const QString &amp;, const Format &amp;, double) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeFormula-2">writeFormula</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;, double) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeHyperlink">writeHyperlink</a></b></span>(int, int, const QUrl &amp;, const Format &amp;, const QString &amp;, const QString &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeHyperlink-2">writeHyperlink</a></b></span>(const QString &amp;, const QUrl &amp;, const Format &amp;, const QString &amp;, const QString &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeInlineString">writeInlineString</a></b></span>(int, int, const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeInlineString-2">writeInlineString</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeNumeric">writeNumeric</a></b></span>(int, int, double, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeNumeric-2">writeNumeric</a></b></span>(const QString &amp;, double, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeString">writeString</a></b></span>(int, int, const RichString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeString-2">writeString</a></b></span>(const QString &amp;, const RichString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeString-3">writeString</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeString-4">writeString</a></b></span>(int, int, const QString &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeTime">writeTime</a></b></span>(int, int, const QTime &amp;, const Format &amp;) : int</li>
-<li class="fn"><span class="name"><b><a href="worksheet.html#writeTime-2">writeTime</a></b></span>(const QString &amp;, const QTime &amp;, const Format &amp;) : int</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#sheetName">sheetName</a></b></span>() const : QString</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#sheetType">sheetType</a></b></span>() const : SheetType</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#unmergeCells">unmergeCells</a></b></span>(const CellRange &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#workbook">workbook</a></b></span>() const : Workbook *</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#write">write</a></b></span>(int, int, const QVariant &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#write-2">write</a></b></span>(const QString &amp;, const QVariant &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeArrayFormula">writeArrayFormula</a></b></span>(const CellRange &amp;, const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeArrayFormula-2">writeArrayFormula</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeBlank">writeBlank</a></b></span>(int, int, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeBlank-2">writeBlank</a></b></span>(const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeBool">writeBool</a></b></span>(int, int, bool, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeBool-2">writeBool</a></b></span>(const QString &amp;, bool, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeDateTime">writeDateTime</a></b></span>(int, int, const QDateTime &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeDateTime-2">writeDateTime</a></b></span>(const QString &amp;, const QDateTime &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeFormula">writeFormula</a></b></span>(int, int, const QString &amp;, const Format &amp;, double) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeFormula-2">writeFormula</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;, double) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeHyperlink">writeHyperlink</a></b></span>(int, int, const QUrl &amp;, const Format &amp;, const QString &amp;, const QString &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeHyperlink-2">writeHyperlink</a></b></span>(const QString &amp;, const QUrl &amp;, const Format &amp;, const QString &amp;, const QString &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeInlineString">writeInlineString</a></b></span>(int, int, const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeInlineString-2">writeInlineString</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeNumeric">writeNumeric</a></b></span>(int, int, double, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeNumeric-2">writeNumeric</a></b></span>(const QString &amp;, double, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeString">writeString</a></b></span>(int, int, const RichString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeString-2">writeString</a></b></span>(const QString &amp;, const RichString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeString-3">writeString</a></b></span>(const QString &amp;, const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeString-4">writeString</a></b></span>(int, int, const QString &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeTime">writeTime</a></b></span>(int, int, const QTime &amp;, const Format &amp;) : bool</li>
+<li class="fn"><span class="name"><b><a href="worksheet.html#writeTime-2">writeTime</a></b></span>(const QString &amp;, const QTime &amp;, const Format &amp;) : bool</li>
 </ul>
 </td></tr>
 </table>

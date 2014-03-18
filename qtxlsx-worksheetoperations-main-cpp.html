@@ -33,27 +33,27 @@ Qt 0.3.0 Reference Documentation</li>
 {
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
 
-    xlsx<span class="operator">.</span>renameWorksheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;TheFirstSheet&quot;</span>);
+    xlsx<span class="operator">.</span>renameSheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;TheFirstSheet&quot;</span>);
 
     <span class="keyword">for</span> (<span class="type">int</span> i<span class="operator">=</span><span class="number">1</span>; i<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>i) {
         <span class="keyword">for</span> (<span class="type">int</span> j<span class="operator">=</span><span class="number">1</span>; j<span class="operator">&lt;</span><span class="number">15</span>; <span class="operator">+</span><span class="operator">+</span>j)
             xlsx<span class="operator">.</span>write(i<span class="operator">,</span> j<span class="operator">,</span> <span class="type">QString</span>(<span class="string">&quot;R %1 C %2&quot;</span>)<span class="operator">.</span>arg(i)<span class="operator">.</span>arg(j));
     }
 
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;TheSecondSheet&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;TheSecondSheet&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;Hello Qt Xlsx&quot;</span>);
 
-    xlsx<span class="operator">.</span>copyWorksheet(<span class="string">&quot;TheFirstSheet&quot;</span><span class="operator">,</span> <span class="string">&quot;CopyOfTheFirst&quot;</span>);
+    xlsx<span class="operator">.</span>copySheet(<span class="string">&quot;TheFirstSheet&quot;</span><span class="operator">,</span> <span class="string">&quot;CopyOfTheFirst&quot;</span>);
 
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;TheForthSheet&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;TheForthSheet&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="number">3</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="string">&quot;This will be deleted...&quot;</span>);
 
-    xlsx<span class="operator">.</span>selectWorksheet(<span class="string">&quot;CopyOfTheFirst&quot;</span>);
+    xlsx<span class="operator">.</span>selectSheet(<span class="string">&quot;CopyOfTheFirst&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="number">25</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;On the Copy Sheet&quot;</span>);
 
-    xlsx<span class="operator">.</span>deleteWorksheet(<span class="string">&quot;TheForthSheet&quot;</span>);
+    xlsx<span class="operator">.</span>deleteSheet(<span class="string">&quot;TheForthSheet&quot;</span>);
 
-    xlsx<span class="operator">.</span>moveWorksheet(<span class="string">&quot;TheSecondSheet&quot;</span><span class="operator">,</span> <span class="number">0</span>);
+    xlsx<span class="operator">.</span>moveSheet(<span class="string">&quot;TheSecondSheet&quot;</span><span class="operator">,</span> <span class="number">0</span>);
 
     xlsx<span class="operator">.</span>save();
 

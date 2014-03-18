@@ -37,7 +37,7 @@ QTXLSX_USE_NAMESPACE
 {
     Document xlsx;
 
-    xlsx<span class="operator">.</span>setColumn(<span class="string">&quot;A&quot;</span><span class="operator">,</span> <span class="string">&quot;B&quot;</span><span class="operator">,</span> <span class="number">40</span>);
+    xlsx<span class="operator">.</span>setColumnWidth(<span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">40</span>);
     Format rAlign;
     rAlign<span class="operator">.</span>setHorizontalAlignment(Format<span class="operator">::</span>AlignRight);
     Format lAlign;
@@ -73,7 +73,7 @@ QTXLSX_USE_NAMESPACE
     xlsx<span class="operator">.</span>write(<span class="string">&quot;A21&quot;</span><span class="operator">,</span> <span class="string">&quot;LEN(\&quot;Hello Qt!\&quot;)=&quot;</span><span class="operator">,</span> rAlign);
     xlsx<span class="operator">.</span>write(<span class="string">&quot;B21&quot;</span><span class="operator">,</span> <span class="string">&quot;=LEN(\&quot;Hello Qt!\&quot;)&quot;</span><span class="operator">,</span> lAlign);
 
-    xlsx<span class="operator">.</span>addWorksheet(<span class="string">&quot;ArrayFormula&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;ArrayFormula&quot;</span>);
     Worksheet <span class="operator">*</span>sheet <span class="operator">=</span> xlsx<span class="operator">.</span>currentWorksheet();
 
     <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {
