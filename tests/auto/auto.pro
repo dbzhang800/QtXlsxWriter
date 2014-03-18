@@ -11,4 +11,5 @@ SUBDIRS=\
     styles \
     format \
     richstring \
-    xlsxconditionalformatting
+    xlsxconditionalformatting \
+    cellreference
