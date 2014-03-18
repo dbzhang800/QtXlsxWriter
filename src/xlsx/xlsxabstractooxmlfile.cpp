@@ -45,7 +45,7 @@ AbstractOOXmlFilePrivate::~AbstractOOXmlFilePrivate()
 /*!
  * \internal
  *
- * \class OOXmlFile
+ * \class AbstractOOXmlFile
  *
  * Base class of all the ooxml part file.
  */

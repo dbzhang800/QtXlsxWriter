@@ -49,7 +49,7 @@ AbstractSheetPrivate::~AbstractSheetPrivate()
   \enum AbstractSheet::SheetType
 
   \value ST_WorkSheet,
-  \omitvalue ST_ChartSheet,
+  \value ST_ChartSheet,
   \omitvalue ST_DialogSheet,
   \omitvalue ST_MacroSheet
   */
