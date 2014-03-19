@@ -353,9 +353,9 @@ void DataValidation::setErrorMessageVisible(bool visible)
 /*!
     Add the \a cell on which the DataValidation will apply to.
  */
-void DataValidation::addCell(const QString &cell)
+void DataValidation::addCell(const CellReference &cell)
 {
-    d->ranges.append(CellRange(cell));
+    d->ranges.append(CellRange(cell, cell));
 }
 
 /*!
@@ -365,14 +365,6 @@ void DataValidation::addCell(const QString &cell)
 void DataValidation::addCell(int row, int col)
 {
     d->ranges.append(CellRange(row, col, row, col));
-}
-
-/*!
-    Add the \a range on which the DataValidation will apply to.
- */
-void DataValidation::addRange(const QString &range)
-{
-    d->ranges.append(CellRange(range));
 }
 
 /*!
@@ -386,7 +378,6 @@ void DataValidation::addRange(int firstRow, int firstCol, int lastRow, int lastC
 }
 
 /*!
-    \overload
     Add the \a range on which the DataValidation will apply to.
  */
 void DataValidation::addRange(const CellRange &range)

@@ -37,6 +37,7 @@ QT_BEGIN_NAMESPACE_XLSX
 
 class Worksheet;
 class CellRange;
+class CellReference;
 
 class DataValidationPrivate;
 class Q_XLSX_EXPORT DataValidation
@@ -104,9 +105,8 @@ public:
     void setPromptMessageVisible(bool visible);
     void setErrorMessageVisible(bool visible);
 
-    void addCell(const QString &cell);
+    void addCell(const CellReference &cell);
     void addCell(int row, int col);
-    void addRange(const QString &range);
     void addRange(int firstRow, int firstCol, int lastRow, int lastCol);
     void addRange(const CellRange &range);
 

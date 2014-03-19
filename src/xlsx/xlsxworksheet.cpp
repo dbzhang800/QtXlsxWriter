@@ -23,6 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxrichstring.h"
+#include "xlsxcellreference.h"
 #include "xlsxworksheet.h"
 #include "xlsxworksheet_p.h"
 #include "xlsxworkbook.h"
@@ -484,28 +485,24 @@ bool Worksheet::write(int row, int column, const QVariant &value, const Format &
  * Write \a value to cell \a row_column with the \a format.
  * Both row and column are all 1-indexed value.
  */
-bool Worksheet::write(const QString &row_column, const QVariant &value, const Format &format)
+bool Worksheet::write(const CellReference &row_column, const QVariant &value, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return write(pos.x(), pos.y(), value, format);
+    return write(row_column.row(), row_column.column(), value, format);
 }
 
 /*!
     \overload
     Return the contents of the cell \a row_column.
  */
-QVariant Worksheet::read(const QString &row_column) const
+QVariant Worksheet::read(const CellReference &row_column) const
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return QVariant();
 
-    return read(pos.x(), pos.y());
+    return read(row_column.row(), row_column.column());
 }
 
 /*!
@@ -535,13 +532,12 @@ QVariant Worksheet::read(int row, int column) const
  * Returns the cell at the position \a row_column.
  * 0 will be returned if the cell doesn't exist.
  */
-Cell *Worksheet::cellAt(const QString &row_column) const
+Cell *Worksheet::cellAt(const CellReference &row_column) const
 {
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return 0;
 
-    return cellAt(pos.x(), pos.y());
+    return cellAt(row_column.row(), row_column.column());
 }
 
 /*!
@@ -572,14 +568,12 @@ Format WorksheetPrivate::cellFormat(int row, int col) const
     \overload
     Write string \a value to the cell \a row_column with the \a format
  */
-bool Worksheet::writeString(const QString &row_column, const RichString &value, const Format &format)
+bool Worksheet::writeString(const CellReference &row_column, const RichString &value, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeString(pos.x(), pos.y(), value, format);
+    return writeString(row_column.row(), row_column.column(), value, format);
 }
 
 /*!
@@ -612,14 +606,12 @@ bool Worksheet::writeString(int row, int column, const RichString &value, const 
     \overload
     Write string \a value to the cell \a row_column with the \a format
  */
-bool Worksheet::writeString(const QString &row_column, const QString &value, const Format &format)
+bool Worksheet::writeString(const CellReference &row_column, const QString &value, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeString(pos.x(), pos.y(), value, format);
+    return writeString(row_column.row(), row_column.column(), value, format);
 }
 
 /*!
@@ -646,14 +638,12 @@ bool Worksheet::writeString(int row, int column, const QString &value, const For
     \overload
     Write string \a value to the cell \a row_column with the \a format
  */
-bool Worksheet::writeInlineString(const QString &row_column, const QString &value, const Format &format)
+bool Worksheet::writeInlineString(const CellReference &row_column, const QString &value, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeInlineString(pos.x(), pos.y(), value, format);
+    return writeInlineString(row_column.row(), row_column.column(), value, format);
 }
 
 /*!
@@ -682,14 +672,12 @@ bool Worksheet::writeInlineString(int row, int column, const QString &value, con
     \overload
     Write numeric \a value to the cell \a row_column with the \a format
  */
-bool Worksheet::writeNumeric(const QString &row_column, double value, const Format &format)
+bool Worksheet::writeNumeric(const CellReference &row_column, double value, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeNumeric(pos.x(), pos.y(), value, format);
+    return writeNumeric(row_column.row(), row_column.column(), value, format);
 }
 
 /*!
@@ -711,14 +699,12 @@ bool Worksheet::writeNumeric(int row, int column, double value, const Format &fo
     \overload
     Write \a formula to the cell \a row_column with the \a format and \a result.
  */
-bool Worksheet::writeFormula(const QString &row_column, const QString &formula, const Format &format, double result)
+bool Worksheet::writeFormula(const CellReference &row_column, const QString &formula, const Format &format, double result)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeFormula(pos.x(), pos.y(), formula, format, result);
+    return writeFormula(row_column.row(), row_column.column(), formula, format, result);
 }
 
 /*!
@@ -782,25 +768,14 @@ bool Worksheet::writeArrayFormula(const CellRange &range, const QString &formula
 
 /*!
     \overload
-    Write \a formula to the \a range with the \a format
- */
-bool Worksheet::writeArrayFormula(const QString &range, const QString &formula, const Format &format)
-{
-    return writeArrayFormula(CellRange(range), formula, format);
-}
-
-/*!
-    \overload
     Write a empty cell \a row_column with the \a format
  */
-bool Worksheet::writeBlank(const QString &row_column, const Format &format)
+bool Worksheet::writeBlank(const CellReference &row_column, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeBlank(pos.x(), pos.y(), format);
+    return writeBlank(row_column.row(), row_column.column(), format);
 }
 
 /*!
@@ -823,14 +798,12 @@ bool Worksheet::writeBlank(int row, int column, const Format &format)
     \overload
     Write a bool \a value to the cell \a row_column with the \a format
  */
-bool Worksheet::writeBool(const QString &row_column, bool value, const Format &format)
+bool Worksheet::writeBool(const CellReference &row_column, bool value, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeBool(pos.x(), pos.y(), value, format);
+    return writeBool(row_column.row(), row_column.column(), value, format);
 }
 
 /*!
@@ -852,14 +825,12 @@ bool Worksheet::writeBool(int row, int column, bool value, const Format &format)
     \overload
     Write a QDateTime \a dt to the cell \a row_column with the \a format
  */
-bool Worksheet::writeDateTime(const QString &row_column, const QDateTime &dt, const Format &format)
+bool Worksheet::writeDateTime(const CellReference &row_column, const QDateTime &dt, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeDateTime(pos.x(), pos.y(), dt, format);
+    return writeDateTime(row_column.row(), row_column.column(), dt, format);
 }
 
 /*!
@@ -887,14 +858,12 @@ bool Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const Fo
     \overload
     Write a QTime \a t to the cell \a row_column with the \a format
  */
-bool Worksheet::writeTime(const QString &row_column, const QTime &t, const Format &format)
+bool Worksheet::writeTime(const CellReference &row_column, const QTime &t, const Format &format)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeTime(pos.x(), pos.y(), t, format);
+    return writeTime(row_column.row(), row_column.column(), t, format);
 }
 
 /*!
@@ -920,14 +889,12 @@ bool Worksheet::writeTime(int row, int column, const QTime &t, const Format &for
     \overload
     Write a QUrl \a url to the cell \a row_column with the given \a format \a display and \a tip
  */
-bool Worksheet::writeHyperlink(const QString &row_column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
+bool Worksheet::writeHyperlink(const CellReference &row_column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
 {
-    //convert the "A1" notation to row/column notation
-    QPoint pos = xl_cell_to_rowcol(row_column);
-    if (pos == QPoint(-1, -1))
+    if (!row_column.isValid())
         return false;
 
-    return writeHyperlink(pos.x(), pos.y(), url, format, display, tip);
+    return writeHyperlink(row_column.row(), row_column.column(), url, format, display, tip);
 }
 
 /*!
@@ -1295,7 +1262,7 @@ void WorksheetPrivate::saveXmlSheetData(QXmlStreamWriter &writer) const
 void WorksheetPrivate::saveXmlCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const
 {
     //This is the innermost loop so efficiency is important.
-    QString cell_pos = xl_rowcol_to_cell_fast(row, col);
+    QString cell_pos = CellReference(row, col).toString();
 
     writer.writeStartElement(QStringLiteral("c"));
     writer.writeAttribute(QStringLiteral("r"), cell_pos);
@@ -1381,10 +1348,8 @@ void WorksheetPrivate::saveXmlMergeCells(QXmlStreamWriter &writer) const
     writer.writeAttribute(QStringLiteral("count"), QString::number(merges.size()));
 
     foreach (CellRange range, merges) {
-        QString cell1 = xl_rowcol_to_cell(range.firstRow(), range.firstColumn());
-        QString cell2 = xl_rowcol_to_cell(range.lastRow(), range.lastColumn());
         writer.writeEmptyElement(QStringLiteral("mergeCell"));
-        writer.writeAttribute(QStringLiteral("ref"), cell1+QLatin1Char(':')+cell2);
+        writer.writeAttribute(QStringLiteral("ref"), range.toString());
     }
 
     writer.writeEndElement(); //mergeCells
@@ -1419,7 +1384,7 @@ void WorksheetPrivate::saveXmlHyperlinks(QXmlStreamWriter &writer) const
             it2.next();
             int col = it2.key();
             QSharedPointer<XlsxHyperlinkData> data = it2.value();
-            QString ref = xl_rowcol_to_cell(row, col);
+            QString ref = CellReference(row, col).toString();
             writer.writeEmptyElement(QStringLiteral("hyperlink"));
             writer.writeAttribute(QStringLiteral("ref"), ref);
             if (data->linkType == XlsxHyperlinkData::External) {
@@ -1802,15 +1767,12 @@ bool Worksheet::groupRows(int rowFirst, int rowLast, bool collapsed)
 /*!
     \overload
  */
-bool Worksheet::groupColumns(const QString &colFirst, const QString &colLast, bool collapsed)
+bool Worksheet::groupColumns(const CellRange &range, bool collapsed)
 {
-    int col1 = xl_col_name_to_value(colFirst);
-    int col2 = xl_col_name_to_value(colLast);
-
-    if (col1 == -1 || col2 == -1)
+    if (!range.isValid())
         return false;
 
-    return groupColumns(col1, col2, collapsed);
+    return groupColumns(range.firstColumn(), range.lastColumn(), collapsed);
 }
 
 /*!
@@ -2007,7 +1969,7 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
             } else if (reader.name() == QLatin1String("c")) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 QString r = attributes.value(QLatin1String("r")).toString();
-                QPoint pos = xl_cell_to_rowcol(r);
+                CellReference pos(r);
 
                 //get format
                 Format format;
@@ -2031,7 +1993,7 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                                 QSharedPointer<Cell> data(new Cell(rs.toPlainString() ,Cell::String, format, q));
                                 if (rs.isRichString())
                                     data->d_ptr->richString = rs;
-                                cellTable[pos.x()][pos.y()] = QSharedPointer<Cell>(data);
+                                cellTable[pos.row()][pos.column()] = QSharedPointer<Cell>(data);
                             }
                         }
                     } else if (type == QLatin1String("inlineStr")) {
@@ -2043,7 +2005,7 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                                 if (reader.name() == QLatin1String("t")) {
                                     QString value = reader.readElementText();
                                     QSharedPointer<Cell> data(new Cell(value, Cell::InlineString, format, q));
-                                    cellTable[pos.x()][pos.y()] = data;
+                                    cellTable[pos.row()][pos.column()] = data;
                                 }
                             }
                         }
@@ -2053,14 +2015,14 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                         if (reader.name() == QLatin1String("v")) {
                             QString value = reader.readElementText();
                             QSharedPointer<Cell> data(new Cell(value.toInt() ? true : false, Cell::Boolean, format, q));
-                            cellTable[pos.x()][pos.y()] = data;
+                            cellTable[pos.row()][pos.column()] = data;
                         }
                     } else if (type == QLatin1String("str")) {
                         //formula type
                         QSharedPointer<Cell> data = loadXmlNumericCellData(reader);
                         data->d_ptr->format = format;
                         data->d_ptr->parent = q;
-                        cellTable[pos.x()][pos.y()] = data;
+                        cellTable[pos.row()][pos.column()] = data;
                     } else if (type == QLatin1String("e")) {
                         //error type, such as #DIV/0! #NULL! #REF! etc
                         QString v_str, f_str;
@@ -2076,19 +2038,19 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                         QSharedPointer<Cell> data(new Cell(v_str, Cell::Error, format, q));
                         if (!f_str.isEmpty())
                             data->d_ptr->formula = f_str;
-                        cellTable[pos.x()][pos.y()] = data;
+                        cellTable[pos.row()][pos.column()] = data;
                     } else if (type == QLatin1String("n")) {
                         QSharedPointer<Cell> data = loadXmlNumericCellData(reader);
                         data->d_ptr->format = format;
                         data->d_ptr->parent = q;
-                        cellTable[pos.x()][pos.y()] = data;
+                        cellTable[pos.row()][pos.column()] = data;
                     }
                 } else {
                     //default is "n"
                     QSharedPointer<Cell> data = loadXmlNumericCellData(reader);
                     data->d_ptr->format = format;
                     data->d_ptr->parent = q;
-                    cellTable[pos.x()][pos.y()] = data;
+                    cellTable[pos.row()][pos.column()] = data;
                 }
             }
         }
@@ -2153,15 +2115,7 @@ void WorksheetPrivate::loadXmlMergeCells(QXmlStreamReader &reader)
             if (reader.name() == QLatin1String("mergeCell")) {
                 QXmlStreamAttributes attrs = reader.attributes();
                 QString rangeStr = attrs.value(QLatin1String("ref")).toString();
-                QStringList items = rangeStr.split(QLatin1Char(':'));
-                if (items.size() != 2) {
-                    //Error
-                } else {
-                    QPoint p0 = xl_cell_to_rowcol(items[0]);
-                    QPoint p1 = xl_cell_to_rowcol(items[1]);
-
-                    merges.append(CellRange(p0.x(), p0.y(), p1.x(), p1.y()));
-                }
+                merges.append(CellRange(rangeStr));
             }
         }
     }
@@ -2264,8 +2218,8 @@ void WorksheetPrivate::loadXmlHyperlinks(QXmlStreamReader &reader)
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == QLatin1String("hyperlink")) {
             QXmlStreamAttributes attrs = reader.attributes();
-            QPoint pos = xl_cell_to_rowcol(attrs.value(QLatin1String("ref")).toString());
-            if (pos.x() != -1) { //Valid
+            CellReference pos(attrs.value(QLatin1String("ref")).toString());
+            if (pos.isValid()) { //Valid
                 QSharedPointer<XlsxHyperlinkData> link(new XlsxHyperlinkData);
                 link->display = attrs.value(QLatin1String("display")).toString();
                 link->tooltip = attrs.value(QLatin1String("tooltip")).toString();
@@ -2279,7 +2233,7 @@ void WorksheetPrivate::loadXmlHyperlinks(QXmlStreamReader &reader)
                     link->linkType = XlsxHyperlinkData::Internal;
                 }
 
-                urlTable[pos.x()][pos.y()] = link;
+                urlTable[pos.row()][pos.column()] = link;
             }
         }
     }

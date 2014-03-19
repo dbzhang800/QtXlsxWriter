@@ -27,7 +27,7 @@ void CellReferenceTest::test_fromString()
     QFETCH(QString, cell);
     QFETCH(int, row);
     QFETCH(int, col);
-    CellReference pos = CellReference::fromString(cell);
+    CellReference pos(cell);
     QCOMPARE(pos.row(), row);
     QCOMPARE(pos.column(), col);
 }

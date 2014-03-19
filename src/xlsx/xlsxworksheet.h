@@ -28,6 +28,7 @@
 #include "xlsxabstractsheet.h"
 #include "xlsxcell.h"
 #include "xlsxcellrange.h"
+#include "xlsxcellreference.h"
 #include <QStringList>
 #include <QMap>
 #include <QVariant>
@@ -56,38 +57,37 @@ class Q_XLSX_EXPORT Worksheet : public AbstractSheet
 {
     Q_DECLARE_PRIVATE(Worksheet)
 public:
-    bool write(const QString &row_column, const QVariant &value, const Format &format=Format());
+    bool write(const CellReference &row_column, const QVariant &value, const Format &format=Format());
     bool write(int row, int column, const QVariant &value, const Format &format=Format());
-    QVariant read(const QString &row_column) const;
+    QVariant read(const CellReference &row_column) const;
     QVariant read(int row, int column) const;
-    bool writeString(const QString &row_column, const QString &value, const Format &format=Format());
+    bool writeString(const CellReference &row_column, const QString &value, const Format &format=Format());
     bool writeString(int row, int column, const QString &value, const Format &format=Format());
-    bool writeString(const QString &row_column, const RichString &value, const Format &format=Format());
+    bool writeString(const CellReference &row_column, const RichString &value, const Format &format=Format());
     bool writeString(int row, int column, const RichString &value, const Format &format=Format());
-    bool writeInlineString(const QString &row_column, const QString &value, const Format &format=Format());
+    bool writeInlineString(const CellReference &row_column, const QString &value, const Format &format=Format());
     bool writeInlineString(int row, int column, const QString &value, const Format &format=Format());
-    bool writeNumeric(const QString &row_column, double value, const Format &format=Format());
+    bool writeNumeric(const CellReference &row_column, double value, const Format &format=Format());
     bool writeNumeric(int row, int column, double value, const Format &format=Format());
-    bool writeFormula(const QString &row_column, const QString &formula, const Format &format=Format(), double result=0);
+    bool writeFormula(const CellReference &row_column, const QString &formula, const Format &format=Format(), double result=0);
     bool writeFormula(int row, int column, const QString &formula, const Format &format=Format(), double result=0);
-    bool writeArrayFormula(const QString &range, const QString &formula, const Format &format=Format());
     bool writeArrayFormula(const CellRange &range, const QString &formula, const Format &format=Format());
-    bool writeBlank(const QString &row_column, const Format &format=Format());
+    bool writeBlank(const CellReference &row_column, const Format &format=Format());
     bool writeBlank(int row, int column, const Format &format=Format());
-    bool writeBool(const QString &row_column, bool value, const Format &format=Format());
+    bool writeBool(const CellReference &row_column, bool value, const Format &format=Format());
     bool writeBool(int row, int column, bool value, const Format &format=Format());
-    bool writeDateTime(const QString &row_column, const QDateTime& dt, const Format &format=Format());
+    bool writeDateTime(const CellReference &row_column, const QDateTime& dt, const Format &format=Format());
     bool writeDateTime(int row, int column, const QDateTime& dt, const Format &format=Format());
-    bool writeTime(const QString &row_column, const QTime& t, const Format &format=Format());
+    bool writeTime(const CellReference &row_column, const QTime& t, const Format &format=Format());
     bool writeTime(int row, int column, const QTime& t, const Format &format=Format());
 
-    bool writeHyperlink(const QString &row_column, const QUrl &url, const Format &format=Format(), const QString &display=QString(), const QString &tip=QString());
+    bool writeHyperlink(const CellReference &row_column, const QUrl &url, const Format &format=Format(), const QString &display=QString(), const QString &tip=QString());
     bool writeHyperlink(int row, int column, const QUrl &url, const Format &format=Format(), const QString &display=QString(), const QString &tip=QString());
 
     bool addDataValidation(const DataValidation &validation);
     bool addConditionalFormatting(const ConditionalFormatting &cf);
 
-    Cell *cellAt(const QString &row_column) const;
+    Cell *cellAt(const CellReference &row_column) const;
     Cell *cellAt(int row, int column) const;
 
     bool insertImage(int row, int column, const QImage &image);
@@ -117,7 +117,7 @@ public:
 
     bool groupRows(int rowFirst, int rowLast, bool collapsed = true);
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
-    bool groupColumns(const QString &colFirst, const QString &colLast, bool collapsed = true);
+    bool groupColumns(const CellRange &range, bool collapsed = true);
     CellRange dimension() const;
 
     bool isWindowProtected() const;

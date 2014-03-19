@@ -104,9 +104,7 @@ void Chart::addSeries(const CellRange &range, AbstractSheet *sheet)
     QString serRef = sheet ? sheet->sheetName() : d->sheet->sheetName();
 
     serRef += QLatin1String("!");
-    serRef += xl_rowcol_to_cell(range.firstRow(), range.firstColumn(), true, true);
-    serRef += QLatin1String(":");
-    serRef += xl_rowcol_to_cell(range.lastRow(), range.lastColumn(), true, true);
+    serRef += range.toString(true, true);
 
     XlsxSeries *series = new XlsxSeries;
     series->numRef = serRef;

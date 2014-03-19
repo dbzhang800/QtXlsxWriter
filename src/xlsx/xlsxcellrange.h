@@ -25,6 +25,7 @@
 #ifndef QXLSX_XLSXCELLRANGE_H
 #define QXLSX_XLSXCELLRANGE_H
 #include "xlsxglobal.h"
+#include "xlsxcellreference.h"
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -33,12 +34,13 @@ class Q_XLSX_EXPORT CellRange
 public:
     CellRange();
     CellRange(int firstRow, int firstColumn, int lastRow, int lastColumn);
+    CellRange(const CellReference &topLeft, const CellReference &bottomRight);
     CellRange(const QString &range);
     CellRange(const char *range);
     CellRange(const CellRange &other);
     ~CellRange();
 
-    QString toString() const;
+    QString toString(bool row_abs=false, bool col_abs=false) const;
     bool isValid() const;
     inline void setFirstRow(int row) { top = row; }
     inline void setLastRow(int row) { bottom = row; }
@@ -50,6 +52,10 @@ public:
     inline int lastColumn() const { return right; }
     inline int rowCount() const { return bottom - top + 1; }
     inline int columnCount() const { return right - left + 1; }
+    inline CellReference topLeft() const { return CellReference(top, left); }
+    inline CellReference topRight() const { return CellReference(top, right); }
+    inline CellReference bottomLeft() const { return CellReference(bottom, left); }
+    inline CellReference bottomRight() const { return CellReference(bottom, right); }
 
     inline bool operator ==(const CellRange &other) const
     {

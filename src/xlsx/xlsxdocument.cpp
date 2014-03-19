@@ -406,7 +406,7 @@ Document::Document(QIODevice *device, QObject *parent) :
 
     Write \a value to cell \a row_column with the \a format.
  */
-bool Document::write(const QString &row_column, const QVariant &value, const Format &format)
+bool Document::write(const CellReference &row_column, const QVariant &value, const Format &format)
 {
     if (Worksheet *sheet = currentWorksheet())
         return sheet->write(row_column, value, format);
@@ -427,7 +427,7 @@ bool Document::write(int row, int col, const QVariant &value, const Format &form
     \overload
     Returns the contents of the cell \a cell.
 */
-QVariant Document::read(const QString &cell) const
+QVariant Document::read(const CellReference &cell) const
 {
     if (Worksheet *sheet = currentWorksheet())
         return sheet->read(cell);
@@ -760,7 +760,7 @@ bool Document::addConditionalFormatting(const ConditionalFormatting &cf)
 /*!
  * Returns a Cell object based on the given \a pos. 0 will be returned if the cell doesn't exist.
  */
-Cell *Document::cellAt(const QString &pos) const
+Cell *Document::cellAt(const CellReference &pos) const
 {
     if (Worksheet *sheet = currentWorksheet())
         return sheet->cellAt(pos);

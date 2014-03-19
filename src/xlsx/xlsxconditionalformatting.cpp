@@ -419,9 +419,9 @@ QList<CellRange> ConditionalFormatting::ranges() const
 /*!
     Add the \a cell on which the conditional formatting will apply to.
  */
-void ConditionalFormatting::addCell(const QString &cell)
+void ConditionalFormatting::addCell(const CellReference &cell)
 {
-    d->ranges.append(CellRange(cell));
+    d->ranges.append(CellRange(cell, cell));
 }
 
 /*!
@@ -431,14 +431,6 @@ void ConditionalFormatting::addCell(const QString &cell)
 void ConditionalFormatting::addCell(int row, int col)
 {
     d->ranges.append(CellRange(row, col, row, col));
-}
-
-/*!
-    Add the \a range on which the conditional formatting will apply to.
- */
-void ConditionalFormatting::addRange(const QString &range)
-{
-    d->ranges.append(CellRange(range));
 }
 
 /*!
@@ -452,7 +444,6 @@ void ConditionalFormatting::addRange(int firstRow, int firstCol, int lastRow, in
 }
 
 /*!
-    \overload
     Add the \a range on which the conditional formatting will apply to.
  */
 void ConditionalFormatting::addRange(const CellRange &range)

@@ -23,7 +23,7 @@
 **
 ****************************************************************************/
 #include "xlsxcellrange.h"
-#include "xlsxutility_p.h"
+#include "xlsxcellreference.h"
 #include <QString>
 #include <QPoint>
 #include <QStringList>
@@ -59,6 +59,12 @@ CellRange::CellRange(int top, int left, int bottom, int right)
 {
 }
 
+CellRange::CellRange(const CellReference &topLeft, const CellReference &bottomRight)
+    : top(topLeft.row()), left(topLeft.column())
+    , bottom(bottomRight.row()), right(bottomRight.column())
+{
+}
+
 /*!
     \overload
     Constructs the range form the given \a range string.
@@ -81,18 +87,18 @@ void CellRange::init(const QString &range)
 {
     QStringList rs = range.split(QLatin1Char(':'));
     if (rs.size() == 2) {
-        QPoint start = xl_cell_to_rowcol(rs[0]);
-        QPoint end = xl_cell_to_rowcol(rs[1]);
-        top = start.x();
-        left = start.y();
-        bottom = end.x();
-        right = end.y();
+        CellReference start(rs[0]);
+        CellReference end(rs[1]);
+        top = start.row();
+        left = start.column();
+        bottom = end.row();
+        right = end.column();
     } else {
-        QPoint p = xl_cell_to_rowcol(rs[0]);
-        top = p.x();
-        left = p.y();
-        bottom = p.x();
-        right = p.y();
+        CellReference p(rs[0]);
+        top = p.row();
+        left = p.column();
+        bottom = p.row();
+        right = p.column();
     }
 }
 
@@ -115,18 +121,18 @@ CellRange::~CellRange()
 /*!
      Convert the range to string notation, such as "A1:B5".
 */
-QString CellRange::toString() const
+QString CellRange::toString(bool row_abs, bool col_abs) const
 {
-    if (left == -1 || top == -1)
+    if (!isValid())
         return QString();
 
     if (left == right && top == bottom) {
         //Single cell
-        return xl_rowcol_to_cell(top, left);
+        return CellReference(top, left).toString(row_abs, col_abs);
     }
 
-    QString cell_1 = xl_rowcol_to_cell(top, left);
-    QString cell_2 = xl_rowcol_to_cell(bottom, right);
+    QString cell_1 = CellReference(top, left).toString(row_abs, col_abs);
+    QString cell_2 = CellReference(bottom, right).toString(row_abs, col_abs);
     return cell_1 + QLatin1String(":") + cell_2;
 }
 

@@ -46,19 +46,12 @@ class QTime;
 
 namespace QXlsx {
 
-XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
 XLSX_AUTOTEST_EXPORT QStringList splitPath(const QString &path);
 XLSX_AUTOTEST_EXPORT QString getRelFilePath(const QString &filePath);
 
 XLSX_AUTOTEST_EXPORT double datetimeToNumber(const QDateTime &dt, bool is1904=false);
 XLSX_AUTOTEST_EXPORT QDateTime datetimeFromNumber(double num, bool is1904=false);
 XLSX_AUTOTEST_EXPORT double timeToNumber(const QTime &t);
-
-XLSX_AUTOTEST_EXPORT QPoint xl_cell_to_rowcol(const QString &cell_str);
-XLSX_AUTOTEST_EXPORT QString xl_col_to_name(int col_num);
-XLSX_AUTOTEST_EXPORT int xl_col_name_to_value(const QString &col_str);
-XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell(int row, int col, bool row_abs=false, bool col_abs=false);
-XLSX_AUTOTEST_EXPORT QString xl_rowcol_to_cell_fast(int row, int col);
 
 XLSX_AUTOTEST_EXPORT QString createSafeSheetName(const QString &nameProposal);
 XLSX_AUTOTEST_EXPORT bool isSpaceReserveNeeded(const QString &string);

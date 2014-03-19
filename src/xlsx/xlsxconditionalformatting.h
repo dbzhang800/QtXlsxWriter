@@ -26,6 +26,8 @@
 #define QXLSX_XLSXCONDITIONALFORMATTING_H
 
 #include "xlsxglobal.h"
+#include "xlsxcellrange.h"
+#include "xlsxcellreference.h"
 #include <QSharedDataPointer>
 #include <QString>
 #include <QList>
@@ -37,7 +39,6 @@ class ConditionalFormattingTest;
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class CellRange;
 class Format;
 class Worksheet;
 class Styles;
@@ -113,9 +114,8 @@ public:
 
     QList<CellRange> ranges() const;
 
-    void addCell(const QString &cell);
+    void addCell(const CellReference &cell);
     void addCell(int row, int col);
-    void addRange(const QString &range);
     void addRange(int firstRow, int firstCol, int lastRow, int lastCol);
     void addRange(const CellRange &range);
 

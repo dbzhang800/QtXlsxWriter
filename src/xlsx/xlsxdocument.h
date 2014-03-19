@@ -42,6 +42,7 @@ class CellRange;
 class DataValidation;
 class ConditionalFormatting;
 class Chart;
+class CellReference;
 
 class DocumentPrivate;
 class Q_XLSX_EXPORT Document : public QObject
@@ -55,9 +56,9 @@ public:
     Document(QIODevice *device, QObject *parent=0);
     ~Document();
 
-    bool write(const QString &cell, const QVariant &value, const Format &format=Format());
+    bool write(const CellReference &cell, const QVariant &value, const Format &format=Format());
     bool write(int row, int col, const QVariant &value, const Format &format=Format());
-    QVariant read(const QString &cell) const;
+    QVariant read(const CellReference &cell) const;
     QVariant read(int row, int col) const;
     bool insertImage(int row, int col, const QImage &image);
     Chart *insertChart(int row, int col, const QSize &size);
@@ -93,7 +94,7 @@ public:
     bool addDataValidation(const DataValidation &validation);
     bool addConditionalFormatting(const ConditionalFormatting &cf);
 
-    Cell *cellAt(const QString &cell) const;
+    Cell *cellAt(const CellReference &cell) const;
     Cell *cellAt(int row, int col) const;
 
     bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());
