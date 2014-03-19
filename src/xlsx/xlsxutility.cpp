@@ -35,6 +35,15 @@
 
 namespace QXlsx {
 
+bool parseXsdBoolean(const QString &value, bool defaultValue)
+{
+    if (value == QLatin1String("1") || value == QLatin1String("true"))
+        return true;
+    if (value == QLatin1String("0") || value == QLatin1String("false"))
+        return false;
+    return defaultValue;
+}
+
 QStringList splitPath(const QString &path)
 {
     int idx = path.lastIndexOf(QLatin1Char('/'));
