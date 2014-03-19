@@ -151,7 +151,7 @@ void WorksheetTest::testWriteDataValidations()
     validation.setFormula1("10");
     validation.setFormula2("100");
     validation.addCell("A1");
-    validation.addCell("C2:C4");
+    validation.addRange("C2:C4");
     sheet.addDataValidation(validation);
 
     QByteArray xmldata = sheet.saveToXmlData();
