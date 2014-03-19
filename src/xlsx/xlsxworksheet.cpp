@@ -1808,8 +1808,8 @@ Format Worksheet::rowFormat(int row)
     Q_D(Worksheet);
     int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
-    if (d->checkDimensions(row, min_col, false, true))
-        return Format(); //return default on invalid row?
+    if (d->checkDimensions(row, min_col, false, true) || !d->rowsInfo.contains(row))
+        return Format(); //return default on invalid row
 
     return d->rowsInfo[row]->format;
 }
@@ -1822,8 +1822,8 @@ bool Worksheet::isRowHidden(int row)
     Q_D(Worksheet);
     int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
-    if (d->checkDimensions(row, min_col, false, true))
-        return false; //return default on invalid row?
+    if (d->checkDimensions(row, min_col, false, true) || !d->rowsInfo.contains(row))
+        return false; //return default on invalid row
 
     return d->rowsInfo[row]->hidden;
 }
