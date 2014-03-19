@@ -45,6 +45,23 @@ int intPow(int x, int p)
   else return x * tmp * tmp;
 }
 
+bool parseXsdBoolean(const QString &value)
+{
+    bool ok;
+    int val = value.toInt(&ok);
+    if(ok)
+        return (val == 1);
+    return (value == QStringLiteral("true"));
+}
+
+// Note, this function will return TRUE when value is NOT present
+bool parseOptionalXsdBoolean(const QString &value)
+{
+    if(value.isEmpty())
+        return true;
+    return parseXsdBoolean(value);
+}
+
 QStringList splitPath(const QString &path)
 {
     int idx = path.lastIndexOf(QLatin1Char('/'));

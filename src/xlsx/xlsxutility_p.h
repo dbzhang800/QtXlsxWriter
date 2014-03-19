@@ -46,6 +46,9 @@ class QTime;
 
 namespace QXlsx {
 
+XLSX_AUTOTEST_EXPORT bool parseXsdBoolean(const QString &value);
+XLSX_AUTOTEST_EXPORT bool parseOptionalXsdBoolean(const QString &value);
+
 XLSX_AUTOTEST_EXPORT int intPow(int x, int p);
 XLSX_AUTOTEST_EXPORT QStringList splitPath(const QString &path);
 XLSX_AUTOTEST_EXPORT QString getRelFilePath(const QString &filePath);

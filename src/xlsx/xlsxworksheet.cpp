@@ -1737,8 +1737,9 @@ double Worksheet::rowHeight(int row)
     Q_D(Worksheet);
     int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
-    if (d->checkDimensions(row, min_col, false, true))
-        return d->sheetFormatProps.defaultRowHeight; //return default on invalid row?
+    if (d->checkDimensions(row, min_col, false, true) || !d->rowsInfo.contains(row))
+        return d->sheetFormatProps.defaultRowHeight; //return default on invalid row
+
 
     return d->rowsInfo[row]->height;
 }
@@ -1751,8 +1752,8 @@ Format Worksheet::rowFormat(int row)
     Q_D(Worksheet);
     int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
-    if (d->checkDimensions(row, min_col, false, true))
-        return Format(); //return default on invalid row?
+    if (d->checkDimensions(row, min_col, false, true) || !d->rowsInfo.contains(row))
+        return Format(); //return default on invalid row
 
     return d->rowsInfo[row]->format;
 }
@@ -1765,8 +1766,8 @@ bool Worksheet::isRowHidden(int row)
     Q_D(Worksheet);
     int min_col = d->dimension.firstColumn() < 0 ? 0 : d->dimension.firstColumn();
 
-    if (d->checkDimensions(row, min_col, false, true))
-        return false; //return default on invalid row?
+    if (d->checkDimensions(row, min_col, false, true) || !d->rowsInfo.contains(row))
+        return false; //return default on invalid row
 
     return d->rowsInfo[row]->hidden;
 }
@@ -2004,21 +2005,21 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                     }
                 }
 
-            } else if (reader.name() == QLatin1String("c")) {
+            } else if (reader.name() == QLatin1String("c")) {  //Cell
                 QXmlStreamAttributes attributes = reader.attributes();
                 QString r = attributes.value(QLatin1String("r")).toString();
                 QPoint pos = xl_cell_to_rowcol(r);
 
                 //get format
                 Format format;
-                if (attributes.hasAttribute(QLatin1String("s"))) {
+                if (attributes.hasAttribute(QLatin1String("s"))) { //"s" == style index
                     int idx = attributes.value(QLatin1String("s")).toString().toInt();
                     format = workbook->styles()->xfFormat(idx);
                     if (!format.isValid())
                         qDebug()<<QStringLiteral("<c s=\"%1\">Invalid style index: ").arg(idx)<<idx;
                 }
 
-                if (attributes.hasAttribute(QLatin1String("t"))) {
+                if (attributes.hasAttribute(QLatin1String("t"))) { // "t" == cell data type
                     QString type = attributes.value(QLatin1String("t")).toString();
                     if (type == QLatin1String("s")) {
                         //string type
