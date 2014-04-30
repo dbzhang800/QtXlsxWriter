@@ -72,10 +72,17 @@ double datetimeToNumber(const QDateTime &dt, bool is1904)
     QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0));
 
     double excel_time = epoch.msecsTo(dt) / (1000*60*60*24.0);
+
+#if QT_VERSION >= 0x050200
+    if (dt.isDaylightTime())    // Add one hour if the date is Daylight
+        excel_time += 1.0 / 24.0;
+#endif
+
     if (!is1904 && excel_time > 59) {//31+28
         //Account for Excel erroneously treating 1900 as a leap year.
         excel_time += 1;
     }
+
     return excel_time;
 }
 
@@ -92,7 +99,16 @@ QDateTime datetimeFromNumber(double num, bool is1904)
     qint64 msecs = static_cast<qint64>(num * 1000*60*60*24.0 + 0.5);
     QDateTime epoch(is1904 ? QDate(1904, 1, 1): QDate(1899, 12, 31), QTime(0,0));
 
-    return epoch.addMSecs(msecs);
+    QDateTime dt = epoch.addMSecs(msecs);
+
+#if QT_VERSION >= 0x050200
+    // Remove one hour to see whether the date is Daylight
+    QDateTime dt2 = dt.addMSecs(-3600);
+    if (dt2.isDaylightTime())
+        return dt2;
+#endif
+
+    return dt;
 }
 
 /*
