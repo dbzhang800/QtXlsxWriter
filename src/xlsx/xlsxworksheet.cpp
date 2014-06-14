@@ -1669,7 +1669,7 @@ bool Worksheet::setRowFormat(int rowFirst,int rowLast, const Format &format)
   Returns true if success.
 */
 bool Worksheet::setRowHidden(int rowFirst,int rowLast, bool hidden)
-{    
+{
     Q_D(Worksheet);
 
     QList <QSharedPointer<XlsxRowInfo> > rowInfoList = d->getRowInfoList(rowFirst,rowLast);
@@ -2060,7 +2060,7 @@ void WorksheetPrivate::loadXmlColumnsInfo(QXmlStreamReader &reader)
                 //Flag indicating that the column width for the affected column(s) is different from the
                 // default or has been manually set
                 if(colAttrs.hasAttribute(QLatin1String("customWidth"))) {
-                    info->customWidth = colAttrs.value(QLatin1String("customWidth")) == QLatin1String("1");                    
+                    info->customWidth = colAttrs.value(QLatin1String("customWidth")) == QLatin1String("1");
                 }
                 //Note, node may have "width" without "customWidth"
                 if (colAttrs.hasAttribute(QLatin1String("width"))) {
@@ -2276,7 +2276,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
     QXmlStreamReader reader(device);
     while (!reader.atEnd()) {
         reader.readNextStartElement();
-        if (reader.tokenType() == QXmlStreamReader::StartElement) {            
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("dimension")) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 QString range = attributes.value(QLatin1String("ref")).toString();
@@ -2309,7 +2309,39 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
         }
     }
 
+    validateDimension();
     return true;
+}
+
+void Worksheet::validateDimension()
+{
+    Q_D(Worksheet);
+
+    if (d->dimension.isValid() || d->cellTable.isEmpty())
+        return;
+
+    int firstRow = d->cellTable.firstKey();
+    int lastRow = d->cellTable.lastKey();
+    int firstCell = -1;
+    int lastCell = -1;
+
+    for (QMap<int, QMap<int, QSharedPointer<Cell> > >::const_iterator it = d->cellTable.begin(),
+         lim = d->cellTable.end(); it != lim; ++it)
+    {
+        if (it.value().isEmpty())
+            continue;
+
+        if (firstCell == -1 || it.value().firstKey() < firstCell)
+            firstCell = it.value().firstKey();
+
+        if (lastCell == -1 || it.value().lastKey() > lastCell)
+            lastCell = it.value().lastKey();
+    }
+
+    CellRange cr(firstRow, firstCell, lastRow, lastCell);
+
+    if (cr.isValid())
+        d->dimension = cr;
 }
 
 /*!

@@ -153,6 +153,7 @@ private:
 
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
+    void validateDimension();
 };
 
 QT_END_NAMESPACE_XLSX
