@@ -64,11 +64,15 @@ public:
         CT_Surface3D,
         CT_Bubble
     };
-
+    enum ChartGrouping {
+        CT_Stacked = 1,
+        CT_Clustered
+    };
     ~Chart();
 
     void addSeries(const CellRange &range, AbstractSheet *sheet=0);
     void setChartType(ChartType type);
+    void setChartGrouping(ChartGrouping grouping);
     void setChartStyle(int id);
 
     void saveToXmlFile(QIODevice *device) const;

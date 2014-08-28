@@ -885,6 +885,31 @@ bool Worksheet::writeTime(int row, int column, const QTime &t, const Format &for
     return true;
 }
 
+
+bool Worksheet::writeDuration(const CellReference &row_column, const qreal& s, const Format &format)
+{
+    if (!row_column.isValid())
+        return false;
+
+    return writeDuration(row_column.row(), row_column.column(),s,format);
+}
+
+bool Worksheet::writeDuration(int row, int column, const qreal& s, const Format &format)
+{
+    Q_D(Worksheet);
+    if (d->checkDimensions(row, column))
+        return false;
+
+    Format fmt = format.isValid() ? format : d->cellFormat(row, column);
+    if (!fmt.isValid() || !fmt.isDateTimeFormat())
+        fmt.setNumberFormat(QStringLiteral("[HH]:mm:ss"));
+    d->workbook->styles()->addXfFormat(fmt);
+    d->cellTable[row][column] = QSharedPointer<Cell>(new Cell(s*1000/(1000*60*60*24.0), Cell::Numeric, fmt, this));
+
+    return true;
+}
+
+
 /*!
     \overload
     Write a QUrl \a url to the cell \a row_column with the given \a format \a display and \a tip

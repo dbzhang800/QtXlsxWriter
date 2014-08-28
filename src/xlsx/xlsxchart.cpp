@@ -121,6 +121,12 @@ void Chart::setChartType(ChartType type)
     d->chartType = type;
 }
 
+void Chart::setChartGrouping(ChartGrouping type)
+{
+    Q_D(Chart);
+    d->groupingType = type;
+}
+
 /*!
  * \internal
  *
@@ -331,7 +337,12 @@ void ChartPrivate::saveXmlBarChart(QXmlStreamWriter &writer) const
     writer.writeStartElement(name);
 
     writer.writeEmptyElement(QStringLiteral("c:barDir"));
-    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("col"));
+    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("bar"));
+
+    QString grouping = groupingType==Chart::CT_Stacked ? QStringLiteral("stacked") : QStringLiteral("clustered");
+
+    writer.writeEmptyElement(QStringLiteral("c:grouping"));
+    writer.writeAttribute(QStringLiteral("val"),grouping);
 
     for (int i=0; i<seriesList.size(); ++i)
         saveXmlSer(writer, seriesList[i].data(), i);

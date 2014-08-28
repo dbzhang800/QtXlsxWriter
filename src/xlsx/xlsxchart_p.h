@@ -112,7 +112,7 @@ public:
     void saveXmlAxes(QXmlStreamWriter &writer) const;
 
     Chart::ChartType chartType;
-
+    Chart::ChartGrouping groupingType;
     QList<QSharedPointer<XlsxSeries> > seriesList;
     QList<QSharedPointer<XlsxAxis> > axisList;
 
