@@ -12,4 +12,5 @@ SUBDIRS=\
     format \
     richstring \
     xlsxconditionalformatting \
-    cellreference
+    cellreference \
+    cmake
