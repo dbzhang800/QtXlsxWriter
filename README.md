@@ -21,26 +21,15 @@ The library can be used to
 
 * Put the source code in any directory you like
 
-* Open the qtxlsx.pro file using Qt Creator
- * Build the project.
- * Play with the examples provided by Qt Xlsx if you like.
-
-* Go to the build directory of the project in a terminal and run
+* Go to top directory of the project in a terminal and run
 
 ```
-   make install
-```
-
-The library, the header files, and others will be installed to your system.
-
-> **Note**: If you don't want to use Qt Creator, you can run following command
- at the toplevel directory of the project
-
-> ```
     qmake
     make
     make install
 ```
+
+The library, the header files, and others will be installed to your system.
 
 #### Using the module
 
