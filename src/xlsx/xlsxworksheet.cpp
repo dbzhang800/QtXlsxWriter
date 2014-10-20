@@ -2253,7 +2253,7 @@ QList <QSharedPointer<XlsxRowInfo> > WorksheetPrivate::getRowInfoList(int rowFir
 {
     QList <QSharedPointer<XlsxRowInfo> > rowInfoList;
 
-    int min_col = dimension.firstColumn() < 0 ? 0 : dimension.firstColumn();
+    int min_col = dimension.firstColumn() < 1 ? 1 : dimension.firstColumn();
 
     for(int row = rowFirst; row <= rowLast; ++row) {
         if (checkDimensions(row, min_col, false, true))
