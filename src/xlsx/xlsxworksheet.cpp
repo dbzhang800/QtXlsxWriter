@@ -2305,6 +2305,12 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QString path = QDir::cleanPath(splitPath(filePath())[0] + QLatin1String("/") + name);
                 d->drawing = QSharedPointer<Drawing>(new Drawing(this, F_LoadFromExists));
                 d->drawing->setFilePath(path);
+            } else if (reader.name() == QLatin1String("extLst")) {
+                //Todo: add extLst support
+                while (!reader.atEnd() && !(reader.name() == QLatin1String("extLst")
+                                            && reader.tokenType() == QXmlStreamReader::EndElement)) {
+                    reader.readNextStartElement();
+                }
             }
         }
     }
