@@ -1,6 +1,7 @@
 #include "xlsxdocument.h"
 #include "xlsxcell.h"
 #include "xlsxformat.h"
+#include "xlsxcellformula.h"
 #include <QString>
 #include <QtTest>
 
@@ -69,9 +70,9 @@ void DocumentTest::testReadWriteString()
 
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::String);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::SharedStringType);
     QCOMPARE(xlsx2.cellAt("A1")->value().toString(), QString("Hello Qt!"));
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::String);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::SharedStringType);
     QCOMPARE(xlsx2.cellAt("A2")->value().toString(), QString("Hello Qt again!"));
     Format format2 = xlsx2.cellAt("A2")->format();
     QVERIFY(format2.isValid());
@@ -79,7 +80,7 @@ void DocumentTest::testReadWriteString()
 //    qDebug()<<format;
     QCOMPARE(format2, format);
 
-    QCOMPARE(xlsx2.cellAt("A3")->dataType(), Cell::String);
+    QCOMPARE(xlsx2.cellAt("A3")->cellType(), Cell::SharedStringType);
     QCOMPARE(xlsx2.cellAt("A3")->value().toString(), QString("12345"));
 }
 
@@ -100,9 +101,9 @@ void DocumentTest::testReadWriteNumeric()
 
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A1")->value().toDouble(), 123.0);
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A2")->value().toDouble(), 12345.0);
     QVERIFY(xlsx2.cellAt("A2")->format().isValid());
     QCOMPARE(xlsx2.cellAt("A2")->format(), format);
@@ -124,9 +125,9 @@ void DocumentTest::testReadWriteBool()
 
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Boolean);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::BooleanType);
     QCOMPARE(xlsx2.cellAt("A1")->value().toBool(), true);
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Boolean);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::BooleanType);
     QCOMPARE(xlsx2.cellAt("A2")->value().toBool(), false);
     QVERIFY(xlsx2.cellAt("A2")->format().isValid());
     QCOMPARE(xlsx2.cellAt("A2")->format(), format);
@@ -149,10 +150,10 @@ void DocumentTest::testReadWriteBlank()
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
     QVERIFY(xlsx2.cellAt("A1"));
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Blank);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::NumberType);
     QVERIFY(!xlsx2.cellAt("A1")->value().isValid());
     QVERIFY(xlsx2.cellAt("A2"));
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Blank);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::NumberType);
     QVERIFY(!xlsx2.cellAt("A2")->value().isValid());
     QVERIFY(xlsx2.cellAt("A2")->format().isValid());
     QCOMPARE(xlsx2.cellAt("A2")->format(), format);
@@ -175,12 +176,11 @@ void DocumentTest::testReadWriteFormula()
 
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Formula);
-//    QCOMPARE(xlsx2.cellAt("A1")->value().toDouble(), 0.0);
-    QCOMPARE(xlsx2.cellAt("A1")->formula(), QStringLiteral("11+22"));
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Formula);
-//    QCOMPARE(xlsx2.cellAt("A2")->value().toDouble(), 0.0);
-    QCOMPARE(xlsx2.cellAt("A2")->formula(), QStringLiteral("22+33"));
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::NumberType);
+    QVERIFY(xlsx2.cellAt("A1")->hasFormula());
+    QCOMPARE(xlsx2.cellAt("A1")->formula(), CellFormula("11+22"));
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::NumberType);
+    QCOMPARE(xlsx2.cellAt("A2")->formula(), CellFormula("22+33"));
     QVERIFY(xlsx2.cellAt("A2")->format().isValid());
     QCOMPARE(xlsx2.cellAt("A2")->format(), format);
 }
@@ -211,17 +211,17 @@ void DocumentTest::testReadWriteDateTime()
 
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A1")->isDateTime(), true);
     QCOMPARE(xlsx2.cellAt("A1")->dateTime(), dt);
     QVERIFY(xlsx2.read("A1").userType() == QMetaType::QDateTime);
 
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A2")->isDateTime(), true);
     QCOMPARE(xlsx2.cellAt("A2")->dateTime(), dt);
     QVERIFY(xlsx2.read("A2").userType() == QMetaType::QDateTime);
 
-    QCOMPARE(xlsx2.cellAt("A3")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A3")->cellType(), Cell::NumberType);
     QVERIFY(xlsx2.cellAt("A3")->format().isValid());
     QCOMPARE(xlsx2.cellAt("A3")->isDateTime(), true);
     QCOMPARE(xlsx2.cellAt("A3")->dateTime(), dt);
@@ -259,16 +259,16 @@ void DocumentTest::testReadWriteDate()
 
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A1")->isDateTime(), true);
     QVERIFY(xlsx2.read("A1").userType() == QMetaType::QDate);
     QCOMPARE(xlsx2.read("A1").toDate(), d);
 
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A2")->isDateTime(), true);
     QVERIFY(xlsx2.read("A2").userType() == QMetaType::QDate);
 
-    QCOMPARE(xlsx2.cellAt("A3")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A3")->cellType(), Cell::NumberType);
     QVERIFY(xlsx2.cellAt("A3")->format().isValid());
     QCOMPARE(xlsx2.cellAt("A3")->isDateTime(), true);
     QCOMPARE(xlsx2.cellAt("A3")->format().numberFormat(), QString("dd/mm/yyyy"));
@@ -297,9 +297,10 @@ void DocumentTest::testReadWriteTime()
     device.open(QIODevice::ReadOnly);
     Document xlsx2(&device);
 
-    QCOMPARE(xlsx2.cellAt("A1")->dataType(), Cell::Blank);
+    QCOMPARE(xlsx2.cellAt("A1")->cellType(), Cell::NumberType);
+    QVERIFY(!xlsx2.cellAt("A1")->value().isValid());
 
-    QCOMPARE(xlsx2.cellAt("A2")->dataType(), Cell::Numeric);
+    QCOMPARE(xlsx2.cellAt("A2")->cellType(), Cell::NumberType);
     QCOMPARE(xlsx2.cellAt("A2")->isDateTime(), true);
     QVERIFY(xlsx2.read("A2").userType() == QMetaType::QTime);
     QCOMPARE(xlsx2.read("A2").toTime(), QTime(1, 22));

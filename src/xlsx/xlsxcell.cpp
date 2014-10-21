@@ -40,9 +40,8 @@ CellPrivate::CellPrivate(Cell *p) :
 }
 
 CellPrivate::CellPrivate(const CellPrivate * const cp)
-    : value(cp->value), formula(cp->formula), dataType(cp->dataType)
-    , format(cp->format), range(cp->range), richString(cp->richString)
-    , parent(cp->parent)
+    : value(cp->value), formula(cp->formula), cellType(cp->cellType)
+    , format(cp->format), richString(cp->richString), parent(cp->parent)
 {
 
 }
@@ -55,27 +54,24 @@ CellPrivate::CellPrivate(const CellPrivate * const cp)
 */
 
 /*!
-  \enum Cell::DataType
-
-  \value Blank,
-  \value String,
-  \value Numeric,
-  \value Formula,
-  \value Boolean,
-  \value Error,
-  \value InlineString,
-  \value ArrayFormula
+  \enum Cell::CellType
+  \value BooleanType      Boolean type
+  \value NumberType       Number type, can be blank or used with forumula
+  \value ErrorType        Error type
+  \value SharedStringType Shared string type
+  \value StringType       String type, can be used with forumula
+  \value InlineStringType Inline string type
   */
 
 /*!
  * \internal
  * Created by Worksheet only.
  */
-Cell::Cell(const QVariant &data, DataType type, const Format &format, Worksheet *parent) :
+Cell::Cell(const QVariant &data, CellType type, const Format &format, Worksheet *parent) :
     d_ptr(new CellPrivate(this))
 {
     d_ptr->value = data;
-    d_ptr->dataType = type;
+    d_ptr->cellType = type;
     d_ptr->format = format;
     d_ptr->parent = parent;
 }
@@ -100,10 +96,10 @@ Cell::~Cell()
 /*!
  * Return the dataType of this Cell
  */
-Cell::DataType Cell::dataType() const
+Cell::CellType Cell::cellType() const
 {
     Q_D(const Cell);
-    return d->dataType;
+    return d->cellType;
 }
 
 /*!
@@ -125,9 +121,18 @@ Format Cell::format() const
 }
 
 /*!
+ * Returns true if the cell has one formula.
+ */
+bool Cell::hasFormula() const
+{
+    Q_D(const Cell);
+    return d->formula.isValid();
+}
+
+/*!
  * Return the formula contents if the dataType is Formula
  */
-QString Cell::formula() const
+CellFormula Cell::formula() const
 {
     Q_D(const Cell);
     return d->formula;
@@ -139,7 +144,7 @@ QString Cell::formula() const
 bool Cell::isDateTime() const
 {
     Q_D(const Cell);
-    if (d->dataType == Numeric && d->value.toDouble() >=0
+    if (d->cellType == NumberType && d->value.toDouble() >=0
             && d->format.isValid() && d->format.isDateTimeFormat()) {
         return true;
     }
@@ -163,7 +168,8 @@ QDateTime Cell::dateTime() const
 bool Cell::isRichString() const
 {
     Q_D(const Cell);
-    if (d->dataType != String && d->dataType != InlineString)
+    if (d->cellType != SharedStringType && d->cellType != InlineStringType
+            && d->cellType != StringType)
         return false;
 
     return d->richString.isRichString();

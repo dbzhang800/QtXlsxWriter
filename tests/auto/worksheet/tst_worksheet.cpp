@@ -9,6 +9,7 @@
 #include "private/xlsxworksheet_p.h"
 #include "private/xlsxsharedstrings_p.h"
 #include "xlsxrichstring.h"
+#include "xlsxcellformula.h"
 
 class WorksheetTest : public QObject
 {
@@ -114,8 +115,8 @@ void WorksheetTest::testWriteCells()
     QVERIFY2(xmldata.contains("<c r=\"A2\" t=\"s\"><v>0</v></c>"), "string");
     QVERIFY2(xmldata.contains("<c r=\"A3\" t=\"inlineStr\"><is><t>Hello inline</t></is></c>"), "inline string");
     QVERIFY2(xmldata.contains("<c r=\"A4\" t=\"b\"><v>1</v></c>"), "boolean");
-    QVERIFY2(xmldata.contains("<c r=\"A5\" t=\"str\"><f>44+33</f><v>0</v></c>"), "formula");
-    QVERIFY2(xmldata.contains("<c r=\"B5\" t=\"str\"><f>44+33</f><v>77</v></c>"), "formula");
+    QVERIFY2(xmldata.contains("<c r=\"A5\"><f>44+33</f><v>0</v></c>"), "formula");
+    QVERIFY2(xmldata.contains("<c r=\"B5\"><f>44+33</f><v>77</v></c>"), "formula");
 
     QCOMPARE(sheet.d_func()->sharedStrings()->getSharedString(0).toPlainString(), QStringLiteral("Hello"));
 }
@@ -204,29 +205,29 @@ void WorksheetTest::testReadSheetData()
     QCOMPARE(sheet.d_func()->cellTable.size(), 2);
 
     //A1
-    QCOMPARE(sheet.cellAt("A1")->dataType(), QXlsx::Cell::String);
+    QCOMPARE(sheet.cellAt("A1")->cellType(), QXlsx::Cell::SharedStringType);
     QCOMPARE(sheet.cellAt("A1")->value().toString(), QStringLiteral("Hello"));
 
     //B1
-    QCOMPARE(sheet.cellAt("B1")->dataType(), QXlsx::Cell::Formula);
+    QCOMPARE(sheet.cellAt("B1")->cellType(), QXlsx::Cell::NumberType);
     QCOMPARE(sheet.cellAt("B1")->value().toInt(), 77);
-    QCOMPARE(sheet.cellAt("B1")->formula(), QStringLiteral("44+33"));
+    QCOMPARE(sheet.cellAt("B1")->formula(), QXlsx::CellFormula("44+33"));
 
     //C1
-    QCOMPARE(sheet.cellAt("C1")->dataType(), QXlsx::Cell::Formula);
+    QCOMPARE(sheet.cellAt("C1")->cellType(), QXlsx::Cell::StringType);
     QCOMPARE(sheet.cellAt("C1")->value().toInt(), 77);
-    QCOMPARE(sheet.cellAt("C1")->formula(), QStringLiteral("44+33"));
+    QCOMPARE(sheet.cellAt("C1")->formula(), QXlsx::CellFormula("44+33"));
 
     //B3
-    QCOMPARE(sheet.cellAt("B3")->dataType(), QXlsx::Cell::Numeric);
+    QCOMPARE(sheet.cellAt("B3")->cellType(), QXlsx::Cell::NumberType);
     QCOMPARE(sheet.cellAt("B3")->value().toInt(), 12345);
 
     //C3
-    QCOMPARE(sheet.cellAt("C3")->dataType(), QXlsx::Cell::InlineString);
+    QCOMPARE(sheet.cellAt("C3")->cellType(), QXlsx::Cell::InlineStringType);
     QCOMPARE(sheet.cellAt("C3")->value().toString(), QStringLiteral("inline test string"));
 
     //E3
-    QCOMPARE(sheet.cellAt("E3")->dataType(), QXlsx::Cell::Error);
+    QCOMPARE(sheet.cellAt("E3")->cellType(), QXlsx::Cell::ErrorType);
     QCOMPARE(sheet.cellAt("E3")->value().toString(), QStringLiteral("#DIV/0!"));
 }
 

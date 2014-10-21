@@ -2,6 +2,7 @@
 #include "xlsxdocument.h"
 #include "xlsxformat.h"
 #include "xlsxworksheet.h"
+#include "xlsxcellformula.h"
 
 QTXLSX_USE_NAMESPACE
 
@@ -58,8 +59,8 @@ int main()
         sheet->write(row, 3, QString(row%5+1, 'X')); //C2:C19
         sheet->write(row, 5, 100.0 - row); //E2:E19
     }
-    sheet->writeArrayFormula("C20", "{=SUM(IF((C2:C19=\"X\")*(B2:B19=\"X\"),1,0))}");
-    sheet->writeArrayFormula("F2:F19", "{=E2:E19*10}");
+    sheet->writeFormula("C20", CellFormula("SUM(IF((C2:C19=\"X\")*(B2:B19=\"X\"),1,0))", "C20", CellFormula::ArrayType));
+    sheet->writeFormula("F2", CellFormula("E2:E19*10", "F2:F19", CellFormula::ArrayType));
     //![2]
 
     //![3]

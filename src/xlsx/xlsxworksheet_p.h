@@ -169,7 +169,6 @@ public:
     int rowPixelsSize(int row) const;
     int colPixelsSize(int col) const;
 
-    QSharedPointer<Cell> loadXmlNumericCellData(QXmlStreamReader &reader);
     void loadXmlSheetData(QXmlStreamReader &reader);
     void loadXmlColumnsInfo(QXmlStreamReader &reader);
     void loadXmlMergeCells(QXmlStreamReader &reader);

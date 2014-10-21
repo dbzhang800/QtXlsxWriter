@@ -22,56 +22,42 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef QXLSX_XLSXCELL_H
-#define QXLSX_XLSXCELL_H
+#ifndef XLSXCELLFORMULA_P_H
+#define XLSXCELLFORMULA_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt Xlsx API.  It exists for the convenience
+// of the Qt Xlsx.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include "xlsxglobal.h"
-#include "xlsxformat.h"
-#include <QVariant>
+#include "xlsxcellformula.h"
+#include "xlsxcellrange.h"
+
+#include <QSharedData>
+#include <QString>
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class Worksheet;
-class Format;
-class CellFormula;
-class CellPrivate;
-class WorksheetPrivate;
-
-class Q_XLSX_EXPORT Cell
+class CellFormulaPrivate : public QSharedData
 {
-    Q_DECLARE_PRIVATE(Cell)
 public:
-    enum CellType {
-        BooleanType,      //t="b"
-        NumberType,       //t="n" (default)
-        ErrorType,        //t="e"
-        SharedStringType, //t="s"
-        StringType,       //t="str"
-        InlineStringType  //t="inlineStr"
-    };
+    CellFormulaPrivate(const QString &formula, const CellRange &reference, CellFormula::FormulaType type);
+    CellFormulaPrivate(const CellFormulaPrivate &other);
+    ~CellFormulaPrivate();
 
-    CellType cellType() const;
-    QVariant value() const;
-    Format format() const;
-
-    bool hasFormula() const;
-    CellFormula formula() const;
-
-    bool isDateTime() const;
-    QDateTime dateTime() const;
-
-    bool isRichString() const;
-
-    ~Cell();
-private:
-    friend class Worksheet;
-    friend class WorksheetPrivate;
-
-    Cell(const QVariant &data=QVariant(), CellType type=NumberType, const Format &format=Format(), Worksheet *parent=0);
-    Cell(const Cell * const cell);
-    CellPrivate * const d_ptr;
+    QString formula; //formula contents
+    CellFormula::FormulaType type;
+    CellRange reference;
+    int si;
 };
 
 QT_END_NAMESPACE_XLSX
 
-#endif // QXLSX_XLSXCELL_H
+#endif // XLSXCELLFORMULA_P_H

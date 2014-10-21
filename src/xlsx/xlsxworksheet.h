@@ -69,9 +69,8 @@ public:
     bool writeInlineString(int row, int column, const QString &value, const Format &format=Format());
     bool writeNumeric(const CellReference &row_column, double value, const Format &format=Format());
     bool writeNumeric(int row, int column, double value, const Format &format=Format());
-    bool writeFormula(const CellReference &row_column, const QString &formula, const Format &format=Format(), double result=0);
-    bool writeFormula(int row, int column, const QString &formula, const Format &format=Format(), double result=0);
-    bool writeArrayFormula(const CellRange &range, const QString &formula, const Format &format=Format());
+    bool writeFormula(const CellReference &row_column, const CellFormula &formula, const Format &format=Format(), double result=0);
+    bool writeFormula(int row, int column, const CellFormula &formula, const Format &format=Format(), double result=0);
     bool writeBlank(const CellReference &row_column, const Format &format=Format());
     bool writeBlank(int row, int column, const Format &format=Format());
     bool writeBool(const CellReference &row_column, bool value, const Format &format=Format());

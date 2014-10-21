@@ -22,56 +22,53 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef QXLSX_XLSXCELL_H
-#define QXLSX_XLSXCELL_H
+#ifndef QXLSX_XLSXCELLFORMULA_H
+#define QXLSX_XLSXCELLFORMULA_H
 
 #include "xlsxglobal.h"
-#include "xlsxformat.h"
-#include <QVariant>
+#include <QExplicitlySharedDataPointer>
+
+class QXmlStreamWriter;
+class QXmlStreamReader;
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class Worksheet;
-class Format;
-class CellFormula;
-class CellPrivate;
-class WorksheetPrivate;
+class CellFormulaPrivate;
+class CellRange;
 
-class Q_XLSX_EXPORT Cell
+class Q_XLSX_EXPORT CellFormula
 {
-    Q_DECLARE_PRIVATE(Cell)
 public:
-    enum CellType {
-        BooleanType,      //t="b"
-        NumberType,       //t="n" (default)
-        ErrorType,        //t="e"
-        SharedStringType, //t="s"
-        StringType,       //t="str"
-        InlineStringType  //t="inlineStr"
+    enum FormulaType {
+        NormalType,
+        ArrayType,
+        DataTableType,
+        SharedType
     };
 
-    CellType cellType() const;
-    QVariant value() const;
-    Format format() const;
+    CellFormula();
+    CellFormula(const char *formula, FormulaType type=NormalType);
+    CellFormula(const QString &formula, FormulaType type=NormalType);
+    CellFormula(const QString &formula, const CellRange &ref, FormulaType type);
+    CellFormula(const CellFormula &other);
+    ~CellFormula();
+    CellFormula &operator =(const CellFormula &other);
+    bool isValid() const;
 
-    bool hasFormula() const;
-    CellFormula formula() const;
+    FormulaType formulaType() const;
+    QString formulaContent() const;
+    CellRange reference() const;
+    int sharedIndex() const;
 
-    bool isDateTime() const;
-    QDateTime dateTime() const;
+    bool operator == (const CellFormula &formula) const;
+    bool operator != (const CellFormula &formula) const;
 
-    bool isRichString() const;
-
-    ~Cell();
+    bool saveToXml(QXmlStreamWriter &writer) const;
+    bool loadFromXml(QXmlStreamReader &reader);
 private:
-    friend class Worksheet;
-    friend class WorksheetPrivate;
-
-    Cell(const QVariant &data=QVariant(), CellType type=NumberType, const Format &format=Format(), Worksheet *parent=0);
-    Cell(const Cell * const cell);
-    CellPrivate * const d_ptr;
+    QExplicitlySharedDataPointer<CellFormulaPrivate> d;
 };
 
 QT_END_NAMESPACE_XLSX
 
-#endif // QXLSX_XLSXCELL_H
+#endif // QXLSX_XLSXCELLFORMULA_H
