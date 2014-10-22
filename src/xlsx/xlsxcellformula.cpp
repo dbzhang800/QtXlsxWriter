@@ -24,6 +24,7 @@
 ****************************************************************************/
 #include "xlsxcellformula.h"
 #include "xlsxcellformula_p.h"
+#include "xlsxutility_p.h"
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -31,7 +32,7 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 CellFormulaPrivate::CellFormulaPrivate(const QString &formula_, const CellRange &ref_, CellFormula::FormulaType type_)
-    :formula(formula_), type(type_), reference(ref_), si(0)
+    :formula(formula_), type(type_), reference(ref_), ca(false), si(0)
 {
     //Remove the formula '=' sign if exists
     if (formula.startsWith(QLatin1String("=")))
@@ -42,7 +43,8 @@ CellFormulaPrivate::CellFormulaPrivate(const QString &formula_, const CellRange 
 
 CellFormulaPrivate::CellFormulaPrivate(const CellFormulaPrivate &other)
     : QSharedData(other)
-    , formula(other.formula), type(other.type), reference(other.reference), si(other.si)
+    , formula(other.formula), type(other.type), reference(other.reference)
+    , ca(other.ca), si(other.si)
 {
 
 }
@@ -139,7 +141,7 @@ CellFormula::FormulaType CellFormula::formulaType() const
 /*!
  * Returns the contents of the formula.
  */
-QString CellFormula::formulaContent() const
+QString CellFormula::formulaText() const
 {
     return d ? d->formula : QString();
 }
@@ -190,10 +192,14 @@ bool CellFormula::saveToXml(QXmlStreamWriter &writer) const
         writer.writeAttribute(QStringLiteral("t"), t);
     if (d->reference.isValid())
         writer.writeAttribute(QStringLiteral("ref"), d->reference.toString());
+    if (d->ca)
+        writer.writeAttribute(QStringLiteral("ca"), QStringLiteral("1"));
     if (d->type == CellFormula::SharedType)
         writer.writeAttribute(QStringLiteral("si"), QString::number(d->si));
 
-    writer.writeCharacters(d->formula);
+    if (!d->formula.isEmpty())
+        writer.writeCharacters(d->formula);
+
     writer.writeEndElement(); //f
 
     return true;
@@ -220,9 +226,13 @@ bool CellFormula::loadFromXml(QXmlStreamReader &reader)
     if (attributes.hasAttribute(QLatin1String("ref"))) {
         QString refString = attributes.value(QLatin1String("ref")).toString();
         d->reference = CellRange(refString);
-    } else if (attributes.hasAttribute(QLatin1String("si"))) {
-        d->si = attributes.value(QLatin1String("si")).toString().toInt();
     }
+
+    QString ca = attributes.value(QLatin1String("si")).toString();
+    d->ca = parseXsdBoolean(ca, false);
+
+    if (attributes.hasAttribute(QLatin1String("si")))
+        d->si = attributes.value(QLatin1String("si")).toString().toInt();
 
     d->formula = reader.readElementText();
     return true;

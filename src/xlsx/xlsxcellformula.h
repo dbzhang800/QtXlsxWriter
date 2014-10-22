@@ -35,6 +35,8 @@ QT_BEGIN_NAMESPACE_XLSX
 
 class CellFormulaPrivate;
 class CellRange;
+class Worksheet;
+class WorksheetPrivate;
 
 class Q_XLSX_EXPORT CellFormula
 {
@@ -56,7 +58,7 @@ public:
     bool isValid() const;
 
     FormulaType formulaType() const;
-    QString formulaContent() const;
+    QString formulaText() const;
     CellRange reference() const;
     int sharedIndex() const;
 
@@ -66,6 +68,8 @@ public:
     bool saveToXml(QXmlStreamWriter &writer) const;
     bool loadFromXml(QXmlStreamReader &reader);
 private:
+    friend class Worksheet;
+    friend class WorksheetPrivate;
     QExplicitlySharedDataPointer<CellFormulaPrivate> d;
 };
 

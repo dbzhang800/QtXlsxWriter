@@ -41,6 +41,7 @@
 #include "xlsxcell.h"
 #include "xlsxdatavalidation.h"
 #include "xlsxconditionalformatting.h"
+#include "xlsxcellformula.h"
 
 #include <QImage>
 #include <QSharedPointer>
@@ -194,6 +195,7 @@ public:
 
     QList<DataValidation> dataValidationsList;
     QList<ConditionalFormatting> conditionalFormattingList;
+    QMap<int, CellFormula> sharedFormulaMap;
 
     CellRange dimension;
     int previous_row;

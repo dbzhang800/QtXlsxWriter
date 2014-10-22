@@ -55,7 +55,8 @@ public:
     QString formula; //formula contents
     CellFormula::FormulaType type;
     CellRange reference;
-    int si;
+    bool ca; //Calculate Cell
+    int si;  //Shared group index
 };
 
 QT_END_NAMESPACE_XLSX

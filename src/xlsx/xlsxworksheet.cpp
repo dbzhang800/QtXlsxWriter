@@ -513,7 +513,7 @@ QVariant Worksheet::read(int row, int column) const
     if (!cell)
         return QVariant();
     if (cell->hasFormula() && cell->formula().formulaType() == CellFormula::NormalType)
-        return QVariant(QLatin1String("=")+cell->formula().formulaContent());
+        return QVariant(QLatin1String("=")+cell->formula().formulaText());
     if (cell->isDateTime()) {
         double val = cell->value().toDouble();
         QDateTime dt = cell->dateTime();
@@ -709,7 +709,7 @@ bool Worksheet::writeFormula(const CellReference &row_column, const CellFormula 
 /*!
     Write \a formula to the cell (\a row, \a column) with the \a format and \a result.
 */
-bool Worksheet::writeFormula(int row, int column, const CellFormula &formula, const Format &format, double result)
+bool Worksheet::writeFormula(int row, int column, const CellFormula &formula_, const Format &format, double result)
 {
     Q_D(Worksheet);
     if (d->checkDimensions(row, column))
@@ -718,9 +718,41 @@ bool Worksheet::writeFormula(int row, int column, const CellFormula &formula, co
     Format fmt = format.isValid() ? format : d->cellFormat(row, column);
     d->workbook->styles()->addXfFormat(fmt);
 
+    CellFormula formula = formula_;
+    formula.d->ca = true;
+    if (formula.formulaType() == CellFormula::SharedType) {
+        //Assign proper shared index for shared formula
+        int si=0;
+        while(d->sharedFormulaMap.contains(si))
+            ++si;
+        formula.d->si = si;
+        d->sharedFormulaMap[si] = formula;
+    }
+
     QSharedPointer<Cell> data = QSharedPointer<Cell>(new Cell(result, Cell::NumberType, fmt, this));
     data->d_ptr->formula = formula;
     d->cellTable[row][column] = data;
+
+    CellRange range = formula.reference();
+    if (formula.formulaType() == CellFormula::SharedType) {
+        CellFormula sf(QString(), CellFormula::SharedType);
+        sf.d->si = formula.sharedIndex();
+        for (int r=range.firstRow(); r<=range.lastRow(); ++r) {
+            for (int c=range.firstColumn(); c<=range.lastColumn(); ++c) {
+                if (!(r==row && c==column)) {
+                    if(Cell *cell = cellAt(r, c)) {
+                        cell->d_ptr->formula = sf;
+                    } else {
+                        QSharedPointer<Cell> newCell = QSharedPointer<Cell>(new Cell(result, Cell::NumberType, fmt, this));
+                        newCell->d_ptr->formula = sf;
+                        d->cellTable[r][c] = newCell;
+                    }
+                }
+            }
+        }
+    } else if (formula.formulaType() == CellFormula::SharedType) {
+
+    }
 
     return true;
 }
@@ -1896,7 +1928,11 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                 while (!reader.atEnd() && !(reader.name() == QLatin1String("c") && reader.tokenType() == QXmlStreamReader::EndElement)) {
                     if (reader.readNextStartElement()) {
                         if (reader.name() == QLatin1String("f")) {
-                            cell->d_func()->formula.loadFromXml(reader);
+                            CellFormula &formula = cell->d_func()->formula;
+                            formula.loadFromXml(reader);
+                            if (formula.formulaType() == CellFormula::SharedType && !formula.formulaText().isEmpty()) {
+                                sharedFormulaMap[formula.sharedIndex()] = formula;
+                            }
                         } else if (reader.name() == QLatin1String("v")) {
                             QString value = reader.readElementText();
                             if (cellType == Cell::SharedStringType) {

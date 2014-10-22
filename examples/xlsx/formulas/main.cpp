@@ -55,17 +55,30 @@ int main()
     Worksheet *sheet = xlsx.currentWorksheet();
 
     for (int row=2; row<20; ++row) {
-        sheet->write(row, 2, QString(row%5+1, 'X')); //B2:B19
-        sheet->write(row, 3, QString(row%5+1, 'X')); //C2:C19
-        sheet->write(row, 5, 100.0 - row); //E2:E19
+        sheet->write(row, 2, row*2); //B2:B19
+        sheet->write(row, 3, row*3); //C2:C19
     }
-    sheet->writeFormula("C20", CellFormula("SUM(IF((C2:C19=\"X\")*(B2:B19=\"X\"),1,0))", "C20", CellFormula::ArrayType));
-    sheet->writeFormula("F2", CellFormula("E2:E19*10", "F2:F19", CellFormula::ArrayType));
+    sheet->writeFormula("D2", CellFormula("B2:B19+C2:C19", "D2:D19", CellFormula::ArrayType));
     //![2]
+
+    //![21]
+    xlsx.addSheet("SharedFormula");
+    sheet = xlsx.currentWorksheet();
+
+    for (int row=2; row<20; ++row) {
+        sheet->write(row, 2, row*2); //B2:B19
+        sheet->write(row, 3, row*3); //C2:C19
+    }
+    sheet->writeFormula("D2", CellFormula("=B2+C2", "D2:D19", CellFormula::SharedType));
+    //![21]
 
     //![3]
     xlsx.save();
     //![3]
+
+    //Make sure that read/write works well.
+    Document xlsx2("Book1.xlsx");
+    xlsx2.saveAs("Book2.xlsx");
 
     return 0;
 }
