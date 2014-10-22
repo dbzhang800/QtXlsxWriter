@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (demo/main.cpp) | QtXlsx 0.3</title>
+  <title>main.cpp Example File | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.3</li>
-<li>main.cpp Example File (demo/main.cpp)</li>
+<li><a href="qtxlsx-demo-example.html">Qt Xlsx Demo</a></li>
+<li>main.cpp Example File</li>
 <li id="buildversion">
 Qt 0.3.0 Reference Documentation</li>
     </ul>
@@ -23,7 +24,7 @@ Qt 0.3.0 Reference Documentation</li>
 <div class="line">
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">demo/main.cpp</span>
+<span class="subtitle">demo/main.cpp</span>
 <!-- $$$demo/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
@@ -34,7 +35,7 @@ Qt 0.3.0 Reference Documentation</li>
 
 QTXLSX_USE_NAMESPACE
 
-<span class="type">void</span> writeHorizontalAlignCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>HorizontalAlignment align)
+<span class="type">void</span> writeHorizontalAlignCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>HorizontalAlignment align)
 {
    Format format;
    format<span class="operator">.</span>setHorizontalAlignment(align);
@@ -42,7 +43,7 @@ QTXLSX_USE_NAMESPACE
    xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> text<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeVerticalAlignCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>range<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>VerticalAlignment align)
+<span class="type">void</span> writeVerticalAlignCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>range<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>VerticalAlignment align)
 {
    Format format;
    format<span class="operator">.</span>setVerticalAlignment(align);
@@ -52,29 +53,29 @@ QTXLSX_USE_NAMESPACE
    xlsx<span class="operator">.</span>mergeCells(r<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeBorderStyleCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>BorderStyle bs)
+<span class="type">void</span> writeBorderStyleCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> Format<span class="operator">::</span>BorderStyle bs)
 {
    Format format;
    format<span class="operator">.</span>setBorderStyle(bs);
    xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> text<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeSolidFillCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QColor</span> <span class="operator">&amp;</span>color)
+<span class="type">void</span> writeSolidFillCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> <span class="operator">&amp;</span>color)
 {
    Format format;
    format<span class="operator">.</span>setPatternBackgroundColor(color);
-   xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> <span class="type">QVariant</span>()<span class="operator">,</span> format);
+   xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> <span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span>()<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writePatternFillCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> Format<span class="operator">::</span>FillPattern pattern<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QColor</span> <span class="operator">&amp;</span>color)
+<span class="type">void</span> writePatternFillCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> Format<span class="operator">::</span>FillPattern pattern<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> <span class="operator">&amp;</span>color)
 {
    Format format;
    format<span class="operator">.</span>setPatternForegroundColor(color);
    format<span class="operator">.</span>setFillPattern(pattern);
-   xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> <span class="type">QVariant</span>()<span class="operator">,</span> format);
+   xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> <span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span>()<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeBorderAndFontColorCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QColor</span> <span class="operator">&amp;</span>color)
+<span class="type">void</span> writeBorderAndFontColorCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html">QColor</a></span> <span class="operator">&amp;</span>color)
 {
    Format format;
    format<span class="operator">.</span>setBorderStyle(Format<span class="operator">::</span>BorderThin);
@@ -83,7 +84,7 @@ QTXLSX_USE_NAMESPACE
    xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> text<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeFontNameCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>text)
+<span class="type">void</span> writeFontNameCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>text)
 {
     Format format;
     format<span class="operator">.</span>setFontName(text);
@@ -91,7 +92,7 @@ QTXLSX_USE_NAMESPACE
     xlsx<span class="operator">.</span>write(cell<span class="operator">,</span> text<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeFontSizeCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="type">int</span> size)
+<span class="type">void</span> writeFontSizeCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>cell<span class="operator">,</span> <span class="type">int</span> size)
 {
     Format format;
     format<span class="operator">.</span>setFontSize(size);
@@ -103,11 +104,11 @@ QTXLSX_USE_NAMESPACE
     Format format;
     format<span class="operator">.</span>setNumberFormatIndex(numFmt);
     xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> value);
-    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type">QString</span>(<span class="string">&quot;Builtin NumFmt %1&quot;</span>)<span class="operator">.</span>arg(numFmt));
+    xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span>(<span class="string">&quot;Builtin NumFmt %1&quot;</span>)<span class="operator">.</span>arg(numFmt));
     xlsx<span class="operator">.</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> value<span class="operator">,</span> format);
 }
 
-<span class="type">void</span> writeCustomNumFormatsCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="type">int</span> row<span class="operator">,</span> <span class="type">double</span> value<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>numFmt)
+<span class="type">void</span> writeCustomNumFormatsCell(Document <span class="operator">&amp;</span>xlsx<span class="operator">,</span> <span class="type">int</span> row<span class="operator">,</span> <span class="type">double</span> value<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span> <span class="operator">&amp;</span>numFmt)
 {
     Format format;
     format<span class="operator">.</span>setNumberFormat(numFmt);
@@ -144,25 +145,25 @@ QTXLSX_USE_NAMESPACE
     writeBorderStyleCell(xlsx<span class="operator">,</span> <span class="string">&quot;B23&quot;</span><span class="operator">,</span> <span class="string">&quot;BorderDashDot&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>BorderDashDot);
 
     <span class="comment">//Fill</span>
-    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D13&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>red);
-    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D15&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>blue);
-    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D17&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>yellow);
-    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D19&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>magenta);
-    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D21&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>green);
-    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D23&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>gray);
-    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F13&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternMediumGray<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>red);
-    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F15&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternDarkHorizontal<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>blue);
-    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F17&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternDarkVertical<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>yellow);
-    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F19&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternDarkDown<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>magenta);
-    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F21&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternLightVertical<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>green);
-    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F23&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternLightTrellis<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>gray);
+    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D13&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>red);
+    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D15&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
+    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D17&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>yellow);
+    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D19&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>magenta);
+    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D21&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>green);
+    writeSolidFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;D23&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>gray);
+    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F13&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternMediumGray<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>red);
+    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F15&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternDarkHorizontal<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
+    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F17&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternDarkVertical<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>yellow);
+    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F19&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternDarkDown<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>magenta);
+    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F21&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternLightVertical<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>green);
+    writePatternFillCell(xlsx<span class="operator">,</span> <span class="string">&quot;F23&quot;</span><span class="operator">,</span> Format<span class="operator">::</span>PatternLightTrellis<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>gray);
 
-    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H13&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::red&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>red);
-    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H15&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::blue&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>blue);
-    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H17&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::yellow&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>yellow);
-    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H19&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::magenta&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>magenta);
-    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H21&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::green&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>green);
-    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H23&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::gray&quot;</span><span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>gray);
+    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H13&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::red&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>red);
+    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H15&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::blue&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
+    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H17&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::yellow&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>yellow);
+    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H19&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::magenta&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>magenta);
+    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H21&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::green&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>green);
+    writeBorderAndFontColorCell(xlsx<span class="operator">,</span> <span class="string">&quot;H23&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt::gray&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>gray);
 
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the second sheet.</span>
@@ -301,7 +302,7 @@ QTXLSX_USE_NAMESPACE
     <span class="comment">//---------------------------------------------------------------</span>
     <span class="comment">//Create the fifth sheet.</span>
     xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;Grouping&quot;</span>);
-    qsrand(<span class="type">QDateTime</span><span class="operator">::</span>currentMSecsSinceEpoch());
+    qsrand(<span class="type"><a href="../qtcore/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentMSecsSinceEpoch());
     <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">31</span>; <span class="operator">+</span><span class="operator">+</span>row) {
         <span class="keyword">for</span> (<span class="type">int</span> col<span class="operator">=</span><span class="number">1</span>; col<span class="operator">&lt;</span><span class="operator">=</span><span class="number">10</span>; <span class="operator">+</span><span class="operator">+</span>col)
             xlsx<span class="operator">.</span>write(row<span class="operator">,</span> col<span class="operator">,</span> qrand() <span class="operator">%</span> <span class="number">100</span>);

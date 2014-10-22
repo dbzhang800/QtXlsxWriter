@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (worksheetoperations/main.cpp) | QtXlsx 0.3</title>
+  <title>main.cpp Example File | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.3</li>
-<li>main.cpp Example File (worksheetoperations/main.cpp)</li>
+<li><a href="qtxlsx-worksheetoperations-example.html">Worksheet Operations Example</a></li>
+<li>main.cpp Example File</li>
 <li id="buildversion">
 Qt 0.3.0 Reference Documentation</li>
     </ul>
@@ -23,7 +24,7 @@ Qt 0.3.0 Reference Documentation</li>
 <div class="line">
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">worksheetoperations/main.cpp</span>
+<span class="subtitle">worksheetoperations/main.cpp</span>
 <!-- $$$worksheetoperations/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
@@ -33,12 +34,11 @@ Qt 0.3.0 Reference Documentation</li>
 {
     <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
 
-    xlsx<span class="operator">.</span>renameSheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;TheFirstSheet&quot;</span>);
-
     <span class="keyword">for</span> (<span class="type">int</span> i<span class="operator">=</span><span class="number">1</span>; i<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>i) {
         <span class="keyword">for</span> (<span class="type">int</span> j<span class="operator">=</span><span class="number">1</span>; j<span class="operator">&lt;</span><span class="number">15</span>; <span class="operator">+</span><span class="operator">+</span>j)
-            xlsx<span class="operator">.</span>write(i<span class="operator">,</span> j<span class="operator">,</span> <span class="type">QString</span>(<span class="string">&quot;R %1 C %2&quot;</span>)<span class="operator">.</span>arg(i)<span class="operator">.</span>arg(j));
+            xlsx<span class="operator">.</span>write(i<span class="operator">,</span> j<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span>(<span class="string">&quot;R %1 C %2&quot;</span>)<span class="operator">.</span>arg(i)<span class="operator">.</span>arg(j));
     }
+    xlsx<span class="operator">.</span>renameSheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;TheFirstSheet&quot;</span>);
 
     xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;TheSecondSheet&quot;</span>);
     xlsx<span class="operator">.</span>write(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;Hello Qt Xlsx&quot;</span>);

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (formulas/main.cpp) | QtXlsx 0.3</title>
+  <title>main.cpp Example File | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.3</li>
-<li>main.cpp Example File (formulas/main.cpp)</li>
+<li><a href="qtxlsx-formulas-example.html">Formulas Example</a></li>
+<li>main.cpp Example File</li>
 <li id="buildversion">
 Qt 0.3.0 Reference Documentation</li>
     </ul>
@@ -23,13 +24,14 @@ Qt 0.3.0 Reference Documentation</li>
 <div class="line">
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">formulas/main.cpp</span>
+<span class="subtitle">formulas/main.cpp</span>
 <!-- $$$formulas/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
 <span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
 <span class="preprocessor">#include &quot;xlsxformat.h&quot;</span>
 <span class="preprocessor">#include &quot;xlsxworksheet.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxcellformula.h&quot;</span>
 
 QTXLSX_USE_NAMESPACE
 
@@ -77,14 +79,25 @@ QTXLSX_USE_NAMESPACE
     Worksheet <span class="operator">*</span>sheet <span class="operator">=</span> xlsx<span class="operator">.</span>currentWorksheet();
 
     <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {
-        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type">QString</span>(row<span class="operator">%</span><span class="number">5</span><span class="operator">+</span><span class="number">1</span><span class="operator">,</span> <span class="char">'X'</span>)); <span class="comment">//B2:B19</span>
-        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="type">QString</span>(row<span class="operator">%</span><span class="number">5</span><span class="operator">+</span><span class="number">1</span><span class="operator">,</span> <span class="char">'X'</span>)); <span class="comment">//C2:C19</span>
-        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">5</span><span class="operator">,</span> <span class="number">100.0</span> <span class="operator">-</span> row); <span class="comment">//E2:E19</span>
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> row<span class="operator">*</span><span class="number">2</span>); <span class="comment">//B2:B19</span>
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> row<span class="operator">*</span><span class="number">3</span>); <span class="comment">//C2:C19</span>
     }
-    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeArrayFormula(<span class="string">&quot;C20&quot;</span><span class="operator">,</span> <span class="string">&quot;{=SUM(IF((C2:C19=\&quot;X\&quot;)*(B2:B19=\&quot;X\&quot;),1,0))}&quot;</span>);
-    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeArrayFormula(<span class="string">&quot;F2:F19&quot;</span><span class="operator">,</span> <span class="string">&quot;{=E2:E19*10}&quot;</span>);
+    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeFormula(<span class="string">&quot;D2&quot;</span><span class="operator">,</span> CellFormula(<span class="string">&quot;B2:B19+C2:C19&quot;</span><span class="operator">,</span> <span class="string">&quot;D2:D19&quot;</span><span class="operator">,</span> CellFormula<span class="operator">::</span>ArrayType));
+
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;SharedFormula&quot;</span>);
+    sheet <span class="operator">=</span> xlsx<span class="operator">.</span>currentWorksheet();
+
+    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> row<span class="operator">*</span><span class="number">2</span>); <span class="comment">//B2:B19</span>
+        sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> row<span class="operator">*</span><span class="number">3</span>); <span class="comment">//C2:C19</span>
+    }
+    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeFormula(<span class="string">&quot;D2&quot;</span><span class="operator">,</span> CellFormula(<span class="string">&quot;=B2+C2&quot;</span><span class="operator">,</span> <span class="string">&quot;D2:D19&quot;</span><span class="operator">,</span> CellFormula<span class="operator">::</span>SharedType));
 
     xlsx<span class="operator">.</span>save();
+
+    <span class="comment">//Make sure that read/write works well.</span>
+    Document xlsx2(<span class="string">&quot;Book1.xlsx&quot;</span>);
+    xlsx2<span class="operator">.</span>saveAs(<span class="string">&quot;Book2.xlsx&quot;</span>);
 
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>

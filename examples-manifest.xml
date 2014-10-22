@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<instructionals module="QtXlsx">
+    <examples>
+        <example name="Conditional Formatting Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-conditionalformatting-example.html" projectPath="xlsx/conditionalformatting/conditionalformatting.pro">
+            <description><![CDATA[This is a conditional formatting example.]]></description>
+            <tags>xlsx,conditional,formatting</tags>
+            <fileToOpen mainFile="true">xlsx/conditionalformatting/main.cpp</fileToOpen>
+        </example>
+        <example name="Document Properties Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-documentproperty-example.html" projectPath="xlsx/documentproperty/documentproperty.pro" imageUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/images/doc_property.png">
+            <description><![CDATA[This is a simplest xlsx examples.]]></description>
+            <tags>xlsx,properties,document</tags>
+            <fileToOpen mainFile="true">xlsx/documentproperty/main.cpp</fileToOpen>
+        </example>
+        <example name="Extract Data Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-extractdata-example.html" projectPath="xlsx/extractdata/extractdata.pro">
+            <description><![CDATA[This is a simplest Qt Xlsx example.]]></description>
+            <tags>xlsx,data,extract</tags>
+            <fileToOpen mainFile="true">xlsx/extractdata/main.cpp</fileToOpen>
+        </example>
+        <example name="Formulas Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-formulas-example.html" projectPath="xlsx/formulas/formulas.pro">
+            <description><![CDATA[This is a simplest Qt Xlsx example.]]></description>
+            <tags>xlsx,formulas</tags>
+            <fileToOpen mainFile="true">xlsx/formulas/main.cpp</fileToOpen>
+        </example>
+        <example name="Hello QtXlsx Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-hello-example.html" projectPath="xlsx/hello/hello.pro" imageUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/images/hello.png">
+            <description><![CDATA[This is a simplest Qt Xlsx example.]]></description>
+            <tags>xlsx,hello,qtxlsx</tags>
+            <fileToOpen mainFile="true">xlsx/hello/main.cpp</fileToOpen>
+        </example>
+        <example name="Merge Cells Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-mergecells-example.html" projectPath="xlsx/mergecells/mergecells.pro" imageUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/images/xlsx-mergecells.png">
+            <description><![CDATA[Demonstrates how to merge cells]]></description>
+            <tags>xlsx,cells,merge</tags>
+            <fileToOpen mainFile="true">xlsx/mergecells/main.cpp</fileToOpen>
+        </example>
+        <example name="Qt Xlsx Demo" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-demo-example.html" projectPath="xlsx/demo/demo.pro" imageUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/images/xlsx_demo.gif">
+            <description><![CDATA[This is a demo which is used to show features of the library]]></description>
+            <tags>xlsx,demo</tags>
+            <fileToOpen mainFile="true">xlsx/demo/main.cpp</fileToOpen>
+        </example>
+        <example name="Xlsx Style Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-style-example.html" projectPath="xlsx/style/style.pro">
+            <description><![CDATA[This is a simplest xlsx examples.]]></description>
+            <tags>xlsx,style</tags>
+            <fileToOpen mainFile="true">xlsx/style/main.cpp</fileToOpen>
+        </example>
+        <example name="Rich Text Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-richtext-example.html" projectPath="xlsx/richtext/richtext.pro" imageUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/images/richtext.png">
+            <description><![CDATA[This is a simplest Qt Xlsx example.]]></description>
+            <tags>xlsx,text,rich</tags>
+            <fileToOpen mainFile="true">xlsx/richtext/main.cpp</fileToOpen>
+        </example>
+        <example name="Worksheet Operations Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-worksheetoperations-example.html" projectPath="xlsx/worksheetoperations/worksheetoperations.pro">
+            <description><![CDATA[Copy, delete, move worksheet]]></description>
+            <tags>xlsx,operations,worksheet</tags>
+            <fileToOpen mainFile="true">xlsx/worksheetoperations/main.cpp</fileToOpen>
+        </example>
+        <example name="Xlsx Style Example" docUrl="qthelp://me.debao.qtxlsx.030/qtxlsx/qtxlsx-style-example.html" projectPath="xlsx/style/style.pro">
+            <description><![CDATA[This is a simplest xlsx examples.]]></description>
+            <tags>xlsx,style</tags>
+            <fileToOpen mainFile="true">xlsx/style/main.cpp</fileToOpen>
+        </example>
+    </examples>
+</instructionals>

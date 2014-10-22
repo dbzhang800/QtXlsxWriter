@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>main.cpp Example File (conditionalformatting/main.cpp) | QtXlsx 0.3</title>
+  <title>main.cpp Example File | QtXlsx 0.3</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
         <div class="navigationbar">
         <ul>
 <li>Qt 0.3</li>
-<li>main.cpp Example File (conditionalformatting/main.cpp)</li>
+<li><a href="qtxlsx-conditionalformatting-example.html">Conditional Formatting Example</a></li>
+<li>main.cpp Example File</li>
 <li id="buildversion">
 Qt 0.3.0 Reference Documentation</li>
     </ul>
@@ -23,7 +24,7 @@ Qt 0.3.0 Reference Documentation</li>
 <div class="line">
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">conditionalformatting/main.cpp</span>
+<span class="subtitle">conditionalformatting/main.cpp</span>
 <!-- $$$conditionalformatting/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
@@ -50,7 +51,7 @@ Qt 0.3.0 Reference Documentation</li>
 
     ConditionalFormatting cf1;
     Format fmt1;
-    fmt1<span class="operator">.</span>setFontColor(<span class="type">Qt</span><span class="operator">::</span>green);
+    fmt1<span class="operator">.</span>setFontColor(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>green);
     fmt1<span class="operator">.</span>setBorderStyle(Format<span class="operator">::</span>BorderDashed);
     cf1<span class="operator">.</span>addHighlightCellsRule(ConditionalFormatting<span class="operator">::</span>Highlight_LessThan<span class="operator">,</span> <span class="string">&quot;40&quot;</span><span class="operator">,</span> fmt1);
     cf1<span class="operator">.</span>addRange(<span class="string">&quot;B3:B21&quot;</span>);
@@ -59,7 +60,7 @@ Qt 0.3.0 Reference Documentation</li>
     ConditionalFormatting cf2;
     Format fmt2;
     fmt2<span class="operator">.</span>setBorderStyle(Format<span class="operator">::</span>BorderDotted);
-    fmt2<span class="operator">.</span>setBorderColor(<span class="type">Qt</span><span class="operator">::</span>blue);
+    fmt2<span class="operator">.</span>setBorderColor(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
     cf2<span class="operator">.</span>addHighlightCellsRule(ConditionalFormatting<span class="operator">::</span>Highlight_Between<span class="operator">,</span> <span class="string">&quot;30&quot;</span><span class="operator">,</span> <span class="string">&quot;70&quot;</span><span class="operator">,</span> fmt2);
     cf2<span class="operator">.</span>addRange(<span class="string">&quot;C3:C21&quot;</span>);
     xlsx<span class="operator">.</span>addConditionalFormatting(cf2);
@@ -73,12 +74,12 @@ Qt 0.3.0 Reference Documentation</li>
     xlsx<span class="operator">.</span>addConditionalFormatting(cf3);
 
     ConditionalFormatting cf4;
-    cf4<span class="operator">.</span>addDataBarRule(<span class="type">Qt</span><span class="operator">::</span>blue);
+    cf4<span class="operator">.</span>addDataBarRule(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue);
     cf4<span class="operator">.</span>addRange(<span class="string">&quot;E3:E21&quot;</span>);
     xlsx<span class="operator">.</span>addConditionalFormatting(cf4);
 
     ConditionalFormatting cf5;
-    cf5<span class="operator">.</span>add2ColorScaleRule(<span class="type">Qt</span><span class="operator">::</span>blue<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>red);
+    cf5<span class="operator">.</span>add2ColorScaleRule(<span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>blue<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html">Qt</a></span><span class="operator">::</span>red);
     cf5<span class="operator">.</span>addRange(<span class="string">&quot;F3:F21&quot;</span>);
     xlsx<span class="operator">.</span>addConditionalFormatting(cf5);
 
