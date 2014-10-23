@@ -59,6 +59,7 @@ int main()
         sheet->write(row, 3, row*3); //C2:C19
     }
     sheet->writeFormula("D2", CellFormula("B2:B19+C2:C19", "D2:D19", CellFormula::ArrayType));
+    sheet->writeFormula("E2", CellFormula("=CONCATENATE(\"The total is \",D2:D19,\" units\")", "E2:E19", CellFormula::ArrayType));
     //![2]
 
     //![21]
@@ -70,6 +71,8 @@ int main()
         sheet->write(row, 3, row*3); //C2:C19
     }
     sheet->writeFormula("D2", CellFormula("=B2+C2", "D2:D19", CellFormula::SharedType));
+    sheet->writeFormula("E2", CellFormula("=CONCATENATE(\"The total is \",D2,\" units\")", "E2:E19", CellFormula::SharedType));
+
     //![21]
 
     //![3]
