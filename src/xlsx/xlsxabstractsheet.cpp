@@ -55,6 +55,13 @@ AbstractSheetPrivate::~AbstractSheetPrivate()
   */
 
 /*!
+  \fn AbstractSheet::copy(const QString &distName, int distId) const
+
+  Copies the current sheet to a sheet called \a distName with \a distId.
+  Returns the new sheet.
+ */
+
+/*!
  * \internal
  */
 AbstractSheet::AbstractSheet(const QString &name, int id, Workbook *workbook, AbstractSheetPrivate *d) :

@@ -31,6 +31,8 @@ The library can be used to
 
 The library, the header files, and others will be installed to your system.
 
+> ```make html_docs``` can be used to generate documentations of the library, and ```make check``` can be used to run unit tests of the library.
+
 #### Using the module
 
 * Add following line to your qmake's project file:

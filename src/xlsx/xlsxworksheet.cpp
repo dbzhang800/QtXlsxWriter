@@ -420,6 +420,8 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 /*!
  * Write \a value to cell (\a row, \a column) with the \a format.
  * Both \a row and \a column are all 1-indexed value.
+ *
+ * Returns true on success.
  */
 bool Worksheet::write(int row, int column, const QVariant &value, const Format &format)
 {
@@ -483,6 +485,7 @@ bool Worksheet::write(int row, int column, const QVariant &value, const Format &
  * \overload
  * Write \a value to cell \a row_column with the \a format.
  * Both row and column are all 1-indexed value.
+ * Returns true on success.
  */
 bool Worksheet::write(const CellReference &row_column, const QVariant &value, const Format &format)
 {
@@ -527,9 +530,8 @@ QVariant Worksheet::read(int row, int column) const
 }
 
 /*!
- * \overload
- * Returns the cell at the position \a row_column.
- * 0 will be returned if the cell doesn't exist.
+ * Returns the cell at the given \a row_column. If there
+ * is no cell at the specified position, the function returns 0.
  */
 Cell *Worksheet::cellAt(const CellReference &row_column) const
 {
@@ -540,8 +542,8 @@ Cell *Worksheet::cellAt(const CellReference &row_column) const
 }
 
 /*!
- * Returns the cell at the position (\a row \a column).
- * 0 will be returned if the cell doesn't exist.
+ * Returns the cell at the given \a row and \a column. If there
+ * is no cell at the specified position, the function returns 0.
  */
 Cell *Worksheet::cellAt(int row, int column) const
 {
@@ -564,8 +566,10 @@ Format WorksheetPrivate::cellFormat(int row, int col) const
 }
 
 /*!
-    \overload
-    Write string \a value to the cell \a row_column with the \a format
+  \overload
+  Write string \a value to the cell \a row_column with the \a format.
+
+  Returns true on success.
  */
 bool Worksheet::writeString(const CellReference &row_column, const RichString &value, const Format &format)
 {
@@ -576,7 +580,8 @@ bool Worksheet::writeString(const CellReference &row_column, const RichString &v
 }
 
 /*!
-    Write string \a value to the cell (\a row, \a column) with the \a format
+  Write string \a value to the cell (\a row, \a column) with the \a format.
+  Returns true on success.
 */
 bool Worksheet::writeString(int row, int column, const RichString &value, const Format &format)
 {
@@ -603,7 +608,7 @@ bool Worksheet::writeString(int row, int column, const RichString &value, const 
 
 /*!
     \overload
-    Write string \a value to the cell \a row_column with the \a format
+    Write string \a value to the cell \a row_column with the \a format.
  */
 bool Worksheet::writeString(const CellReference &row_column, const QString &value, const Format &format)
 {
@@ -616,7 +621,8 @@ bool Worksheet::writeString(const CellReference &row_column, const QString &valu
 /*!
     \overload
 
-    Write string \a value to the cell (\a row, \a column) with the \a format
+    Write string \a value to the cell (\a row, \a column) with the \a format.
+    Returns true on success.
 */
 bool Worksheet::writeString(int row, int column, const QString &value, const Format &format)
 {
@@ -646,7 +652,8 @@ bool Worksheet::writeInlineString(const CellReference &row_column, const QString
 }
 
 /*!
-    Write string \a value to the cell (\a row, \a column) with the \a format
+    Write string \a value to the cell (\a row, \a column) with the \a format.
+    Returns true on success.
 */
 bool Worksheet::writeInlineString(int row, int column, const QString &value, const Format &format)
 {
@@ -669,7 +676,8 @@ bool Worksheet::writeInlineString(int row, int column, const QString &value, con
 
 /*!
     \overload
-    Write numeric \a value to the cell \a row_column with the \a format
+    Write numeric \a value to the cell \a row_column with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeNumeric(const CellReference &row_column, double value, const Format &format)
 {
@@ -680,7 +688,8 @@ bool Worksheet::writeNumeric(const CellReference &row_column, double value, cons
 }
 
 /*!
-    Write numeric \a value to the cell (\a row, \a column) with the \a format
+    Write numeric \a value to the cell (\a row, \a column) with the \a format.
+    Returns true on success.
 */
 bool Worksheet::writeNumeric(int row, int column, double value, const Format &format)
 {
@@ -697,6 +706,7 @@ bool Worksheet::writeNumeric(int row, int column, double value, const Format &fo
 /*!
     \overload
     Write \a formula to the cell \a row_column with the \a format and \a result.
+    Returns true on success.
  */
 bool Worksheet::writeFormula(const CellReference &row_column, const CellFormula &formula, const Format &format, double result)
 {
@@ -707,7 +717,8 @@ bool Worksheet::writeFormula(const CellReference &row_column, const CellFormula 
 }
 
 /*!
-    Write \a formula to the cell (\a row, \a column) with the \a format and \a result.
+    Write \a formula_ to the cell (\a row, \a column) with the \a format and \a result.
+    Returns true on success.
 */
 bool Worksheet::writeFormula(int row, int column, const CellFormula &formula_, const Format &format, double result)
 {
@@ -759,7 +770,8 @@ bool Worksheet::writeFormula(int row, int column, const CellFormula &formula_, c
 
 /*!
     \overload
-    Write a empty cell \a row_column with the \a format
+    Write a empty cell \a row_column with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeBlank(const CellReference &row_column, const Format &format)
 {
@@ -770,7 +782,8 @@ bool Worksheet::writeBlank(const CellReference &row_column, const Format &format
 }
 
 /*!
-    Write a empty cell (\a row, \a column) with the \a format
+    Write a empty cell (\a row, \a column) with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeBlank(int row, int column, const Format &format)
 {
@@ -788,7 +801,8 @@ bool Worksheet::writeBlank(int row, int column, const Format &format)
 }
 /*!
     \overload
-    Write a bool \a value to the cell \a row_column with the \a format
+    Write a bool \a value to the cell \a row_column with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeBool(const CellReference &row_column, bool value, const Format &format)
 {
@@ -799,7 +813,8 @@ bool Worksheet::writeBool(const CellReference &row_column, bool value, const For
 }
 
 /*!
-    Write a bool \a value to the cell (\a row, \a column) with the \a format
+    Write a bool \a value to the cell (\a row, \a column) with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeBool(int row, int column, bool value, const Format &format)
 {
@@ -815,7 +830,8 @@ bool Worksheet::writeBool(int row, int column, bool value, const Format &format)
 }
 /*!
     \overload
-    Write a QDateTime \a dt to the cell \a row_column with the \a format
+    Write a QDateTime \a dt to the cell \a row_column with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeDateTime(const CellReference &row_column, const QDateTime &dt, const Format &format)
 {
@@ -826,7 +842,8 @@ bool Worksheet::writeDateTime(const CellReference &row_column, const QDateTime &
 }
 
 /*!
-    Write a QDateTime \a dt to the cell (\a row, \a column) with the \a format
+    Write a QDateTime \a dt to the cell (\a row, \a column) with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const Format &format)
 {
@@ -848,7 +865,8 @@ bool Worksheet::writeDateTime(int row, int column, const QDateTime &dt, const Fo
 
 /*!
     \overload
-    Write a QTime \a t to the cell \a row_column with the \a format
+    Write a QTime \a t to the cell \a row_column with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeTime(const CellReference &row_column, const QTime &t, const Format &format)
 {
@@ -859,7 +877,8 @@ bool Worksheet::writeTime(const CellReference &row_column, const QTime &t, const
 }
 
 /*!
-    Write a QTime \a t to the cell (\a row, \a column) with the \a format
+    Write a QTime \a t to the cell (\a row, \a column) with the \a format.
+    Returns true on success.
  */
 bool Worksheet::writeTime(int row, int column, const QTime &t, const Format &format)
 {
@@ -879,7 +898,8 @@ bool Worksheet::writeTime(int row, int column, const QTime &t, const Format &for
 
 /*!
     \overload
-    Write a QUrl \a url to the cell \a row_column with the given \a format \a display and \a tip
+    Write a QUrl \a url to the cell \a row_column with the given \a format \a display and \a tip.
+    Returns true on success.
  */
 bool Worksheet::writeHyperlink(const CellReference &row_column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
 {
@@ -891,6 +911,7 @@ bool Worksheet::writeHyperlink(const CellReference &row_column, const QUrl &url,
 
 /*!
     Write a QUrl \a url to the cell (\a row, \a column) with the given \a format \a display and \a tip.
+    Returns true on success.
  */
 bool Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Format &format, const QString &display, const QString &tip)
 {
@@ -945,7 +966,7 @@ bool Worksheet::writeHyperlink(int row, int column, const QUrl &url, const Forma
 
 /*!
  * Add one DataValidation \a validation to the sheet.
- * Return true if it's successful.
+ * Returns true on success.
  */
 bool Worksheet::addDataValidation(const DataValidation &validation)
 {
@@ -959,7 +980,7 @@ bool Worksheet::addDataValidation(const DataValidation &validation)
 
 /*!
  * Add one ConditionalFormatting \a cf to the sheet.
- * Return true if it's successful.
+ * Returns true on success.
  */
 bool Worksheet::addConditionalFormatting(const ConditionalFormatting &cf)
 {
@@ -979,7 +1000,7 @@ bool Worksheet::addConditionalFormatting(const ConditionalFormatting &cf)
 
 /*!
  * Insert an \a image  at the position \a row, \a column
- * Returns ture if success.
+ * Returns true on success.
  */
 bool Worksheet::insertImage(int row, int column, const QImage &image)
 {
@@ -1036,6 +1057,7 @@ Chart *Worksheet::insertChart(int row, int column, const QSize &size)
 /*!
     Merge a \a range of cells. The first cell should contain the data and the others should
     be blank. All cells will be applied the same style if a valid \a format is given.
+    Returns true on success.
 
     \note All cells except the top-left one will be cleared.
  */
@@ -1072,7 +1094,8 @@ bool Worksheet::mergeCells(const CellRange &range, const Format &format)
 }
 
 /*!
-    Unmerge the cells in the \a range.
+    Unmerge the cells in the \a range. Returns true on success.
+
 */
 bool Worksheet::unmergeCells(const CellRange &range)
 {
@@ -1085,7 +1108,7 @@ bool Worksheet::unmergeCells(const CellRange &range)
 }
 
 /*!
-  Returns all the merged cells
+  Returns all the merged cells.
 */
 QList<CellRange> Worksheet::mergedCells() const
 {
@@ -1093,6 +1116,9 @@ QList<CellRange> Worksheet::mergedCells() const
     return d->merges;
 }
 
+/*!
+ * \internal
+ */
 void Worksheet::saveToXmlFile(QIODevice *device) const
 {
     Q_D(const Worksheet);
@@ -1481,7 +1507,7 @@ QList<int> WorksheetPrivate ::getColumnIndexes(int colFirst, int colLast)
 }
 
 /*!
-  Sets width in characters of a range of columns.
+  Sets width in characters of a \a range of columns to \a width.
   Returns true on success.
  */
 bool Worksheet::setColumnWidth(const CellRange &range, double width)
@@ -1493,7 +1519,7 @@ bool Worksheet::setColumnWidth(const CellRange &range, double width)
 }
 
 /*!
-  Sets format property of a range of columns. Columns are 1-indexed.
+  Sets format property of a \a range of columns to \a format. Columns are 1-indexed.
   Returns true on success.
  */
 bool Worksheet::setColumnFormat(const CellRange& range, const Format &format)
@@ -1505,7 +1531,7 @@ bool Worksheet::setColumnFormat(const CellRange& range, const Format &format)
 }
 
 /*!
-  Sets hidden property of a range of columns. Columns are 1-indexed.
+  Sets hidden property of a \a range of columns to \a hidden. Columns are 1-indexed.
   Hidden columns are not visible.
   Returns true on success.
  */
@@ -1518,7 +1544,8 @@ bool Worksheet::setColumnHidden(const CellRange &range, bool hidden)
 }
 
 /*!
-  Sets width in characters of a range of columns. Columns are 1-indexed.
+  Sets width in characters for columns [\a colFirst, \a colLast] to \a width.
+  Columns are 1-indexed.
   Returns true on success.
  */
 bool Worksheet::setColumnWidth(int colFirst, int colLast, double width)
@@ -1533,7 +1560,9 @@ bool Worksheet::setColumnWidth(int colFirst, int colLast, double width)
 }
 
 /*!
-  Sets format property of a range of columns. Columns are 1-indexed.
+  Sets format property of a range of columns [\a colFirst, \a colLast] to \a format.
+  Columns are 1-indexed.
+  Returns true on success.
  */
 bool Worksheet::setColumnFormat(int colFirst, int colLast, const Format &format)
 {
@@ -1552,7 +1581,8 @@ bool Worksheet::setColumnFormat(int colFirst, int colLast, const Format &format)
 }
 
 /*!
-  Sets hidden property of a range of columns. Columns are 1-indexed.
+  Sets hidden property of a range of columns [\a colFirst, \a colLast] to \a hidden.
+  Columns are 1-indexed. Returns true on success.
  */
 bool Worksheet::setColumnHidden(int colFirst, int colLast, bool hidden)
 {
@@ -1566,7 +1596,7 @@ bool Worksheet::setColumnHidden(int colFirst, int colLast, bool hidden)
 }
 
 /*!
-  Returns width of the column in characters of the normal font. Columns are 1-indexed.
+  Returns width of the \a column in characters of the normal font. Columns are 1-indexed.
  */
 double Worksheet::columnWidth(int column)
 {
@@ -1580,7 +1610,7 @@ double Worksheet::columnWidth(int column)
 }
 
 /*!
-  Returns formatting of the column. Columns are 1-indexed.
+  Returns formatting of the \a column. Columns are 1-indexed.
  */
 Format Worksheet::columnFormat(int column)
 {
@@ -1594,7 +1624,7 @@ Format Worksheet::columnFormat(int column)
 }
 
 /*!
-  Returns true if column is hidden. Columns are 1-indexed.
+  Returns true if \a column is hidden. Columns are 1-indexed.
  */
 bool Worksheet::isColumnHidden(int column)
 {
@@ -1735,6 +1765,8 @@ bool Worksheet::groupRows(int rowFirst, int rowLast, bool collapsed)
 
 /*!
     \overload
+
+    Groups columns with the given \a range and \a collapsed.
  */
 bool Worksheet::groupColumns(const CellRange &range, bool collapsed)
 {
