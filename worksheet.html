@@ -45,8 +45,8 @@ Qt 0.3.0 Reference Documentation</li>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#dtor.Worksheet">~Worksheet</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#addConditionalFormatting">addConditionalFormatting</a></b>(const ConditionalFormatting &amp;<i> cf</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#addDataValidation">addDataValidation</a></b>(const DataValidation &amp;<i> validation</i>)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#cellAt">cellAt</a></b>(int<i> row</i>, int<i> column</i>) const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#cellAt-2">cellAt</a></b>(const CellReference &amp;<i> row_column</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#cellAt">cellAt</a></b>(const CellReference &amp;<i> row_column</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Cell * </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#cellAt-2">cellAt</a></b>(int<i> row</i>, int<i> column</i>) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Format </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#columnFormat">columnFormat</a></b>(int<i> column</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> double </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#columnWidth">columnWidth</a></b>(int<i> column</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> CellRange </td><td class="memItemRight bottomAlign"><b><a href="worksheet.html#dimension">dimension</a></b>() const</td></tr>
@@ -138,29 +138,28 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@~Worksheet -->
 <!-- $$$addConditionalFormatting[overload1]$$$addConditionalFormattingconstConditionalFormatting& -->
 <h3 class="fn"><a name="addConditionalFormatting"></a><span class="type">bool</span> Worksheet::<span class="name">addConditionalFormatting</span>(const <span class="type"><a href="conditionalformatting.html">ConditionalFormatting</a></span> &amp;<i> cf</i>)</h3>
-<p>Add one <a href="conditionalformatting.html">ConditionalFormatting</a> <i>cf</i> to the sheet. Return true if it's successful.</p>
+<p>Add one <a href="conditionalformatting.html">ConditionalFormatting</a> <i>cf</i> to the sheet. Returns true on success.</p>
 <!-- @@@addConditionalFormatting -->
 <!-- $$$addDataValidation[overload1]$$$addDataValidationconstDataValidation& -->
 <h3 class="fn"><a name="addDataValidation"></a><span class="type">bool</span> Worksheet::<span class="name">addDataValidation</span>(const <span class="type"><a href="datavalidation.html">DataValidation</a></span> &amp;<i> validation</i>)</h3>
-<p>Add one <a href="datavalidation.html">DataValidation</a> <i>validation</i> to the sheet. Return true if it's successful.</p>
+<p>Add one <a href="datavalidation.html">DataValidation</a> <i>validation</i> to the sheet. Returns true on success.</p>
 <!-- @@@addDataValidation -->
-<!-- $$$cellAt[overload1]$$$cellAtintint -->
-<h3 class="fn"><a name="cellAt"></a><span class="type"><a href="cell.html">Cell</a></span> * Worksheet::<span class="name">cellAt</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>) const</h3>
-<p>Returns the cell at the position (<i>row</i> <i>column</i>). 0 will be returned if the cell doesn't exist.</p>
+<!-- $$$cellAt[overload1]$$$cellAtconstCellReference& -->
+<h3 class="fn"><a name="cellAt"></a><span class="type"><a href="cell.html">Cell</a></span> * Worksheet::<span class="name">cellAt</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>) const</h3>
+<p>Returns the cell at the given <i>row_column</i>. If there is no cell at the specified position, the function returns 0.</p>
 <!-- @@@cellAt -->
-<!-- $$$cellAt$$$cellAtconstCellReference& -->
-<h3 class="fn"><a name="cellAt-2"></a><span class="type"><a href="cell.html">Cell</a></span> * Worksheet::<span class="name">cellAt</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>) const</h3>
-<p>This is an overloaded function.</p>
-<p>Returns the cell at the position <i>row_column</i>. 0 will be returned if the cell doesn't exist.</p>
+<!-- $$$cellAt$$$cellAtintint -->
+<h3 class="fn"><a name="cellAt-2"></a><span class="type"><a href="cell.html">Cell</a></span> * Worksheet::<span class="name">cellAt</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>) const</h3>
+<p>Returns the cell at the given <i>row</i> and <i>column</i>. If there is no cell at the specified position, the function returns 0.</p>
 <!-- @@@cellAt -->
 <!-- $$$columnFormat[overload1]$$$columnFormatint -->
 <h3 class="fn"><a name="columnFormat"></a><span class="type"><a href="format.html">Format</a></span> Worksheet::<span class="name">columnFormat</span>(<span class="type">int</span><i> column</i>)</h3>
-<p>Returns formatting of the column. Columns are 1-indexed.</p>
+<p>Returns formatting of the <i>column</i>. Columns are 1-indexed.</p>
 <p><b>See also </b><a href="worksheet.html#setColumnFormat">setColumnFormat</a>().</p>
 <!-- @@@columnFormat -->
 <!-- $$$columnWidth[overload1]$$$columnWidthint -->
 <h3 class="fn"><a name="columnWidth"></a><span class="type">double</span> Worksheet::<span class="name">columnWidth</span>(<span class="type">int</span><i> column</i>)</h3>
-<p>Returns width of the column in characters of the normal font. Columns are 1-indexed.</p>
+<p>Returns width of the <i>column</i> in characters of the normal font. Columns are 1-indexed.</p>
 <p><b>See also </b><a href="worksheet.html#setColumnWidth">setColumnWidth</a>().</p>
 <!-- @@@columnWidth -->
 <!-- $$$dimension[overload1]$$$dimension -->
@@ -174,6 +173,7 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- $$$groupColumns$$$groupColumnsconstCellRange&bool -->
 <h3 class="fn"><a name="groupColumns-2"></a><span class="type">bool</span> Worksheet::<span class="name">groupColumns</span>(const <span class="type">CellRange</span> &amp;<i> range</i>, <span class="type">bool</span><i> collapsed</i> = true)</h3>
 <p>This is an overloaded function.</p>
+<p>Groups columns with the given <i>range</i> and <i>collapsed</i>.</p>
 <!-- @@@groupColumns -->
 <!-- $$$groupRows[overload1]$$$groupRowsintintbool -->
 <h3 class="fn"><a name="groupRows"></a><span class="type">bool</span> Worksheet::<span class="name">groupRows</span>(<span class="type">int</span><i> rowFirst</i>, <span class="type">int</span><i> rowLast</i>, <span class="type">bool</span><i> collapsed</i> = true)</h3>
@@ -186,11 +186,11 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@insertChart -->
 <!-- $$$insertImage[overload1]$$$insertImageintintconstQImage& -->
 <h3 class="fn"><a name="insertImage"></a><span class="type">bool</span> Worksheet::<span class="name">insertImage</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtgui/qimage.html">QImage</a></span> &amp;<i> image</i>)</h3>
-<p>Insert an <i>image</i> at the position <i>row</i>, <i>column</i> Returns ture if success.</p>
+<p>Insert an <i>image</i> at the position <i>row</i>, <i>column</i> Returns true on success.</p>
 <!-- @@@insertImage -->
 <!-- $$$isColumnHidden[overload1]$$$isColumnHiddenint -->
 <h3 class="fn"><a name="isColumnHidden"></a><span class="type">bool</span> Worksheet::<span class="name">isColumnHidden</span>(<span class="type">int</span><i> column</i>)</h3>
-<p>Returns true if column is hidden. Columns are 1-indexed.</p>
+<p>Returns true if <i>column</i> is hidden. Columns are 1-indexed.</p>
 <!-- @@@isColumnHidden -->
 <!-- $$$isFormulasVisible[overload1]$$$isFormulasVisible -->
 <h3 class="fn"><a name="isFormulasVisible"></a><span class="type">bool</span> Worksheet::<span class="name">isFormulasVisible</span>() const</h3>
@@ -238,11 +238,11 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@isZerosVisible -->
 <!-- $$$mergeCells[overload1]$$$mergeCellsconstCellRange&constFormat& -->
 <h3 class="fn"><a name="mergeCells"></a><span class="type">bool</span> Worksheet::<span class="name">mergeCells</span>(const <span class="type">CellRange</span> &amp;<i> range</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Merge a <i>range</i> of cells. The first cell should contain the data and the others should be blank. All cells will be applied the same style if a valid <i>format</i> is given.</p>
+<p>Merge a <i>range</i> of cells. The first cell should contain the data and the others should be blank. All cells will be applied the same style if a valid <i>format</i> is given. Returns true on success.</p>
 <p><b>Note: </b>All cells except the top-left one will be cleared.</p><!-- @@@mergeCells -->
 <!-- $$$mergedCells[overload1]$$$mergedCells -->
 <h3 class="fn"><a name="mergedCells"></a><span class="type"><a href="../qtcore/qlist.html">QList</a></span>&lt;<span class="type">CellRange</span>&gt; Worksheet::<span class="name">mergedCells</span>() const</h3>
-<p>Returns all the merged cells</p>
+<p>Returns all the merged cells.</p>
 <!-- @@@mergedCells -->
 <!-- $$$read[overload1]$$$readintint -->
 <h3 class="fn"><a name="read"></a><span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> Worksheet::<span class="name">read</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>) const</h3>
@@ -265,30 +265,30 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@rowHeight -->
 <!-- $$$setColumnFormat[overload1]$$$setColumnFormatconstCellRange&constFormat& -->
 <h3 class="fn"><a name="setColumnFormat"></a><span class="type">bool</span> Worksheet::<span class="name">setColumnFormat</span>(const <span class="type">CellRange</span> &amp;<i> range</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>)</h3>
-<p>Sets format property of a range of columns. Columns are 1-indexed. Returns true on success.</p>
+<p>Sets format property of a <i>range</i> of columns to <i>format</i>. Columns are 1-indexed. Returns true on success.</p>
 <p><b>See also </b><a href="worksheet.html#columnFormat">columnFormat</a>().</p>
 <!-- @@@setColumnFormat -->
 <!-- $$$setColumnFormat$$$setColumnFormatintintconstFormat& -->
 <h3 class="fn"><a name="setColumnFormat-2"></a><span class="type">bool</span> Worksheet::<span class="name">setColumnFormat</span>(<span class="type">int</span><i> colFirst</i>, <span class="type">int</span><i> colLast</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i>)</h3>
-<p>Sets format property of a range of columns. Columns are 1-indexed.</p>
+<p>Sets format property of a range of columns [<i>colFirst</i>, <i>colLast</i>] to <i>format</i>. Columns are 1-indexed. Returns true on success.</p>
 <!-- @@@setColumnFormat -->
 <!-- $$$setColumnHidden[overload1]$$$setColumnHiddenconstCellRange&bool -->
 <h3 class="fn"><a name="setColumnHidden"></a><span class="type">bool</span> Worksheet::<span class="name">setColumnHidden</span>(const <span class="type">CellRange</span> &amp;<i> range</i>, <span class="type">bool</span><i> hidden</i>)</h3>
-<p>Sets hidden property of a range of columns. Columns are 1-indexed. Hidden columns are not visible. Returns true on success.</p>
+<p>Sets hidden property of a <i>range</i> of columns to <i>hidden</i>. Columns are 1-indexed. Hidden columns are not visible. Returns true on success.</p>
 <p><b>See also </b><a href="worksheet.html#isColumnHidden">isColumnHidden</a>().</p>
 <!-- @@@setColumnHidden -->
 <!-- $$$setColumnHidden$$$setColumnHiddenintintbool -->
 <h3 class="fn"><a name="setColumnHidden-2"></a><span class="type">bool</span> Worksheet::<span class="name">setColumnHidden</span>(<span class="type">int</span><i> colFirst</i>, <span class="type">int</span><i> colLast</i>, <span class="type">bool</span><i> hidden</i>)</h3>
-<p>Sets hidden property of a range of columns. Columns are 1-indexed.</p>
+<p>Sets hidden property of a range of columns [<i>colFirst</i>, <i>colLast</i>] to <i>hidden</i>. Columns are 1-indexed. Returns true on success.</p>
 <!-- @@@setColumnHidden -->
 <!-- $$$setColumnWidth[overload1]$$$setColumnWidthconstCellRange&double -->
 <h3 class="fn"><a name="setColumnWidth"></a><span class="type">bool</span> Worksheet::<span class="name">setColumnWidth</span>(const <span class="type">CellRange</span> &amp;<i> range</i>, <span class="type">double</span><i> width</i>)</h3>
-<p>Sets width in characters of a range of columns. Returns true on success.</p>
+<p>Sets width in characters of a <i>range</i> of columns to <i>width</i>. Returns true on success.</p>
 <p><b>See also </b><a href="worksheet.html#columnWidth">columnWidth</a>().</p>
 <!-- @@@setColumnWidth -->
 <!-- $$$setColumnWidth$$$setColumnWidthintintdouble -->
 <h3 class="fn"><a name="setColumnWidth-2"></a><span class="type">bool</span> Worksheet::<span class="name">setColumnWidth</span>(<span class="type">int</span><i> colFirst</i>, <span class="type">int</span><i> colLast</i>, <span class="type">double</span><i> width</i>)</h3>
-<p>Sets width in characters of a range of columns. Columns are 1-indexed. Returns true on success.</p>
+<p>Sets width in characters for columns [<i>colFirst</i>, <i>colLast</i>] to <i>width</i>. Columns are 1-indexed. Returns true on success.</p>
 <!-- @@@setColumnWidth -->
 <!-- $$$setFormulasVisible[overload1]$$$setFormulasVisiblebool -->
 <h3 class="fn"><a name="setFormulasVisible"></a><span class="type">void</span> Worksheet::<span class="name">setFormulasVisible</span>(<span class="type">bool</span><i> visible</i>)</h3>
@@ -360,65 +360,66 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@setZerosVisible -->
 <!-- $$$unmergeCells[overload1]$$$unmergeCellsconstCellRange& -->
 <h3 class="fn"><a name="unmergeCells"></a><span class="type">bool</span> Worksheet::<span class="name">unmergeCells</span>(const <span class="type">CellRange</span> &amp;<i> range</i>)</h3>
-<p>Unmerge the cells in the <i>range</i>.</p>
+<p>Unmerge the cells in the <i>range</i>. Returns true on success.</p>
 <!-- @@@unmergeCells -->
 <!-- $$$write[overload1]$$$writeintintconstQVariant&constFormat& -->
 <h3 class="fn"><a name="write"></a><span class="type">bool</span> Worksheet::<span class="name">write</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>Write <i>value</i> to cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Both <i>row</i> and <i>column</i> are all 1-indexed value.</p>
+<p>Returns true on success.</p>
 <!-- @@@write -->
 <!-- $$$write$$$writeconstCellReference&constQVariant&constFormat& -->
 <h3 class="fn"><a name="write-2"></a><span class="type">bool</span> Worksheet::<span class="name">write</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qvariant.html">QVariant</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write <i>value</i> to cell <i>row_column</i> with the <i>format</i>. Both row and column are all 1-indexed value.</p>
+<p>Write <i>value</i> to cell <i>row_column</i> with the <i>format</i>. Both row and column are all 1-indexed value. Returns true on success.</p>
 <!-- @@@write -->
 <!-- $$$writeBlank[overload1]$$$writeBlankintintconstFormat& -->
 <h3 class="fn"><a name="writeBlank"></a><span class="type">bool</span> Worksheet::<span class="name">writeBlank</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write a empty cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write a empty cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeBlank -->
 <!-- $$$writeBlank$$$writeBlankconstCellReference&constFormat& -->
 <h3 class="fn"><a name="writeBlank-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeBlank</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write a empty cell <i>row_column</i> with the <i>format</i></p>
+<p>Write a empty cell <i>row_column</i> with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeBlank -->
 <!-- $$$writeBool[overload1]$$$writeBoolintintboolconstFormat& -->
 <h3 class="fn"><a name="writeBool"></a><span class="type">bool</span> Worksheet::<span class="name">writeBool</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, <span class="type">bool</span><i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write a bool <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write a bool <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeBool -->
 <!-- $$$writeBool$$$writeBoolconstCellReference&boolconstFormat& -->
 <h3 class="fn"><a name="writeBool-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeBool</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, <span class="type">bool</span><i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write a bool <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<p>Write a bool <i>value</i> to the cell <i>row_column</i> with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeBool -->
 <!-- $$$writeDateTime[overload1]$$$writeDateTimeintintconstQDateTime&constFormat& -->
 <h3 class="fn"><a name="writeDateTime"></a><span class="type">bool</span> Worksheet::<span class="name">writeDateTime</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtcore/qdatetime.html">QDateTime</a></span> &amp;<i> dt</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write a <a href="../qtcore/qdatetime.html">QDateTime</a> <i>dt</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write a <a href="../qtcore/qdatetime.html">QDateTime</a> <i>dt</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeDateTime -->
 <!-- $$$writeDateTime$$$writeDateTimeconstCellReference&constQDateTime&constFormat& -->
 <h3 class="fn"><a name="writeDateTime-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeDateTime</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qdatetime.html">QDateTime</a></span> &amp;<i> dt</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write a <a href="../qtcore/qdatetime.html">QDateTime</a> <i>dt</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<p>Write a <a href="../qtcore/qdatetime.html">QDateTime</a> <i>dt</i> to the cell <i>row_column</i> with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeDateTime -->
 <!-- $$$writeFormula[overload1]$$$writeFormulaintintconstCellFormula&constFormat&double -->
 <h3 class="fn"><a name="writeFormula"></a><span class="type">bool</span> Worksheet::<span class="name">writeFormula</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="cellformula.html">CellFormula</a></span> &amp;<i> formula_</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format(), <span class="type">double</span><i> result</i> = 0)</h3>
-<p>Write <i>formula</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i> and <i>result</i>.</p>
+<p>Write <i>formula_</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i> and <i>result</i>. Returns true on success.</p>
 <!-- @@@writeFormula -->
 <!-- $$$writeFormula$$$writeFormulaconstCellReference&constCellFormula&constFormat&double -->
 <h3 class="fn"><a name="writeFormula-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeFormula</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="cellformula.html">CellFormula</a></span> &amp;<i> formula</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format(), <span class="type">double</span><i> result</i> = 0)</h3>
 <p>This is an overloaded function.</p>
-<p>Write <i>formula</i> to the cell <i>row_column</i> with the <i>format</i> and <i>result</i>.</p>
+<p>Write <i>formula</i> to the cell <i>row_column</i> with the <i>format</i> and <i>result</i>. Returns true on success.</p>
 <!-- @@@writeFormula -->
 <!-- $$$writeHyperlink[overload1]$$$writeHyperlinkintintconstQUrl&constFormat&constQString&constQString& -->
 <h3 class="fn"><a name="writeHyperlink"></a><span class="type">bool</span> Worksheet::<span class="name">writeHyperlink</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtcore/qurl.html">QUrl</a></span> &amp;<i> url</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format(), const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> display</i> = QString(), const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> tip</i> = QString())</h3>
-<p>Write a <a href="../qtcore/qurl.html">QUrl</a> <i>url</i> to the cell (<i>row</i>, <i>column</i>) with the given <i>format</i> <i>display</i> and <i>tip</i>.</p>
+<p>Write a <a href="../qtcore/qurl.html">QUrl</a> <i>url</i> to the cell (<i>row</i>, <i>column</i>) with the given <i>format</i> <i>display</i> and <i>tip</i>. Returns true on success.</p>
 <!-- @@@writeHyperlink -->
 <!-- $$$writeHyperlink$$$writeHyperlinkconstCellReference&constQUrl&constFormat&constQString&constQString& -->
 <h3 class="fn"><a name="writeHyperlink-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeHyperlink</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qurl.html">QUrl</a></span> &amp;<i> url</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format(), const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> display</i> = QString(), const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> tip</i> = QString())</h3>
 <p>This is an overloaded function.</p>
-<p>Write a <a href="../qtcore/qurl.html">QUrl</a> <i>url</i> to the cell <i>row_column</i> with the given <i>format</i> <i>display</i> and <i>tip</i></p>
+<p>Write a <a href="../qtcore/qurl.html">QUrl</a> <i>url</i> to the cell <i>row_column</i> with the given <i>format</i> <i>display</i> and <i>tip</i>. Returns true on success.</p>
 <!-- @@@writeHyperlink -->
 <!-- $$$writeInlineString[overload1]$$$writeInlineStringintintconstQString&constFormat& -->
 <h3 class="fn"><a name="writeInlineString"></a><span class="type">bool</span> Worksheet::<span class="name">writeInlineString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeInlineString -->
 <!-- $$$writeInlineString$$$writeInlineStringconstCellReference&constQString&constFormat& -->
 <h3 class="fn"><a name="writeInlineString-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeInlineString</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
@@ -427,40 +428,41 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@writeInlineString -->
 <!-- $$$writeNumeric[overload1]$$$writeNumericintintdoubleconstFormat& -->
 <h3 class="fn"><a name="writeNumeric"></a><span class="type">bool</span> Worksheet::<span class="name">writeNumeric</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, <span class="type">double</span><i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write numeric <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write numeric <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeNumeric -->
 <!-- $$$writeNumeric$$$writeNumericconstCellReference&doubleconstFormat& -->
 <h3 class="fn"><a name="writeNumeric-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeNumeric</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, <span class="type">double</span><i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write numeric <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<p>Write numeric <i>value</i> to the cell <i>row_column</i> with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeNumeric -->
 <!-- $$$writeString[overload1]$$$writeStringintintconstRichString&constFormat& -->
 <h3 class="fn"><a name="writeString"></a><span class="type">bool</span> Worksheet::<span class="name">writeString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="richstring.html">RichString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeString -->
 <!-- $$$writeString$$$writeStringconstCellReference&constRichString&constFormat& -->
 <h3 class="fn"><a name="writeString-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeString</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="richstring.html">RichString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write string <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<p>Write string <i>value</i> to the cell <i>row_column</i> with the <i>format</i>.</p>
+<p>Returns true on success.</p>
 <!-- @@@writeString -->
 <!-- $$$writeString$$$writeStringconstCellReference&constQString&constFormat& -->
 <h3 class="fn"><a name="writeString-3"></a><span class="type">bool</span> Worksheet::<span class="name">writeString</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write string <i>value</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<p>Write string <i>value</i> to the cell <i>row_column</i> with the <i>format</i>.</p>
 <!-- @@@writeString -->
 <!-- $$$writeString$$$writeStringintintconstQString&constFormat& -->
 <h3 class="fn"><a name="writeString-4"></a><span class="type">bool</span> Worksheet::<span class="name">writeString</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> value</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write string <i>value</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeString -->
 <!-- $$$writeTime[overload1]$$$writeTimeintintconstQTime&constFormat& -->
 <h3 class="fn"><a name="writeTime"></a><span class="type">bool</span> Worksheet::<span class="name">writeTime</span>(<span class="type">int</span><i> row</i>, <span class="type">int</span><i> column</i>, const <span class="type"><a href="../qtcore/qtime.html">QTime</a></span> &amp;<i> t</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
-<p>Write a <a href="../qtcore/qtime.html">QTime</a> <i>t</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i></p>
+<p>Write a <a href="../qtcore/qtime.html">QTime</a> <i>t</i> to the cell (<i>row</i>, <i>column</i>) with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeTime -->
 <!-- $$$writeTime$$$writeTimeconstCellReference&constQTime&constFormat& -->
 <h3 class="fn"><a name="writeTime-2"></a><span class="type">bool</span> Worksheet::<span class="name">writeTime</span>(const <span class="type">CellReference</span> &amp;<i> row_column</i>, const <span class="type"><a href="../qtcore/qtime.html">QTime</a></span> &amp;<i> t</i>, const <span class="type"><a href="format.html">Format</a></span> &amp;<i> format</i> = Format())</h3>
 <p>This is an overloaded function.</p>
-<p>Write a <a href="../qtcore/qtime.html">QTime</a> <i>t</i> to the cell <i>row_column</i> with the <i>format</i></p>
+<p>Write a <a href="../qtcore/qtime.html">QTime</a> <i>t</i> to the cell <i>row_column</i> with the <i>format</i>. Returns true on success.</p>
 <!-- @@@writeTime -->
 </div>
         </div>
@@ -472,7 +474,7 @@ Qt 0.3.0 Reference Documentation</li>
         <div class="qt13a-copyright" id="copyright">
             <div class="qt13a-container">
             <p>
-              <acronym title="Copyright">&copy;</acronym> 2013 Debao Zhang. 
+              <acronym title="Copyright">&copy;</acronym> 2013-2014 Debao Zhang. 
               Documentation contributions included herein are the copyrights of
               their respective owners.</p>
             <p>
