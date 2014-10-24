@@ -512,11 +512,28 @@ QVariant Worksheet::read(const CellReference &row_column) const
  */
 QVariant Worksheet::read(int row, int column) const
 {
+    Q_D(const Worksheet);
+
     Cell *cell = cellAt(row, column);
     if (!cell)
         return QVariant();
-    if (cell->hasFormula() && cell->formula().formulaType() == CellFormula::NormalType)
-        return QVariant(QLatin1String("=")+cell->formula().formulaText());
+
+    if (cell->hasFormula()) {
+        if (cell->formula().formulaType() == CellFormula::NormalType) {
+            return QVariant(QLatin1String("=")+cell->formula().formulaText());
+        } else if (cell->formula().formulaType() == CellFormula::SharedType) {
+            if (!cell->formula().formulaText().isEmpty()) {
+                return QVariant(QLatin1String("=")+cell->formula().formulaText());
+            } else {
+                const CellFormula &rootFormula = d->sharedFormulaMap[cell->formula().sharedIndex()];
+                CellReference rootCellRef = rootFormula.reference().topLeft();
+                QString rootFormulaText = rootFormula.formulaText();
+                QString newFormulaText = convertSharedFormula(rootFormulaText, rootCellRef, CellReference(row, column));
+                return QVariant(QLatin1String("=")+newFormulaText);
+            }
+        }
+    }
+
     if (cell->isDateTime()) {
         double val = cell->value().toDouble();
         QDateTime dt = cell->dateTime();
@@ -526,6 +543,7 @@ QVariant Worksheet::read(int row, int column) const
             return dt.date();
         return dt;
     }
+
     return cell->value();
 }
 

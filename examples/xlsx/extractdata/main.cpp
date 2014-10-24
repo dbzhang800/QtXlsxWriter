@@ -30,5 +30,12 @@ int main()
     qDebug()<<xlsx.read("A7");
     //![1]
 
+    //![2]
+    for (int row=1; row<10; ++row) {
+        if (QXlsx::Cell *cell=xlsx.cellAt(row, 1))
+            qDebug()<<cell->value();
+    }
+    //![2]
+
     return 0;
 }

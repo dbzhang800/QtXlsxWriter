@@ -81,6 +81,11 @@ int main()
 
     //Make sure that read/write works well.
     Document xlsx2("Book1.xlsx");
+    Worksheet *sharedFormulaSheet = dynamic_cast<Worksheet*>(xlsx2.sheet("SharedFormula"));
+    for (int row=2; row<20; ++row) {
+        qDebug()<<sharedFormulaSheet->read(row, 4);
+    }
+
     xlsx2.saveAs("Book2.xlsx");
 
     return 0;

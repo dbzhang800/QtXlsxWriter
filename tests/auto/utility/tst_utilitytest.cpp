@@ -23,6 +23,7 @@
 **
 ****************************************************************************/
 #include "private/xlsxutility_p.h"
+#include "xlsxcellreference.h"
 #include <QString>
 #include <QtTest>
 #include <QDateTime>
@@ -46,6 +47,9 @@ private Q_SLOTS:
 
     void test_createSafeSheetName_data();
     void test_createSafeSheetName();
+
+    void test_convertSharedFormula_data();
+    void test_convertSharedFormula();
 };
 
 UtilityTest::UtilityTest()
@@ -148,6 +152,30 @@ void UtilityTest::test_createSafeSheetName()
     QCOMPARE(QXlsx::createSafeSheetName(original), result);
 }
 
+void UtilityTest::test_convertSharedFormula_data()
+{
+    QTest::addColumn<QString>("original");
+    QTest::addColumn<QString>("rootCell");
+    QTest::addColumn<QString>("cell");
+    QTest::addColumn<QString>("result");
+
+    QTest::newRow("[Simple B2]") << QString("A1*A1")<<QString("B1")<<QString("B2")<<QString("A2*A2");
+    QTest::newRow("[Simple C1]") << QString("A1*A1")<<QString("B1")<<QString("C1")<<QString("B1*B1");
+    QTest::newRow("[Simple D9]") << QString("A1*A1")<<QString("B1")<<QString("D9")<<QString("C9*C9");
+
+    QTest::newRow("[C4]") << QString("A1*B8")<<QString("C1")<<QString("C4")<<QString("A4*B11");
+    QTest::newRow("[C4]") << QString("TAN(A1+B2*B3)+COS(A1-B2)")<<QString("C1")<<QString("C4")<<QString("TAN(A4+B5*B6)+COS(A4-B5)");
+}
+
+void UtilityTest::test_convertSharedFormula()
+{
+    QFETCH(QString, original);
+    QFETCH(QString, rootCell);
+    QFETCH(QString, cell);
+    QFETCH(QString, result);
+
+    QCOMPARE(QXlsx::convertSharedFormula(original, rootCell, cell), result);
+}
 QTEST_APPLESS_MAIN(UtilityTest)
 
 #include "tst_utilitytest.moc"
