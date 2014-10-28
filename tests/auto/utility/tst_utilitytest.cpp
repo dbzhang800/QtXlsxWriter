@@ -165,6 +165,15 @@ void UtilityTest::test_convertSharedFormula_data()
 
     QTest::newRow("[C4]") << QString("A1*B8")<<QString("C1")<<QString("C4")<<QString("A4*B11");
     QTest::newRow("[C4]") << QString("TAN(A1+B2*B3)+COS(A1-B2)")<<QString("C1")<<QString("C4")<<QString("TAN(A4+B5*B6)+COS(A4-B5)");
+
+    QTest::newRow("[Mixed B2]") << QString("$A1*A$1")<<QString("B1")<<QString("B2")<<QString("$A2*A$1");
+    QTest::newRow("[Mixed C1]") << QString("$A1*A$1")<<QString("B1")<<QString("C1")<<QString("$A1*B$1");
+    QTest::newRow("[Mixed D9]") << QString("$A1*A$1")<<QString("B1")<<QString("D9")<<QString("$A9*C$1");
+    QTest::newRow("[Mixed C4]") << QString("TAN(A1+B2*$B3)+COS(A1-B$2)")<<QString("C1")<<QString("C4")<<QString("TAN(A4+B5*$B6)+COS(A4-B$2)");
+
+    QTest::newRow("[Absolute C4]") << QString("A1*$B$8")<<QString("C1")<<QString("C4")<<QString("A4*$B$8");
+
+    QTest::newRow("[Quote]") << QString("=CONCATENATE(\"The B1 $B1 \",B1,\" units\")")<<QString("C1")<<QString("D2")<<QString("=CONCATENATE(\"The B1 $B1 \",C2,\" units\")");
 }
 
 void UtilityTest::test_convertSharedFormula()

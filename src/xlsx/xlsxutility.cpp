@@ -159,62 +159,76 @@ bool isSpaceReserveNeeded(const QString &s)
  */
 QString convertSharedFormula(const QString &rootFormula, const CellReference &rootCell, const CellReference &cell)
 {
-    //Find all the "[A-Z]+[0-9]+" patterns in the rootFormula.
-    QList<QPair<QString, bool> > segments;
+    //Find all the "$?[A-Z]+$?[0-9]+" patterns in the rootFormula.
+    QList<QPair<QString, int> > segments;
 
     QString segment;
     bool inQuote = false;
-    int cellFlag = 0; //-1, 0, 1, 2 ==> Invalid, Empty, A-Z ready, A1 ready
+    enum RefState{INVALID, PRE_AZ, AZ, PRE_09, _09};
+    RefState refState = INVALID;
+    int refFlag = 0; // 0x00, 0x01, 0x02, 0x03 ==> A1, $A1, A$1, $A$1
     foreach (QChar ch, rootFormula) {
         if (inQuote) {
             segment.append(ch);
-            if (ch == QLatin1Char('"')) {
-                segments.append(qMakePair(segment, false));
-                segment = QString();
+            if (ch == QLatin1Char('"'))
                 inQuote = false;
-                cellFlag = 0;
-            }
         } else {
             if (ch == QLatin1Char('"')) {
-                segments.append(qMakePair(segment, false));
-                segment = QString(ch);
                 inQuote = true;
+                refState = INVALID;
+                segment.append(ch);
+            } else if (ch == QLatin1Char('$')) {
+                if (refState == AZ) {
+                    segment.append(ch);
+                    refState = PRE_09;
+                    refFlag |= 0x02;
+                } else {
+                    segments.append(qMakePair(segment, refState==_09 ? refFlag : -1));
+                    segment = QString(ch); //Start new segment.
+                    refState = PRE_AZ;
+                    refFlag = 0x01;
+                }
             } else if (ch >= QLatin1Char('A') && ch <=QLatin1Char('Z')) {
-                if (cellFlag == 0 || cellFlag == 1) {
+                if (refState == PRE_AZ || refState == AZ) {
                     segment.append(ch);
                 } else {
-                    segments.append(qMakePair(segment, (cellFlag == 2)));
-                    segment = QString(ch); //start new "A1" segment
+                    segments.append(qMakePair(segment, refState==_09 ? refFlag : -1));
+                    segment = QString(ch); //Start new segment.
+                    refFlag = 0x00;
                 }
-                cellFlag = 1;
+                refState = AZ;
             } else if (ch >= QLatin1Char('0') && ch <=QLatin1Char('9')) {
                 segment.append(ch);
-                if (cellFlag == 1)
-                    cellFlag = 2;
+
+                if (refState == AZ || refState == PRE_09 || refState == _09)
+                    refState = _09;
+                else
+                    refState = INVALID;
             } else {
-                if (cellFlag == 2) {
-                    segments.append(qMakePair(segment, true)); //find one "A1" segment
-                    segment = QString(ch);
+                if (refState == _09) {
+                    segments.append(qMakePair(segment, refFlag));
+                    segment = QString(ch); //Start new segment.
                 } else {
                     segment.append(ch);
                 }
-                cellFlag = -1;
+                refState = INVALID;
             }
         }
     }
 
     if (!segment.isEmpty())
-        segments.append(qMakePair(segment, (cellFlag == 2)));
+        segments.append(qMakePair(segment, refState==_09 ? refFlag : -1));
 
-    //Replace "A1" segment with proper one.
+    //Replace "A1", "$A1", "A$1" segment with proper one.
     QStringList result;
-    typedef QPair<QString, bool> PairType;
+    typedef QPair<QString, int> PairType;
     foreach (PairType p, segments) {
-        if (p.second) {
+        //qDebug()<<p.first<<p.second;
+        if (p.second != -1 && p.second != 3) {
             CellReference oldRef(p.first);
-            CellReference newRef(oldRef.row()-rootCell.row()+cell.row(),
-                                 oldRef.column()-rootCell.column()+cell.column());
-            result.append(newRef.toString());
+            int row = p.second & 0x02 ? oldRef.row() : oldRef.row()-rootCell.row()+cell.row();
+            int col = p.second & 0x01 ? oldRef.column() : oldRef.column()-rootCell.column()+cell.column();
+            result.append(CellReference(row, col).toString(p.second & 0x02, p.second & 0x01));
         } else {
             result.append(p.first);
         }

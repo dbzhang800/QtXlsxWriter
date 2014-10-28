@@ -90,7 +90,6 @@ void WorksheetTest::testSetColumn()
 
     QByteArray xmldata = sheet.saveToXmlData();
 
-    qDebug()<<xmldata;
     QVERIFY(xmldata.contains("<col min=\"1\" max=\"3\"")); //"A:C"
     QVERIFY(xmldata.contains("<col min=\"4\" max=\"5\"")); //"D:E"
     QVERIFY(xmldata.contains("<col min=\"6\" max=\"6\"")); //"F:F"
@@ -110,13 +109,14 @@ void WorksheetTest::testWriteCells()
     sheet.writeFormula(5, 2, "44+33", QXlsx::Format(), 77);
 
     QByteArray xmldata = sheet.saveToXmlData();
+    qDebug()<<xmldata;
 
     QVERIFY2(xmldata.contains("<c r=\"A1\"><v>123</v></c>"), "numeric");
     QVERIFY2(xmldata.contains("<c r=\"A2\" t=\"s\"><v>0</v></c>"), "string");
     QVERIFY2(xmldata.contains("<c r=\"A3\" t=\"inlineStr\"><is><t>Hello inline</t></is></c>"), "inline string");
     QVERIFY2(xmldata.contains("<c r=\"A4\" t=\"b\"><v>1</v></c>"), "boolean");
-    QVERIFY2(xmldata.contains("<c r=\"A5\"><f>44+33</f><v>0</v></c>"), "formula");
-    QVERIFY2(xmldata.contains("<c r=\"B5\"><f>44+33</f><v>77</v></c>"), "formula");
+    QVERIFY2(xmldata.contains("<c r=\"A5\"><f ca=\"1\">44+33</f><v>0</v></c>"), "formula");
+    QVERIFY2(xmldata.contains("<c r=\"B5\"><f ca=\"1\">44+33</f><v>77</v></c>"), "formula");
 
     QCOMPARE(sheet.d_func()->sharedStrings()->getSharedString(0).toPlainString(), QStringLiteral("Hello"));
 }
