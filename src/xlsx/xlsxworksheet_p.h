@@ -160,6 +160,7 @@ public:
     QString generateDimensionString() const;
     void calculateSpans() const;
     void splitColsInfo(int colFirst, int colLast);
+    void validateDimension();
 
     void saveXmlSheetData(QXmlStreamWriter &writer) const;
     void saveXmlCellData(QXmlStreamWriter &writer, int row, int col, QSharedPointer<Cell> cell) const;

@@ -2297,39 +2297,38 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
         }
     }
 
-    validateDimension();
+    d->validateDimension();
     return true;
 }
 
-void Worksheet::validateDimension()
+/*
+ *  Documents imported from Google Docs does not contain dimension data.
+ */
+void WorksheetPrivate::validateDimension()
 {
-    Q_D(Worksheet);
-
-    if (d->dimension.isValid() || d->cellTable.isEmpty())
+    if (dimension.isValid() || cellTable.isEmpty())
         return;
 
-    int firstRow = d->cellTable.firstKey();
-    int lastRow = d->cellTable.lastKey();
-    int firstCell = -1;
-    int lastCell = -1;
+    int firstRow = cellTable.constBegin().key();
+    int lastRow = (cellTable.constEnd()-1).key();
+    int firstColumn = -1;
+    int lastColumn = -1;
 
-    for (QMap<int, QMap<int, QSharedPointer<Cell> > >::const_iterator it = d->cellTable.begin(),
-         lim = d->cellTable.end(); it != lim; ++it)
+    for (QMap<int, QMap<int, QSharedPointer<Cell> > >::const_iterator it = cellTable.begin(); it != cellTable.end(); ++it)
     {
-        if (it.value().isEmpty())
-            continue;
+        Q_ASSERT(!it.value().isEmpty());
 
-        if (firstCell == -1 || it.value().firstKey() < firstCell)
-            firstCell = it.value().firstKey();
+        if (firstColumn == -1 || it.value().constBegin().key() < firstColumn)
+            firstColumn = it.value().constBegin().key();
 
-        if (lastCell == -1 || it.value().lastKey() > lastCell)
-            lastCell = it.value().lastKey();
+        if (lastColumn == -1 || (it.value().constEnd()-1).key() > lastColumn)
+            lastColumn = (it.value().constEnd()-1).key();
     }
 
-    CellRange cr(firstRow, firstCell, lastRow, lastCell);
+    CellRange cr(firstRow, firstColumn, lastRow, lastColumn);
 
     if (cr.isValid())
-        d->dimension = cr;
+        dimension = cr;
 }
 
 /*!
