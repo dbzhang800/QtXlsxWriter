@@ -574,7 +574,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                  const QString name = attributes.value(QLatin1String("name")).toString();
                  int sheetId = attributes.value(QLatin1String("sheetId")).toString().toInt();
                  const QString rId = attributes.value(QLatin1String("r:id")).toString();
-                 QStringRef &stateString = attributes.value(QLatin1String("state"));
+                 const QStringRef &stateString = attributes.value(QLatin1String("state"));
                  AbstractSheet::SheetState state = AbstractSheet::SS_Visible;
                  if (stateString == QLatin1String("hidden"))
                      state = AbstractSheet::SS_Hidden;
