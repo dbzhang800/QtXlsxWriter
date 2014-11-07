@@ -37,17 +37,28 @@ class Q_XLSX_EXPORT AbstractSheet : public AbstractOOXmlFile
 {
     Q_DECLARE_PRIVATE(AbstractSheet)
 public:
-    enum SheetType
-    {
+    enum SheetType {
         ST_WorkSheet,
         ST_ChartSheet,
         ST_DialogSheet,
         ST_MacroSheet
     };
 
-    SheetType sheetType() const;
+    enum SheetState {
+        SS_Visible,
+        SS_Hidden,
+        SS_VeryHidden
+    };
+
     QString sheetName() const;
+    SheetType sheetType() const;
+    SheetState sheetState() const;
+    void setSheetState(SheetState ss);
     bool isHidden() const;
+    bool isVisible() const;
+    void setHidden(bool hidden);
+    void setVisible(bool visible);
+
     Workbook *workbook() const;
 
 protected:
@@ -55,7 +66,6 @@ protected:
     AbstractSheet(const QString &sheetName, int sheetId, Workbook *book, AbstractSheetPrivate *d);
     virtual AbstractSheet *copy(const QString &distName, int distId) const = 0;
     void setSheetName(const QString &sheetName);
-    void setHidden(bool hidden);
     void setSheetType(SheetType type);
     int sheetId() const;
 

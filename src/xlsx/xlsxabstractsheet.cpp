@@ -31,8 +31,8 @@ QT_BEGIN_NAMESPACE_XLSX
 AbstractSheetPrivate::AbstractSheetPrivate(AbstractSheet *p, AbstractSheet::CreateFlag flag)
     : AbstractOOXmlFilePrivate(p, flag)
 {
-    hidden = false;
     type = AbstractSheet::ST_WorkSheet;
+    sheetState = AbstractSheet::SS_Visible;
 }
 
 AbstractSheetPrivate::~AbstractSheetPrivate()
@@ -48,11 +48,19 @@ AbstractSheetPrivate::~AbstractSheetPrivate()
 /*!
   \enum AbstractSheet::SheetType
 
-  \value ST_WorkSheet,
-  \value ST_ChartSheet,
-  \omitvalue ST_DialogSheet,
+  \value ST_WorkSheet
+  \value ST_ChartSheet
+  \omitvalue ST_DialogSheet
   \omitvalue ST_MacroSheet
-  */
+*/
+
+/*!
+  \enum AbstractSheet::SheetState
+
+  \value SS_Visible
+  \value SS_Hidden
+  \value SS_VeryHidden User cann't make a veryHidden sheet visible in normal way.
+*/
 
 /*!
   \fn AbstractSheet::copy(const QString &distName, int distId) const
@@ -110,21 +118,62 @@ void AbstractSheet::setSheetType(SheetType type)
 }
 
 /*!
- * \internal
+ * Returns the state of the sheet.
+ *
+ * \sa isHidden(), isVisible(), setSheetState()
+ */
+AbstractSheet::SheetState AbstractSheet::sheetState() const
+{
+    Q_D(const AbstractSheet);
+    return d->sheetState;
+}
+
+/*!
+ * Set the state of the sheet to \a state.
+ */
+void AbstractSheet::setSheetState(SheetState state)
+{
+    Q_D(AbstractSheet);
+    d->sheetState = state;
+}
+
+/*!
+ * Returns true if the sheet is not visible, otherwise false will be returned.
+ *
+ * \sa sheetState(), setHidden()
  */
 bool AbstractSheet::isHidden() const
 {
     Q_D(const AbstractSheet);
-    return d->hidden;
+    return d->sheetState != SS_Visible;
 }
 
 /*!
- * \internal
+ * Returns true if the sheet is visible.
+ */
+bool AbstractSheet::isVisible() const
+{
+    return !isHidden();
+}
+
+/*!
+ * Make the sheet hiden or visible based on \a hidden.
  */
 void AbstractSheet::setHidden(bool hidden)
 {
     Q_D(AbstractSheet);
-    d->hidden = hidden;
+    if (hidden == isHidden())
+        return;
+
+    d->sheetState = hidden ? SS_Hidden : SS_Visible;
+}
+
+/*!
+ * Convenience function, equivalent to setHidden(! \a visible).
+ */
+void AbstractSheet::setVisible(bool visible)
+{
+    setHidden(!visible);
 }
 
 /*!

@@ -486,8 +486,10 @@ void Workbook::saveToXmlFile(QIODevice *device) const
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
-        if (sheet->isHidden())
+        if (sheet->sheetState() == AbstractSheet::SS_Hidden)
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
+        else if (sheet->sheetState() == AbstractSheet::SS_VeryHidden)
+            writer.writeAttribute(QStringLiteral("state"), QStringLiteral("veryHidden"));
 
         d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
         writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
@@ -500,8 +502,10 @@ void Workbook::saveToXmlFile(QIODevice *device) const
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
-        if (sheet->isHidden())
+        if (sheet->sheetState() == AbstractSheet::SS_Hidden)
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
+        else if (sheet->sheetState() == AbstractSheet::SS_VeryHidden)
+            writer.writeAttribute(QStringLiteral("state"), QStringLiteral("veryHidden"));
 
         d->relationships->addDocumentRelationship(QStringLiteral("/chartsheet"), QStringLiteral("chartsheets/sheet%1.xml").arg(i+1));
         writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
@@ -566,8 +570,12 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                  const QString name = attributes.value(QLatin1String("name")).toString();
                  int sheetId = attributes.value(QLatin1String("sheetId")).toString().toInt();
                  const QString rId = attributes.value(QLatin1String("r:id")).toString();
-//                 if (attributes.hasAttribute(QLatin1String("state")))
-//                     QString state = attributes.value(QLatin1String("state")).toString();
+                 QStringRef &stateString = attributes.value(QLatin1String("state"));
+                 AbstractSheet::SheetState state = AbstractSheet::SS_Visible;
+                 if (stateString == QLatin1String("hidden"))
+                     state = AbstractSheet::SS_Hidden;
+                 else if (stateString == QLatin1String("veryHidden"))
+                     state = AbstractSheet::SS_VeryHidden;
 
                  XlsxRelationship relationship = d->relationships->getRelationshipById(rId);
 
@@ -584,6 +592,7 @@ bool Workbook::loadFromXmlFile(QIODevice *device)
                      qWarning("unknown sheet type");
 
                  AbstractSheet *sheet = addSheet(name, sheetId, type);
+                 sheet->setSheetState(state);
                  const QString fullPath = QDir::cleanPath(splitPath(filePath())[0] +QLatin1String("/")+ relationship.target);
                  sheet->setFilePath(fullPath);
              } else if (reader.name() == QLatin1String("workbookPr")) {
