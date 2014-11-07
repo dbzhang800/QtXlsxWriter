@@ -27,6 +27,7 @@ Qt 0.3.0 Reference Documentation</li>
 <p>This is the complete list of members for <a href="worksheet.html">Worksheet</a>, including inherited members.</p>
 <table class="propsummary">
 <tr><td class="topAlign"><ul>
+<li class="fn">enum <span class="name"><b><a href="abstractsheet.html#SheetState-enum">SheetState</a></b></span></li>
 <li class="fn">enum <span class="name"><b><a href="abstractsheet.html#SheetType-enum">SheetType</a></b></span></li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#dtor.Worksheet">~Worksheet</a></b></span>()</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#addConditionalFormatting">addConditionalFormatting</a></b></span>(const ConditionalFormatting &amp;) : bool</li>
@@ -45,12 +46,14 @@ Qt 0.3.0 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isColumnHidden">isColumnHidden</a></b></span>(int) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isFormulasVisible">isFormulasVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isGridLinesVisible">isGridLinesVisible</a></b></span>() const : bool</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#isHidden">isHidden</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isOutlineSymbolsVisible">isOutlineSymbolsVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRightToLeft">isRightToLeft</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRowColumnHeadersVisible">isRowColumnHeadersVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRowHidden">isRowHidden</a></b></span>(int) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isRulerVisible">isRulerVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isSelected">isSelected</a></b></span>() const : bool</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#isVisible">isVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isWhiteSpaceVisible">isWhiteSpaceVisible</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isWindowProtected">isWindowProtected</a></b></span>() const : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#isZerosVisible">isZerosVisible</a></b></span>() const : bool</li>
@@ -66,9 +69,10 @@ Qt 0.3.0 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setColumnHidden-2">setColumnHidden</a></b></span>(int, int, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setColumnWidth">setColumnWidth</a></b></span>(const CellRange &amp;, double) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setColumnWidth-2">setColumnWidth</a></b></span>(int, int, double) : bool</li>
-</ul></td><td class="topAlign"><ul>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setFormulasVisible">setFormulasVisible</a></b></span>(bool)</li>
+</ul></td><td class="topAlign"><ul>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setGridLinesVisible">setGridLinesVisible</a></b></span>(bool)</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#setHidden">setHidden</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setOutlineSymbolsVisible">setOutlineSymbolsVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRightToLeft">setRightToLeft</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRowColumnHeadersVisible">setRowColumnHeadersVisible</a></b></span>(bool)</li>
@@ -77,10 +81,13 @@ Qt 0.3.0 Reference Documentation</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRowHidden">setRowHidden</a></b></span>(int, int, bool) : bool</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setRulerVisible">setRulerVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setSelected">setSelected</a></b></span>(bool)</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#setSheetState">setSheetState</a></b></span>(SheetState)</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#setVisible">setVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setWhiteSpaceVisible">setWhiteSpaceVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setWindowProtected">setWindowProtected</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#setZerosVisible">setZerosVisible</a></b></span>(bool)</li>
 <li class="fn"><span class="name"><b><a href="abstractsheet.html#sheetName">sheetName</a></b></span>() const : QString</li>
+<li class="fn"><span class="name"><b><a href="abstractsheet.html#sheetState">sheetState</a></b></span>() const : SheetState</li>
 <li class="fn"><span class="name"><b><a href="abstractsheet.html#sheetType">sheetType</a></b></span>() const : SheetType</li>
 <li class="fn"><span class="name"><b><a href="worksheet.html#unmergeCells">unmergeCells</a></b></span>(const CellRange &amp;) : bool</li>
 <li class="fn"><span class="name"><b><a href="abstractsheet.html#workbook">workbook</a></b></span>() const : Workbook *</li>

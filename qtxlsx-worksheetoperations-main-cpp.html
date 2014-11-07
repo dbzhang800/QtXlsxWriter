@@ -29,34 +29,49 @@ Qt 0.3.0 Reference Documentation</li>
 <div class="descr"> <a name="details"></a>
 <pre class="cpp"><span class="preprocessor">#include &lt;QtCore&gt;</span>
 <span class="preprocessor">#include &quot;xlsxdocument.h&quot;</span>
+<span class="preprocessor">#include &quot;xlsxabstractsheet.h&quot;</span>
+
+QTXLSX_USE_NAMESPACE
 
 <span class="type">int</span> main()
 {
-    <span class="type">QXlsx</span><span class="operator">::</span>Document xlsx;
+    Document xlsx;
 
     <span class="keyword">for</span> (<span class="type">int</span> i<span class="operator">=</span><span class="number">1</span>; i<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>i) {
         <span class="keyword">for</span> (<span class="type">int</span> j<span class="operator">=</span><span class="number">1</span>; j<span class="operator">&lt;</span><span class="number">15</span>; <span class="operator">+</span><span class="operator">+</span>j)
             xlsx<span class="operator">.</span>write(i<span class="operator">,</span> j<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html">QString</a></span>(<span class="string">&quot;R %1 C %2&quot;</span>)<span class="operator">.</span>arg(i)<span class="operator">.</span>arg(j));
     }
-    xlsx<span class="operator">.</span>renameSheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;TheFirstSheet&quot;</span>);
-
-    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;TheSecondSheet&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet();
     xlsx<span class="operator">.</span>write(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;Hello Qt Xlsx&quot;</span>);
-
-    xlsx<span class="operator">.</span>copySheet(<span class="string">&quot;TheFirstSheet&quot;</span><span class="operator">,</span> <span class="string">&quot;CopyOfTheFirst&quot;</span>);
-
-    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;TheForthSheet&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet();
     xlsx<span class="operator">.</span>write(<span class="number">3</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="string">&quot;This will be deleted...&quot;</span>);
 
-    xlsx<span class="operator">.</span>selectSheet(<span class="string">&quot;CopyOfTheFirst&quot;</span>);
-    xlsx<span class="operator">.</span>write(<span class="number">25</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;On the Copy Sheet&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;HiddenSheet&quot;</span>);
+    xlsx<span class="operator">.</span>currentSheet()<span class="operator">-</span><span class="operator">&gt;</span>setHidden(<span class="keyword">true</span>);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;This sheet is hidden.&quot;</span>);
 
-    xlsx<span class="operator">.</span>deleteSheet(<span class="string">&quot;TheForthSheet&quot;</span>);
+    xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;VeryHiddenSheet&quot;</span>);
+    xlsx<span class="operator">.</span>sheet(<span class="string">&quot;VeryHiddenSheet&quot;</span>)<span class="operator">-</span><span class="operator">&gt;</span>setSheetState(AbstractSheet<span class="operator">::</span>SS_VeryHidden);
+    xlsx<span class="operator">.</span>write(<span class="string">&quot;A1&quot;</span><span class="operator">,</span> <span class="string">&quot;This sheet is very hidden.&quot;</span>);
 
-    xlsx<span class="operator">.</span>moveSheet(<span class="string">&quot;TheSecondSheet&quot;</span><span class="operator">,</span> <span class="number">0</span>);
+    xlsx<span class="operator">.</span>save();<span class="comment">//Default name is &quot;Book1.xlsx&quot;</span>
 
-    xlsx<span class="operator">.</span>save();
+    Document xlsx2(<span class="string">&quot;Book1.xlsx&quot;</span>);
+    xlsx2<span class="operator">.</span>renameSheet(<span class="string">&quot;Sheet1&quot;</span><span class="operator">,</span> <span class="string">&quot;TheFirstSheet&quot;</span>);
 
+    xlsx2<span class="operator">.</span>copySheet(<span class="string">&quot;TheFirstSheet&quot;</span><span class="operator">,</span> <span class="string">&quot;CopyOfTheFirst&quot;</span>);
+
+    xlsx2<span class="operator">.</span>selectSheet(<span class="string">&quot;CopyOfTheFirst&quot;</span>);
+    xlsx2<span class="operator">.</span>write(<span class="number">25</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;On the Copy Sheet&quot;</span>);
+
+    xlsx2<span class="operator">.</span>deleteSheet(<span class="string">&quot;Sheet3&quot;</span>);
+
+    xlsx2<span class="operator">.</span>moveSheet(<span class="string">&quot;Sheet2&quot;</span><span class="operator">,</span> <span class="number">0</span>);
+
+    xlsx2<span class="operator">.</span>sheet(<span class="string">&quot;HiddenSheet&quot;</span>)<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">true</span>);
+    xlsx2<span class="operator">.</span>sheet(<span class="string">&quot;VeryHiddenSheet&quot;</span>)<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">true</span>);
+
+    xlsx2<span class="operator">.</span>saveAs(<span class="string">&quot;Book2.xlsx&quot;</span>);
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>
 </div>

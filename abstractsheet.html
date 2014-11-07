@@ -45,12 +45,19 @@ Qt 0.3.0 Reference Documentation</li>
 <a name="public-types"></a>
 <h2>Public Types</h2>
 <table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#SheetState-enum">SheetState</a></b> { SS_Visible, SS_Hidden, SS_VeryHidden }</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#SheetType-enum">SheetType</a></b> { ST_WorkSheet, ST_ChartSheet }</td></tr>
 </table>
 <a name="public-functions"></a>
 <h2>Public Functions</h2>
 <table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#isHidden">isHidden</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#isVisible">isVisible</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#setHidden">setHidden</a></b>(bool<i> hidden</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#setSheetState">setSheetState</a></b>(SheetState<i> state</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#setVisible">setVisible</a></b>(bool<i> visible</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#sheetName">sheetName</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> SheetState </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#sheetState">sheetState</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> SheetType </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#sheetType">sheetType</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> Workbook * </td><td class="memItemRight bottomAlign"><b><a href="abstractsheet.html#workbook">workbook</a></b>() const</td></tr>
 </table>
@@ -68,11 +75,19 @@ Qt 0.3.0 Reference Documentation</li>
 <!-- @@@AbstractSheet -->
 <div class="types">
 <h2>Member Type Documentation</h2>
+<!-- $$$SheetState$$$SS_Visible$$$SS_Hidden$$$SS_VeryHidden -->
+<h3 class="fn"><a name="SheetState-enum"></a>enum AbstractSheet::<span class="name">SheetState</span></h3>
+<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><tt>AbstractSheet::SS_Visible</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">&nbsp;</td></tr>
+<tr><td class="topAlign"><tt>AbstractSheet::SS_Hidden</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">&nbsp;</td></tr>
+<tr><td class="topAlign"><tt>AbstractSheet::SS_VeryHidden</tt></td><td class="topAlign"><tt>2</tt></td><td class="topAlign">User cann't make a veryHidden sheet visible in normal way.</td></tr>
+</table>
+<!-- @@@SheetState -->
 <!-- $$$SheetType$$$ST_WorkSheet$$$ST_ChartSheet$$$ST_DialogSheet$$$ST_MacroSheet -->
 <h3 class="fn"><a name="SheetType-enum"></a>enum AbstractSheet::<span class="name">SheetType</span></h3>
-<table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
-<tr><td class="topAlign"><tt>AbstractSheet::ST_WorkSheet</tt></td><td class="topAlign"><tt>0</tt></td><td class="topAlign">,</td></tr>
-<tr><td class="topAlign"><tt>AbstractSheet::ST_ChartSheet</tt></td><td class="topAlign"><tt>1</tt></td><td class="topAlign">, ,</td></tr>
+<table class="valuelist"><tr><th class="tblConst">Constant</th><th class="tblVal">Value</th></tr>
+<tr><td class="topAlign"><tt>AbstractSheet::ST_WorkSheet</tt></td><td class="topAlign"><tt>0</tt></td></tr>
+<tr><td class="topAlign"><tt>AbstractSheet::ST_ChartSheet</tt></td><td class="topAlign"><tt>1</tt></td></tr>
 </table>
 <!-- @@@SheetType -->
 </div>
@@ -82,10 +97,39 @@ Qt 0.3.0 Reference Documentation</li>
 <h3 class="fn"><a name="copy"></a><span class="type">AbstractSheet</span> * AbstractSheet::<span class="name">copy</span>(const <span class="type"><a href="../qtcore/qstring.html">QString</a></span> &amp;<i> distName</i>, <span class="type">int</span><i> distId</i>) const<tt> [pure virtual protected]</tt></h3>
 <p>Copies the current sheet to a sheet called <i>distName</i> with <i>distId</i>. Returns the new sheet.</p>
 <!-- @@@copy -->
+<!-- $$$isHidden[overload1]$$$isHidden -->
+<h3 class="fn"><a name="isHidden"></a><span class="type">bool</span> AbstractSheet::<span class="name">isHidden</span>() const</h3>
+<p>Returns true if the sheet is not visible, otherwise false will be returned.</p>
+<p><b>See also </b><a href="abstractsheet.html#sheetState">sheetState</a>() and <a href="abstractsheet.html#setHidden">setHidden</a>().</p>
+<!-- @@@isHidden -->
+<!-- $$$isVisible[overload1]$$$isVisible -->
+<h3 class="fn"><a name="isVisible"></a><span class="type">bool</span> AbstractSheet::<span class="name">isVisible</span>() const</h3>
+<p>Returns true if the sheet is visible.</p>
+<!-- @@@isVisible -->
+<!-- $$$setHidden[overload1]$$$setHiddenbool -->
+<h3 class="fn"><a name="setHidden"></a><span class="type">void</span> AbstractSheet::<span class="name">setHidden</span>(<span class="type">bool</span><i> hidden</i>)</h3>
+<p>Make the sheet hiden or visible based on <i>hidden</i>.</p>
+<p><b>See also </b><a href="abstractsheet.html#isHidden">isHidden</a>().</p>
+<!-- @@@setHidden -->
+<!-- $$$setSheetState[overload1]$$$setSheetStateSheetState -->
+<h3 class="fn"><a name="setSheetState"></a><span class="type">void</span> AbstractSheet::<span class="name">setSheetState</span>(<span class="type"><a href="abstractsheet.html#SheetState-enum">SheetState</a></span><i> state</i>)</h3>
+<p>Set the state of the sheet to <i>state</i>.</p>
+<p><b>See also </b><a href="abstractsheet.html#sheetState">sheetState</a>().</p>
+<!-- @@@setSheetState -->
+<!-- $$$setVisible[overload1]$$$setVisiblebool -->
+<h3 class="fn"><a name="setVisible"></a><span class="type">void</span> AbstractSheet::<span class="name">setVisible</span>(<span class="type">bool</span><i> visible</i>)</h3>
+<p>Convenience function, equivalent to setHidden(! <i>visible</i>).</p>
+<p><b>See also </b><a href="abstractsheet.html#isVisible">isVisible</a>().</p>
+<!-- @@@setVisible -->
 <!-- $$$sheetName[overload1]$$$sheetName -->
 <h3 class="fn"><a name="sheetName"></a><span class="type"><a href="../qtcore/qstring.html">QString</a></span> AbstractSheet::<span class="name">sheetName</span>() const</h3>
 <p>Returns the name of the sheet.</p>
 <!-- @@@sheetName -->
+<!-- $$$sheetState[overload1]$$$sheetState -->
+<h3 class="fn"><a name="sheetState"></a><span class="type"><a href="abstractsheet.html#SheetState-enum">SheetState</a></span> AbstractSheet::<span class="name">sheetState</span>() const</h3>
+<p>Returns the state of the sheet.</p>
+<p><b>See also </b><a href="abstractsheet.html#isHidden">isHidden</a>(), <a href="abstractsheet.html#isVisible">isVisible</a>(), and <a href="abstractsheet.html#setSheetState">setSheetState</a>().</p>
+<!-- @@@sheetState -->
 <!-- $$$sheetType[overload1]$$$sheetType -->
 <h3 class="fn"><a name="sheetType"></a><span class="type"><a href="abstractsheet.html#SheetType-enum">SheetType</a></span> AbstractSheet::<span class="name">sheetType</span>() const</h3>
 <p>Returns the type of the sheet.</p>

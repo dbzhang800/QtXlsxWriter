@@ -55,6 +55,11 @@ Qt 0.3.0 Reference Documentation</li>
     <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A6&quot;</span>);
     <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>xlsx<span class="operator">.</span>read(<span class="string">&quot;A7&quot;</span>);
 
+    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">1</span>; row<span class="operator">&lt;</span><span class="number">10</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+        <span class="keyword">if</span> (<span class="type">QXlsx</span><span class="operator">::</span>Cell <span class="operator">*</span>cell<span class="operator">=</span>xlsx<span class="operator">.</span>cellAt(row<span class="operator">,</span> <span class="number">1</span>))
+            <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>cell<span class="operator">-</span><span class="operator">&gt;</span>value();
+    }
+
     <span class="keyword">return</span> <span class="number">0</span>;
 }</pre>
 </div>

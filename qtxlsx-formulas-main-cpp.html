@@ -83,6 +83,7 @@ QTXLSX_USE_NAMESPACE
         sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> row<span class="operator">*</span><span class="number">3</span>); <span class="comment">//C2:C19</span>
     }
     sheet<span class="operator">-</span><span class="operator">&gt;</span>writeFormula(<span class="string">&quot;D2&quot;</span><span class="operator">,</span> CellFormula(<span class="string">&quot;B2:B19+C2:C19&quot;</span><span class="operator">,</span> <span class="string">&quot;D2:D19&quot;</span><span class="operator">,</span> CellFormula<span class="operator">::</span>ArrayType));
+    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeFormula(<span class="string">&quot;E2&quot;</span><span class="operator">,</span> CellFormula(<span class="string">&quot;=CONCATENATE(\&quot;The total is \&quot;,D2:D19,\&quot; units\&quot;)&quot;</span><span class="operator">,</span> <span class="string">&quot;E2:E19&quot;</span><span class="operator">,</span> CellFormula<span class="operator">::</span>ArrayType));
 
     xlsx<span class="operator">.</span>addSheet(<span class="string">&quot;SharedFormula&quot;</span>);
     sheet <span class="operator">=</span> xlsx<span class="operator">.</span>currentWorksheet();
@@ -92,11 +93,18 @@ QTXLSX_USE_NAMESPACE
         sheet<span class="operator">-</span><span class="operator">&gt;</span>write(row<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> row<span class="operator">*</span><span class="number">3</span>); <span class="comment">//C2:C19</span>
     }
     sheet<span class="operator">-</span><span class="operator">&gt;</span>writeFormula(<span class="string">&quot;D2&quot;</span><span class="operator">,</span> CellFormula(<span class="string">&quot;=B2+C2&quot;</span><span class="operator">,</span> <span class="string">&quot;D2:D19&quot;</span><span class="operator">,</span> CellFormula<span class="operator">::</span>SharedType));
+    sheet<span class="operator">-</span><span class="operator">&gt;</span>writeFormula(<span class="string">&quot;E2&quot;</span><span class="operator">,</span> CellFormula(<span class="string">&quot;=CONCATENATE(\&quot;The total is \&quot;,D2,\&quot; units\&quot;)&quot;</span><span class="operator">,</span> <span class="string">&quot;E2:E19&quot;</span><span class="operator">,</span> CellFormula<span class="operator">::</span>SharedType));
+
 
     xlsx<span class="operator">.</span>save();
 
     <span class="comment">//Make sure that read/write works well.</span>
     Document xlsx2(<span class="string">&quot;Book1.xlsx&quot;</span>);
+    Worksheet <span class="operator">*</span>sharedFormulaSheet <span class="operator">=</span> <span class="keyword">dynamic_cast</span><span class="operator">&lt;</span>Worksheet<span class="operator">*</span><span class="operator">&gt;</span>(xlsx2<span class="operator">.</span>sheet(<span class="string">&quot;SharedFormula&quot;</span>));
+    <span class="keyword">for</span> (<span class="type">int</span> row<span class="operator">=</span><span class="number">2</span>; row<span class="operator">&lt;</span><span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+        <a href="../qtcore/qtglobal.html#qDebug">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span>sharedFormulaSheet<span class="operator">-</span><span class="operator">&gt;</span>read(row<span class="operator">,</span> <span class="number">4</span>);
+    }
+
     xlsx2<span class="operator">.</span>saveAs(<span class="string">&quot;Book2.xlsx&quot;</span>);
 
     <span class="keyword">return</span> <span class="number">0</span>;
