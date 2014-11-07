@@ -1026,6 +1026,8 @@ bool Document::saveAs(const QString &name) const
 /*!
  * \overload
  * This function writes a document to the given \a device.
+ *
+ * \warning The \a device will be closed when this function returned.
  */
 bool Document::saveAs(QIODevice *device) const
 {
