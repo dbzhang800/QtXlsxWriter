@@ -290,6 +290,10 @@ bool Workbook::setActiveSheet(int index)
 bool Workbook::renameSheet(int index, const QString &name)
 {
     Q_D(Workbook);
+
+    if (index < 0 || index >= d->sheets.size())
+        return false;
+
     //If user given an already in-used name, return false
     for (int i=0; i<d->sheets.size(); ++i) {
         if (d->sheets[i]->sheetName() == name)
