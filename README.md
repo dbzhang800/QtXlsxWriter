@@ -104,6 +104,11 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 
 ## References
 
+* http://www.ecma-international.org/publications/standards/Ecma-376.htm
+* http://www.iso.org/iso/catalogue_detail?csnumber=51463
+* http://msdn.microsoft.com/en-us/library/ee908652%28v=office.12%29.aspx
+* http://www.datypic.com/sc/ooxml/
+
 ### General
 
 * https://github.com/jmcnamara/XlsxWriter
@@ -114,7 +119,6 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 * http://epplus.codeplex.com/
 * http://excelpackage.codeplex.com/
 * http://spreadsheetlight.com/
-* http://www.schemacentral.com/sc/ooxml/
 
 ### Number formats
 
@@ -128,3 +132,4 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 * http://msdn.microsoft.com/en-us/library/ff533995%28v=office.12%29.aspx
 * http://msdn.microsoft.com/en-us/library/dd906358%28v=office.12%29.aspx
 * http://homepages.ecs.vuw.ac.nz/~elvis/db/Excel.shtml
+* http://ewbi.blogs.com/develops/2004/12/excel_formula_p.html
