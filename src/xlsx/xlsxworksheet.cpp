@@ -1953,8 +1953,9 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                 if (attributes.hasAttribute(QLatin1String("s"))) { //"s" == style index
                     int idx = attributes.value(QLatin1String("s")).toString().toInt();
                     format = workbook->styles()->xfFormat(idx);
-                    if (!format.isValid())
-                        qDebug()<<QStringLiteral("<c s=\"%1\">Invalid style index: ").arg(idx)<<idx;
+                    ////Empty format exists in styles xf table of real .xlsx files, see issue #65.
+                    //if (!format.isValid())
+                    //    qDebug()<<QStringLiteral("<c s=\"%1\">Invalid style index: ").arg(idx)<<idx;
                 }
 
                 Cell::CellType cellType = Cell::NumberType;
