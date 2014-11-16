@@ -36,6 +36,14 @@
 
 namespace QXlsx {
 
+/*
+ * Note that, when we open an existing .xlsx file (broken file?),
+ * duplicated string items may exist in the shared string table.
+ *
+ * In such case, the size of stringList will larger than stringTable.
+ * Duplicated items can be removed once we loaded all the worksheets.
+ */
+
 SharedStrings::SharedStrings(CreateFlag flag)
     :AbstractOOXmlFile(flag)
 {
@@ -67,7 +75,7 @@ int SharedStrings::addSharedString(const RichString &string)
         return item.index;
     }
 
-    int index = m_stringTable.size();
+    int index = m_stringList.size();
     m_stringTable[string] = XlsxSharedStringInfo(index);
     m_stringList.append(string);
     return index;
@@ -83,11 +91,17 @@ void SharedStrings::incRefByStringIndex(int idx)
     addSharedString(m_stringList[idx]);
 }
 
+/*
+ * Broken, don't use.
+ */
 void SharedStrings::removeSharedString(const QString &string)
 {
     removeSharedString(RichString(string));
 }
 
+/*
+ * Broken, don't use.
+ */
 void SharedStrings::removeSharedString(const RichString &string)
 {
     if (!m_stringTable.contains(string))
@@ -198,11 +212,17 @@ void SharedStrings::saveToXmlFile(QIODevice *device) const
 {
     QXmlStreamWriter writer(device);
 
+    if (m_stringList.size() != m_stringTable.size()) {
+        //Duplicated string items exist in m_stringList
+        //Clean up can not be done here, as the indices
+        //have been used when we save the worksheets part.
+    }
+
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("sst"));
     writer.writeAttribute(QStringLiteral("xmlns"), QStringLiteral("http://schemas.openxmlformats.org/spreadsheetml/2006/main"));
     writer.writeAttribute(QStringLiteral("count"), QString::number(m_stringCount));
-    writer.writeAttribute(QStringLiteral("uniqueCount"), QString::number(m_stringTable.size()));
+    writer.writeAttribute(QStringLiteral("uniqueCount"), QString::number(m_stringList.size()));
 
     foreach (RichString string, m_stringList) {
         writer.writeStartElement(QStringLiteral("si"));
@@ -362,9 +382,14 @@ bool SharedStrings::loadFromXmlFile(QIODevice *device)
          }
     }
 
-    if (m_stringTable.size() != count) {
+    if (m_stringList.size() != count) {
         qDebug("Error: Shared string count");
         return false;
+    }
+
+    if (m_stringList.size() != m_stringTable.size()) {
+        //qDebug("Warning: Duplicated items exist in shared string table.");
+        //Nothing we can do here, as indices of the strings will be used when loading sheets.
     }
 
     return true;
