@@ -370,19 +370,21 @@ bool SharedStrings::loadFromXmlFile(QIODevice *device)
 {
     QXmlStreamReader reader(device);
     int count = 0;
+    bool hasUniqueCountAttr=true;
     while (!reader.atEnd()) {
          QXmlStreamReader::TokenType token = reader.readNext();
          if (token == QXmlStreamReader::StartElement) {
              if (reader.name() == QLatin1String("sst")) {
                  QXmlStreamAttributes attributes = reader.attributes();
-                 count = attributes.value(QLatin1String("uniqueCount")).toString().toInt();
+                 if ((hasUniqueCountAttr = attributes.hasAttribute(QLatin1String("uniqueCount"))))
+                     count = attributes.value(QLatin1String("uniqueCount")).toString().toInt();
              } else if (reader.name() == QLatin1String("si")) {
                  readString(reader);
              }
          }
     }
 
-    if (m_stringList.size() != count) {
+    if (hasUniqueCountAttr && m_stringList.size() != count) {
         qDebug("Error: Shared string count");
         return false;
     }
