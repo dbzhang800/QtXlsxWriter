@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     //![0]
-    QString filePath = QFileDialog::getOpenFileName(0, "Open xlsx file", QString(), ".xlsx");
+    QString filePath = QFileDialog::getOpenFileName(0, "Open xlsx file", QString(), "*.xlsx");
     if (filePath.isEmpty())
         return -1;
     //![0]
