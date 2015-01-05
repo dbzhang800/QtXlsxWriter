@@ -63,10 +63,9 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
     : AbstractSheetPrivate(p, flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
-  , showOutlineSymbols(true), showWhiteSpace(true), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
+  , showOutlineSymbols(true), showWhiteSpace(true), pageOrientationLandscape(false), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
 {
     previous_row = 0;
-
     outline_row_level = 0;
     outline_col_level = 0;
 
@@ -76,6 +75,7 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
 
 WorksheetPrivate::~WorksheetPrivate()
 {
+
 }
 
 /*
@@ -416,6 +416,14 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
     Q_D(Worksheet);
     d->showWhiteSpace = visible;
 }
+
+void Worksheet::setPageOrientationLandscape(bool landscape)
+{
+    Q_D(Worksheet);
+    d->pageOrientationLandscape = landscape;
+}
+
+
 
 /*!
  * Write \a value to cell (\a row, \a column) with the \a format.
@@ -1158,6 +1166,7 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     writer.writeAttribute(QStringLiteral("ref"), d->generateDimensionString());
     writer.writeEndElement();//dimension
 
+
     writer.writeStartElement(QStringLiteral("sheetViews"));
     writer.writeStartElement(QStringLiteral("sheetView"));
     if (d->windowProtection)
@@ -1183,6 +1192,27 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     writer.writeAttribute(QStringLiteral("workbookViewId"), QStringLiteral("0"));
     writer.writeEndElement();//sheetView
     writer.writeEndElement();//sheetViews
+
+    writer.writeStartElement(QStringLiteral("pageMargins"));
+    writer.writeAttribute(QStringLiteral("left"), QStringLiteral("0.3937"));
+    writer.writeAttribute(QStringLiteral("right"), QStringLiteral("0.3937"));
+    writer.writeAttribute(QStringLiteral("top"), QStringLiteral("0.3937"));
+    writer.writeAttribute(QStringLiteral("bottom"), QStringLiteral("0.3937"));
+    writer.writeAttribute(QStringLiteral("header"), QStringLiteral("0"));
+    writer.writeAttribute(QStringLiteral("footer"), QStringLiteral("0"));
+
+    writer.writeEndElement();//pageMargins
+
+    writer.writeStartElement(QStringLiteral("pageSetup"));
+    writer.writeAttribute(QStringLiteral("paperSize"), QStringLiteral("9"));	// A4 paper size
+    if (d->pageOrientationLandscape){
+        writer.writeAttribute(QStringLiteral("orientation"), QStringLiteral("landscape"));
+    }else {
+        writer.writeAttribute(QStringLiteral("orientation"), QStringLiteral("portrait"));
+    }
+
+
+    writer.writeEndElement();//pageSetup
 
     writer.writeStartElement(QStringLiteral("sheetFormatPr"));
     writer.writeAttribute(QStringLiteral("defaultRowHeight"), QString::number(d->default_row_height));
