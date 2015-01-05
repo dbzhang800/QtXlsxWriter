@@ -223,10 +223,12 @@ public:
     bool showRuler;
     bool showOutlineSymbols;
     bool showWhiteSpace;
+    bool pageOrientationLandscape;
 
     QRegularExpression urlPattern;
 private:
     static double calculateColWidth(int characters);
+
 };
 
 }
