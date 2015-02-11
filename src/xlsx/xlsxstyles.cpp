@@ -168,10 +168,11 @@ void Styles::fixNumFmt(const Format &format)
             bool find=false;
             while (it.hasNext()) {
                 it.next();
-                if (it.value() == id)
+                if (it.value() == id) {
                     const_cast<Format *>(&format)->fixNumberFormat(id, it.key());
-                find = true;
-                break;
+                    find = true;
+                    break;
+                }
             }
 
             if (!find) {
