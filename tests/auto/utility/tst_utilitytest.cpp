@@ -48,6 +48,9 @@ private Q_SLOTS:
     void test_createSafeSheetName_data();
     void test_createSafeSheetName();
 
+    void test_escapeSheetName_data();
+    void test_escapeSheetName();
+
     void test_convertSharedFormula_data();
     void test_convertSharedFormula();
 };
@@ -131,17 +134,19 @@ void UtilityTest::test_createSafeSheetName_data()
     QTest::addColumn<QString>("original");
     QTest::addColumn<QString>("result");
 
-    QTest::newRow("[Hello]") << QString("[Hello]")<<QString("Hello");
-    QTest::newRow("[Hello:Qt]") << QString("[Hello:Qt]")<<QString("Hello Qt");
-    QTest::newRow("[Hello\\Qt/Xlsx]") << QString("[Hello\\Qt/Xlsx]")<<QString("Hello Qt Xlsx");
-    QTest::newRow("[Hello\\Qt/Xlsx:Lib]") << QString("[Hello\\Qt/Xlsx:Lib]")<<QString("Hello Qt Xlsx Lib");
-    QTest::newRow("'He'llo'") << QString("'He'llo'")<<QString("He'llo");
-    QTest::newRow("'He'llo*Qt'") << QString("'He'llo*Qt'")<<QString("He'llo Qt");
-    QTest::newRow("'He'llo*Qt?Lib'") << QString("'He'llo*Qt?Lib'")<<QString("He'llo Qt Lib");
+    QTest::newRow("Hello:Qt") << QString("Hello:Qt")<<QString("Hello Qt");
+    QTest::newRow(" Hello Qt ") << QString(" Hello Qt ")<<QString(" Hello Qt ");
+    QTest::newRow("[Hello]") << QString("[Hello]")<<QString(" Hello ");
+    QTest::newRow("[Hello:Qt]") << QString("[Hello:Qt]")<<QString(" Hello Qt ");
+    QTest::newRow("[Hello\\Qt/Xlsx]") << QString("[Hello\\Qt/Xlsx]")<<QString(" Hello Qt Xlsx ");
+    QTest::newRow("[Hello\\Qt/Xlsx:Lib]") << QString("[Hello\\Qt/Xlsx:Lib]")<<QString(" Hello Qt Xlsx Lib ");
+    QTest::newRow("He'llo") << QString("He'llo")<<QString("He'llo");
+    QTest::newRow("'He''llo'") << QString("'He''llo'")<<QString("He'llo");
 
-    QTest::newRow(":'[Hello']") << QString(":'[Hello']")<<QString("Hello");
-    QTest::newRow("':'[Hello']") << QString("':'[Hello']")<<QString("Hello");
-    QTest::newRow("  ' : '[ Hello ' ]  ") << QString("  ' : '[ Hello ' ]  ")<<QString("Hello");
+    QTest::newRow("'Hello*Qt'") << QString("'Hello*Qt'")<<QString("Hello Qt");
+    QTest::newRow("'He''llo*Qt?Lib'") << QString("'He''llo*Qt?Lib'")<<QString("He'llo Qt Lib");
+
+    QTest::newRow(":'[Hello']") << QString(":'[Hello']")<<QString(" ' Hello' ");
 }
 
 void UtilityTest::test_createSafeSheetName()
@@ -150,6 +155,34 @@ void UtilityTest::test_createSafeSheetName()
     QFETCH(QString, result);
 
     QCOMPARE(QXlsx::createSafeSheetName(original), result);
+}
+
+void UtilityTest::test_escapeSheetName_data()
+{
+    QTest::addColumn<QString>("original");
+    QTest::addColumn<QString>("result");
+
+    QTest::newRow("HelloQt") << QString("HelloQt")<<QString("HelloQt");
+    QTest::newRow("HelloQt ") << QString("HelloQt ")<<QString("'HelloQt '");
+    QTest::newRow("Hello Qt") << QString("Hello Qt")<<QString("'Hello Qt'");
+    QTest::newRow("Hello+Qt") << QString("Hello+Qt")<<QString("'Hello+Qt'");
+    QTest::newRow("Hello-Qt") << QString("Hello-Qt")<<QString("'Hello-Qt'");
+    QTest::newRow("Hello^Qt") << QString("Hello^Qt")<<QString("'Hello^Qt'");
+    QTest::newRow("Hello%Qt") << QString("Hello%Qt")<<QString("'Hello%Qt'");
+    QTest::newRow("Hello=Qt") << QString("Hello=Qt")<<QString("'Hello=Qt'");
+    QTest::newRow("Hello<>Qt") << QString("Hello<>Qt")<<QString("'Hello<>Qt'");
+    QTest::newRow("Hello,Qt") << QString("Hello,Qt")<<QString("'Hello,Qt'");
+    QTest::newRow("Hello&Qt") << QString("Hello&Qt")<<QString("'Hello&Qt'");
+    QTest::newRow("Hello'Qt") << QString("Hello'Qt")<<QString("'Hello''Qt'");
+
+}
+
+void UtilityTest::test_escapeSheetName()
+{
+    QFETCH(QString, original);
+    QFETCH(QString, result);
+
+    QCOMPARE(QXlsx::escapeSheetName(original), result);
 }
 
 void UtilityTest::test_convertSharedFormula_data()

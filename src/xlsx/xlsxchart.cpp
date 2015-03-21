@@ -104,8 +104,8 @@ void Chart::addSeries(const CellRange &range, AbstractSheet *sheet)
         return;
 
     QString sheetName = sheet ? sheet->sheetName() : d->sheet->sheetName();
-    if (sheetName.contains(QLatin1Char(' ')))
-        sheetName = QLatin1Char('\'') + sheetName + QLatin1Char('\'');
+    //In case sheetName contains space or '
+    sheetName = escapeSheetName(sheetName);
 
     if (range.columnCount() == 1 || range.rowCount() == 1) {
         QSharedPointer<XlsxSeries> series = QSharedPointer<XlsxSeries>(new XlsxSeries);

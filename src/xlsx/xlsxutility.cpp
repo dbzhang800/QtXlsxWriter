@@ -127,14 +127,49 @@ QString createSafeSheetName(const QString &nameProposal)
         return QString();
 
     QString ret = nameProposal;
-    if (nameProposal.contains(QRegularExpression(QStringLiteral("[/\\\\?*\\][:]+"))))
-        ret.replace(QRegularExpression(QStringLiteral("[/\\\\?*\\][:]+")), QStringLiteral(" "));
-    while(ret.contains(QRegularExpression(QStringLiteral("^\\s*'\\s*|\\s*'\\s*$"))))
-        ret.remove(QRegularExpression(QStringLiteral("^\\s*'\\s*|\\s*'\\s*$")));
-    ret = ret.trimmed();
+    if (nameProposal.length() > 2 && nameProposal.startsWith(QLatin1Char('\'')) && nameProposal.endsWith(QLatin1Char('\'')))
+        ret = unescapeSheetName(ret);
+
+    //Replace invalid chars with space.
+    if (nameProposal.contains(QRegularExpression(QStringLiteral("[/\\\\?*\\][:]"))))
+        ret.replace(QRegularExpression(QStringLiteral("[/\\\\?*\\][:]")), QStringLiteral(" "));
+    if (ret.startsWith(QLatin1Char('\'')))
+        ret[0] = QLatin1Char(' ');
+    if (ret.endsWith(QLatin1Char('\'')))
+        ret[ret.size()-1] = QLatin1Char(' ');
+
     if (ret.size() > 31)
         ret = ret.left(31);
     return ret;
+}
+
+/*
+ * When sheetName contains space or apostrophe, escaped is needed by cellFormula/definedName/chartSerials.
+ */
+QString escapeSheetName(const QString &sheetName)
+{
+    //Already escaped.
+    Q_ASSERT(!sheetName.startsWith(QLatin1Char('\'')) && !sheetName.endsWith(QLatin1Char('\'')));
+
+    //These is no need to escape
+    if (!sheetName.contains(QRegularExpression(QStringLiteral("[ +\\-,%^=<>'&]"))))
+        return sheetName;
+
+    //OK, escape is needed.
+    QString name = sheetName;
+    name.replace(QLatin1Char('\''), QLatin1String("\'\'"));
+    return QLatin1Char('\'') + name + QLatin1Char('\'');
+}
+
+/*
+ */
+QString unescapeSheetName(const QString &sheetName)
+{
+    Q_ASSERT(sheetName.length() > 2 && sheetName.startsWith(QLatin1Char('\'')) && sheetName.endsWith(QLatin1Char('\'')));
+
+    QString name = sheetName.mid(1, sheetName.length()-2);
+    name.replace(QLatin1String("\'\'"), QLatin1String("\'"));
+    return name;
 }
 
 /*

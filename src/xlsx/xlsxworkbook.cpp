@@ -285,12 +285,12 @@ bool Workbook::setActiveSheet(int index)
 }
 
 /*!
- * Rename the worksheet at the \a index to \a name.
+ * Rename the worksheet at the \a index to \a newName.
  */
-bool Workbook::renameSheet(int index, const QString &name)
+bool Workbook::renameSheet(int index, const QString &newName)
 {
     Q_D(Workbook);
-
+    QString name = createSafeSheetName(newName);
     if (index < 0 || index >= d->sheets.size())
         return false;
 
@@ -350,7 +350,7 @@ bool Workbook::copySheet(int index, const QString &newName)
     if (index < 0 || index >= d->sheets.size())
         return false;
 
-    QString worksheetName = newName;
+    QString worksheetName = createSafeSheetName(newName);
     if (!newName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
         if (d->sheetNames.contains(newName))
