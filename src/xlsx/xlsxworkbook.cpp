@@ -483,10 +483,10 @@ void Workbook::saveToXmlFile(QIODevice *device) const
     writer.writeEndElement();//bookViews
 
     writer.writeStartElement(QStringLiteral("sheets"));
-    //work sheets
-    QList<QSharedPointer<AbstractSheet> > worksheets = getSheetsByTypes(AbstractSheet::ST_WorkSheet);
-    for (int i=0; i<worksheets.size(); ++i) {
-        QSharedPointer<AbstractSheet> sheet = worksheets[i];
+    int worksheetIndex = 0;
+    int chartsheetIndex = 0;
+    for (int i=0; i<d->sheets.size(); ++i) {
+        QSharedPointer<AbstractSheet> sheet = d->sheets[i];
         writer.writeEmptyElement(QStringLiteral("sheet"));
         writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
         writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
@@ -495,23 +495,11 @@ void Workbook::saveToXmlFile(QIODevice *device) const
         else if (sheet->sheetState() == AbstractSheet::SS_VeryHidden)
             writer.writeAttribute(QStringLiteral("state"), QStringLiteral("veryHidden"));
 
-        d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(i+1));
-        writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
-    }
+        if (sheet->sheetType() == AbstractSheet::ST_WorkSheet)
+            d->relationships->addDocumentRelationship(QStringLiteral("/worksheet"), QStringLiteral("worksheets/sheet%1.xml").arg(++worksheetIndex));
+        else
+            d->relationships->addDocumentRelationship(QStringLiteral("/chartsheet"), QStringLiteral("chartsheets/sheet%1.xml").arg(++chartsheetIndex));
 
-    //chart sheets
-    QList<QSharedPointer<AbstractSheet> > chartsheets = getSheetsByTypes(AbstractSheet::ST_ChartSheet);
-    for (int i=0; i<chartsheets.size(); ++i) {
-        QSharedPointer<AbstractSheet> sheet = chartsheets[i];
-        writer.writeEmptyElement(QStringLiteral("sheet"));
-        writer.writeAttribute(QStringLiteral("name"), sheet->sheetName());
-        writer.writeAttribute(QStringLiteral("sheetId"), QString::number(sheet->sheetId()));
-        if (sheet->sheetState() == AbstractSheet::SS_Hidden)
-            writer.writeAttribute(QStringLiteral("state"), QStringLiteral("hidden"));
-        else if (sheet->sheetState() == AbstractSheet::SS_VeryHidden)
-            writer.writeAttribute(QStringLiteral("state"), QStringLiteral("veryHidden"));
-
-        d->relationships->addDocumentRelationship(QStringLiteral("/chartsheet"), QStringLiteral("chartsheets/sheet%1.xml").arg(i+1));
         writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId%1").arg(d->relationships->count()));
     }
     writer.writeEndElement();//sheets
