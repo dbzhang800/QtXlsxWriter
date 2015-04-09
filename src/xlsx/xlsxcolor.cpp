@@ -2,6 +2,7 @@
 #include "xlsxstyles_p.h"
 #include "xlsxutility_p.h"
 
+#include <QDataStream>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QDebug>
