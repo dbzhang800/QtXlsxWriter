@@ -424,6 +424,20 @@ bool Document::write(int row, int col, const QVariant &value, const Format &form
     return false;
 }
 
+bool Document::writeDuration(const CellReference &row_column, const qreal &value, const Format &format)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->writeDuration(row_column, value, format);
+    return false;
+}
+
+bool Document::writeDuration(int row, int col, const qreal &value, const Format &format)
+{
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->writeDuration(row, col, value, format);
+    return false;
+}
+
 /*!
     \overload
     Returns the contents of the cell \a cell.

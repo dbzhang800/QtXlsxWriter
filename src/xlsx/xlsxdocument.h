@@ -58,6 +58,8 @@ public:
 
     bool write(const CellReference &cell, const QVariant &value, const Format &format=Format());
     bool write(int row, int col, const QVariant &value, const Format &format=Format());
+    bool writeDuration(const CellReference &cell, const qreal &value, const Format &format=Format());
+    bool writeDuration(int row, int col, const qreal &value, const Format &format=Format());
     QVariant read(const CellReference &cell) const;
     QVariant read(int row, int col) const;
     bool insertImage(int row, int col, const QImage &image);
