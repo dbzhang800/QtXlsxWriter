@@ -140,6 +140,19 @@ public:
     bool isWhiteSpaceVisible() const;
     void setWhiteSpaceVisible(bool visible);
 
+    //PageSetup
+    int paperSize();
+    void setPaperSize(int size);
+    bool isLandscape();
+    bool isPortait();
+    void setOrientation(bool isPortait);
+    bool fitToPage();
+    void setFitToPage(bool fit);
+    int fitToWidth();
+    void setFitToWidth(int width);
+    int fitToHeight();
+    void setFitToHeight(int height);
+
     ~Worksheet();
 
 

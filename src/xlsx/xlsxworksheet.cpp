@@ -63,7 +63,9 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
     : AbstractSheetPrivate(p, flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
-  , showOutlineSymbols(true), showWhiteSpace(true), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
+  , showOutlineSymbols(true), showWhiteSpace(true)
+  , pageOrientationPortait(true), fitToPage(false)
+  , urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
 {
     previous_row = 0;
 
@@ -72,6 +74,10 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
 
     default_row_height = 15;
     default_row_zeroed = false;
+
+    paperSize = 9;
+    fitToHeight = -1;
+    fitToWidth = -1;
 }
 
 WorksheetPrivate::~WorksheetPrivate()
@@ -415,6 +421,72 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 {
     Q_D(Worksheet);
     d->showWhiteSpace = visible;
+}
+
+int Worksheet::paperSize()
+{
+    Q_D(const Worksheet);
+    return d->paperSize;
+}
+
+void Worksheet::setPaperSize(int size)
+{
+    Q_D(Worksheet);
+    d->paperSize = size;
+}
+
+bool Worksheet::isLandscape()
+{
+    Q_D(const Worksheet);
+    return !d->pageOrientationPortait;
+}
+
+bool Worksheet::isPortait()
+{
+    Q_D(const Worksheet);
+    return d->pageOrientationPortait;
+}
+
+void Worksheet::setOrientation(bool isPortait)
+{
+    Q_D(Worksheet);
+    d->pageOrientationPortait = isPortait;
+}
+
+bool Worksheet::fitToPage()
+{
+    Q_D(const Worksheet);
+    return d->fitToPage;
+}
+
+void Worksheet::setFitToPage(bool fit)
+{
+    Q_D(Worksheet);
+    d->fitToPage = fit;
+}
+
+int Worksheet::fitToWidth()
+{
+    Q_D(const Worksheet);
+    return d->fitToWidth;
+}
+
+void Worksheet::setFitToWidth(int width)
+{
+    Q_D(Worksheet);
+    d->fitToWidth = width;
+}
+
+int Worksheet::fitToHeight()
+{
+    Q_D(const Worksheet);
+    return d->fitToHeight;
+}
+
+void Worksheet::setFitToHeight(int height)
+{
+    Q_D(Worksheet);
+    d->fitToHeight = height;
 }
 
 /*!
@@ -1154,6 +1226,15 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     //    writer.writeAttribute("xmlns:x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
     //    writer.writeAttribute("mc:Ignorable", "x14ac");
 
+    //fit To Page
+    if (d->fitToPage) {
+        writer.writeStartElement(QStringLiteral("sheetPr"));
+        writer.writeStartElement(QStringLiteral("pageSetUpPr"));
+        writer.writeAttribute(QStringLiteral("fitToPage"), QStringLiteral("1"));
+        writer.writeEndElement();//pageSetUpPr
+        writer.writeEndElement();//sheetPr
+    }
+
     writer.writeStartElement(QStringLiteral("dimension"));
     writer.writeAttribute(QStringLiteral("ref"), d->generateDimensionString());
     writer.writeEndElement();//dimension
@@ -1228,6 +1309,26 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     if (d->dimension.isValid())
         d->saveXmlSheetData(writer);
     writer.writeEndElement();//sheetData
+
+    //PageSetup
+    //    writer.writeStartElement(QStringLiteral("pageMargins"));
+    //    writer.writeAttribute(QStringLiteral("left"), QStringLiteral("0.70866141732283472"));
+    //    writer.writeAttribute(QStringLiteral("right"), QStringLiteral("0.70866141732283472"));
+    //    writer.writeAttribute(QStringLiteral("top"), QStringLiteral("0.78740157480314965"));
+    //    writer.writeAttribute(QStringLiteral("bottom"), QStringLiteral("0.78740157480314965"));
+    //    writer.writeAttribute(QStringLiteral("header"), QStringLiteral("0.31496062992125984"));
+    //    writer.writeAttribute(QStringLiteral("footer"), QStringLiteral("0.31496062992125984"));
+    //    writer.writeEndElement();//pageMargins
+    writer.writeStartElement(QStringLiteral("pageSetup"));
+    writer.writeAttribute(QStringLiteral("r:id"), QStringLiteral("rId1"));
+    writer.writeAttribute(QStringLiteral("orientation"),
+                          (d->pageOrientationPortait ? QStringLiteral("portrait") : QStringLiteral("landscape")));
+    writer.writeAttribute(QStringLiteral("paperSize"), QString::number(d->paperSize));
+    if (d->fitToWidth > -1)
+        writer.writeAttribute(QStringLiteral("fitToWidth"), QString::number(d->fitToWidth));
+    if (d->fitToHeight > -1)
+        writer.writeAttribute(QStringLiteral("fitToHeight"), QString::number(d->fitToHeight));
+    writer.writeEndElement();//pageSetup
 
     d->saveXmlMergeCells(writer);
     foreach (const ConditionalFormatting cf, d->conditionalFormattingList)
@@ -2206,6 +2307,16 @@ void WorksheetPrivate::loadXmlHyperlinks(QXmlStreamReader &reader)
     }
 }
 
+void WorksheetPrivate::loadXmlPageSetup(QXmlStreamReader &reader)
+{
+    Q_ASSERT(reader.name() == QLatin1String("pageSetup"));
+    QXmlStreamAttributes attrs = reader.attributes();
+//    foreach (QXmlStreamAttribute at, attrs) {
+//        qDebug() << "load 3" << at.name() << at.value();
+//    }
+    attrs.value(QLatin1String("orientation")) == QLatin1String("QLatin1String");
+}
+
 QList <QSharedPointer<XlsxColumnInfo> > WorksheetPrivate::getColumnInfoList(int colFirst, int colLast)
 {
     QList <QSharedPointer<XlsxColumnInfo> > columnsInfoList;
@@ -2266,6 +2377,8 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 d->dimension = CellRange(range);
             } else if (reader.name() == QLatin1String("sheetViews")) {
                 d->loadXmlSheetViews(reader);
+            } else if (reader.name() == QLatin1String("pageSetup")) {
+                d->loadXmlPageSetup(reader);
             } else if (reader.name() == QLatin1String("sheetFormatPr")) {
                 d->loadXmlSheetFormatProps(reader);
             } else if (reader.name() == QLatin1String("cols")) {
