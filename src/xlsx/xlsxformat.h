@@ -167,6 +167,7 @@ public:
     void setFont(const QFont &font);
 
     HorizontalAlignment horizontalAlignment() const;
+    void setHorizontalAlignment(Qt::Alignment qtalign);
     void setHorizontalAlignment(HorizontalAlignment align);
     VerticalAlignment verticalAlignment() const;
     void setVerticalAlignment(VerticalAlignment align);

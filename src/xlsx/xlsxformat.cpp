@@ -565,6 +565,20 @@ Format::HorizontalAlignment Format::horizontalAlignment() const
     return static_cast<Format::HorizontalAlignment>(intProperty(FormatPrivate::P_Alignment_AlignH, AlignHGeneral));
 }
 
+void Format::setHorizontalAlignment(Qt::Alignment qtalign)
+{
+    HorizontalAlignment align;
+    switch (qtalign) {
+    case Qt::AlignLeft: align = AlignLeft; break;
+    case Qt::AlignRight: align = AlignRight; break;
+    case Qt::AlignHCenter: align = AlignHCenter; break;
+    default:
+        align = AlignLeft;
+        break;
+    }
+    setHorizontalAlignment(align);
+}
+
 /*!
  * Set the horizontal alignment with the given \a align.
  */

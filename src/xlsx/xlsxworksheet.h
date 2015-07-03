@@ -140,6 +140,23 @@ public:
     bool isWhiteSpaceVisible() const;
     void setWhiteSpaceVisible(bool visible);
 
+    //PageSetup
+    int paperSize();
+    /**
+     * Sets the paper size - see valid values on this website
+     *  https://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.pagesetup%28v=office.14%29.aspx  
+     */
+    void setPaperSize(int size);
+    bool isLandscape();
+    bool isPortait();
+    void setOrientation(bool isPortait);
+    bool fitToPage();
+    void setFitToPage(bool fit);
+    int fitToWidth();
+    void setFitToWidth(int width);
+    int fitToHeight();
+    void setFitToHeight(int height);
+
     ~Worksheet();
 
 

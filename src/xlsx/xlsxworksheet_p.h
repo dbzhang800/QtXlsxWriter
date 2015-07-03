@@ -178,6 +178,7 @@ public:
     void loadXmlSheetFormatProps(QXmlStreamReader &reader);
     void loadXmlSheetViews(QXmlStreamReader &reader);
     void loadXmlHyperlinks(QXmlStreamReader &reader);
+    void loadXmlPageSetup(QXmlStreamReader &reader);
 
     QList<QSharedPointer<XlsxRowInfo> > getRowInfoList(int rowFirst, int rowLast);
     QList <QSharedPointer<XlsxColumnInfo> > getColumnInfoList(int colFirst, int colLast);
@@ -223,6 +224,13 @@ public:
     bool showRuler;
     bool showOutlineSymbols;
     bool showWhiteSpace;
+
+    //pageSetup
+    int paperSize;
+    bool pageOrientationPortait;
+    bool fitToPage;
+    int fitToHeight;
+    int fitToWidth;
 
     QRegularExpression urlPattern;
 private:
