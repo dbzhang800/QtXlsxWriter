@@ -142,6 +142,10 @@ public:
 
     //PageSetup
     int paperSize();
+    /**
+     * Sets the paper size - see valid values on this website
+     *  https://msdn.microsoft.com/en-us/library/documentformat.openxml.spreadsheet.pagesetup%28v=office.14%29.aspx  
+     */
     void setPaperSize(int size);
     bool isLandscape();
     bool isPortait();
