@@ -178,6 +178,9 @@ bool ContentTypes::loadFromXmlFile(QIODevice *device)
     m_defaults.clear();
     m_overrides.clear();
 
+    // because we don't add any "rels" overrides
+    m_defaults.insert(QStringLiteral("rels"), m_package_prefix + QStringLiteral("relationships+xml"));
+
     QXmlStreamReader reader(device);
     while (!reader.atEnd()) {
         QXmlStreamReader::TokenType token = reader.readNext();
