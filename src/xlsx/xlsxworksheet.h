@@ -53,6 +53,14 @@ class Relationships;
 class Chart;
 
 class WorksheetPrivate;
+
+enum XlsxPanePos {
+    XLSX_PANE_BOTTOM_LEFT,
+    XLSX_PANE_BOTTOM_RIGHT,
+    XLSX_PANE_TOP_LEFT,
+    XLSX_PANE_TOP_RIGHT
+};
+
 class Q_XLSX_EXPORT Worksheet : public AbstractSheet
 {
     Q_DECLARE_PRIVATE(Worksheet)
@@ -118,6 +126,22 @@ public:
     bool groupColumns(int colFirst, int colLast, bool collapsed = true);
     bool groupColumns(const CellRange &range, bool collapsed = true);
     CellRange dimension() const;
+
+    bool freezePane(int row, int column, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+    bool freezePane(int row, int column, int topRow, int leftCol, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+    bool freezePane(const CellReference &cell, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+    bool freezePane(const CellReference &cell, const CellReference &topLeftCell, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+    bool splitPane(int xSplit, int ySplit, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+    bool splitPane(int xSplit, int ySplit, int topRow, int leftCol, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+    bool splitPane(int xSplit, int ySplit, const CellReference &topLeftCell, XlsxPanePos activePane = XLSX_PANE_BOTTOM_RIGHT);
+
+    bool setSelection(const CellReference &cell, const CellRange &range, XlsxPanePos pane = XLSX_PANE_BOTTOM_RIGHT);
+    bool setSelection(int row, int column, int firstRow, int firstColumn, int lastRow, int lastColumn, XlsxPanePos pane = XLSX_PANE_BOTTOM_RIGHT);
+    bool setSelection(const CellReference &cell, XlsxPanePos pane = XLSX_PANE_BOTTOM_RIGHT);
+    bool setSelection(int row, int column, XlsxPanePos pane = XLSX_PANE_BOTTOM_RIGHT);
+
+    bool setAutoFilter(const CellRange &range);
+    bool setAutoFilter(int firstRow, int firstColumn, int lastRow, int lastColumn);
 
     bool isWindowProtected() const;
     void setWindowProtected(bool protect);
