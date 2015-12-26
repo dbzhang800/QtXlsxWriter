@@ -72,6 +72,9 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
 
     default_row_height = 15;
     default_row_zeroed = false;
+
+    pane = 0;
+    autoFilter = 0;
 }
 
 WorksheetPrivate::~WorksheetPrivate()
@@ -1209,14 +1212,16 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
 	}
 	for (int i = 0; i < d->selections.size(); ++i) {
 		writer.writeStartElement(QStringLiteral("selection"));
-		QString pane;
-		switch (d->selections.at(i).pane) {
-			case XLSX_PANE_BOTTOM_LEFT: pane = QStringLiteral("bottomLeft"); break;
-			case XLSX_PANE_BOTTOM_RIGHT: pane = QStringLiteral("bottomRight"); break;
-			case XLSX_PANE_TOP_LEFT: pane = QStringLiteral("topLeft"); break;
-			case XLSX_PANE_TOP_RIGHT: pane = QStringLiteral("topRight"); break;
+		if (d->pane) {
+			QString pane;
+			switch (d->selections.at(i).pane) {
+				case XLSX_PANE_BOTTOM_LEFT: pane = QStringLiteral("bottomLeft"); break;
+				case XLSX_PANE_BOTTOM_RIGHT: pane = QStringLiteral("bottomRight"); break;
+				case XLSX_PANE_TOP_LEFT: pane = QStringLiteral("topLeft"); break;
+				case XLSX_PANE_TOP_RIGHT: pane = QStringLiteral("topRight"); break;
+			}
+			writer.writeAttribute(QStringLiteral("pane"), pane);
 		}
-		writer.writeAttribute(QStringLiteral("pane"), pane);
 		writer.writeAttribute(QStringLiteral("activeCell"), d->selections.at(i).activeCell.toString());
 		writer.writeAttribute(QStringLiteral("sqref"), d->selections.at(i).sqref.toString());
 		writer.writeEndElement();
