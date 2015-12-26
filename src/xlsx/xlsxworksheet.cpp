@@ -72,6 +72,9 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
 
     default_row_height = 15;
     default_row_zeroed = false;
+
+    pane = 0;
+    autoFilter = 0;
 }
 
 WorksheetPrivate::~WorksheetPrivate()
@@ -1181,6 +1184,48 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     if (!d->showWhiteSpace)
         writer.writeAttribute(QStringLiteral("showWhiteSpace"), QStringLiteral("0"));
     writer.writeAttribute(QStringLiteral("workbookViewId"), QStringLiteral("0"));
+	if (d->pane) {
+		writer.writeStartElement(QStringLiteral("pane"));
+		if (d->pane->xSplit) {
+			writer.writeAttribute(QStringLiteral("xSplit"), QString::number(d->pane->xSplit));
+		}
+		if (d->pane->ySplit) {
+			writer.writeAttribute(QStringLiteral("ySplit"), QString::number(d->pane->ySplit));
+		}
+		writer.writeAttribute(QStringLiteral("topLeftCell"), d->pane->topLeftCell.toString());
+		QString activePane;
+		switch (d->pane->activePane) {
+			case XLSX_PANE_BOTTOM_LEFT: activePane = QStringLiteral("bottomLeft"); break;
+			case XLSX_PANE_BOTTOM_RIGHT: activePane = QStringLiteral("bottomRight"); break;
+			case XLSX_PANE_TOP_LEFT: activePane = QStringLiteral("topLeft"); break;
+			case XLSX_PANE_TOP_RIGHT: activePane = QStringLiteral("topRight"); break;
+		}
+		writer.writeAttribute(QStringLiteral("activePane"), activePane);
+		QString state;
+		switch (d->pane->state) {
+			case XLSX_PANE_FROZEN: state = QStringLiteral("frozen"); break;
+			case XLSX_PANE_FROZEN_SPLIT: state = QStringLiteral("frozenSplit"); break;
+			case XLSX_PANE_SPLIT: state = QStringLiteral("split"); break;
+		}
+		writer.writeAttribute(QStringLiteral("state"), state);
+		writer.writeEndElement();
+	}
+	for (int i = 0; i < d->selections.size(); ++i) {
+		writer.writeStartElement(QStringLiteral("selection"));
+		if (d->pane) {
+			QString pane;
+			switch (d->selections.at(i).pane) {
+				case XLSX_PANE_BOTTOM_LEFT: pane = QStringLiteral("bottomLeft"); break;
+				case XLSX_PANE_BOTTOM_RIGHT: pane = QStringLiteral("bottomRight"); break;
+				case XLSX_PANE_TOP_LEFT: pane = QStringLiteral("topLeft"); break;
+				case XLSX_PANE_TOP_RIGHT: pane = QStringLiteral("topRight"); break;
+			}
+			writer.writeAttribute(QStringLiteral("pane"), pane);
+		}
+		writer.writeAttribute(QStringLiteral("activeCell"), d->selections.at(i).activeCell.toString());
+		writer.writeAttribute(QStringLiteral("sqref"), d->selections.at(i).sqref.toString());
+		writer.writeEndElement();
+	}
     writer.writeEndElement();//sheetView
     writer.writeEndElement();//sheetViews
 
@@ -1228,6 +1273,12 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     if (d->dimension.isValid())
         d->saveXmlSheetData(writer);
     writer.writeEndElement();//sheetData
+	
+	if (d->autoFilter) {
+		writer.writeStartElement(QStringLiteral("autoFilter"));
+		writer.writeAttribute(QStringLiteral("ref"), d->autoFilter->ref.toString());
+		writer.writeEndElement();
+	}
 
     d->saveXmlMergeCells(writer);
     foreach (const ConditionalFormatting cf, d->conditionalFormattingList)
@@ -1860,6 +1911,162 @@ CellRange Worksheet::dimension() const
     return d->dimension;
 }
 
+/*!
+   Create worksheet panes and mark them as frozen.
+   \a cell is the location of the split.
+   \a topLeftCell is the top left most visible cell in the scrolling pane.
+   \a activePane is the pane where scrolling occurs.
+   Returns false if error occurs.
+*/
+bool Worksheet::freezePane(const CellReference &cell, const CellReference &topLeftCell, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    Q_D(Worksheet);
+    if (!d->pane) {
+        d->pane = new XlsxPane;
+    }
+    d->pane->xSplit = cell.row();
+    d->pane->ySplit = cell.column();
+    d->pane->topLeftCell = topLeftCell;
+    d->pane->state = XLSX_PANE_FROZEN;
+    d->pane->activePane = activePane;
+    return true;
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::freezePane(int row, int column, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    return freezePane(CellReference(row, column), CellReference(row, column), activePane);
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::freezePane(int row, int column, int topRow, int leftCol, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    return freezePane(CellReference(row, column), CellReference(topRow, leftCol), activePane);
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::freezePane(const CellReference &cell, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    return freezePane(cell, cell, activePane);
+}
+
+/*!
+   Create worksheet panes and mark them as split.
+   \a xSplit is the location of the vertical split.
+   \a ySplit is the location of the horizontal split.
+   \a topLeftCell is the top left most visible cell in the scrolling pane.
+   \a activePane is the pane where scrolling occurs.
+   Returns false if error occurs.
+*/
+bool Worksheet::splitPane(int xSplit, int ySplit, const CellReference &topLeftCell, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    Q_D(Worksheet);
+    if (!d->pane) {
+        d->pane = new XlsxPane;
+    }
+    d->pane->xSplit = xSplit;
+    d->pane->ySplit = ySplit;
+    d->pane->topLeftCell = topLeftCell;
+    d->pane->state = XLSX_PANE_SPLIT;
+    d->pane->activePane = activePane;
+    return true;
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::splitPane(int xSplit, int ySplit, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    return splitPane(xSplit, ySplit, CellReference(0, 0), activePane);
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::splitPane(int xSplit, int ySplit, int topRow, int leftCol, XlsxPanePos activePane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    return splitPane(xSplit, ySplit, CellReference(topRow, leftCol), activePane);
+}
+
+
+/*!
+   Select a \a range and activate a \a cell in the worksheet.
+   Returns false if error occurs.
+*/
+bool Worksheet::setSelection(const CellReference &cell, const CellRange &range, XlsxPanePos pane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    Q_D(Worksheet);
+    QMutableListIterator<XlsxSelection> iter(d->selections);
+    while (iter.hasNext()) {
+        if (iter.next().pane == pane)
+            iter.remove();
+    }
+    XlsxSelection selection;
+    selection.activeCell = cell;
+    selection.sqref = range;
+    selection.pane = pane;
+    d->selections.append(selection);
+    return true;
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::setSelection(int row, int column, int firstRow, int firstColumn, int lastRow, int lastColumn, XlsxPanePos pane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    CellReference cell = CellReference(row, column);
+    CellRange range = CellRange(firstRow, firstColumn, lastRow, lastColumn);
+    return setSelection(cell, range, pane);
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::setSelection(const CellReference &cell, XlsxPanePos pane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    CellRange range = CellRange(cell, cell);
+    return setSelection(cell, range, pane);
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::setSelection(int row, int column, XlsxPanePos pane /* = XLSX_PANE_BOTTOM_RIGHT */)
+{
+    CellReference cell = CellReference(row, column);
+    CellRange range = CellRange(row, column, row, column);
+    return setSelection(cell, range, pane);
+}
+
+/*!
+   Sets an auto filter on a \a range.
+   Returns false if error occurs.
+*/
+bool Worksheet::setAutoFilter(const CellRange &range)
+{
+    Q_D(Worksheet);
+    if (!d->autoFilter) {
+        d->autoFilter = new XlsxAutoFilter;
+    }
+    d->autoFilter->ref = range;
+    return true;
+}
+
+/*!
+    \overload
+ */
+bool Worksheet::setAutoFilter(int firstRow, int firstColumn, int lastRow, int lastColumn)
+{
+    CellRange range = CellRange(firstRow, firstColumn, lastRow, lastColumn);
+    return setAutoFilter(range);
+}
+
 /*
  Convert the height of a cell from user's units to pixels. If the
  height hasn't been set by the user we use the default value. If
@@ -2114,24 +2321,79 @@ void WorksheetPrivate::loadXmlSheetViews(QXmlStreamReader &reader)
 {
     Q_ASSERT(reader.name() == QLatin1String("sheetViews"));
 
+    if (pane) delete pane;
+	pane = 0;
+	selections.clear();
     while (!reader.atEnd() && !(reader.name() == QLatin1String("sheetViews")
             && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
-        if (reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == QLatin1String("sheetView")) {
-            QXmlStreamAttributes attrs = reader.attributes();
-            //default false
-            windowProtection = attrs.value(QLatin1String("windowProtection")) == QLatin1String("1");
-            showFormulas = attrs.value(QLatin1String("showFormulas")) == QLatin1String("1");
-            rightToLeft = attrs.value(QLatin1String("rightToLeft")) == QLatin1String("1");
-            tabSelected = attrs.value(QLatin1String("tabSelected")) == QLatin1String("1");
-            //default true
-            showGridLines = attrs.value(QLatin1String("showGridLines")) != QLatin1String("0");
-            showRowColHeaders = attrs.value(QLatin1String("showRowColHeaders")) != QLatin1String("0");
-            showZeros = attrs.value(QLatin1String("showZeros")) != QLatin1String("0");
-            showRuler = attrs.value(QLatin1String("showRuler")) != QLatin1String("0");
-            showOutlineSymbols = attrs.value(QLatin1String("showOutlineSymbols")) != QLatin1String("0");
-            showWhiteSpace = attrs.value(QLatin1String("showWhiteSpace")) != QLatin1String("0");
-        }
+        if (reader.tokenType() == QXmlStreamReader::StartElement) {
+			if (reader.name() == QLatin1String("sheetView")) {
+				QXmlStreamAttributes attrs = reader.attributes();
+				//default false
+				windowProtection = attrs.value(QLatin1String("windowProtection")) == QLatin1String("1");
+				showFormulas = attrs.value(QLatin1String("showFormulas")) == QLatin1String("1");
+				rightToLeft = attrs.value(QLatin1String("rightToLeft")) == QLatin1String("1");
+				tabSelected = attrs.value(QLatin1String("tabSelected")) == QLatin1String("1");
+				//default true
+				showGridLines = attrs.value(QLatin1String("showGridLines")) != QLatin1String("0");
+				showRowColHeaders = attrs.value(QLatin1String("showRowColHeaders")) != QLatin1String("0");
+				showZeros = attrs.value(QLatin1String("showZeros")) != QLatin1String("0");
+				showRuler = attrs.value(QLatin1String("showRuler")) != QLatin1String("0");
+				showOutlineSymbols = attrs.value(QLatin1String("showOutlineSymbols")) != QLatin1String("0");
+				showWhiteSpace = attrs.value(QLatin1String("showWhiteSpace")) != QLatin1String("0");
+			} else if (reader.name() == QLatin1String("pane")) {
+				QXmlStreamAttributes attrs = reader.attributes();
+				pane = new XlsxPane;
+				// default 0
+				pane->xSplit = 0;
+				pane->ySplit = 0;
+				if (attrs.hasAttribute(QLatin1String("xSplit"))) {
+					pane->xSplit = attrs.value(QLatin1String("xSplit")).toString().toInt();
+				}
+				if (attrs.hasAttribute(QLatin1String("ySplit"))) {
+					pane->ySplit = attrs.value(QLatin1String("ySplit")).toString().toInt();
+				}
+				pane->topLeftCell = CellReference(attrs.value(QLatin1String("topLeftCell")).toString());
+				// default bottomLeft
+				QString activePane = attrs.value(QLatin1String("activePane")).toString();
+				if (activePane == QStringLiteral("bottomRight")) {
+					pane->activePane = XLSX_PANE_BOTTOM_RIGHT;
+				} else if (activePane == QStringLiteral("topLeft")) {
+					pane->activePane = XLSX_PANE_TOP_LEFT;
+				} else if (activePane == QStringLiteral("topRight")) {
+					pane->activePane = XLSX_PANE_TOP_RIGHT;
+				} else {
+					pane->activePane = XLSX_PANE_BOTTOM_LEFT;
+				}
+				// default split
+				QString state = attrs.value(QLatin1String("state")).toString();
+				if (state == QStringLiteral("frozen")) {
+					pane->state = XLSX_PANE_FROZEN;
+				} else if (state == QStringLiteral("frozenSplit")) {
+					pane->state = XLSX_PANE_FROZEN_SPLIT;
+				} else {
+					pane->state = XLSX_PANE_SPLIT;
+				}
+			} else if (reader.name() == QLatin1String("selection")) {
+				QXmlStreamAttributes attrs = reader.attributes();
+				XlsxSelection selection;
+				// default bottomLeft
+				QString pane = attrs.value(QLatin1String("pane")).toString();
+				if (pane == QStringLiteral("bottomRight")) {
+					selection.pane = XLSX_PANE_BOTTOM_RIGHT;
+				} else if (pane == QStringLiteral("topLeft")) {
+					selection.pane = XLSX_PANE_TOP_LEFT;
+				} else if (pane == QStringLiteral("topRight")) {
+					selection.pane = XLSX_PANE_TOP_RIGHT;
+				} else {
+					selection.pane = XLSX_PANE_BOTTOM_LEFT;
+				}
+				selection.activeCell = CellReference(attrs.value(QLatin1String("activeCell")).toString());
+				selection.sqref = CellRange(attrs.value(QLatin1String("sqref")).toString());
+				selections.append(selection);
+			}
+		}
     }
 }
 
@@ -2257,6 +2519,8 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
     Q_D(Worksheet);
 
     QXmlStreamReader reader(device);
+    if (d->autoFilter) delete d->autoFilter;
+	d->autoFilter = 0;
     while (!reader.atEnd()) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
@@ -2294,7 +2558,11 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                                             && reader.tokenType() == QXmlStreamReader::EndElement)) {
                     reader.readNextStartElement();
                 }
-            }
+            } else if (reader.name() == QLatin1String("autoFilter")) {
+				QXmlStreamAttributes attrs = reader.attributes();
+				d->autoFilter = new XlsxAutoFilter;
+				d->autoFilter->ref = CellRange(attrs.value(QLatin1String("ref")).toString());
+			}
         }
     }
 
