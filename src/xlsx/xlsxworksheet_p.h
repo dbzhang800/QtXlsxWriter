@@ -45,7 +45,13 @@
 
 #include <QImage>
 #include <QSharedPointer>
-#include <QRegularExpression>
+
+#if QT_VERSION < 0x050000
+  #include <QRegExp>
+  #define QRegularExpression QRegExp
+#else
+  #include <QRegularExpression>
+#endif
 
 class QXmlStreamWriter;
 class QXmlStreamReader;
@@ -142,7 +148,7 @@ struct XlsxColumnInfo
     int firstColumn;
     int lastColumn;
     bool customWidth;
-    double width;    
+    double width;
     Format format;
     bool hidden;
     int outlineLevel;

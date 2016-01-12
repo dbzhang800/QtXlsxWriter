@@ -22,34 +22,33 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-
 #include "xlsxzipreader_p.h"
+#include "qzlibreader.h"
 
-#include <private/qzipreader_p.h>
 
 namespace QXlsx {
 
-ZipReader::ZipReader(const QString &filePath) :
-    m_reader(new QZipReader(filePath))
+ZipReader::ZipReader(const QString &filePath)
 {
+    m_reader = new QZLibReader(filePath);
     init();
 }
 
-ZipReader::ZipReader(QIODevice *device) :
-    m_reader(new QZipReader(device))
+ZipReader::ZipReader(QIODevice *device)
 {
-    init();
+  m_reader = new QZLibReader(device);
+  init();
 }
 
 ZipReader::~ZipReader()
 {
-
+  delete m_reader;
 }
 
 void ZipReader::init()
 {
-    QList<QZipReader::FileInfo> allFiles = m_reader->fileInfoList();
-    foreach (const QZipReader::FileInfo &fi, allFiles) {
+    QList<QZLibReader::FileInfo> allFiles = m_reader->fileInfoList();
+    foreach (const QZLibReader::FileInfo &fi, allFiles) {
         if (fi.isFile)
             m_filePaths.append(fi.filePath);
     }

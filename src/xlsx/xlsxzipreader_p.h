@@ -40,7 +40,7 @@
 #include "xlsxglobal.h"
 #include <QScopedPointer>
 #include <QStringList>
-class QZipReader;
+class QZLibReader;
 class QIODevice;
 
 namespace QXlsx {
@@ -58,7 +58,7 @@ public:
 private:
     Q_DISABLE_COPY(ZipReader)
     void init();
-    QScopedPointer<QZipReader> m_reader;
+    QZLibReader *m_reader;
     QStringList m_filePaths;
 };
 

@@ -67,7 +67,7 @@ public:
     SharedStrings(CreateFlag flag);
     int count() const;
     bool isEmpty() const;
-    
+
     int addSharedString(const QString &string);
     int addSharedString(const RichString &string);
     void removeSharedString(const QString &string);

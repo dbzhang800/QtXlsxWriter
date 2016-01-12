@@ -33,6 +33,7 @@
 #include <QXmlStreamWriter>
 #include <QDebug>
 
+
 QT_BEGIN_NAMESPACE_XLSX
 
 ChartPrivate::ChartPrivate(Chart *q, Chart::CreateFlag flag)

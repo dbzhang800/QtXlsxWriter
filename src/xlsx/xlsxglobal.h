@@ -26,6 +26,15 @@
 #define XLSXGLOBAL_H
 #include <QtGlobal>
 
+#if QT_VERSION < 0x050000
+#ifndef QStringLiteral
+# define QStringLiteral(str) QString::fromUtf8("" str "", sizeof(str) - 1)
+#endif
+#define Q_DECL_NOTHROW
+//#define UnknownType Void
+#endif
+
+
 #define QT_BEGIN_NAMESPACE_XLSX namespace QXlsx {
 #define QT_END_NAMESPACE_XLSX }
 #define QTXLSX_USE_NAMESPACE using namespace QXlsx;

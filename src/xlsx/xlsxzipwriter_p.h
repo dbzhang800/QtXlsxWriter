@@ -38,7 +38,7 @@
 
 #include <QString>
 class QIODevice;
-class QZipWriter;
+class QZLibWriter;
 
 namespace QXlsx {
 
@@ -55,7 +55,7 @@ public:
     void close();
 
 private:
-    QZipWriter *m_writer;
+    QZLibWriter *m_writer;
 };
 
 } // namespace QXlsx

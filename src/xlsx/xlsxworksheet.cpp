@@ -42,12 +42,12 @@
 #include "xlsxcellformula.h"
 #include "xlsxcellformula_p.h"
 
+
 #include <QVariant>
 #include <QDateTime>
 #include <QPoint>
 #include <QFile>
 #include <QUrl>
-#include <QRegularExpression>
 #include <QDebug>
 #include <QBuffer>
 #include <QXmlStreamWriter>
@@ -2299,6 +2299,7 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
     }
 
     d->validateDimension();
+    //qDebug() << sheetName() << dimension().firstRow() << dimension().lastRow();
     return true;
 }
 
