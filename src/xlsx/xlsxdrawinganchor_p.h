@@ -32,6 +32,7 @@
 #include <QSize>
 #include <QString>
 #include <QSharedPointer>
+#include <QImage>
 
 class QXmlStreamReader;
 class QXmlStreamWriter;

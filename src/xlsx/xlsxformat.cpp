@@ -29,6 +29,7 @@
 #include <QDataStream>
 #include <QDebug>
 
+
 QT_BEGIN_NAMESPACE_XLSX
 
 FormatPrivate::FormatPrivate()

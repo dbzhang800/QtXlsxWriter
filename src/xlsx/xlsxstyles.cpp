@@ -34,6 +34,12 @@
 #include <QDebug>
 #include <QBuffer>
 
+#if QT_VERSION < 0x050000
+#define QMetaType_UnknownType QMetaType::Void
+#else
+#define QMetaType_UnknownType QMetaType::UnknownType
+#endif
+
 namespace QXlsx {
 
 /*
@@ -48,7 +54,7 @@ Styles::Styles(CreateFlag flag)
     //!Fix me. Should the custom num fmt Id starts with 164 or 176 or others??
 
     //!Fix me! Where should we put these register code?
-    if (QMetaType::type("XlsxColor") == QMetaType::UnknownType) {
+    if (QMetaType::type("XlsxColor") == QMetaType_UnknownType) {
         qRegisterMetaType<XlsxColor>("XlsxColor");
         qRegisterMetaTypeStreamOperators<XlsxColor>("XlsxColor");
 #if QT_VERSION >= 0x050200

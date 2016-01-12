@@ -31,6 +31,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+
 QT_BEGIN_NAMESPACE_XLSX
 
 DataValidationPrivate::DataValidationPrivate()
@@ -444,7 +445,7 @@ bool DataValidation::saveToXml(QXmlStreamWriter &writer) const
     QStringList sqref;
     foreach (CellRange range, ranges())
         sqref.append(range.toString());
-    writer.writeAttribute(QStringLiteral("sqref"), sqref.join(QLatin1Char(' ')));
+    writer.writeAttribute(QStringLiteral("sqref"), sqref.join(QChar(' ')));
 
     if (!formula1().isEmpty())
         writer.writeTextElement(QStringLiteral("formula1"), formula1());

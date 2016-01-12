@@ -27,12 +27,18 @@
 
 #include <QString>
 #include <QPoint>
-#include <QRegularExpression>
 #include <QMap>
 #include <QStringList>
 #include <QColor>
 #include <QDateTime>
 #include <QDebug>
+
+#if QT_VERSION < 0x050000
+  #include <QRegExp>
+  #define QRegularExpression QRegExp
+#else
+  #include <QRegularExpression>
+#endif
 
 namespace QXlsx {
 

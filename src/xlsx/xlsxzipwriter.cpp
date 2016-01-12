@@ -24,20 +24,20 @@
 ****************************************************************************/
 #include "xlsxzipwriter_p.h"
 #include <QDebug>
-#include <private/qzipwriter_p.h>
+#include "qzlibwriter.h"
 
 namespace QXlsx {
 
 ZipWriter::ZipWriter(const QString &filePath)
 {
-    m_writer = new QZipWriter(filePath, QIODevice::WriteOnly);
-    m_writer->setCompressionPolicy(QZipWriter::AutoCompress);
+    m_writer = new QZLibWriter(filePath, QIODevice::WriteOnly);
+    m_writer->setCompressionPolicy(QZLibWriter::AutoCompress);
 }
 
 ZipWriter::ZipWriter(QIODevice *device)
 {
-    m_writer = new QZipWriter(device);
-    m_writer->setCompressionPolicy(QZipWriter::AutoCompress);
+    m_writer = new QZLibWriter(device);
+    m_writer->setCompressionPolicy(QZLibWriter::AutoCompress);
 }
 
 ZipWriter::~ZipWriter()
@@ -47,7 +47,7 @@ ZipWriter::~ZipWriter()
 
 bool ZipWriter::error() const
 {
-    return m_writer->status() != QZipWriter::NoError;
+    return m_writer->status() != QZLibWriter::NoError;
 }
 
 void ZipWriter::addFile(const QString &filePath, QIODevice *device)
