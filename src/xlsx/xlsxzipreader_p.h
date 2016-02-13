@@ -40,6 +40,9 @@
 #include "xlsxglobal.h"
 #include <QScopedPointer>
 #include <QStringList>
+#if QT_VERSION >= 0x050600
+#include <QVector>
+#endif
 class QZipReader;
 class QIODevice;
 
