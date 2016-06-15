@@ -1,4 +1,7 @@
-# create a test-enabled library first (export more functions than regular DLL)
+#
+# create a test-enabled library before creating tests
+# themselves (export more functions than regular DLL)
+#
 
 # Create a fake private/ include folder 
 # in the compilation tree to allow the
