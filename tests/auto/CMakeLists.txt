@@ -28,6 +28,7 @@ endif()
 
 file(MAKE_DIRECTORY "${QtXlsxWriter_PRIVATE_SOURCE_FILES}/private")
 
+
 # and copy all private includes in it
 file(GLOB private_includes ${CMAKE_CURRENT_SOURCE_DIR}/../../src/xlsx/*_p.h)
 foreach(private_include ${private_includes})
@@ -37,8 +38,9 @@ foreach(private_include ${private_includes})
 	file(COPY ${private_include} DESTINATION ${QtXlsxWriter_PRIVATE_SOURCE_FILES}/private)
 endforeach()
 
-
 add_definitions(-DXLSX_TESTS)
+add_definitions(-DXLSX_NO_LIB)
+
 foreach(test IN ITEMS ${TESTS})
 	if(DEBUG)
 		message("configure test '${test}'")
@@ -56,5 +58,5 @@ foreach(test IN ITEMS ${TESTS})
 	target_link_libraries(${test}_testDriver ${Qt5Core_LIBRARIES})
 	target_link_libraries(${test}_testDriver ${Qt5Gui_LIBRARIES})
 	target_link_libraries(${test}_testDriver ${Qt5Test_LIBRARIES})
-	add_test(NAME ${test} COMMAND ${test}_testDriver -C $<CONFIGURATION>)
+	add_test(NAME ${test} COMMAND ${test}_testDriver)
 endforeach(test)
