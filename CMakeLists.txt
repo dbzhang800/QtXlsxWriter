@@ -34,7 +34,13 @@ if(BUILD_TESTS)
 endif()
 
 if(BUILD_EXAMPLES)
-	add_subdirectory(examples)
+
+  
+    add_custom_command(TARGET QtXlsxWriter POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -E copy_directory $<CONFIGURATION> ${CMAKE_CURRENT_BINARY_DIR}/examples/xlsx/$<CONFIGURATION>)
+
+	add_subdirectory(examples/xlsx)
 endif()
 
 #####
