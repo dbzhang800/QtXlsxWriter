@@ -1,0 +1,40 @@
+#########################################
+#
+# Cmake QtXlsxWriter configuration file
+# 
+#  Usage from an external project:
+#    In your CMakeLists.txt, add these lines:
+#
+#    FIND_PACKAGE(QtXlsxWriter REQUIRED)
+#    TARGET_LINK_LIBRARIES(MY_TARGET_NAME ${QtXlsxWriter_LIBS})
+#
+#    This file will define the following variables:
+#
+#      - QtXlsxWriter_BIN                      : The list of libraries to link against (.DLL, .SO).
+#      - QtXlsxWriter_LIBS                     : The list of libraries to link against (LIB, .A).
+#      - QtXlsxWriter_LIB_DIR                  : The directory(es) where lib files are. Calling LINK_DIRECTORIES 
+#                                              with this path is NOT needed.
+#      - QtXlsxWriter_INCLUDE_DIRS             : The QtXlsxWriter include directories (automatically added)
+#
+#########################################
+
+if(CMAKE_VERSION VERSION_GREATER 2.6.2)
+    unset(QtXlsxWriter_CONFIG_PATH CACHE)
+endif()
+
+set(QtXlsxWriter_CONFIG_PATH "@QtXlsxWriter_CONFIG_PATH@")
+set(QtXlsxWriter_FOUND TRUE CACHE BOOL "" FORCE)
+set(QtXlsxWriter_LIBS QtXlsxWriter)
+set(QtXlsxWriter_LIB_BIN      ${QtXlsxWriter_CONFIG_PATH}/bin)
+set(QtXlsxWriter_LIB_DIR      ${QtXlsxWriter_CONFIG_PATH}/lib)
+set(QtXlsxWriter_INCLUDE_DIRS ${QtXlsxWriter_CONFIG_PATH}/include)
+
+include_directories(BEFORE    ${QtXlsxWriter_INCLUDE_DIRS})
+
+link_directories( ${LINK_DIRECTORIES} ${QtXlsxWriter_LIB_DIR} )
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args( QtXlsxWriter DEFAULT_MSG
+                                     QtXlsxWriter_LIBS  QtXlsxWriter_INCLUDE_DIRS)
+
+mark_as_advanced(FORCE QtXlsxWriter_LIBS QtXlsxWriter_LIB_DIR QtXlsxWriter_INCLUDE_DIRS)
