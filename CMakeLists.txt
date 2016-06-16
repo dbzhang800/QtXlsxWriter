@@ -29,13 +29,24 @@ set_target_properties(QtXlsxWriter PROPERTIES DEBUG_POSTFIX "d")
 target_link_libraries(QtXlsxWriter ${Qt5Core_LIBRARIES})
 target_link_libraries(QtXlsxWriter ${Qt5Gui_LIBRARIES})
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
 if(BUILD_EXAMPLES)
-	add_subdirectory(examples)
+    add_custom_command(TARGET QtXlsxWriter POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -E copy_directory $<CONFIGURATION> ${CMAKE_CURRENT_BINARY_DIR}/examples/xlsx/$<CONFIGURATION>)
+	add_subdirectory(examples/xlsx)
 endif()
+
+##
+#
+# QtxlsxwriterVersion.cmake creation
+#
+##
+set(QtXlsxWriter_CONFIG_PATH ${CMAKE_INSTALL_PREFIX})
+configure_file(QtXlsxWriterConfig.cmake.in QtXlsxWriterConfig.cmake @ONLY)
 
 #####
 #
@@ -43,10 +54,12 @@ endif()
 #
 #####
 INSTALL(TARGETS QtXlsxWriter
-  RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/bin
-  LIBRARY DESTINATION ${CMAKE_BUILD_TYPE}/lib
-  ARCHIVE DESTINATION ${CMAKE_BUILD_TYPE}/lib
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
 )
+
+INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/QtXlsxWriterConfig.cmake DESTINATION /)
 
 SET(INCLUDE_FILES 
   src/xlsx/xlsxabstractooxmlfile.h
@@ -66,6 +79,5 @@ SET(INCLUDE_FILES
   src/xlsx/xlsxworkbook.h
   src/xlsx/xlsxworksheet.h
 )
-INSTALL(FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_BUILD_TYPE}/include)
-
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION include)
 
