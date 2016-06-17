@@ -25,7 +25,14 @@ include_directories(
 
 add_library(QtXlsxWriter SHARED "${QtXlsxWriter_SOURCE_FILES}")
 
-set_target_properties(QtXlsxWriter PROPERTIES DEBUG_POSTFIX "d")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set_target_properties(QtXlsxWriter PROPERTIES DEBUG_POSTFIX "_debug")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+      
+if(WIN32)
+    set_target_properties(QtXlsxWriter PROPERTIES DEBUG_POSTFIX "d")
+endif(WIN32)
+
 target_link_libraries(QtXlsxWriter ${Qt5Core_LIBRARIES})
 target_link_libraries(QtXlsxWriter ${Qt5Gui_LIBRARIES})
 
