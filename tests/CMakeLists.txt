@@ -45,8 +45,16 @@ add_definitions(-DQT_BUILD_XLSX_LIB)
 add_definitions(-DXLSX_TEST)
 add_library(QtXlsxWriterTest SHARED "${QtXlsxWriterTest_SOURCE_FILES}")
   
-set_target_properties(QtXlsxWriterTest PROPERTIES DEBUG_POSTFIX "d")
-  
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set_target_properties(QtXlsxWriterTest PROPERTIES DEBUG_POSTFIX "_debug")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+      
+if(WIN32)
+    set_target_properties(QtXlsxWriterTest PROPERTIES DEBUG_POSTFIX "d")
+endif(WIN32)
+
+
 target_link_libraries(QtXlsxWriterTest ${Qt5Core_LIBRARIES})
 target_link_libraries(QtXlsxWriterTest ${Qt5Gui_LIBRARIES})
 
