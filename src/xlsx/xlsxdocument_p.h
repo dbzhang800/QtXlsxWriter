@@ -60,8 +60,8 @@ public:
     QString packageName; //name of the .xlsx file
 
     QMap<QString, QString> documentProperties; //core, app and custom properties
-    QSharedPointer<Workbook> workbook;
-    QSharedPointer<ContentTypes> contentTypes;
+    Workbook* workbook;
+    ContentTypes* contentTypes;
 };
 
 }
