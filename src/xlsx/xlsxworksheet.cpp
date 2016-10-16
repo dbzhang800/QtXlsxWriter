@@ -1155,6 +1155,12 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     //    writer.writeAttribute("xmlns:x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
     //    writer.writeAttribute("mc:Ignorable", "x14ac");
     
+    writer.writeStartElement(QStringLiteral("sheetPr"));
+    writer.writeAttribute(QStringLiteral("filterMode"), "false");
+    writer.writeStartElement(QStringLiteral("pageSetUpPr"));
+    writer.writeAttribute(QStringLiteral("fitToPage"), "true");
+    writer.writeEndElement();
+    writer.writeEndElement();
     
     writer.writeStartElement(QStringLiteral("dimension"));
     writer.writeAttribute(QStringLiteral("ref"), d->generateDimensionString());
