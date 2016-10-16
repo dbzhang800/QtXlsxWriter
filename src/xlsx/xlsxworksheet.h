@@ -140,7 +140,7 @@ public:
     void setOutlineSymbolsVisible(bool visible);
     bool isWhiteSpaceVisible() const;
     void setWhiteSpaceVisible(bool visible);
-    void setPageOrientationLandscape(bool landscape); 
+  
 
     ~Worksheet();
 
