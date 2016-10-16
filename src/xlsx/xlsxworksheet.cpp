@@ -897,7 +897,8 @@ bool Worksheet::writeTime(const CellReference &row_column, const QTime &t, const
 /*!
     Write a QTime \a t to the cell (\a row, \a column) with the \a format.
     Returns true on success.
- */
+
+*/
 bool Worksheet::writeTime(int row, int column, const QTime &t, const Format &format)
 {
     Q_D(Worksheet);
@@ -1153,12 +1154,8 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     //    writer.writeAttribute("xmlns:mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
     //    writer.writeAttribute("xmlns:x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
     //    writer.writeAttribute("mc:Ignorable", "x14ac");
-    writer.writeStartElement(QStringLiteral("sheetPr"));
-    writer.writeAttribute(QStringLiteral("filterMode"), "false");
-    writer.writeStartElement(QStringLiteral("pageSetUpPr"));
-    writer.writeAttribute(QStringLiteral("fitToPage"), "true");
-    writer.writeEndElement();
-    writer.writeEndElement();
+    
+    
     writer.writeStartElement(QStringLiteral("dimension"));
     writer.writeAttribute(QStringLiteral("ref"), d->generateDimensionString());
     writer.writeEndElement();//dimension
