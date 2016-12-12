@@ -228,6 +228,10 @@ AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractShe
 {
     Q_D(Workbook);
     QString sheetName = createSafeSheetName(name);
+    if(index > d->last_sheet_id){
+        //User tries to insert, where no sheet has gone before.
+        return 0;
+    }
     if (!sheetName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
         if (d->sheetNames.contains(sheetName))
