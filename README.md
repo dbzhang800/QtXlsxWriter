@@ -115,7 +115,7 @@ The package contains a **qtxlsx.pri** file that allows you to integrate the comp
 * http://openpyxl.readthedocs.org
 * http://officeopenxml.com/anatomyofOOXML-xlsx.php
 * http://www.libxl.com
-* http://closedxml.codeplex.com/
+* http://github.com/ClosedXML/ClosedXML
 * http://epplus.codeplex.com/
 * http://excelpackage.codeplex.com/
 * http://spreadsheetlight.com/
