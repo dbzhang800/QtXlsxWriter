@@ -44,7 +44,13 @@ include_directories(
 add_definitions(-DQT_BUILD_XLSX_LIB)
 add_definitions(-DXLSX_TEST)
 add_library(QtXlsxWriterTest SHARED "${QtXlsxWriterTest_SOURCE_FILES}")
-  
+
+# automatically add C++11 support with GCC
+if(NOT MSVC)
+    target_compile_features(QtXlsxWriterTest PRIVATE cxx_range_for)
+endif()
+
+ 
 set_target_properties(QtXlsxWriterTest PROPERTIES DEBUG_POSTFIX "d")
   
 target_link_libraries(QtXlsxWriterTest ${Qt5Core_LIBRARIES})

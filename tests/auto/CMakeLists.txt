@@ -35,6 +35,12 @@ foreach(test IN ITEMS ${TESTS})
 
 	add_executable(${test}_testDriver ${TEST_SRC} )
 
+# automatically add C++11 support with GCC
+if(NOT MSVC)
+    target_compile_features(${test}_testDriver PRIVATE cxx_range_for)
+endif()
+
+
   target_link_libraries(${test}_testDriver ${Qt5Core_LIBRARIES})
 	target_link_libraries(${test}_testDriver ${Qt5Gui_LIBRARIES})
 	target_link_libraries(${test}_testDriver ${Qt5Test_LIBRARIES})
