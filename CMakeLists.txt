@@ -64,7 +64,7 @@ INSTALL(TARGETS QtXlsxWriter
   ARCHIVE DESTINATION lib
 )
 
-INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/QtXlsxWriterConfig.cmake DESTINATION cmake)
+INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/QtXlsxWriterConfig.cmake DESTINATION lib/cmake/${PROJECT_NAME})
 
 SET(INCLUDE_FILES 
   src/xlsx/xlsxabstractooxmlfile.h
