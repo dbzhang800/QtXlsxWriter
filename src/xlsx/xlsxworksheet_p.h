@@ -224,9 +224,11 @@ public:
     bool showOutlineSymbols;
     bool showWhiteSpace;
 
+
     QRegularExpression urlPattern;
 private:
     static double calculateColWidth(int characters);
+
 };
 
 }
