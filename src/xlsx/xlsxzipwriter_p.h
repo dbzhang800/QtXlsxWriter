@@ -37,6 +37,7 @@
 //
 
 #include <QString>
+#include <QVector>
 class QIODevice;
 class QZipWriter;
 
