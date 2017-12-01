@@ -93,7 +93,7 @@ Chart::~Chart()
 /*!
  * Add the data series which is in the range \a range of the \a sheet.
  */
-void Chart::addSeries(const CellRange &range, AbstractSheet *sheet)
+void Chart::addSeries(const CellRange &range, const CellRange &xAxis, AbstractSheet *sheet)
 {
     Q_D(Chart);
     if (!range.isValid())
@@ -110,6 +110,10 @@ void Chart::addSeries(const CellRange &range, AbstractSheet *sheet)
     if (range.columnCount() == 1 || range.rowCount() == 1) {
         QSharedPointer<XlsxSeries> series = QSharedPointer<XlsxSeries>(new XlsxSeries);
         series->numberDataSource_numRef = sheetName + QLatin1String("!") + range.toString(true, true);
+        if (xAxis.columnCount() == 1 || xAxis.rowCount() == 1)
+        {
+          series->axDataSource_numRef = sheetName + QLatin1String("!") + xAxis.toString(true, true);
+        }
         d->seriesList.append(series);
     } else if (range.columnCount() < range.rowCount()) {
         //Column based series

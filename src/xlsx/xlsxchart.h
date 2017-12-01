@@ -67,7 +67,7 @@ public:
 
     ~Chart();
 
-    void addSeries(const CellRange &range, AbstractSheet *sheet=0);
+    void addSeries(const CellRange &range, const CellRange &xAxis, AbstractSheet *sheet=0);
     void setChartType(ChartType type);
     void setChartStyle(int id);
 
@@ -86,4 +86,3 @@ private:
 QT_END_NAMESPACE_XLSX
 
 #endif // QXLSX_CHART_H
-
