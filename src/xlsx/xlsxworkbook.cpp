@@ -186,6 +186,27 @@ bool Workbook::defineName(const QString &name, const QString &formula, const QSt
     return true;
 }
 
+QString Workbook::getFormulaByDefineName(const QString &definedName, const QString &scope)
+{
+	Q_D(Workbook);
+
+	int id=-1;
+	if (!scope.isEmpty()) {
+		for (int i=0; i<d->sheets.size(); ++i) {
+			if (d->sheets[i]->sheetName() == scope) {
+				id = d->sheets[i]->sheetId();
+				break;
+			}
+		}
+	}
+
+	foreach (XlsxDefineNameData definedNameData, d->definedNamesList) {
+		if (definedNameData.name == definedName and definedNameData.sheetId == id)
+			return definedNameData.formula;
+	}
+	return "";
+}
+
 AbstractSheet *Workbook::addSheet(const QString &name, AbstractSheet::SheetType type)
 {
     Q_D(Workbook);
@@ -228,6 +249,10 @@ AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractShe
 {
     Q_D(Workbook);
     QString sheetName = createSafeSheetName(name);
+    if(index > d->last_sheet_id){
+        //User tries to insert, where no sheet has gone before.
+        return 0;
+    }
     if (!sheetName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
         if (d->sheetNames.contains(sheetName))

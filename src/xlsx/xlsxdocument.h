@@ -98,6 +98,7 @@ public:
     Cell *cellAt(int row, int col) const;
 
     bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());
+	QString getFormulaByDefineName(const QString &definedName, const QString &scope=QString());
 
     CellRange dimension() const;
 
