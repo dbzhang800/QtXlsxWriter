@@ -70,6 +70,7 @@ public:
 
 //    void addChart();
     bool defineName(const QString &name, const QString &formula, const QString &comment=QString(), const QString &scope=QString());
+	QString getFormulaByDefineName(const QString &definedName, const QString &scope=QString());
     bool isDate1904() const;
     void setDate1904(bool date1904);
     bool isStringsToNumbersEnabled() const;
