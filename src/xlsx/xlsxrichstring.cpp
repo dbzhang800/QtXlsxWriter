@@ -168,16 +168,23 @@ void RichString::setHtml(const QString &text)
 {
     QTextDocument doc;
     doc.setHtml(text);
+
     QTextBlock block = doc.firstBlock();
-    QTextBlock::iterator it;
-    for (it = block.begin(); !(it.atEnd()); ++it) {
-        QTextFragment textFragment = it.fragment();
-        if (textFragment.isValid()) {
-            Format fmt;
-            fmt.setFont(textFragment.charFormat().font());
-            fmt.setFontColor(textFragment.charFormat().foreground().color());
-            addFragment(textFragment.text(), fmt);
+    while (block.isValid()) {
+        QTextBlock::iterator it;
+        for (it = block.begin(); !(it.atEnd()); ++it) {
+            QTextFragment textFragment = it.fragment();
+            if (textFragment.isValid()) {
+                Format fmt;
+                fmt.setFont(textFragment.charFormat().font());
+                fmt.setFontColor(textFragment.charFormat().foreground().color());
+                addFragment(textFragment.text(), fmt);
+            }
         }
+
+        block = block.next();
+        if (block.isValid()) 
+            addFragment("\n", Format());
     }
 }
 
