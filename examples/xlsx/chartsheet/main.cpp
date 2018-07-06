@@ -19,7 +19,7 @@ int main()
     Chartsheet *sheet = static_cast<Chartsheet*>(xlsx.currentSheet());
     Chart *barChart = sheet->chart();
     barChart->setChartType(Chart::CT_Bar);
-    barChart->addSeries(CellRange("A1:A9"),CellRange(""), xlsx.sheet("Sheet1"));
+    barChart->addSeries(CellRange("A1:A9"), xlsx.sheet("Sheet1"));
     //![1]
 
     //![2]

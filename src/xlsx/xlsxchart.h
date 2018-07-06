@@ -59,6 +59,7 @@ public:
         CT_Doughnut,
         CT_Bar,
         CT_Bar3D,
+        CT_Histogram,
         CT_OfPie,
         CT_Surface,
         CT_Surface3D,
@@ -67,7 +68,7 @@ public:
 
     ~Chart();
 
-    void addSeries(const CellRange &range, const CellRange &xAxis, AbstractSheet *sheet=0);
+    void addSeries(const CellRange &range, AbstractSheet *sheet=0);
     void setChartType(ChartType type);
     void setChartStyle(int id);
 

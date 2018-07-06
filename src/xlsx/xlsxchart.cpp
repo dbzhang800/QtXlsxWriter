@@ -93,7 +93,7 @@ Chart::~Chart()
 /*!
  * Add the data series which is in the range \a range of the \a sheet.
  */
-void Chart::addSeries(const CellRange &range, const CellRange &xAxis, AbstractSheet *sheet)
+void Chart::addSeries(const CellRange &range, AbstractSheet *sheet)
 {
     Q_D(Chart);
     if (!range.isValid())
@@ -110,16 +110,12 @@ void Chart::addSeries(const CellRange &range, const CellRange &xAxis, AbstractSh
     if (range.columnCount() == 1 || range.rowCount() == 1) {
         QSharedPointer<XlsxSeries> series = QSharedPointer<XlsxSeries>(new XlsxSeries);
         series->numberDataSource_numRef = sheetName + QLatin1String("!") + range.toString(true, true);
-        if (xAxis.columnCount() == 1 || xAxis.rowCount() == 1)
-        {
-          series->axDataSource_numRef = sheetName + QLatin1String("!") + xAxis.toString(true, true);
-        }
         d->seriesList.append(series);
     } else if (range.columnCount() < range.rowCount()) {
         //Column based series
         int firstDataColumn = range.firstColumn();
         QString axDataSouruce_numRef;
-        if (d->chartType == CT_Scatter || d->chartType == CT_Bubble) {
+        if (d->chartType == CT_Scatter || d->chartType == CT_Bubble || d->chartType == CT_Histogram) {
             firstDataColumn += 1;
             CellRange subRange(range.firstRow(), range.firstColumn(), range.lastRow(), range.firstColumn());
             axDataSouruce_numRef = sheetName + QLatin1String("!") + subRange.toString(true, true);
@@ -137,7 +133,7 @@ void Chart::addSeries(const CellRange &range, const CellRange &xAxis, AbstractSh
         //Row based series
         int firstDataRow = range.firstRow();
         QString axDataSouruce_numRef;
-        if (d->chartType == CT_Scatter || d->chartType == CT_Bubble) {
+        if (d->chartType == CT_Scatter || d->chartType == CT_Bubble || d->chartType == CT_Histogram) {
             firstDataRow += 1;
             CellRange subRange(range.firstRow(), range.firstColumn(), range.firstRow(), range.lastColumn());
             axDataSouruce_numRef = sheetName + QLatin1String("!") + subRange.toString(true, true);
@@ -358,6 +354,9 @@ void ChartPrivate::saveXmlChart(QXmlStreamWriter &writer) const
     case Chart::CT_Bar3D:
         saveXmlBarChart(writer);
         break;
+    case Chart::CT_Histogram:
+        saveXmlHistogramChart(writer);
+        break;
     case Chart::CT_Line:
     case Chart::CT_Line3D:
         saveXmlLineChart(writer);
@@ -426,6 +425,56 @@ void ChartPrivate::saveXmlBarChart(QXmlStreamWriter &writer) const
     }
 
     writer.writeEndElement(); //barChart, bar3DChart
+}
+
+void ChartPrivate::saveXmlHistogramChart(QXmlStreamWriter &writer) const
+{
+    Q_ASSERT(seriesList.size()==1 || seriesList.size()==2);
+
+    if (axisList.isEmpty()) {
+        const_cast<ChartPrivate*>(this)->axisList.append(QSharedPointer<XlsxAxis>(new XlsxAxis(XlsxAxis::T_Cat, XlsxAxis::Bottom, 0, 1)));
+        const_cast<ChartPrivate*>(this)->axisList.append(QSharedPointer<XlsxAxis>(new XlsxAxis(XlsxAxis::T_Val, XlsxAxis::Left, 1, 0)));
+
+        if (seriesList.size()==2) {
+            const_cast<ChartPrivate*>(this)->axisList.append(QSharedPointer<XlsxAxis>(new XlsxAxis(XlsxAxis::T_Cat, XlsxAxis::Bottom, 2, 3)));
+            const_cast<ChartPrivate*>(this)->axisList.append(QSharedPointer<XlsxAxis>(new XlsxAxis(XlsxAxis::T_Val, XlsxAxis::Right, 3, 2)));
+        }
+    }
+
+    Q_ASSERT((seriesList.size()==1 && axisList.size()==2) || (seriesList.size()==2 && axisList.size()==4));
+
+    writer.writeStartElement(QStringLiteral("c:barChart"));
+
+    writer.writeEmptyElement(QStringLiteral("c:barDir"));
+    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("col"));
+
+    writer.writeEmptyElement(QStringLiteral("c:gapWidth"));
+    writer.writeAttribute(QStringLiteral("val"), QStringLiteral("0"));
+
+    saveXmlSer(writer, seriesList[0].data(), 0);
+
+    writer.writeEmptyElement(QStringLiteral("c:axId"));
+    writer.writeAttribute(QStringLiteral("val"), QString::number(axisList[0]->axisId));
+    writer.writeEmptyElement(QStringLiteral("c:axId"));
+    writer.writeAttribute(QStringLiteral("val"), QString::number(axisList[1]->axisId));
+
+    writer.writeEndElement(); // c:barChart
+
+    if (seriesList.size()==2) {
+        writer.writeStartElement(QStringLiteral("c:lineChart"));
+
+        writer.writeEmptyElement(QStringLiteral("c:grouping"));
+        writer.writeAttribute(QStringLiteral("val"), QStringLiteral("standard"));
+
+        saveXmlSer(writer, seriesList[1].data(), 1);
+
+        writer.writeEmptyElement(QStringLiteral("c:axId"));
+        writer.writeAttribute(QStringLiteral("val"), QString::number(axisList[2]->axisId));
+        writer.writeEmptyElement(QStringLiteral("c:axId"));
+        writer.writeAttribute(QStringLiteral("val"), QString::number(axisList[3]->axisId));
+
+        writer.writeEndElement(); // c:lineChart
+    }
 }
 
 void ChartPrivate::saveXmlLineChart(QXmlStreamWriter &writer) const
@@ -530,10 +579,28 @@ void ChartPrivate::saveXmlDoughnutChart(QXmlStreamWriter &writer) const
 void ChartPrivate::saveXmlSer(QXmlStreamWriter &writer, XlsxSeries *ser, int id) const
 {
     writer.writeStartElement(QStringLiteral("c:ser"));
+
     writer.writeEmptyElement(QStringLiteral("c:idx"));
     writer.writeAttribute(QStringLiteral("val"), QString::number(id));
     writer.writeEmptyElement(QStringLiteral("c:order"));
     writer.writeAttribute(QStringLiteral("val"), QString::number(id));
+
+    if (chartType == Chart::CT_Histogram) {
+        writer.writeStartElement(QStringLiteral("c:spPr"));
+        writer.writeStartElement(QStringLiteral("a:ln"));
+        writer.writeStartElement(QStringLiteral("a:solidFill"));
+        writer.writeEmptyElement(QStringLiteral("a:sysClr"));
+        writer.writeAttribute(QStringLiteral("val"), QStringLiteral("windowText"));
+        writer.writeAttribute(QStringLiteral("lastClr"), QStringLiteral("000000"));
+        writer.writeEndElement(); // c:spPr
+        writer.writeEndElement(); // c:ln
+        writer.writeEndElement(); // c:solidFill
+
+        writer.writeStartElement(QStringLiteral("c:marker"));
+        writer.writeEmptyElement(QStringLiteral("c:symbol"));
+        writer.writeAttribute(QStringLiteral("val"), QStringLiteral("none"));
+        writer.writeEndElement(); // c:marker
+    }
 
     if (!ser->axDataSource_numRef.isEmpty()) {
         if (chartType == Chart::CT_Scatter || chartType == Chart::CT_Bubble)
@@ -557,7 +624,7 @@ void ChartPrivate::saveXmlSer(QXmlStreamWriter &writer, XlsxSeries *ser, int id)
         writer.writeEndElement();//c:val or c:yVal
     }
 
-    writer.writeEndElement();//c:ser
+    writer.writeEndElement(); // c:ser
 }
 
 bool ChartPrivate::loadXmlAxis(QXmlStreamReader &reader)
@@ -607,23 +674,61 @@ bool ChartPrivate::loadXmlAxis(QXmlStreamReader &reader)
 
 void ChartPrivate::saveXmlAxes(QXmlStreamWriter &writer) const
 {
+    int bottomAxisCount = 0;
+
     for (int i=0; i<axisList.size(); ++i) {
         XlsxAxis *axis = axisList[i].data();
-        QString name;
+
+        QString name = QStringLiteral("");
+
+        QString axPos = QStringLiteral("");
+        QString crosses =  QStringLiteral("");
+        QString crossBetween = QStringLiteral("");
+        QString tickLblPos = QStringLiteral("");
+        QString majorTickMark =  QStringLiteral("");
+
         switch (axis->type) {
-        case XlsxAxis::T_Cat: name = QStringLiteral("c:catAx"); break;
-        case XlsxAxis::T_Val: name = QStringLiteral("c:valAx"); break;
-        case XlsxAxis::T_Ser: name = QStringLiteral("c:serAx"); break;
-        case XlsxAxis::T_Date: name = QStringLiteral("c:dateAx"); break;
+        case XlsxAxis::T_Cat:
+            name = QStringLiteral("c:catAx");
+            break;
+        case XlsxAxis::T_Val:
+            name = QStringLiteral("c:valAx");
+            break;
+        case XlsxAxis::T_Ser:
+            name = QStringLiteral("c:serAx");
+            break;
+        case XlsxAxis::T_Date:
+            name = QStringLiteral("c:dateAx");
+            break;
         default: break;
         }
 
-        QString pos;
         switch (axis->axisPos) {
-        case XlsxAxis::Top: pos = QStringLiteral("t"); break;
-        case XlsxAxis::Bottom: pos = QStringLiteral("b"); break;
-        case XlsxAxis::Left: pos = QStringLiteral("l"); break;
-        case XlsxAxis::Right: pos = QStringLiteral("r"); break;
+        case XlsxAxis::Top:
+            axPos = QStringLiteral("t");
+            crosses = QStringLiteral("autoZero");
+            break;
+        case XlsxAxis::Bottom:
+            axPos = QStringLiteral("b");
+            crosses = QStringLiteral("autoZero");
+            if (++bottomAxisCount <= 1) {
+                tickLblPos = QStringLiteral("nextTo");
+                majorTickMark = QStringLiteral("out");
+            } else {
+                tickLblPos = QStringLiteral("none");
+                majorTickMark = QStringLiteral("none");
+            }
+            break;
+        case XlsxAxis::Left:
+            axPos = QStringLiteral("l");
+            crosses = QStringLiteral("autoZero");
+            crossBetween = QStringLiteral("between");
+            break;
+        case XlsxAxis::Right:
+            axPos = QStringLiteral("r");
+            crosses = QStringLiteral("max");
+            crossBetween = QStringLiteral("midCat");
+            break;
         default: break;
         }
 
@@ -631,16 +736,38 @@ void ChartPrivate::saveXmlAxes(QXmlStreamWriter &writer) const
         writer.writeEmptyElement(QStringLiteral("c:axId"));
         writer.writeAttribute(QStringLiteral("val"), QString::number(axis->axisId));
 
+        writer.writeEmptyElement(QStringLiteral("c:crossAx"));
+        writer.writeAttribute(QStringLiteral("val"), QString::number(axis->crossAx));
+
         writer.writeStartElement(QStringLiteral("c:scaling"));
         writer.writeEmptyElement(QStringLiteral("c:orientation"));
         writer.writeAttribute(QStringLiteral("val"), QStringLiteral("minMax"));
-        writer.writeEndElement();//c:scaling
+        writer.writeEndElement(); // c:scaling
 
-        writer.writeEmptyElement(QStringLiteral("c:axPos"));
-        writer.writeAttribute(QStringLiteral("val"), pos);
+        if (!axPos.isEmpty()) {
+            writer.writeEmptyElement(QStringLiteral("c:axPos"));
+            writer.writeAttribute(QStringLiteral("val"), axPos);
+        }
 
-        writer.writeEmptyElement(QStringLiteral("c:crossAx"));
-        writer.writeAttribute(QStringLiteral("val"), QString::number(axis->crossAx));
+        if (!crosses.isEmpty()) {
+            writer.writeEmptyElement(QStringLiteral("c:crosses"));
+            writer.writeAttribute(QStringLiteral("val"), crosses);
+        }
+
+        if (!crossBetween.isEmpty()) {
+            writer.writeEmptyElement(QStringLiteral("c:crossBetween"));
+            writer.writeAttribute(QStringLiteral("val"), crossBetween);
+        }
+
+        if (!tickLblPos.isEmpty()) {
+            writer.writeEmptyElement(QStringLiteral("c:tickLblPos"));
+            writer.writeAttribute(QStringLiteral("val"), tickLblPos);
+        }
+
+        if (!majorTickMark.isEmpty()) {
+            writer.writeEmptyElement(QStringLiteral("c:majorTickMark"));
+            writer.writeAttribute(QStringLiteral("val"), majorTickMark);
+        }
 
         writer.writeEndElement();//name
     }
