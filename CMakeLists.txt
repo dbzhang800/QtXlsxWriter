@@ -31,7 +31,7 @@ foreach(_qt_gui_include_dir ${Qt5Gui_INCLUDE_DIRS})
   if(${_qt_gui_include_dir} MATCHES "include/QtCore")
 	  list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS "${_qt_gui_include_dir}/${Qt5Core_VERSION}")
 	  list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS "${_qt_gui_include_dir}/${Qt5Core_VERSION}/QtCore") 
-  fi()
+  endif()
 endforeach()
 
 include_directories(
