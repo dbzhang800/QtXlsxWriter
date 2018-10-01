@@ -21,9 +21,11 @@ find_package(Qt5Gui CONFIG REQUIRED)
 find_package(Qt5Test CONFIG REQUIRED)
 
 # hack to make private part of QtGui available
+set(Qt5Gui_PRIVATE_INCLUDE_DIRS )
 foreach(_qt_gui_include_dir ${Qt5Gui_INCLUDE_DIRS})
   if(${_qt_gui_include_dir} MATCHES "include/QtGui")
-	  set(Qt5Gui_PRIVATE_INCLUDE_DIRS "${_qt_gui_include_dir}/${Qt5Gui_VERSION}/QtGui")
+	  list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS "${_qt_gui_include_dir}/${Qt5Gui_VERSION}")
+	  list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS "${_qt_gui_include_dir}/${Qt5Gui_VERSION}/QtGui")
   endif()
 endforeach()
 
