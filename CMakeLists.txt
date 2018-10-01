@@ -10,18 +10,30 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 file(
-	GLOB
-	QtXlsxWriter_SOURCE_FILES 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/xlsx/*.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/QtXlsxWriterTest_automoc.cpp
+    GLOB
+    QtXlsxWriter_SOURCE_FILES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/xlsx/*.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/QtXlsxWriterTest_automoc.cpp
 )
 
-find_package(Qt5 5.5 REQUIRED Core Gui Test)
+find_package(Qt5Core CONFIG REQUIRED)
+find_package(Qt5Gui CONFIG REQUIRED)
+find_package(Qt5Test CONFIG REQUIRED)
+
+# hack to make private part of QtGui available
+foreach(_qt_gui_include_dir ${Qt5Gui_INCLUDE_DIRS})
+  if(${_qt_gui_include_dir} MATCHES "include/QtGui")
+	  set(Qt5Gui_PRIVATE_INCLUDE_DIRS "${_qt_gui_include_dir}/${Qt5Gui_VERSION}/QtGui")
+  endif()
+endforeach()
+
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/xlsx/
 	${Qt5Core_INCLUDE_DIRS} 
 	${Qt5Gui_INCLUDE_DIRS}
 	${Qt5Gui_PRIVATE_INCLUDE_DIRS} )
+
+message("-- Using Qt private include in: ${Qt5Gui_PRIVATE_INCLUDE_DIRS}")
 
 add_library(QtXlsxWriter SHARED "${QtXlsxWriter_SOURCE_FILES}")
 
@@ -31,8 +43,7 @@ if(NOT MSVC)
 endif()
 
 set_target_properties(QtXlsxWriter PROPERTIES DEBUG_POSTFIX "d")
-target_link_libraries(QtXlsxWriter ${Qt5Core_LIBRARIES})
-target_link_libraries(QtXlsxWriter ${Qt5Gui_LIBRARIES})
+target_link_libraries(QtXlsxWriter Qt5::Gui Qt5::Core)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)
