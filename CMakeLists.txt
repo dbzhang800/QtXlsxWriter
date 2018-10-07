@@ -34,6 +34,15 @@ foreach(_qt_gui_include_dir ${Qt5Gui_INCLUDE_DIRS})
   endif()
 endforeach()
 
+if(NOT Qt5Gui_PRIVATE_INCLUDE_DIRS)
+	message("-- WARNING: No CMake setup for Qt 'Gui' private part. You should need qtbase5-private-dev package")
+	list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS "/usr/include/x86_64-linux-gnu/qt5/QtGui/5.5.1/QtGui/")
+endif()
+if(NOT Qt5Core_PRIVATE_INCLUDE_DIRS)
+	message("-- WARNING: No CMake setup for Qt 'Core' private part. You should need qtbase5-private-dev package")
+	list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS "/usr/include/x86_64-linux-gnu/qt5/QtGui/5.5.1/QtCore/")
+endif()
+
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/xlsx/
 	${Qt5Core_INCLUDE_DIRS} 
