@@ -184,7 +184,7 @@ void RichString::setHtml(const QString &text)
 
         block = block.next();
         if (block.isValid()) 
-            addFragment("\n", Format());
+            addFragment(QStringLiteral("\n"), Format());
     }
 }
 
