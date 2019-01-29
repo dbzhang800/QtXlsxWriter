@@ -533,7 +533,9 @@ QVariant Worksheet::read(int row, int column) const
             }
         }
     }
-
+    const QVariant rawValue = cell->value();
+    if (!rawValue.isValid())
+        return QVariant();
     if (cell->isDateTime()) {
         double val = cell->value().toDouble();
         QDateTime dt = cell->dateTime();
@@ -543,8 +545,7 @@ QVariant Worksheet::read(int row, int column) const
             return dt.date();
         return dt;
     }
-
-    return cell->value();
+    return rawValue;
 }
 
 /*!
