@@ -33,8 +33,8 @@ matrix:
         - qt512-env.sh
         - qmake
         - make
-        - make check
         - make install
+        - make check
   - name: macOS qmake
     os: osx
     osx_image: xcode10.1
@@ -48,8 +48,9 @@ matrix:
         - PATH="/usr/local/opt/qt5/bin:$PATH"
         - qmake
         - make
-        - make check
         - make install
+        - make check
+        
 notifications:
   email: false
 
