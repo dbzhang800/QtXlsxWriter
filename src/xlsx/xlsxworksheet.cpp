@@ -555,7 +555,7 @@ QVariant Worksheet::read(int row, int column) const
 Cell *Worksheet::cellAt(const CellReference &row_column) const
 {
     if (!row_column.isValid())
-        return 0;
+        return NULL;
 
     return cellAt(row_column.row(), row_column.column());
 }
@@ -568,9 +568,9 @@ Cell *Worksheet::cellAt(int row, int column) const
 {
     Q_D(const Worksheet);
     if (!d->cellTable.contains(row))
-        return 0;
+        return NULL;
     if (!d->cellTable[row].contains(column))
-        return 0;
+        return NULL;
 
     return d->cellTable[row][column].data();
 }
@@ -1995,7 +1995,10 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                                 if (rs.isRichString())
                                     cell->d_func()->richString = rs;
                             } else if (cellType == Cell::NumberType) {
-                                cell->d_func()->value = value.toDouble();
+                                if (value.contains(QLatin1Char('.')))
+                                    cell->d_func()->value = value.toDouble();
+                                else
+                                    cell->d_func()->value = value.toInt();
                             } else if (cellType == Cell::BooleanType) {
                                 cell->d_func()->value = value.toInt() ? true : false;
                             } else { //Cell::ErrorType and Cell::StringType
