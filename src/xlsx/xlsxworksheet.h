@@ -140,6 +140,19 @@ public:
     bool isWhiteSpaceVisible() const;
     void setWhiteSpaceVisible(bool visible);
 
+    double  topPageMargin();
+    void    setTopPageMargin(double topPageMargin);
+    double  leftPageMargin();
+    void    setLeftPageMargin(double leftPageMargin);
+    double  rightPageMargin();
+    void    setRightPageMargin(double rightPageMargin);
+    double  bottomPageMargin();
+    void    setBottomPageMargin(double bottomPageMargin);
+    double  headerPageMargin();
+    void    setHeaderPageMargin(double headerPageMargin);
+    double  footerPageMargin();
+    void    setFooterPageMargin(double footerPageMargin);
+
     ~Worksheet();
 
 

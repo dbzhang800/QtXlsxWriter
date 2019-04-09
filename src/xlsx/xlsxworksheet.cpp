@@ -64,6 +64,9 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
   , showOutlineSymbols(true), showWhiteSpace(true), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
+  , topPageMargin(0.7875), leftPageMargin(0.7875), rightPageMargin(0.7875), bottomPageMargin(0.7875)
+  , headerPageMargin(0.393750), footerPageMargin(0.393750)
+
 {
     previous_row = 0;
 
@@ -415,6 +418,127 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 {
     Q_D(Worksheet);
     d->showWhiteSpace = visible;
+}
+
+/*!
+ * Return top page margin
+ */
+
+double Worksheet::topPageMargin()
+{
+    Q_D(Worksheet);
+    return d->topPageMargin;
+
+}
+
+/*!
+ * Set top page margin
+ */
+
+void Worksheet::setTopPageMargin(double topPageMargin)
+{
+    Q_D(Worksheet);
+    d->topPageMargin = topPageMargin;
+}
+
+/*!
+ * Return left page margin
+ */
+
+double Worksheet::leftPageMargin()
+{
+    Q_D(Worksheet);
+    return d->leftPageMargin;
+}
+
+/*!
+ * Set left page margin
+ */
+
+void Worksheet::setLeftPageMargin(double leftPageMargin)
+{
+    Q_D(Worksheet);
+    d->leftPageMargin = leftPageMargin;
+}
+
+/*!
+ * Return right page margin
+ */
+
+double Worksheet::rightPageMargin()
+{
+    Q_D(Worksheet);
+    return d->rightPageMargin;
+}
+
+/*!
+ * Set right page margin
+ */
+
+void Worksheet::setRightPageMargin(double rightPageMargin)
+{
+    Q_D(Worksheet);
+    d->rightPageMargin = rightPageMargin;
+}
+
+/*!
+ * Return bottom page margin
+ */
+
+double Worksheet::bottomPageMargin()
+{
+    Q_D(Worksheet);
+    return d->bottomPageMargin;
+}
+
+/*!
+ * Set bottom page margin
+ */
+
+void Worksheet::setBottomPageMargin(double bottomPageMargin)
+{
+    Q_D(Worksheet);
+    d->bottomPageMargin = bottomPageMargin;
+}
+
+/*!
+ * Return header page margin
+ */
+
+double Worksheet::headerPageMargin()
+{
+    Q_D(Worksheet);
+    return d->headerPageMargin;
+}
+
+/*!
+ * Set header page margin
+ */
+
+void Worksheet::setHeaderPageMargin(double headerPageMargin)
+{
+    Q_D(Worksheet);
+    d->headerPageMargin = headerPageMargin;
+}
+
+/*!
+ * Return footer page margin
+ */
+
+double Worksheet::footerPageMargin()
+{
+    Q_D(Worksheet);
+    return d->footerPageMargin;
+}
+
+/*!
+ * Set footer page margin
+ */
+
+void Worksheet::setFooterPageMargin(double footerPageMargin)
+{
+    Q_D(Worksheet);
+    d->footerPageMargin = footerPageMargin;
 }
 
 /*!
@@ -1236,6 +1360,15 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     d->saveXmlDataValidations(writer);
     d->saveXmlHyperlinks(writer);
     d->saveXmlDrawings(writer);
+
+    writer.writeStartElement(QStringLiteral("pageMargins"));
+    writer.writeAttribute(QStringLiteral("left"), QString::number(d->leftPageMargin));
+    writer.writeAttribute(QStringLiteral("right"), QString::number(d->rightPageMargin));
+    writer.writeAttribute(QStringLiteral("top"), QString::number(d->topPageMargin));
+    writer.writeAttribute(QStringLiteral("bottom"), QString::number(d->bottomPageMargin));
+    writer.writeAttribute(QStringLiteral("header"), QString::number(d->headerPageMargin));
+    writer.writeAttribute(QStringLiteral("footer"), QString::number(d->footerPageMargin));
+    writer.writeEndElement();//pagemargins
 
     writer.writeEndElement();//worksheet
     writer.writeEndDocument();
@@ -2268,6 +2401,12 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QXmlStreamAttributes attributes = reader.attributes();
                 QString range = attributes.value(QLatin1String("ref")).toString();
                 d->dimension = CellRange(range);
+            } else if (reader.name() == QLatin1String("pageMargins")){
+                QXmlStreamAttributes attributes = reader.attributes();
+                setTopPageMargin(attributes.value(QLatin1String("top")).toDouble());
+                setLeftPageMargin(attributes.value(QLatin1String("left")).toDouble());
+                setRightPageMargin(attributes.value(QLatin1String("right")).toDouble());
+                setBottomPageMargin(attributes.value(QLatin1String("bottom")).toDouble());
             } else if (reader.name() == QLatin1String("sheetViews")) {
                 d->loadXmlSheetViews(reader);
             } else if (reader.name() == QLatin1String("sheetFormatPr")) {
