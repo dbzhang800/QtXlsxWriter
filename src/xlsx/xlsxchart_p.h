@@ -105,6 +105,7 @@ public:
     void saveXmlChart(QXmlStreamWriter &writer) const;
     void saveXmlPieChart(QXmlStreamWriter &writer) const;
     void saveXmlBarChart(QXmlStreamWriter &writer) const;
+    void saveXmlHistogramChart(QXmlStreamWriter &writer) const;
     void saveXmlLineChart(QXmlStreamWriter &writer) const;
     void saveXmlScatterChart(QXmlStreamWriter &writer) const;
     void saveXmlAreaChart(QXmlStreamWriter &writer) const;

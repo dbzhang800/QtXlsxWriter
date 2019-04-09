@@ -59,6 +59,7 @@ public:
         CT_Doughnut,
         CT_Bar,
         CT_Bar3D,
+        CT_Histogram,
         CT_OfPie,
         CT_Surface,
         CT_Surface3D,
@@ -86,4 +87,3 @@ private:
 QT_END_NAMESPACE_XLSX
 
 #endif // QXLSX_CHART_H
-

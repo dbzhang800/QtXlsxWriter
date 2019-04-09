@@ -17,7 +17,8 @@ SUBDIRS = hello \
     chart \
     chartsheet \
     calendar \
-    demo
+    demo \
+    histogram
 
 qtHaveModule(widgets): SUBDIRS += xlsxwidget
 

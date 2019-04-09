@@ -26,6 +26,8 @@
 #include <QStringList>
 #include <QMap>
 #include <QRegularExpression>
+#include <QMutex>
+#include <QMutexLocker>
 
 QT_BEGIN_NAMESPACE_XLSX
 
@@ -43,22 +45,17 @@ int intPow(int x, int p)
 
 QString col_to_name(int col_num)
 {
-    static QMap<int, QString> col_cache;
+	QString col_str;
+	int remainder;
+	while (col_num) {
+		remainder = col_num % 26;
+		if (remainder == 0)
+			remainder = 26;
+		col_str.prepend(QChar('A'+remainder-1));
+		col_num = (col_num - 1) / 26;
+	}
 
-    if (!col_cache.contains(col_num)) {
-        QString col_str;
-        int remainder;
-        while (col_num) {
-            remainder = col_num % 26;
-            if (remainder == 0)
-                remainder = 26;
-            col_str.prepend(QChar('A'+remainder-1));
-            col_num = (col_num - 1) / 26;
-        }
-        col_cache.insert(col_num, col_str);
-    }
-
-    return col_cache[col_num];
+    return col_str;
 }
 
 int col_from_name(const QString &col_str)

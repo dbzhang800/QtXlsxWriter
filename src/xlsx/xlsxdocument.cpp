@@ -85,17 +85,18 @@ QT_BEGIN_NAMESPACE_XLSX
 */
 
 DocumentPrivate::DocumentPrivate(Document *p) :
-    q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx"))
+    q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx")),
+		workbook(nullptr), contentTypes(nullptr)
 {
 }
 
 void DocumentPrivate::init()
 {
-    if (contentTypes.isNull())
-        contentTypes = QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_NewFromScratch));
+    if (contentTypes == nullptr)
+        contentTypes = new ContentTypes(ContentTypes::F_NewFromScratch);
 
-    if (workbook.isNull())
-        workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_NewFromScratch));
+    if (workbook == nullptr)
+        workbook = new Workbook(Workbook::F_NewFromScratch);
 }
 
 bool DocumentPrivate::loadPackage(QIODevice *device)
@@ -107,7 +108,13 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     //Load the Content_Types file
     if (!filePaths.contains(QLatin1String("[Content_Types].xml")))
         return false;
-    contentTypes = QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_LoadFromExists));
+
+	if (contentTypes != nullptr)
+	{
+		delete contentTypes;
+		contentTypes = nullptr;
+	}
+    contentTypes = new ContentTypes(ContentTypes::F_LoadFromExists);
     contentTypes->loadFromXmlData(zipReader.fileData(QStringLiteral("[Content_Types].xml")));
 
     //Load root rels file
@@ -144,7 +151,12 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
 
     //load workbook now, Get the workbook file path from the root rels file
     //In normal case, this should be "xl/workbook.xml"
-    workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_LoadFromExists));
+	if (workbook != nullptr)
+	{
+		delete workbook;
+		workbook = nullptr;
+	}
+    workbook = new Workbook(Workbook::F_LoadFromExists);
     QList<XlsxRelationship> rels_xl = rootRels.documentRelationships(QStringLiteral("/officeDocument"));
     if (rels_xl.isEmpty())
         return false;
@@ -880,7 +892,7 @@ QStringList Document::documentPropertyNames() const
 Workbook *Document::workbook() const
 {
     Q_D(const Document);
-    return d->workbook.data();
+    return d->workbook;
 }
 
 /*!
