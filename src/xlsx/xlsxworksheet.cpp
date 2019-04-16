@@ -1362,12 +1362,12 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     d->saveXmlDrawings(writer);
 
     writer.writeStartElement(QStringLiteral("pageMargins"));
-    writer.writeAttribute(QStringLiteral("left"), QString::number(d->leftPageMargin));
-    writer.writeAttribute(QStringLiteral("right"), QString::number(d->rightPageMargin));
-    writer.writeAttribute(QStringLiteral("top"), QString::number(d->topPageMargin));
-    writer.writeAttribute(QStringLiteral("bottom"), QString::number(d->bottomPageMargin));
-    writer.writeAttribute(QStringLiteral("header"), QString::number(d->headerPageMargin));
-    writer.writeAttribute(QStringLiteral("footer"), QString::number(d->footerPageMargin));
+    writer.writeAttribute(QStringLiteral("left"), QString::number(d->leftPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("right"), QString::number(d->rightPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("top"), QString::number(d->topPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("bottom"), QString::number(d->bottomPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("header"), QString::number(d->headerPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("footer"), QString::number(d->footerPageMargin, 'g', 15));
     writer.writeEndElement();//pagemargins
 
     writer.writeEndElement();//worksheet
