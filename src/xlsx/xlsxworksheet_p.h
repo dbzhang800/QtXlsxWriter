@@ -224,6 +224,13 @@ public:
     bool showOutlineSymbols;
     bool showWhiteSpace;
 
+    double topPageMargin;
+    double rightPageMargin;
+    double leftPageMargin;
+    double bottomPageMargin;
+    double headerPageMargin;
+    double footerPageMargin;
+
     QRegularExpression urlPattern;
 private:
     static double calculateColWidth(int characters);

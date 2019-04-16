@@ -65,6 +65,20 @@ public:
     bool mergeCells(const CellRange &range, const Format &format=Format());
     bool unmergeCells(const CellRange &range);
 
+    bool setTopPageMargin(double topPageMargin);
+    bool setLeftPageMargin(double leftPageMargin);
+    bool setRightPageMargin(double rightPageMargin);
+    bool setBottomPageMargin(double bottomPageMargin);
+    bool setHeaderPageMargin(double headerPageMargin);
+    bool setFooterPageMargin(double footerPageMargin);
+
+    double topPageMargin();
+    double leftPageMargin();
+    double rightPageMargin();
+    double bottomPageMargin();
+    double headerPageMargin();
+    double footerPageMargin();
+
     bool setColumnWidth(const CellRange &range, double width);
     bool setColumnFormat(const CellRange &range, const Format &format);
     bool setColumnHidden(const CellRange &range, bool hidden);
