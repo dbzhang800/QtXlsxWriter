@@ -63,9 +63,10 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
     : AbstractSheetPrivate(p, flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
-  , showOutlineSymbols(true), showWhiteSpace(true), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
-  , topPageMargin(0.7875), leftPageMargin(0.7875), rightPageMargin(0.7875), bottomPageMargin(0.7875)
+  , showOutlineSymbols(true), showWhiteSpace(true)
+  , topPageMargin(0.7875), rightPageMargin(0.7875), leftPageMargin(0.7875), bottomPageMargin(0.7875)
   , headerPageMargin(0.393750), footerPageMargin(0.393750)
+  , urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
 
 {
     previous_row = 0;
