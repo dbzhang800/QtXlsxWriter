@@ -680,7 +680,7 @@ QVariant Worksheet::read(int row, int column) const
 Cell *Worksheet::cellAt(const CellReference &row_column) const
 {
     if (!row_column.isValid())
-        return NULL;
+        return nullptr;
 
     return cellAt(row_column.row(), row_column.column());
 }
@@ -693,9 +693,9 @@ Cell *Worksheet::cellAt(int row, int column) const
 {
     Q_D(const Worksheet);
     if (!d->cellTable.contains(row))
-        return NULL;
+        return nullptr;
     if (!d->cellTable[row].contains(column))
-        return NULL;
+        return nullptr;
 
     return d->cellTable[row][column].data();
 }
