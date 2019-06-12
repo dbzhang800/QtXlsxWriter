@@ -210,7 +210,7 @@ AbstractSheet *Workbook::addSheet(const QString &name, int sheetId, AbstractShee
     Q_D(Workbook);
     if (sheetId > d->last_sheet_id)
         d->last_sheet_id = sheetId;
-    AbstractSheet *sheet = nullptr;
+    AbstractSheet *sheet = Q_NULLPTR;
     if (type == AbstractSheet::ST_WorkSheet) {
         sheet = new Worksheet(name, sheetId, this, F_LoadFromExists);
     } else if (type == AbstractSheet::ST_ChartSheet) {
@@ -230,12 +230,12 @@ AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractShe
     QString sheetName = createSafeSheetName(name);
     if(index > d->last_sheet_id){
         //User tries to insert, where no sheet has gone before.
-        return nullptr;
+        return Q_NULLPTR;
     }
     if (!sheetName.isEmpty()) {
         //If user given an already in-used name, we should not continue any more!
         if (d->sheetNames.contains(sheetName))
-            return nullptr;
+            return Q_NULLPTR;
     } else {
         if (type == AbstractSheet::ST_WorkSheet) {
             do {
@@ -249,7 +249,7 @@ AbstractSheet *Workbook::insertSheet(int index, const QString &name, AbstractShe
             } while (d->sheetNames.contains(sheetName));
         } else {
             qWarning("unsupported sheet type.");
-            return nullptr;
+            return Q_NULLPTR;
         }
     }
 
@@ -391,7 +391,7 @@ AbstractSheet *Workbook::sheet(int index) const
 {
     Q_D(const Workbook);
     if (index < 0 || index >= d->sheets.size())
-        return nullptr;
+        return Q_NULLPTR;
     return d->sheets.at(index).data();
 }
 

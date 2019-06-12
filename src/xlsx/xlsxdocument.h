@@ -51,9 +51,9 @@ class Q_XLSX_EXPORT Document : public QObject
     Q_DECLARE_PRIVATE(Document)
 
 public:
-    explicit Document(QObject *parent = nullptr);
-    Document(const QString &xlsxName, QObject *parent = nullptr);
-    Document(QIODevice *device, QObject *parent = nullptr);
+    explicit Document(QObject *parent = Q_NULLPTR);
+    Document(const QString &xlsxName, QObject *parent = Q_NULLPTR);
+    Document(QIODevice *device, QObject *parent = Q_NULLPTR);
     ~Document();
 
     bool write(const CellReference &cell, const QVariant &value, const Format &format=Format());
