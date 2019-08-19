@@ -126,7 +126,7 @@ private:
     friend class Worksheet;
     friend class ::ConditionalFormattingTest;
     bool saveToXml(QXmlStreamWriter &writer) const;
-    bool loadFromXml(QXmlStreamReader &reader, Styles *styles=0);
+    bool loadFromXml(QXmlStreamReader &reader, Styles *styles=nullptr);
     QSharedDataPointer<ConditionalFormattingPrivate> d;
 };
 
