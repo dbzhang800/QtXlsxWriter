@@ -469,7 +469,7 @@ Chart *Document::insertChart(int row, int col, const QSize &size)
 {
     if (Worksheet *sheet = currentWorksheet())
         return sheet->insertChart(row, col, size);
-    return 0;
+    return Q_NULLPTR;
 }
 
 /*!
@@ -495,6 +495,162 @@ bool Document::unmergeCells(const CellRange &range)
     if (Worksheet *sheet = currentWorksheet())
         return sheet->unmergeCells(range);
     return false;
+}
+
+/*!
+ * Set top page margin in inches
+ * Returns true on success.
+ */
+
+bool Document::setTopPageMargin(double topPageMargin)
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        sheet->setTopPageMargin(topPageMargin);
+        return true;
+    }
+    return false;
+}
+
+/*!
+ * Set left page margin in inches
+ * Returns true on success.
+ */
+
+bool Document::setLeftPageMargin(double leftPageMargin)
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        sheet->setLeftPageMargin(leftPageMargin);
+        return true;
+    }
+    return false;
+}
+
+/*!
+ * Set right page margin in inches
+ * Returns true on success.
+ */
+
+bool Document::setRightPageMargin(double rightPageMargin)
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        sheet->setRightPageMargin(rightPageMargin);
+        return true;
+    }
+    return false;
+}
+
+/*!
+ * Set bottom page margin in inches
+ * Returns true on success.
+ */
+
+bool Document::setBottomPageMargin(double bottomPageMargin)
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        sheet->setBottomPageMargin(bottomPageMargin);
+        return true;
+    }
+    return false;
+}
+
+/*!
+ * Set header page margin in inches
+ * Returns true on success.
+ */
+
+bool Document::setHeaderPageMargin(double headerPageMargin)
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        sheet->setHeaderPageMargin(headerPageMargin);
+        return true;
+    }
+    return false;
+}
+
+/*!
+ * Set footer page margin in inches
+ * Returns true on success.
+ */
+
+bool Document::setFooterPageMargin(double footerPageMargin)
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        sheet->setFooterPageMargin(footerPageMargin);
+        return true;
+    }
+    return false;
+}
+
+/*!
+ * Returns top page margin in inches
+ */
+
+double Document::topPageMargin()
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        return sheet->topPageMargin();
+    }
+    return 0.0;
+}
+
+/*!
+ * Returns left page margin in inches
+ */
+
+double Document::leftPageMargin()
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        return sheet->leftPageMargin();
+    }
+    return 0.0;
+}
+
+/*!
+ * Returns right page margin in inches
+ */
+
+double Document::rightPageMargin()
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        return sheet->rightPageMargin();
+    }
+    return 0.0;
+}
+
+/*!
+ * Returns bottom page margin in inches
+ */
+
+double Document::bottomPageMargin()
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        return sheet->bottomPageMargin();
+    }
+    return 0.0;
+}
+
+/*!
+ * Returns header page margin in inches
+ */
+
+double Document::headerPageMargin()
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        return sheet->headerPageMargin();
+    }
+    return 0.0;
+}
+
+/*!
+ * Returns header page margin in inches
+ */
+
+double Document::footerPageMargin()
+{
+    if (Worksheet *sheet = currentWorksheet()){
+        return sheet->footerPageMargin();
+    }
+    return 0.0;
 }
 
 /*!
@@ -783,7 +939,7 @@ Cell *Document::cellAt(const CellReference &pos) const
 {
     if (Worksheet *sheet = currentWorksheet())
         return sheet->cellAt(pos);
-    return 0;
+    return Q_NULLPTR;
 }
 
 /*!
@@ -796,7 +952,7 @@ Cell *Document::cellAt(int row, int col) const
 {
     if (Worksheet *sheet = currentWorksheet())
         return sheet->cellAt(row, col);
-    return 0;
+    return Q_NULLPTR;
 }
 
 /*!
@@ -976,7 +1132,7 @@ Worksheet *Document::currentWorksheet() const
     if (st && st->sheetType() == AbstractSheet::ST_WorkSheet)
         return static_cast<Worksheet *>(st);
     else
-        return 0;
+        return Q_NULLPTR;
 }
 
 /*!

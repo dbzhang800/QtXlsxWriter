@@ -1,0 +1,104 @@
+language: cpp
+
+git:
+  depth: 1
+
+matrix:
+  fast_finish: true
+  include:
+  - name: Ubuntu qmake test
+    os: linux
+    dist: xenial
+    group: stable
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - sourceline: 'ppa:beineri/opt-qt-5.12.0-xenial'
+        update: true
+        packages:
+        - qt512base
+        - qt512tools
+        - gcc-6
+        - g++-6
+        - libc6-i386
+        - libgl-dev
+        - libgl1-mesa-dev
+        - mesa-common-dev
+    script:
+        - PATH="/opt/qt512/bin:$PATH"
+        - CXX="g++-6"
+        - CC="gcc-6"
+        - qt512-env.sh
+        - qmake "DEFINES += XLSX_TEST"
+        - make
+        - sudo make install
+        - cd tests
+        - qmake
+        - make
+        - make check
+  - name: Ubuntu qmake release
+    os: linux
+    dist: xenial
+    group: stable
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - sourceline: 'ppa:beineri/opt-qt-5.12.0-xenial'
+        update: true
+        packages:
+        - qt512base
+        - qt512tools
+        - gcc-6
+        - g++-6
+        - libc6-i386
+        - libgl-dev
+        - libgl1-mesa-dev
+        - mesa-common-dev
+    script:
+        - PATH="/opt/qt512/bin:$PATH"
+        - CXX="g++-6"
+        - CC="gcc-6"
+        - qt512-env.sh
+        - qmake
+        - make
+        - sudo make install
+  - name: macOS qmake test
+    os: osx
+    osx_image: xcode10.1
+    compiler: clang
+    addons:
+      homebrew:
+        packages:
+        - qt
+        update: true
+    script:
+        - PATH="/usr/local/opt/qt5/bin:$PATH"
+        - qmake "DEFINES += XLSX_TEST"
+        - make
+        - make install
+        - cd tests
+        - qmake
+        - make
+        - make check
+  - name: macOS qmake release
+    os: osx
+    osx_image: xcode10.1
+    compiler: clang
+    addons:
+      homebrew:
+        packages:
+        - qt
+        update: true
+    script:
+        - PATH="/usr/local/opt/qt5/bin:$PATH"
+        - qmake
+        - make
+        - make install
+
+notifications:
+  email: false
+

@@ -1,0 +1,46 @@
+version: '0.3.0.{build}'
+
+image: Visual Studio 2015
+clone_depth: 1
+environment:
+  global:
+    # Appveyor doesn't have Qt 12 yet
+    LatestLTSQtVersion: 5.9
+  matrix:
+  - QT5: C:\Qt\%LatestLTSQtVersion%\mingw53_32
+    COMPILER: C:\Qt\Tools\mingw530_32
+    targetPlatform: x86
+    use_mingw: "true"
+    use_cmake: "false"
+  - QT5: C:\Qt\%LatestLTSQtVersion%\msvc2015_64
+    COMPILER: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC
+    targetPlatform: amd64
+    use_mingw: "false"
+    use_cmake: "false"
+
+matrix:
+  fast_finish: true
+
+before_build:
+- set PATH=%COMPILER%\bin;%QT5%\bin;%PATH%
+- set originalWD=%CD%
+- call "%QT5%\bin\qtenv2.bat"
+- cd %originalWD%
+- if %use_mingw%==false call "%COMPILER%\vcvarsall.bat" %targetPlatform%
+- if %use_mingw%==true (set MAKEENGINE=mingw32-make) else (set MAKEENGINE=nmake)
+- if %use_mingw%==true set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+
+build_script:
+-  qmake "DEFINES += XLSX_TEST"
+-  '%MAKEENGINE%'
+-  '%MAKEENGINE% install'
+-  cd tests
+-  qmake
+-  '%MAKEENGINE%'
+-  '%MAKEENGINE% check TESTARGS="-o testResults.xml,xml"'
+
+after_build:
+- if %use_mingw%==true set PATH=C:\Program Files\Git\usr\bin;%PATH%
+
+on_finish:
+- ps: if (Test-Path ".\tests\testResults.xml") {(new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests\testResults.xml));}

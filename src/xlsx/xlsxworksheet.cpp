@@ -63,7 +63,11 @@ WorksheetPrivate::WorksheetPrivate(Worksheet *p, Worksheet::CreateFlag flag)
     : AbstractSheetPrivate(p, flag)
   , windowProtection(false), showFormulas(false), showGridLines(true), showRowColHeaders(true)
   , showZeros(true), rightToLeft(false), tabSelected(false), showRuler(false)
-  , showOutlineSymbols(true), showWhiteSpace(true), urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
+  , showOutlineSymbols(true), showWhiteSpace(true)
+  , topPageMargin(0.7875), rightPageMargin(0.7875), leftPageMargin(0.7875), bottomPageMargin(0.7875)
+  , headerPageMargin(0.393750), footerPageMargin(0.393750)
+  , urlPattern(QStringLiteral("^([fh]tt?ps?://)|(mailto:)|(file://)"))
+
 {
     previous_row = 0;
 
@@ -418,6 +422,127 @@ void Worksheet::setWhiteSpaceVisible(bool visible)
 }
 
 /*!
+ * Return top page margin
+ */
+
+double Worksheet::topPageMargin()
+{
+    Q_D(Worksheet);
+    return d->topPageMargin;
+
+}
+
+/*!
+ * Set top page margin
+ */
+
+void Worksheet::setTopPageMargin(double topPageMargin)
+{
+    Q_D(Worksheet);
+    d->topPageMargin = topPageMargin;
+}
+
+/*!
+ * Return left page margin
+ */
+
+double Worksheet::leftPageMargin()
+{
+    Q_D(Worksheet);
+    return d->leftPageMargin;
+}
+
+/*!
+ * Set left page margin
+ */
+
+void Worksheet::setLeftPageMargin(double leftPageMargin)
+{
+    Q_D(Worksheet);
+    d->leftPageMargin = leftPageMargin;
+}
+
+/*!
+ * Return right page margin
+ */
+
+double Worksheet::rightPageMargin()
+{
+    Q_D(Worksheet);
+    return d->rightPageMargin;
+}
+
+/*!
+ * Set right page margin
+ */
+
+void Worksheet::setRightPageMargin(double rightPageMargin)
+{
+    Q_D(Worksheet);
+    d->rightPageMargin = rightPageMargin;
+}
+
+/*!
+ * Return bottom page margin
+ */
+
+double Worksheet::bottomPageMargin()
+{
+    Q_D(Worksheet);
+    return d->bottomPageMargin;
+}
+
+/*!
+ * Set bottom page margin
+ */
+
+void Worksheet::setBottomPageMargin(double bottomPageMargin)
+{
+    Q_D(Worksheet);
+    d->bottomPageMargin = bottomPageMargin;
+}
+
+/*!
+ * Return header page margin
+ */
+
+double Worksheet::headerPageMargin()
+{
+    Q_D(Worksheet);
+    return d->headerPageMargin;
+}
+
+/*!
+ * Set header page margin
+ */
+
+void Worksheet::setHeaderPageMargin(double headerPageMargin)
+{
+    Q_D(Worksheet);
+    d->headerPageMargin = headerPageMargin;
+}
+
+/*!
+ * Return footer page margin
+ */
+
+double Worksheet::footerPageMargin()
+{
+    Q_D(Worksheet);
+    return d->footerPageMargin;
+}
+
+/*!
+ * Set footer page margin
+ */
+
+void Worksheet::setFooterPageMargin(double footerPageMargin)
+{
+    Q_D(Worksheet);
+    d->footerPageMargin = footerPageMargin;
+}
+
+/*!
  * Write \a value to cell (\a row, \a column) with the \a format.
  * Both \a row and \a column are all 1-indexed value.
  *
@@ -533,7 +658,9 @@ QVariant Worksheet::read(int row, int column) const
             }
         }
     }
-
+    const QVariant rawValue = cell->value();
+    if (!rawValue.isValid())
+        return QVariant();
     if (cell->isDateTime()) {
         double val = cell->value().toDouble();
         QDateTime dt = cell->dateTime();
@@ -543,8 +670,7 @@ QVariant Worksheet::read(int row, int column) const
             return dt.date();
         return dt;
     }
-
-    return cell->value();
+    return rawValue;
 }
 
 /*!
@@ -554,7 +680,7 @@ QVariant Worksheet::read(int row, int column) const
 Cell *Worksheet::cellAt(const CellReference &row_column) const
 {
     if (!row_column.isValid())
-        return 0;
+        return Q_NULLPTR;
 
     return cellAt(row_column.row(), row_column.column());
 }
@@ -567,9 +693,9 @@ Cell *Worksheet::cellAt(int row, int column) const
 {
     Q_D(const Worksheet);
     if (!d->cellTable.contains(row))
-        return 0;
+        return Q_NULLPTR;
     if (!d->cellTable[row].contains(column))
-        return 0;
+        return Q_NULLPTR;
 
     return d->cellTable[row][column].data();
 }
@@ -1235,6 +1361,15 @@ void Worksheet::saveToXmlFile(QIODevice *device) const
     d->saveXmlDataValidations(writer);
     d->saveXmlHyperlinks(writer);
     d->saveXmlDrawings(writer);
+
+    writer.writeStartElement(QStringLiteral("pageMargins"));
+    writer.writeAttribute(QStringLiteral("left"), QString::number(d->leftPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("right"), QString::number(d->rightPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("top"), QString::number(d->topPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("bottom"), QString::number(d->bottomPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("header"), QString::number(d->headerPageMargin, 'g', 15));
+    writer.writeAttribute(QStringLiteral("footer"), QString::number(d->footerPageMargin, 'g', 15));
+    writer.writeEndElement();//pagemargins
 
     writer.writeEndElement();//worksheet
     writer.writeEndDocument();
@@ -1994,7 +2129,10 @@ void WorksheetPrivate::loadXmlSheetData(QXmlStreamReader &reader)
                                 if (rs.isRichString())
                                     cell->d_func()->richString = rs;
                             } else if (cellType == Cell::NumberType) {
-                                cell->d_func()->value = value.toDouble();
+                                if (value.contains(QLatin1Char('.')))
+                                    cell->d_func()->value = value.toDouble();
+                                else
+                                    cell->d_func()->value = value.toInt();
                             } else if (cellType == Cell::BooleanType) {
                                 cell->d_func()->value = value.toInt() ? true : false;
                             } else { //Cell::ErrorType and Cell::StringType
@@ -2264,6 +2402,12 @@ bool Worksheet::loadFromXmlFile(QIODevice *device)
                 QXmlStreamAttributes attributes = reader.attributes();
                 QString range = attributes.value(QLatin1String("ref")).toString();
                 d->dimension = CellRange(range);
+            } else if (reader.name() == QLatin1String("pageMargins")){
+                QXmlStreamAttributes attributes = reader.attributes();
+                setTopPageMargin(attributes.value(QLatin1String("top")).toDouble());
+                setLeftPageMargin(attributes.value(QLatin1String("left")).toDouble());
+                setRightPageMargin(attributes.value(QLatin1String("right")).toDouble());
+                setBottomPageMargin(attributes.value(QLatin1String("bottom")).toDouble());
             } else if (reader.name() == QLatin1String("sheetViews")) {
                 d->loadXmlSheetViews(reader);
             } else if (reader.name() == QLatin1String("sheetFormatPr")) {

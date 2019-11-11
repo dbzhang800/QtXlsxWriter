@@ -51,9 +51,9 @@ class Q_XLSX_EXPORT Document : public QObject
     Q_DECLARE_PRIVATE(Document)
 
 public:
-    explicit Document(QObject *parent = 0);
-    Document(const QString &xlsxName, QObject *parent=0);
-    Document(QIODevice *device, QObject *parent=0);
+    explicit Document(QObject *parent = Q_NULLPTR);
+    Document(const QString &xlsxName, QObject *parent = Q_NULLPTR);
+    Document(QIODevice *device, QObject *parent = Q_NULLPTR);
     ~Document();
 
     bool write(const CellReference &cell, const QVariant &value, const Format &format=Format());
@@ -64,6 +64,20 @@ public:
     Chart *insertChart(int row, int col, const QSize &size);
     bool mergeCells(const CellRange &range, const Format &format=Format());
     bool unmergeCells(const CellRange &range);
+
+    bool setTopPageMargin(double topPageMargin);
+    bool setLeftPageMargin(double leftPageMargin);
+    bool setRightPageMargin(double rightPageMargin);
+    bool setBottomPageMargin(double bottomPageMargin);
+    bool setHeaderPageMargin(double headerPageMargin);
+    bool setFooterPageMargin(double footerPageMargin);
+
+    double topPageMargin();
+    double leftPageMargin();
+    double rightPageMargin();
+    double bottomPageMargin();
+    double headerPageMargin();
+    double footerPageMargin();
 
     bool setColumnWidth(const CellRange &range, double width);
     bool setColumnFormat(const CellRange &range, const Format &format);
