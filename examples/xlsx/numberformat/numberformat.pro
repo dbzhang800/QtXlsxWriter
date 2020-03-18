@@ -10,3 +10,7 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp
+
+# install
+target.path = $$[QT_INSTALL_EXAMPLES]/xlsx/numberformat
+INSTALLS += target

@@ -10,3 +10,7 @@ SOURCES += main.cpp \
 HEADERS += \
     xlsxsheetmodel.h \
     xlsxsheetmodel_p.h
+
+# install
+target.path = $$[QT_INSTALL_EXAMPLES]/xlsx/xlsxwidget
+INSTALLS += target
