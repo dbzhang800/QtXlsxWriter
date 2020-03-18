@@ -58,7 +58,10 @@ class XlsxColor;
 
 struct XlsxFormatNumberData
 {
-    XlsxFormatNumberData() : formatIndex(0) {}
+    XlsxFormatNumberData()
+        : formatIndex(0)
+    {
+    }
 
     int formatIndex;
     QString formatString;
@@ -69,9 +72,9 @@ class XLSX_AUTOTEST_EXPORT Styles : public AbstractOOXmlFile
 public:
     Styles(CreateFlag flag);
     ~Styles();
-    void addXfFormat(const Format &format, bool force=false);
+    void addXfFormat(const Format &format, bool force = false);
     Format xfFormat(int idx) const;
-    void addDxfFormat(const Format &format, bool force=false);
+    void addDxfFormat(const Format &format, bool force = false);
     Format dxfFormat(int idx) const;
 
     void saveToXmlFile(QIODevice *device) const;
@@ -92,7 +95,8 @@ private:
     void writeFill(QXmlStreamWriter &writer, const Format &fill, bool isDxf = false) const;
     void writeBorders(QXmlStreamWriter &writer) const;
     void writeBorder(QXmlStreamWriter &writer, const Format &border, bool isDxf = false) const;
-    void writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style, const XlsxColor &color) const;
+    void writeSubBorder(QXmlStreamWriter &writer, const QString &type, int style,
+                        const XlsxColor &color) const;
     void writeCellXfs(QXmlStreamWriter &writer) const;
     void writeDxfs(QXmlStreamWriter &writer) const;
     void writeDxf(QXmlStreamWriter &writer, const Format &format) const;
@@ -105,7 +109,8 @@ private:
     bool readFill(QXmlStreamReader &reader, Format &format);
     bool readBorders(QXmlStreamReader &reader);
     bool readBorder(QXmlStreamReader &reader, Format &format);
-    bool readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style, XlsxColor &color);
+    bool readSubBorder(QXmlStreamReader &reader, const QString &name, Format::BorderStyle &style,
+                       XlsxColor &color);
     bool readCellXfs(QXmlStreamReader &reader);
     bool readDxfs(QXmlStreamReader &reader);
     bool readDxf(QXmlStreamReader &reader);
@@ -113,8 +118,8 @@ private:
     bool readIndexedColors(QXmlStreamReader &reader);
 
     QHash<QString, int> m_builtinNumFmtsHash;
-    QMap<int, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtIdMap;
-    QHash<QString, QSharedPointer<XlsxFormatNumberData> > m_customNumFmtsHash;
+    QMap<int, QSharedPointer<XlsxFormatNumberData>> m_customNumFmtIdMap;
+    QHash<QString, QSharedPointer<XlsxFormatNumberData>> m_customNumFmtsHash;
     int m_nextCustomNumFmtId;
     QList<Format> m_fontsList;
     QList<Format> m_fillsList;
@@ -134,6 +139,5 @@ private:
 
     bool m_emptyFormatAdded;
 };
-
 }
 #endif // XLSXSTYLES_H

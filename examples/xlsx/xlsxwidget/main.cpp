@@ -30,7 +30,8 @@ int main(int argc, char **argv)
             QTableView *view = new QTableView(&tabWidget);
             view->setModel(new SheetModel(sheet, view));
             foreach (CellRange range, sheet->mergedCells())
-                view->setSpan(range.firstRow()-1, range.firstColumn()-1, range.rowCount(), range.columnCount());
+                view->setSpan(range.firstRow() - 1, range.firstColumn() - 1, range.rowCount(),
+                              range.columnCount());
             tabWidget.addTab(view, sheetName);
         }
     }

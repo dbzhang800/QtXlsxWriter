@@ -50,39 +50,30 @@ namespace QXlsx {
 class XlsxSeries
 {
 public:
-    //At present, we care about number cell ranges only!
-    QString numberDataSource_numRef; //yval, val
-    QString axDataSource_numRef; //xval, cat
+    // At present, we care about number cell ranges only!
+    QString numberDataSource_numRef; // yval, val
+    QString axDataSource_numRef; // xval, cat
 };
 
 class XlsxAxis
 {
 public:
-    enum Type
-    {
-        T_Cat,
-        T_Val,
-        T_Date,
-        T_Ser
-    };
+    enum Type { T_Cat, T_Val, T_Date, T_Ser };
 
-    enum Pos
-    {
-        Left,
-        Right,
-        Top,
-        Bottom
-    };
+    enum Pos { Left, Right, Top, Bottom };
 
-    XlsxAxis(){}
+    XlsxAxis() {}
 
     XlsxAxis(Type t, Pos p, int id, int crossId)
-        :type(t), axisPos(p), axisId(id), crossAx(crossId)
+        : type(t)
+        , axisPos(p)
+        , axisId(id)
+        , crossAx(crossId)
     {
     }
 
     Type type;
-    Pos axisPos; //l,r,b,t
+    Pos axisPos; // l,r,b,t
     int axisId;
     int crossAx;
 };
@@ -114,8 +105,8 @@ public:
 
     Chart::ChartType chartType;
 
-    QList<QSharedPointer<XlsxSeries> > seriesList;
-    QList<QSharedPointer<XlsxAxis> > axisList;
+    QList<QSharedPointer<XlsxSeries>> seriesList;
+    QList<QSharedPointer<XlsxAxis>> axisList;
 
     AbstractSheet *sheet;
 };

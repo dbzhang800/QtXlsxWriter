@@ -31,27 +31,33 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-CellFormulaPrivate::CellFormulaPrivate(const QString &formula_, const CellRange &ref_, CellFormula::FormulaType type_)
-    :formula(formula_), type(type_), reference(ref_), ca(false), si(0)
+CellFormulaPrivate::CellFormulaPrivate(const QString &formula_, const CellRange &ref_,
+                                       CellFormula::FormulaType type_)
+    : formula(formula_)
+    , type(type_)
+    , reference(ref_)
+    , ca(false)
+    , si(0)
 {
-    //Remove the formula '=' sign if exists
+    // Remove the formula '=' sign if exists
     if (formula.startsWith(QLatin1String("=")))
-        formula.remove(0,1);
+        formula.remove(0, 1);
     else if (formula.startsWith(QLatin1String("{=")) && formula.endsWith(QLatin1String("}")))
-        formula = formula.mid(2, formula.length()-3);
+        formula = formula.mid(2, formula.length() - 3);
 }
 
 CellFormulaPrivate::CellFormulaPrivate(const CellFormulaPrivate &other)
     : QSharedData(other)
-    , formula(other.formula), type(other.type), reference(other.reference)
-    , ca(other.ca), si(other.si)
+    , formula(other.formula)
+    , type(other.type)
+    , reference(other.reference)
+    , ca(other.ca)
+    , si(other.si)
 {
-
 }
 
 CellFormulaPrivate::~CellFormulaPrivate()
 {
-
 }
 
 /*!
@@ -74,41 +80,38 @@ CellFormulaPrivate::~CellFormulaPrivate()
  */
 CellFormula::CellFormula()
 {
-    //The d pointer is initialized with a null pointer
+    // The d pointer is initialized with a null pointer
 }
 
 /*!
  *  Creates a new formula with the given \a formula and \a type.
  */
 CellFormula::CellFormula(const char *formula, FormulaType type)
-    :d(new CellFormulaPrivate(QString::fromLatin1(formula), CellRange(), type))
+    : d(new CellFormulaPrivate(QString::fromLatin1(formula), CellRange(), type))
 {
-
 }
 
 /*!
  *  Creates a new formula with the given \a formula and \a type.
  */
 CellFormula::CellFormula(const QString &formula, FormulaType type)
-    :d(new CellFormulaPrivate(formula, CellRange(), type))
+    : d(new CellFormulaPrivate(formula, CellRange(), type))
 {
-
 }
 
 /*!
  *  Creates a new formula with the given \a formula, \a ref and \a type.
  */
 CellFormula::CellFormula(const QString &formula, const CellRange &ref, FormulaType type)
-    :d(new CellFormulaPrivate(formula, ref, type))
+    : d(new CellFormulaPrivate(formula, ref, type))
 {
-
 }
 
 /*!
    Creates a new formula with the same attributes as the \a other formula.
  */
 CellFormula::CellFormula(const CellFormula &other)
-    :d(other.d)
+    : d(other.d)
 {
 }
 
@@ -116,7 +119,7 @@ CellFormula::CellFormula(const CellFormula &other)
    Assigns the \a other formula to this formula, and returns a
    reference to this formula.
  */
-CellFormula &CellFormula::operator =(const CellFormula &other)
+CellFormula &CellFormula::operator=(const CellFormula &other)
 {
     d = other.d;
     return *this;
@@ -127,7 +130,6 @@ CellFormula &CellFormula::operator =(const CellFormula &other)
  */
 CellFormula::~CellFormula()
 {
-
 }
 
 /*!
@@ -200,7 +202,7 @@ bool CellFormula::saveToXml(QXmlStreamWriter &writer) const
     if (!d->formula.isEmpty())
         writer.writeCharacters(d->formula);
 
-    writer.writeEndElement(); //f
+    writer.writeEndElement(); // f
 
     return true;
 }
@@ -241,19 +243,17 @@ bool CellFormula::loadFromXml(QXmlStreamReader &reader)
 /*!
  * \internal
  */
-bool CellFormula::operator ==(const CellFormula &formula) const
+bool CellFormula::operator==(const CellFormula &formula) const
 {
-    return d->formula == formula.d->formula && d->type == formula.d->type
-            && d->si ==formula.d->si;
+    return d->formula == formula.d->formula && d->type == formula.d->type && d->si == formula.d->si;
 }
 
 /*!
  * \internal
  */
-bool CellFormula::operator !=(const CellFormula &formula) const
+bool CellFormula::operator!=(const CellFormula &formula) const
 {
-    return d->formula != formula.d->formula || d->type != formula.d->type
-            || d->si !=formula.d->si;
+    return d->formula != formula.d->formula || d->type != formula.d->type || d->si != formula.d->si;
 }
 
 QT_END_NAMESPACE_XLSX

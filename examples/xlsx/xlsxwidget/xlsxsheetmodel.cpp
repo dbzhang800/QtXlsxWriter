@@ -32,9 +32,8 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 SheetModelPrivate::SheetModelPrivate(SheetModel *p)
-    :q_ptr(p)
+    : q_ptr(p)
 {
-
 }
 
 /*!
@@ -50,7 +49,8 @@ SheetModelPrivate::SheetModelPrivate(SheetModel *p)
  * Creates a model object with the given \a sheet and \a parent.
  */
 SheetModel::SheetModel(Worksheet *sheet, QObject *parent)
-    :QAbstractTableModel(parent), d_ptr(new SheetModelPrivate(this))
+    : QAbstractTableModel(parent)
+    , d_ptr(new SheetModelPrivate(this))
 {
     d_ptr->sheet = sheet;
 }
@@ -63,14 +63,13 @@ SheetModel::~SheetModel()
     delete d_ptr;
 }
 
-int SheetModel::rowCount(const QModelIndex &/*parent*/) const
+int SheetModel::rowCount(const QModelIndex & /*parent*/) const
 {
     Q_D(const SheetModel);
     return d->sheet->dimension().lastRow();
 }
 
-
-int SheetModel::columnCount(const QModelIndex &/*parent*/) const
+int SheetModel::columnCount(const QModelIndex & /*parent*/) const
 {
     Q_D(const SheetModel);
     return d->sheet->dimension().lastColumn();
@@ -90,10 +89,10 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    Cell *cell = d->sheet->cellAt(index.row()+1, index.column()+1);
+    Cell *cell = d->sheet->cellAt(index.row() + 1, index.column() + 1);
     if (!cell)
         return QVariant();
-    QVariant userFriendlyValue = d->sheet->read(index.row()+1, index.column()+1);
+    QVariant userFriendlyValue = d->sheet->read(index.row() + 1, index.column() + 1);
 
     if (role == Qt::DisplayRole) {
         if (cell->isDateTime())
@@ -160,7 +159,7 @@ static QString col_to_name(int col_num)
         remainder = col_num % 26;
         if (remainder == 0)
             remainder = 26;
-        col_str.prepend(QChar('A'+remainder-1));
+        col_str.prepend(QChar('A' + remainder - 1));
         col_num = (col_num - 1) / 26;
     }
 
@@ -186,7 +185,7 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return false;
 
     if (role == Qt::EditRole) {
-        if (d->sheet->write(index.row()+1, index.column()+1, value) == 0)
+        if (d->sheet->write(index.row() + 1, index.column() + 1, value) == 0)
             return true;
     }
 

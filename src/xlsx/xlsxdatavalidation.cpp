@@ -34,33 +34,43 @@
 QT_BEGIN_NAMESPACE_XLSX
 
 DataValidationPrivate::DataValidationPrivate()
-    :validationType(DataValidation::None), validationOperator(DataValidation::Between)
-    , errorStyle(DataValidation::Stop), allowBlank(false), isPromptMessageVisible(true)
+    : validationType(DataValidation::None)
+    , validationOperator(DataValidation::Between)
+    , errorStyle(DataValidation::Stop)
+    , allowBlank(false)
+    , isPromptMessageVisible(true)
     , isErrorMessageVisible(true)
 {
-
 }
 
-DataValidationPrivate::DataValidationPrivate(DataValidation::ValidationType type, DataValidation::ValidationOperator op, const QString &formula1, const QString &formula2, bool allowBlank)
-    :validationType(type), validationOperator(op)
-    , errorStyle(DataValidation::Stop), allowBlank(allowBlank), isPromptMessageVisible(true)
-    , isErrorMessageVisible(true), formula1(formula1), formula2(formula2)
+DataValidationPrivate::DataValidationPrivate(DataValidation::ValidationType type,
+                                             DataValidation::ValidationOperator op,
+                                             const QString &formula1, const QString &formula2,
+                                             bool allowBlank)
+    : validationType(type)
+    , validationOperator(op)
+    , errorStyle(DataValidation::Stop)
+    , allowBlank(allowBlank)
+    , isPromptMessageVisible(true)
+    , isErrorMessageVisible(true)
+    , formula1(formula1)
+    , formula2(formula2)
 {
-
 }
 
 DataValidationPrivate::DataValidationPrivate(const DataValidationPrivate &other)
-    :QSharedData(other)
-    , validationType(DataValidation::None), validationOperator(DataValidation::Between)
-    , errorStyle(DataValidation::Stop), allowBlank(false), isPromptMessageVisible(true)
+    : QSharedData(other)
+    , validationType(DataValidation::None)
+    , validationOperator(DataValidation::Between)
+    , errorStyle(DataValidation::Stop)
+    , allowBlank(false)
+    , isPromptMessageVisible(true)
     , isErrorMessageVisible(true)
 {
-
 }
 
 DataValidationPrivate::~DataValidationPrivate()
 {
-
 }
 
 /*!
@@ -83,7 +93,8 @@ DataValidationPrivate::~DataValidationPrivate()
  * \value Date restricts the cell to date values.
  * \value Time restricts the cell to time values.
  * \value TextLength restricts the cell data based on an integer string length.
- * \value Custom restricts the cell based on an external Excel formula that returns a true/false value.
+ * \value Custom restricts the cell based on an external Excel formula that returns a true/false
+ * value.
  */
 
 /*!
@@ -117,28 +128,26 @@ DataValidationPrivate::~DataValidationPrivate()
  * Construct a data validation object with the given \a type, \a op, \a formula1
  * \a formula2, and \a allowBlank.
  */
-DataValidation::DataValidation(ValidationType type, ValidationOperator op, const QString &formula1, const QString &formula2, bool allowBlank)
-    :d(new DataValidationPrivate(type, op, formula1, formula2, allowBlank))
+DataValidation::DataValidation(ValidationType type, ValidationOperator op, const QString &formula1,
+                               const QString &formula2, bool allowBlank)
+    : d(new DataValidationPrivate(type, op, formula1, formula2, allowBlank))
 {
-
 }
 
 /*!
     Construct a data validation object
 */
 DataValidation::DataValidation()
-    :d(new DataValidationPrivate())
+    : d(new DataValidationPrivate())
 {
-
 }
 
 /*!
     Constructs a copy of \a other.
 */
 DataValidation::DataValidation(const DataValidation &other)
-    :d(other.d)
+    : d(other.d)
 {
-
 }
 
 /*!
@@ -149,7 +158,6 @@ DataValidation &DataValidation::operator=(const DataValidation &other)
     this->d = other.d;
     return *this;
 }
-
 
 /*!
  * Destroy the object.
@@ -451,7 +459,7 @@ bool DataValidation::saveToXml(QXmlStreamWriter &writer) const
     if (!formula2().isEmpty())
         writer.writeTextElement(QStringLiteral("formula2"), formula2());
 
-    writer.writeEndElement(); //dataValidation
+    writer.writeEndElement(); // dataValidation
 
     return true;
 }
@@ -535,8 +543,9 @@ DataValidation DataValidation::loadFromXml(QXmlStreamReader &reader)
     if (!p.isEmpty() || !pt.isEmpty())
         validation.setPromptMessage(p, pt);
 
-    //find the end
-    while(!(reader.name() == QLatin1String("dataValidation") && reader.tokenType() == QXmlStreamReader::EndElement)) {
+    // find the end
+    while (!(reader.name() == QLatin1String("dataValidation")
+             && reader.tokenType() == QXmlStreamReader::EndElement)) {
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("formula1")) {

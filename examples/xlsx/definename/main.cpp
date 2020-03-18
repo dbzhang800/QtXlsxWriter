@@ -7,10 +7,10 @@ int main()
 {
     //![0]
     Document xlsx;
-    for (int i=1; i<=10; ++i) {
+    for (int i = 1; i <= 10; ++i) {
         xlsx.write(i, 1, i);
-        xlsx.write(i, 2, i*i);
-        xlsx.write(i, 3, i*i*i);
+        xlsx.write(i, 2, i * i);
+        xlsx.write(i, 3, i * i * i);
     }
     //![0]
     //![1]

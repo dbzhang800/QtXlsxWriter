@@ -47,15 +47,9 @@ class FormatPrivate;
 class Q_XLSX_EXPORT Format
 {
 public:
-    enum FontScript
-    {
-        FontScriptNormal,
-        FontScriptSuper,
-        FontScriptSub
-    };
+    enum FontScript { FontScriptNormal, FontScriptSuper, FontScriptSub };
 
-    enum FontUnderline
-    {
+    enum FontUnderline {
         FontUnderlineNone,
         FontUnderlineSingle,
         FontUnderlineDouble,
@@ -63,8 +57,7 @@ public:
         FontUnderlineDoubleAccounting
     };
 
-    enum HorizontalAlignment
-    {
+    enum HorizontalAlignment {
         AlignHGeneral,
         AlignLeft,
         AlignHCenter,
@@ -75,8 +68,7 @@ public:
         AlignHDistributed
     };
 
-    enum VerticalAlignment
-    {
+    enum VerticalAlignment {
         AlignTop,
         AlignVCenter,
         AlignBottom,
@@ -84,8 +76,7 @@ public:
         AlignVDistributed
     };
 
-    enum BorderStyle
-    {
+    enum BorderStyle {
         BorderNone,
         BorderThin,
         BorderMedium,
@@ -102,16 +93,14 @@ public:
         BorderSlantDashDot
     };
 
-    enum DiagonalBorderType
-    {
+    enum DiagonalBorderType {
         DiagonalBorderNone,
         DiagonalBorderDown,
         DiagonalBorderUp,
         DiagnoalBorderBoth
     };
 
-    enum FillPattern
-    {
+    enum FillPattern {
         PatternNone,
         PatternSolid,
         PatternMediumGray,
@@ -220,16 +209,17 @@ public:
     bool isValid() const;
     bool isEmpty() const;
 
-    bool operator == (const Format &format) const;
-    bool operator != (const Format &format) const;
+    bool operator==(const Format &format) const;
+    bool operator!=(const Format &format) const;
 
-    QVariant property(int propertyId, const QVariant &defaultValue=QVariant()) const;
-    void setProperty(int propertyId, const QVariant &value, const QVariant &clearValue=QVariant(), bool detach=true);
+    QVariant property(int propertyId, const QVariant &defaultValue = QVariant()) const;
+    void setProperty(int propertyId, const QVariant &value, const QVariant &clearValue = QVariant(),
+                     bool detach = true);
     void clearProperty(int propertyId);
     bool hasProperty(int propertyId) const;
 
-    bool boolProperty(int propertyId, bool defaultValue=false) const;
-    int intProperty(int propertyId, int defaultValue=0) const;
+    bool boolProperty(int propertyId, bool defaultValue = false) const;
+    int intProperty(int propertyId, int defaultValue = 0) const;
     double doubleProperty(int propertyId, double defaultValue = 0.0) const;
     QString stringProperty(int propertyId, const QString &defaultValue = QString()) const;
     QColor colorProperty(int propertyId, const QColor &defaultValue = QColor()) const;
@@ -263,6 +253,7 @@ public:
     void setFillIndex(int index);
     void setXfIndex(int index);
     void setDxfIndex(int index);
+
 private:
     friend class Styles;
     friend class ::FormatTest;

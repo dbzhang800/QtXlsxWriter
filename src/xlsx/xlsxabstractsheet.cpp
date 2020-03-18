@@ -72,14 +72,14 @@ AbstractSheetPrivate::~AbstractSheetPrivate()
 /*!
  * \internal
  */
-AbstractSheet::AbstractSheet(const QString &name, int id, Workbook *workbook, AbstractSheetPrivate *d) :
-    AbstractOOXmlFile(d)
+AbstractSheet::AbstractSheet(const QString &name, int id, Workbook *workbook,
+                             AbstractSheetPrivate *d)
+    : AbstractOOXmlFile(d)
 {
     d_func()->name = name;
     d_func()->id = id;
     d_func()->workbook = workbook;
 }
-
 
 /*!
  * Returns the name of the sheet.

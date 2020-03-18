@@ -51,7 +51,7 @@ class CellPrivate
     Q_DECLARE_PUBLIC(Cell)
 public:
     CellPrivate(Cell *p);
-    CellPrivate(const CellPrivate * const cp);
+    CellPrivate(const CellPrivate *const cp);
 
     QVariant value;
     CellFormula formula;

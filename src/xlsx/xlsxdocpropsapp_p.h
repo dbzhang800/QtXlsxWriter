@@ -51,7 +51,7 @@ class XLSX_AUTOTEST_EXPORT DocPropsApp : public AbstractOOXmlFile
 {
 public:
     DocPropsApp(CreateFlag flag);
-    
+
     void addPartTitle(const QString &title);
     void addHeadingPair(const QString &name, int value);
 
@@ -64,9 +64,8 @@ public:
 
 private:
     QStringList m_titlesOfPartsList;
-    QList<QPair<QString, int> > m_headingPairsList;
+    QList<QPair<QString, int>> m_headingPairsList;
     QMap<QString, QString> m_properties;
 };
-
 }
 #endif // XLSXDOCPROPSAPP_H

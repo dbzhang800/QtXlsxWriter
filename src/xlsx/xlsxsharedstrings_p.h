@@ -52,8 +52,9 @@ namespace QXlsx {
 class XlsxSharedStringInfo
 {
 public:
-    XlsxSharedStringInfo(int index=0, int count = 1) :
-        index(index), count(count)
+    XlsxSharedStringInfo(int index = 0, int count = 1)
+        : index(index)
+        , count(count)
     {
     }
 
@@ -67,7 +68,7 @@ public:
     SharedStrings(CreateFlag flag);
     int count() const;
     bool isEmpty() const;
-    
+
     int addSharedString(const QString &string);
     int addSharedString(const RichString &string);
     void removeSharedString(const QString &string);
@@ -89,10 +90,9 @@ private:
     Format readRichStringPart_rPr(QXmlStreamReader &reader);
     void writeRichStringPart_rPr(QXmlStreamWriter &writer, const Format &format) const;
 
-    QHash<RichString, XlsxSharedStringInfo> m_stringTable; //for fast lookup
+    QHash<RichString, XlsxSharedStringInfo> m_stringTable; // for fast lookup
     QList<RichString> m_stringList;
     int m_stringCount;
 };
-
 }
 #endif // XLSXSHAREDSTRINGS_H

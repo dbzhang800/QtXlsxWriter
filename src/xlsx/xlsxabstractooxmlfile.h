@@ -39,11 +39,7 @@ class Q_XLSX_EXPORT AbstractOOXmlFile
 {
     Q_DECLARE_PRIVATE(AbstractOOXmlFile)
 public:
-    enum CreateFlag
-    {
-        F_NewFromScratch,
-        F_LoadFromExists
-    };
+    enum CreateFlag { F_NewFromScratch, F_LoadFromExists };
 
     virtual ~AbstractOOXmlFile();
 

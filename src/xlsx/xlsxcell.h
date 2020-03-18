@@ -42,12 +42,12 @@ class Q_XLSX_EXPORT Cell
     Q_DECLARE_PRIVATE(Cell)
 public:
     enum CellType {
-        BooleanType,      //t="b"
-        NumberType,       //t="n" (default)
-        ErrorType,        //t="e"
-        SharedStringType, //t="s"
-        StringType,       //t="str"
-        InlineStringType  //t="inlineStr"
+        BooleanType, // t="b"
+        NumberType, // t="n" (default)
+        ErrorType, // t="e"
+        SharedStringType, // t="s"
+        StringType, // t="str"
+        InlineStringType // t="inlineStr"
     };
 
     CellType cellType() const;
@@ -63,13 +63,15 @@ public:
     bool isRichString() const;
 
     ~Cell();
+
 private:
     friend class Worksheet;
     friend class WorksheetPrivate;
 
-    Cell(const QVariant &data=QVariant(), CellType type=NumberType, const Format &format=Format(), Worksheet *parent=0);
-    Cell(const Cell * const cell);
-    CellPrivate * const d_ptr;
+    Cell(const QVariant &data = QVariant(), CellType type = NumberType,
+         const Format &format = Format(), Worksheet *parent = 0);
+    Cell(const Cell *const cell);
+    CellPrivate *const d_ptr;
 };
 
 QT_END_NAMESPACE_XLSX

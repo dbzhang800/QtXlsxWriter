@@ -16,8 +16,8 @@ int main()
     xlsx.write("E1", "dataBar", hFmt);
     xlsx.write("F1", "colorScale", hFmt);
 
-    for (int row=3; row<22; ++row) {
-        for (int col=2; col<22; ++col)
+    for (int row = 3; row < 22; ++row) {
+        for (int col = 2; col < 22; ++col)
             xlsx.write(row, col, qrand() % 100);
     }
     //![0]

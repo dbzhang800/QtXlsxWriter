@@ -60,6 +60,7 @@ public:
     operator QVariant() const;
 
     RichString &operator=(const RichString &other);
+
 private:
     friend Q_XLSX_EXPORT uint qHash(const RichString &rs, uint seed) Q_DECL_NOTHROW;
     friend Q_XLSX_EXPORT bool operator==(const RichString &rs1, const RichString &rs2);
