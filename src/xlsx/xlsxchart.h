@@ -47,7 +47,7 @@ class Q_XLSX_EXPORT Chart : public AbstractOOXmlFile
 
 public:
     enum ChartType {
-        CT_Area = 1, //Zero is internally used for unknown types
+        CT_Area = 1, // Zero is internally used for unknown types
         CT_Area3D,
         CT_Line,
         CT_Line3D,
@@ -67,7 +67,7 @@ public:
 
     ~Chart();
 
-    void addSeries(const CellRange &range, AbstractSheet *sheet=0);
+    void addSeries(const CellRange &range, AbstractSheet *sheet = 0);
     void setChartType(ChartType type);
     void setChartStyle(int id);
 
@@ -86,4 +86,3 @@ private:
 QT_END_NAMESPACE_XLSX
 
 #endif // QXLSX_CHART_H
-

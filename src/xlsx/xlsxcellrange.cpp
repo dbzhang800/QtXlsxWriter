@@ -44,7 +44,10 @@ QT_BEGIN_NAMESPACE_XLSX
     whose rowCount() and columnCount() are 0.
 */
 CellRange::CellRange()
-    : top(-1), left(-1), bottom(-2), right(-2)
+    : top(-1)
+    , left(-1)
+    , bottom(-2)
+    , right(-2)
 {
 }
 
@@ -55,13 +58,18 @@ CellRange::CellRange()
     \sa topRow(), leftColumn(), bottomRow(), rightColumn()
 */
 CellRange::CellRange(int top, int left, int bottom, int right)
-    : top(top), left(left), bottom(bottom), right(right)
+    : top(top)
+    , left(left)
+    , bottom(bottom)
+    , right(right)
 {
 }
 
 CellRange::CellRange(const CellReference &topLeft, const CellReference &bottomRight)
-    : top(topLeft.row()), left(topLeft.column())
-    , bottom(bottomRight.row()), right(bottomRight.column())
+    : top(topLeft.row())
+    , left(topLeft.column())
+    , bottom(bottomRight.row())
+    , right(bottomRight.column())
 {
 }
 
@@ -107,7 +115,10 @@ void CellRange::init(const QString &range)
     other range.
 */
 CellRange::CellRange(const CellRange &other)
-    : top(other.top), left(other.left), bottom(other.bottom), right(other.right)
+    : top(other.top)
+    , left(other.left)
+    , bottom(other.bottom)
+    , right(other.right)
 {
 }
 
@@ -127,7 +138,7 @@ QString CellRange::toString(bool row_abs, bool col_abs) const
         return QString();
 
     if (left == right && top == bottom) {
-        //Single cell
+        // Single cell
         return CellReference(top, left).toString(row_abs, col_abs);
     }
 

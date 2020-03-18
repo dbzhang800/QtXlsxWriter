@@ -52,8 +52,8 @@ class Q_XLSX_EXPORT XlsxColor
 {
 public:
     explicit XlsxColor(const QColor &color = QColor());
-    explicit XlsxColor(const QString &theme, const QString &tint=QString());
-    explicit XlsxColor (int index);
+    explicit XlsxColor(const QString &theme, const QString &tint = QString());
+    explicit XlsxColor(int index);
 
     bool isThemeColor() const;
     bool isIndexedColor() const;
@@ -69,7 +69,7 @@ public:
     static QColor fromARGBString(const QString &c);
     static QString toARGBString(const QColor &c);
 
-    bool saveToXml(QXmlStreamWriter &writer, const QString &node=QString()) const;
+    bool saveToXml(QXmlStreamWriter &writer, const QString &node = QString()) const;
     bool loadFromXml(QXmlStreamReader &reader);
 
 private:

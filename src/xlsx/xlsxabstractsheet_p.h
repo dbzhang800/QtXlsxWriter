@@ -59,6 +59,5 @@ public:
     AbstractSheet::SheetState sheetState;
     AbstractSheet::SheetType type;
 };
-
 }
 #endif // XLSXABSTRACTSHEET_P_H

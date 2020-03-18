@@ -42,11 +42,13 @@
 
 QT_BEGIN_NAMESPACE_XLSX
 
-class Q_XLSX_EXPORT  DataValidationPrivate : public QSharedData
+class Q_XLSX_EXPORT DataValidationPrivate : public QSharedData
 {
 public:
     DataValidationPrivate();
-    DataValidationPrivate(DataValidation::ValidationType type, DataValidation::ValidationOperator op, const QString &formula1, const QString &formula2, bool allowBlank);
+    DataValidationPrivate(DataValidation::ValidationType type,
+                          DataValidation::ValidationOperator op, const QString &formula1,
+                          const QString &formula2, bool allowBlank);
     DataValidationPrivate(const DataValidationPrivate &other);
     ~DataValidationPrivate();
 

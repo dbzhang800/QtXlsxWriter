@@ -1,0 +1,25 @@
+BasedOnStyle: WebKit
+Standard: Cpp11
+ColumnLimit: 100
+PointerBindsToType: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterClass: true
+    AfterControlStatement: false
+    AfterEnum: false
+    AfterFunction: true
+    AfterNamespace: false
+    AfterObjCDeclaration: false
+    AfterStruct: true
+    AfterUnion: false
+    BeforeCatch: false
+    BeforeElse: false
+    IndentBraces: false
+AlignAfterOpenBracket: true
+AlwaysBreakTemplateDeclarations: true
+AllowShortFunctionsOnASingleLine: InlineOnly
+NamespaceIndentation: None
+SortIncludes: false
+ForEachMacros: [ forever, foreach, Q_FOREACH, BOOST_FOREACH ]
+

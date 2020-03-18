@@ -9,8 +9,8 @@ int main()
     //![Create a xlsx file]
     Document xlsx;
 
-    for (int i=1; i<20; ++i) {
-        for (int j=1; j<15; ++j)
+    for (int i = 1; i < 20; ++i) {
+        for (int j = 1; j < 15; ++j)
             xlsx.write(i, j, QString("R %1 C %2").arg(i).arg(j));
     }
     xlsx.addSheet();
@@ -26,7 +26,7 @@ int main()
     xlsx.sheet("VeryHiddenSheet")->setSheetState(AbstractSheet::SS_VeryHidden);
     xlsx.write("A1", "This sheet is very hidden.");
 
-    xlsx.save();//Default name is "Book1.xlsx"
+    xlsx.save(); // Default name is "Book1.xlsx"
     //![Create a xlsx file]
 
     Document xlsx2("Book1.xlsx");

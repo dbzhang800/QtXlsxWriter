@@ -41,20 +41,15 @@ class WorksheetPrivate;
 class Q_XLSX_EXPORT CellFormula
 {
 public:
-    enum FormulaType {
-        NormalType,
-        ArrayType,
-        DataTableType,
-        SharedType
-    };
+    enum FormulaType { NormalType, ArrayType, DataTableType, SharedType };
 
     CellFormula();
-    CellFormula(const char *formula, FormulaType type=NormalType);
-    CellFormula(const QString &formula, FormulaType type=NormalType);
+    CellFormula(const char *formula, FormulaType type = NormalType);
+    CellFormula(const QString &formula, FormulaType type = NormalType);
     CellFormula(const QString &formula, const CellRange &ref, FormulaType type);
     CellFormula(const CellFormula &other);
     ~CellFormula();
-    CellFormula &operator =(const CellFormula &other);
+    CellFormula &operator=(const CellFormula &other);
     bool isValid() const;
 
     FormulaType formulaType() const;
@@ -62,11 +57,12 @@ public:
     CellRange reference() const;
     int sharedIndex() const;
 
-    bool operator == (const CellFormula &formula) const;
-    bool operator != (const CellFormula &formula) const;
+    bool operator==(const CellFormula &formula) const;
+    bool operator!=(const CellFormula &formula) const;
 
     bool saveToXml(QXmlStreamWriter &writer) const;
     bool loadFromXml(QXmlStreamReader &reader);
+
 private:
     friend class Worksheet;
     friend class WorksheetPrivate;

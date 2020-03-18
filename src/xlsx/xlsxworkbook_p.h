@@ -51,17 +51,21 @@ namespace QXlsx {
 struct XlsxDefineNameData
 {
     XlsxDefineNameData()
-        :sheetId(-1)
-    {}
-    XlsxDefineNameData(const QString &name, const QString &formula, const QString &comment, int sheetId=-1)
-        :name(name), formula(formula), comment(comment), sheetId(sheetId)
+        : sheetId(-1)
     {
-
+    }
+    XlsxDefineNameData(const QString &name, const QString &formula, const QString &comment,
+                       int sheetId = -1)
+        : name(name)
+        , formula(formula)
+        , comment(comment)
+        , sheetId(sheetId)
+    {
     }
     QString name;
     QString formula;
     QString comment;
-    //using internal sheetId, instead of the localSheetId(order in the workbook)
+    // using internal sheetId, instead of the localSheetId(order in the workbook)
     int sheetId;
 };
 
@@ -72,13 +76,13 @@ public:
     WorkbookPrivate(Workbook *q, Workbook::CreateFlag flag);
 
     QSharedPointer<SharedStrings> sharedStrings;
-    QList<QSharedPointer<AbstractSheet> > sheets;
-    QList<QSharedPointer<SimpleOOXmlFile> > externalLinks;
+    QList<QSharedPointer<AbstractSheet>> sheets;
+    QList<QSharedPointer<SimpleOOXmlFile>> externalLinks;
     QStringList sheetNames;
     QSharedPointer<Styles> styles;
     QSharedPointer<Theme> theme;
-    QList<QSharedPointer<MediaFile> > mediaFiles;
-    QList<QSharedPointer<Chart> > chartFiles;
+    QList<QSharedPointer<MediaFile>> mediaFiles;
+    QList<QSharedPointer<Chart>> chartFiles;
     QList<XlsxDefineNameData> definedNamesList;
 
     bool strings_to_numbers_enabled;
@@ -96,12 +100,11 @@ public:
     int firstsheet;
     int table_count;
 
-    //Used to generate new sheet name and id
+    // Used to generate new sheet name and id
     int last_worksheet_index;
     int last_chartsheet_index;
     int last_sheet_id;
 };
-
 }
 
 #endif // XLSXWORKBOOK_P_H

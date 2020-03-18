@@ -42,20 +42,20 @@ class Drawing;
 class MediaFile;
 class Chart;
 
-//Helper class
+// Helper class
 struct XlsxMarker
 {
-    XlsxMarker(){}
+    XlsxMarker() {}
     XlsxMarker(int row, int column, int rowOffset, int colOffset)
-        :cell(QPoint(row, column)), offset(rowOffset, colOffset)
+        : cell(QPoint(row, column))
+        , offset(rowOffset, colOffset)
     {
-
     }
 
-    int row() const {return cell.x();}
-    int col() const {return cell.y();}
-    int rowOff() const {return offset.width();}
-    int colOff() const {return offset.height();}
+    int row() const { return cell.x(); }
+    int col() const { return cell.y(); }
+    int rowOff() const { return offset.width(); }
+    int colOff() const { return offset.height(); }
 
     QPoint cell;
     QSize offset;
@@ -64,14 +64,7 @@ struct XlsxMarker
 class DrawingAnchor
 {
 public:
-    enum ObjectType {
-        GraphicFrame,
-        Shape,
-        GroupShape,
-        ConnectionShape,
-        Picture,
-        Unknown
-    };
+    enum ObjectType { GraphicFrame, Shape, GroupShape, ConnectionShape, Picture, Unknown };
 
     DrawingAnchor(Drawing *drawing, ObjectType objectType);
     virtual ~DrawingAnchor();
@@ -94,7 +87,8 @@ protected:
 
     void saveXmlPos(QXmlStreamWriter &writer, const QPoint &pos) const;
     void saveXmlExt(QXmlStreamWriter &writer, const QSize &ext) const;
-    void saveXmlMarker(QXmlStreamWriter &writer, const XlsxMarker &marker, const QString &node) const;
+    void saveXmlMarker(QXmlStreamWriter &writer, const XlsxMarker &marker,
+                       const QString &node) const;
     void saveXmlObject(QXmlStreamWriter &writer) const;
     void saveXmlObjectShape(QXmlStreamWriter &writer) const;
     void saveXmlObjectGroupShape(QXmlStreamWriter &writer) const;
@@ -113,7 +107,7 @@ protected:
 class DrawingAbsoluteAnchor : public DrawingAnchor
 {
 public:
-    DrawingAbsoluteAnchor(Drawing *drawing, ObjectType objectType=Unknown);
+    DrawingAbsoluteAnchor(Drawing *drawing, ObjectType objectType = Unknown);
 
     QPoint pos;
     QSize ext;
@@ -125,7 +119,7 @@ public:
 class DrawingOneCellAnchor : public DrawingAnchor
 {
 public:
-    DrawingOneCellAnchor(Drawing *drawing, ObjectType objectType=Unknown);
+    DrawingOneCellAnchor(Drawing *drawing, ObjectType objectType = Unknown);
 
     XlsxMarker from;
     QSize ext;
@@ -137,7 +131,7 @@ public:
 class DrawingTwoCellAnchor : public DrawingAnchor
 {
 public:
-    DrawingTwoCellAnchor(Drawing *drawing, ObjectType objectType=Unknown);
+    DrawingTwoCellAnchor(Drawing *drawing, ObjectType objectType = Unknown);
 
     XlsxMarker from;
     XlsxMarker to;

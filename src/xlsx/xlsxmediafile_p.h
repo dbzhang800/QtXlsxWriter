@@ -26,7 +26,6 @@
 #ifndef QXLSX_XLSXMEDIAFILE_H
 #define QXLSX_XLSXMEDIAFILE_H
 
-
 //
 //  W A R N I N G
 //  -------------
@@ -49,9 +48,9 @@ class MediaFile
 {
 public:
     MediaFile(const QString &fileName);
-    MediaFile(const QByteArray &bytes, const QString &suffix, const QString &mimeType=QString());
+    MediaFile(const QByteArray &bytes, const QString &suffix, const QString &mimeType = QString());
 
-    void set(const QByteArray &bytes, const QString &suffix, const QString &mimeType=QString());
+    void set(const QByteArray &bytes, const QString &suffix, const QString &mimeType = QString());
     QString suffix() const;
     QString mimeType() const;
     QByteArray contents() const;

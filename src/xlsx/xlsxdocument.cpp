@@ -84,15 +84,17 @@ QT_BEGIN_NAMESPACE_XLSX
     elements of the package and writes them into the XLSX file.
 */
 
-DocumentPrivate::DocumentPrivate(Document *p) :
-    q_ptr(p), defaultPackageName(QStringLiteral("Book1.xlsx"))
+DocumentPrivate::DocumentPrivate(Document *p)
+    : q_ptr(p)
+    , defaultPackageName(QStringLiteral("Book1.xlsx"))
 {
 }
 
 void DocumentPrivate::init()
 {
     if (contentTypes.isNull())
-        contentTypes = QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_NewFromScratch));
+        contentTypes =
+            QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_NewFromScratch));
 
     if (workbook.isNull())
         workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_NewFromScratch));
@@ -104,23 +106,24 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     ZipReader zipReader(device);
     QStringList filePaths = zipReader.filePaths();
 
-    //Load the Content_Types file
+    // Load the Content_Types file
     if (!filePaths.contains(QLatin1String("[Content_Types].xml")))
         return false;
     contentTypes = QSharedPointer<ContentTypes>(new ContentTypes(ContentTypes::F_LoadFromExists));
     contentTypes->loadFromXmlData(zipReader.fileData(QStringLiteral("[Content_Types].xml")));
 
-    //Load root rels file
+    // Load root rels file
     if (!filePaths.contains(QLatin1String("_rels/.rels")))
         return false;
     Relationships rootRels;
     rootRels.loadFromXmlData(zipReader.fileData(QStringLiteral("_rels/.rels")));
 
-    //load core property
-    QList<XlsxRelationship> rels_core = rootRels.packageRelationships(QStringLiteral("/metadata/core-properties"));
+    // load core property
+    QList<XlsxRelationship> rels_core =
+        rootRels.packageRelationships(QStringLiteral("/metadata/core-properties"));
     if (!rels_core.isEmpty()) {
-        //Get the core property file name if it exists.
-        //In normal case, this should be "docProps/core.xml"
+        // Get the core property file name if it exists.
+        // In normal case, this should be "docProps/core.xml"
         QString docPropsCore_Name = rels_core[0].target;
 
         DocPropsCore props(DocPropsCore::F_LoadFromExists);
@@ -129,11 +132,12 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
             q->setDocumentProperty(name, props.property(name));
     }
 
-    //load app property
-    QList<XlsxRelationship> rels_app = rootRels.documentRelationships(QStringLiteral("/extended-properties"));
+    // load app property
+    QList<XlsxRelationship> rels_app =
+        rootRels.documentRelationships(QStringLiteral("/extended-properties"));
     if (!rels_app.isEmpty()) {
-        //Get the app property file name if it exists.
-        //In normal case, this should be "docProps/app.xml"
+        // Get the app property file name if it exists.
+        // In normal case, this should be "docProps/app.xml"
         QString docPropsApp_Name = rels_app[0].target;
 
         DocPropsApp props(DocPropsApp::F_LoadFromExists);
@@ -142,10 +146,11 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
             q->setDocumentProperty(name, props.property(name));
     }
 
-    //load workbook now, Get the workbook file path from the root rels file
-    //In normal case, this should be "xl/workbook.xml"
+    // load workbook now, Get the workbook file path from the root rels file
+    // In normal case, this should be "xl/workbook.xml"
     workbook = QSharedPointer<Workbook>(new Workbook(Workbook::F_LoadFromExists));
-    QList<XlsxRelationship> rels_xl = rootRels.documentRelationships(QStringLiteral("/officeDocument"));
+    QList<XlsxRelationship> rels_xl =
+        rootRels.documentRelationships(QStringLiteral("/officeDocument"));
     if (rels_xl.isEmpty())
         return false;
     QString xlworkbook_Path = rels_xl[0].target;
@@ -154,57 +159,60 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
     workbook->setFilePath(xlworkbook_Path);
     workbook->loadFromXmlData(zipReader.fileData(xlworkbook_Path));
 
-    //load styles
-    QList<XlsxRelationship> rels_styles = workbook->relationships()->documentRelationships(QStringLiteral("/styles"));
+    // load styles
+    QList<XlsxRelationship> rels_styles =
+        workbook->relationships()->documentRelationships(QStringLiteral("/styles"));
     if (!rels_styles.isEmpty()) {
-        //In normal case this should be styles.xml which in xl
+        // In normal case this should be styles.xml which in xl
         QString name = rels_styles[0].target;
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
-        QSharedPointer<Styles> styles (new Styles(Styles::F_LoadFromExists));
+        QSharedPointer<Styles> styles(new Styles(Styles::F_LoadFromExists));
         styles->loadFromXmlData(zipReader.fileData(path));
         workbook->d_func()->styles = styles;
     }
 
-    //load sharedStrings
-    QList<XlsxRelationship> rels_sharedStrings = workbook->relationships()->documentRelationships(QStringLiteral("/sharedStrings"));
+    // load sharedStrings
+    QList<XlsxRelationship> rels_sharedStrings =
+        workbook->relationships()->documentRelationships(QStringLiteral("/sharedStrings"));
     if (!rels_sharedStrings.isEmpty()) {
-        //In normal case this should be sharedStrings.xml which in xl
+        // In normal case this should be sharedStrings.xml which in xl
         QString name = rels_sharedStrings[0].target;
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
         workbook->d_func()->sharedStrings->loadFromXmlData(zipReader.fileData(path));
     }
 
-    //load theme
-    QList<XlsxRelationship> rels_theme = workbook->relationships()->documentRelationships(QStringLiteral("/theme"));
+    // load theme
+    QList<XlsxRelationship> rels_theme =
+        workbook->relationships()->documentRelationships(QStringLiteral("/theme"));
     if (!rels_theme.isEmpty()) {
-        //In normal case this should be theme/theme1.xml which in xl
+        // In normal case this should be theme/theme1.xml which in xl
         QString name = rels_theme[0].target;
         QString path = xlworkbook_Dir + QLatin1String("/") + name;
         workbook->theme()->loadFromXmlData(zipReader.fileData(path));
     }
 
-    //load sheets
-    for (int i=0; i<workbook->sheetCount(); ++i) {
+    // load sheets
+    for (int i = 0; i < workbook->sheetCount(); ++i) {
         AbstractSheet *sheet = workbook->sheet(i);
         QString rel_path = getRelFilePath(sheet->filePath());
-        //If the .rel file exists, load it.
+        // If the .rel file exists, load it.
         if (zipReader.filePaths().contains(rel_path))
             sheet->relationships()->loadFromXmlData(zipReader.fileData(rel_path));
         sheet->loadFromXmlData(zipReader.fileData(sheet->filePath()));
     }
 
-    //load external links
-    for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
+    // load external links
+    for (int i = 0; i < workbook->d_func()->externalLinks.count(); ++i) {
         SimpleOOXmlFile *link = workbook->d_func()->externalLinks[i].data();
         QString rel_path = getRelFilePath(link->filePath());
-        //If the .rel file exists, load it.
+        // If the .rel file exists, load it.
         if (zipReader.filePaths().contains(rel_path))
             link->relationships()->loadFromXmlData(zipReader.fileData(rel_path));
         link->loadFromXmlData(zipReader.fileData(link->filePath()));
     }
 
-    //load drawings
-    for (int i=0; i<workbook->drawings().size(); ++i) {
+    // load drawings
+    for (int i = 0; i < workbook->drawings().size(); ++i) {
         Drawing *drawing = workbook->drawings()[i];
         QString rel_path = getRelFilePath(drawing->filePath());
         if (zipReader.filePaths().contains(rel_path))
@@ -212,19 +220,19 @@ bool DocumentPrivate::loadPackage(QIODevice *device)
         drawing->loadFromXmlData(zipReader.fileData(drawing->filePath()));
     }
 
-    //load charts
-    QList<QSharedPointer<Chart> > chartFileToLoad = workbook->chartFiles();
-    for (int i=0; i<chartFileToLoad.size(); ++i) {
+    // load charts
+    QList<QSharedPointer<Chart>> chartFileToLoad = workbook->chartFiles();
+    for (int i = 0; i < chartFileToLoad.size(); ++i) {
         QSharedPointer<Chart> cf = chartFileToLoad[i];
         cf->loadFromXmlData(zipReader.fileData(cf->filePath()));
     }
 
-    //load media files
-    QList<QSharedPointer<MediaFile> > mediaFileToLoad = workbook->mediaFiles();
-    for (int i=0; i<mediaFileToLoad.size(); ++i) {
+    // load media files
+    QList<QSharedPointer<MediaFile>> mediaFileToLoad = workbook->mediaFiles();
+    for (int i = 0; i < mediaFileToLoad.size(); ++i) {
         QSharedPointer<MediaFile> mf = mediaFileToLoad[i];
         const QString path = mf->fileName();
-        const QString suffix = path.mid(path.lastIndexOf(QLatin1Char('.'))+1);
+        const QString suffix = path.mid(path.lastIndexOf(QLatin1Char('.')) + 1);
         mf->set(zipReader.fileData(path), suffix);
     }
 
@@ -244,59 +252,71 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     DocPropsCore docPropsCore(DocPropsCore::F_NewFromScratch);
 
     // save worksheet xml files
-    QList<QSharedPointer<AbstractSheet> > worksheets = workbook->getSheetsByTypes(AbstractSheet::ST_WorkSheet);
+    QList<QSharedPointer<AbstractSheet>> worksheets =
+        workbook->getSheetsByTypes(AbstractSheet::ST_WorkSheet);
     if (!worksheets.isEmpty())
         docPropsApp.addHeadingPair(QStringLiteral("Worksheets"), worksheets.size());
-    for (int i=0; i<worksheets.size(); ++i) {
+    for (int i = 0; i < worksheets.size(); ++i) {
         QSharedPointer<AbstractSheet> sheet = worksheets[i];
-        contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+        contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i + 1));
         docPropsApp.addPartTitle(sheet->sheetName());
 
-        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/worksheets/sheet%1.xml").arg(i + 1),
+                          sheet->saveToXmlData());
         Relationships *rel = sheet->relationships();
         if (!rel->isEmpty())
-            zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
+            zipWriter.addFile(QStringLiteral("xl/worksheets/_rels/sheet%1.xml.rels").arg(i + 1),
+                              rel->saveToXmlData());
     }
 
-    //save chartsheet xml files
-    QList<QSharedPointer<AbstractSheet> > chartsheets = workbook->getSheetsByTypes(AbstractSheet::ST_ChartSheet);
+    // save chartsheet xml files
+    QList<QSharedPointer<AbstractSheet>> chartsheets =
+        workbook->getSheetsByTypes(AbstractSheet::ST_ChartSheet);
     if (!chartsheets.isEmpty())
         docPropsApp.addHeadingPair(QStringLiteral("Chartsheets"), chartsheets.size());
-    for (int i=0; i<chartsheets.size(); ++i) {
+    for (int i = 0; i < chartsheets.size(); ++i) {
         QSharedPointer<AbstractSheet> sheet = chartsheets[i];
-        contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i+1));
+        contentTypes->addWorksheetName(QStringLiteral("sheet%1").arg(i + 1));
         docPropsApp.addPartTitle(sheet->sheetName());
 
-        zipWriter.addFile(QStringLiteral("xl/chartsheets/sheet%1.xml").arg(i+1), sheet->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/chartsheets/sheet%1.xml").arg(i + 1),
+                          sheet->saveToXmlData());
         Relationships *rel = sheet->relationships();
         if (!rel->isEmpty())
-            zipWriter.addFile(QStringLiteral("xl/chartsheets/_rels/sheet%1.xml.rels").arg(i+1), rel->saveToXmlData());
+            zipWriter.addFile(QStringLiteral("xl/chartsheets/_rels/sheet%1.xml.rels").arg(i + 1),
+                              rel->saveToXmlData());
     }
 
     // save external links xml files
-    for (int i=0; i<workbook->d_func()->externalLinks.count(); ++i) {
+    for (int i = 0; i < workbook->d_func()->externalLinks.count(); ++i) {
         SimpleOOXmlFile *link = workbook->d_func()->externalLinks[i].data();
-        contentTypes->addExternalLinkName(QStringLiteral("externalLink%1").arg(i+1));
+        contentTypes->addExternalLinkName(QStringLiteral("externalLink%1").arg(i + 1));
 
-        zipWriter.addFile(QStringLiteral("xl/externalLinks/externalLink%1.xml").arg(i+1), link->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/externalLinks/externalLink%1.xml").arg(i + 1),
+                          link->saveToXmlData());
         Relationships *rel = link->relationships();
         if (!rel->isEmpty())
-            zipWriter.addFile(QStringLiteral("xl/externalLinks/_rels/externalLink%1.xml.rels").arg(i+1), rel->saveToXmlData());
+            zipWriter.addFile(
+                QStringLiteral("xl/externalLinks/_rels/externalLink%1.xml.rels").arg(i + 1),
+                rel->saveToXmlData());
     }
 
     // save workbook xml file
     contentTypes->addWorkbook();
     zipWriter.addFile(QStringLiteral("xl/workbook.xml"), workbook->saveToXmlData());
-    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"), workbook->relationships()->saveToXmlData());
+    zipWriter.addFile(QStringLiteral("xl/_rels/workbook.xml.rels"),
+                      workbook->relationships()->saveToXmlData());
 
     // save drawing xml files
-    for (int i=0; i<workbook->drawings().size(); ++i) {
-        contentTypes->addDrawingName(QStringLiteral("drawing%1").arg(i+1));
+    for (int i = 0; i < workbook->drawings().size(); ++i) {
+        contentTypes->addDrawingName(QStringLiteral("drawing%1").arg(i + 1));
 
         Drawing *drawing = workbook->drawings()[i];
-        zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i+1), drawing->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/drawings/drawing%1.xml").arg(i + 1),
+                          drawing->saveToXmlData());
         if (!drawing->relationships()->isEmpty())
-            zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i+1), drawing->relationships()->saveToXmlData());
+            zipWriter.addFile(QStringLiteral("xl/drawings/_rels/drawing%1.xml.rels").arg(i + 1),
+                              drawing->relationships()->saveToXmlData());
     }
 
     // save docProps app/core xml file
@@ -312,7 +332,8 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     // save sharedStrings xml file
     if (!workbook->sharedStrings()->isEmpty()) {
         contentTypes->addSharedString();
-        zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"), workbook->sharedStrings()->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/sharedStrings.xml"),
+                          workbook->sharedStrings()->saveToXmlData());
     }
 
     // save styles xml file
@@ -324,26 +345,30 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     zipWriter.addFile(QStringLiteral("xl/theme/theme1.xml"), workbook->theme()->saveToXmlData());
 
     // save chart xml files
-    for (int i=0; i<workbook->chartFiles().size(); ++i) {
-        contentTypes->addChartName(QStringLiteral("chart%1").arg(i+1));
+    for (int i = 0; i < workbook->chartFiles().size(); ++i) {
+        contentTypes->addChartName(QStringLiteral("chart%1").arg(i + 1));
         QSharedPointer<Chart> cf = workbook->chartFiles()[i];
-        zipWriter.addFile(QStringLiteral("xl/charts/chart%1.xml").arg(i+1), cf->saveToXmlData());
+        zipWriter.addFile(QStringLiteral("xl/charts/chart%1.xml").arg(i + 1), cf->saveToXmlData());
     }
 
     // save image files
-    for (int i=0; i<workbook->mediaFiles().size(); ++i) {
+    for (int i = 0; i < workbook->mediaFiles().size(); ++i) {
         QSharedPointer<MediaFile> mf = workbook->mediaFiles()[i];
         if (!mf->mimeType().isEmpty())
             contentTypes->addDefault(mf->suffix(), mf->mimeType());
 
-        zipWriter.addFile(QStringLiteral("xl/media/image%1.%2").arg(i+1).arg(mf->suffix()), mf->contents());
+        zipWriter.addFile(QStringLiteral("xl/media/image%1.%2").arg(i + 1).arg(mf->suffix()),
+                          mf->contents());
     }
 
     // save root .rels xml file
     Relationships rootrels;
-    rootrels.addDocumentRelationship(QStringLiteral("/officeDocument"), QStringLiteral("xl/workbook.xml"));
-    rootrels.addPackageRelationship(QStringLiteral("/metadata/core-properties"), QStringLiteral("docProps/core.xml"));
-    rootrels.addDocumentRelationship(QStringLiteral("/extended-properties"), QStringLiteral("docProps/app.xml"));
+    rootrels.addDocumentRelationship(QStringLiteral("/officeDocument"),
+                                     QStringLiteral("xl/workbook.xml"));
+    rootrels.addPackageRelationship(QStringLiteral("/metadata/core-properties"),
+                                    QStringLiteral("docProps/core.xml"));
+    rootrels.addDocumentRelationship(QStringLiteral("/extended-properties"),
+                                     QStringLiteral("docProps/app.xml"));
     zipWriter.addFile(QStringLiteral("_rels/.rels"), rootrels.saveToXmlData());
 
     // save content types xml file
@@ -352,7 +377,6 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
     zipWriter.close();
     return true;
 }
-
 
 /*!
   \class Document
@@ -365,8 +389,9 @@ bool DocumentPrivate::savePackage(QIODevice *device) const
  * Creates a new empty xlsx document.
  * The \a parent argument is passed to QObject's constructor.
  */
-Document::Document(QObject *parent) :
-    QObject(parent), d_ptr(new DocumentPrivate(this))
+Document::Document(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new DocumentPrivate(this))
 {
     d_ptr->init();
 }
@@ -376,8 +401,9 @@ Document::Document(QObject *parent) :
  * Try to open an existing xlsx document named \a name.
  * The \a parent argument is passed to QObject's constructor.
  */
-Document::Document(const QString &name, QObject *parent) :
-    QObject(parent), d_ptr(new DocumentPrivate(this))
+Document::Document(const QString &name, QObject *parent)
+    : QObject(parent)
+    , d_ptr(new DocumentPrivate(this))
 {
     d_ptr->packageName = name;
     if (QFile::exists(name)) {
@@ -393,8 +419,9 @@ Document::Document(const QString &name, QObject *parent) :
  * Try to open an existing xlsx document from \a device.
  * The \a parent argument is passed to QObject's constructor.
  */
-Document::Document(QIODevice *device, QObject *parent) :
-    QObject(parent), d_ptr(new DocumentPrivate(this))
+Document::Document(QIODevice *device, QObject *parent)
+    : QObject(parent)
+    , d_ptr(new DocumentPrivate(this))
 {
     if (device && device->isReadable())
         d_ptr->loadPackage(device);
@@ -537,7 +564,7 @@ bool Document::setColumnHidden(const CellRange &range, bool hidden)
  */
 bool Document::setColumnWidth(int column, double width)
 {
-    return setColumnWidth(column,column,width);
+    return setColumnWidth(column, column, width);
 }
 
 /*!
@@ -546,7 +573,7 @@ bool Document::setColumnWidth(int column, double width)
  */
 bool Document::setColumnFormat(int column, const Format &format)
 {
-    return setColumnFormat(column,column,format);
+    return setColumnFormat(column, column, format);
 }
 
 /*!
@@ -555,7 +582,7 @@ bool Document::setColumnFormat(int column, const Format &format)
  */
 bool Document::setColumnHidden(int column, bool hidden)
 {
-    return setColumnHidden(column,column,hidden);
+    return setColumnHidden(column, column, hidden);
 }
 
 /*!
@@ -581,7 +608,6 @@ bool Document::setColumnFormat(int colFirst, int colLast, const Format &format)
     return false;
 }
 
-
 /*!
   Sets hidden property of columns [\a colFirst, \a colLast] to \a hidden.
   Columns are 1-indexed.
@@ -602,7 +628,7 @@ bool Document::setColumnHidden(int colFirst, int colLast, bool hidden)
 double Document::columnWidth(int column)
 {
     if (Worksheet *sheet = currentWorksheet())
-      return sheet->columnWidth(column);
+        return sheet->columnWidth(column);
     return 0.0;
 }
 
@@ -612,7 +638,7 @@ double Document::columnWidth(int column)
 Format Document::columnFormat(int column)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->columnFormat(column);
+        return sheet->columnFormat(column);
     return Format();
 }
 
@@ -622,7 +648,7 @@ Format Document::columnFormat(int column)
 bool Document::isColumnHidden(int column)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->isColumnHidden(column);
+        return sheet->isColumnHidden(column);
     return false;
 }
 
@@ -634,7 +660,7 @@ bool Document::isColumnHidden(int column)
 */
 bool Document::setRowFormat(int row, const Format &format)
 {
-    return setRowFormat(row,row, format);
+    return setRowFormat(row, row, format);
 }
 
 /*!
@@ -646,7 +672,7 @@ bool Document::setRowFormat(int row, const Format &format)
 bool Document::setRowFormat(int rowFirst, int rowLast, const Format &format)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->setRowFormat(rowFirst, rowLast, format);
+        return sheet->setRowFormat(rowFirst, rowLast, format);
     return false;
 }
 
@@ -658,7 +684,7 @@ bool Document::setRowFormat(int rowFirst, int rowLast, const Format &format)
 */
 bool Document::setRowHidden(int row, bool hidden)
 {
-    return setRowHidden(row,row,hidden);
+    return setRowHidden(row, row, hidden);
 }
 
 /*!
@@ -670,7 +696,7 @@ bool Document::setRowHidden(int row, bool hidden)
 bool Document::setRowHidden(int rowFirst, int rowLast, bool hidden)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->setRowHidden(rowFirst, rowLast, hidden);
+        return sheet->setRowHidden(rowFirst, rowLast, hidden);
     return false;
 }
 
@@ -683,7 +709,7 @@ bool Document::setRowHidden(int rowFirst, int rowLast, bool hidden)
 */
 bool Document::setRowHeight(int row, double height)
 {
-    return setRowHeight(row,row,height);
+    return setRowHeight(row, row, height);
 }
 
 /*!
@@ -696,7 +722,7 @@ bool Document::setRowHeight(int row, double height)
 bool Document::setRowHeight(int rowFirst, int rowLast, double height)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->setRowHeight(rowFirst, rowLast, height);
+        return sheet->setRowHeight(rowFirst, rowLast, height);
     return false;
 }
 
@@ -705,8 +731,8 @@ bool Document::setRowHeight(int rowFirst, int rowLast, double height)
 */
 double Document::rowHeight(int row)
 {
-   if (Worksheet *sheet = currentWorksheet())
-      return sheet->rowHeight(row);
+    if (Worksheet *sheet = currentWorksheet())
+        return sheet->rowHeight(row);
     return 0.0;
 }
 
@@ -716,8 +742,8 @@ double Document::rowHeight(int row)
 Format Document::rowFormat(int row)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->rowFormat(row);
-     return Format();
+        return sheet->rowFormat(row);
+    return Format();
 }
 
 /*!
@@ -726,8 +752,8 @@ Format Document::rowFormat(int row)
 bool Document::isRowHidden(int row)
 {
     if (Worksheet *sheet = currentWorksheet())
-       return sheet->isRowHidden(row);
-     return false;
+        return sheet->isRowHidden(row);
+    return false;
 }
 
 /*!
@@ -808,7 +834,8 @@ Cell *Document::cellAt(int row, int col) const
  * \param scope The name of one worksheet, or empty which means golbal scope.
  * \return Return false if the name invalid.
  */
-bool Document::defineName(const QString &name, const QString &formula, const QString &comment, const QString &scope)
+bool Document::defineName(const QString &name, const QString &formula, const QString &comment,
+                          const QString &scope)
 {
     Q_D(Document);
 

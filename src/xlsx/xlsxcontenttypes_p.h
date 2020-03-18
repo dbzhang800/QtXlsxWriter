@@ -54,7 +54,7 @@ public:
     void addDefault(const QString &key, const QString &value);
     void addOverride(const QString &key, const QString &value);
 
-    //Convenient funcation for addOverride()
+    // Convenient funcation for addOverride()
     void addDocPropCore();
     void addDocPropApp();
     void addStyles();
@@ -76,6 +76,7 @@ public:
 
     void saveToXmlFile(QIODevice *device) const;
     bool loadFromXmlFile(QIODevice *device);
+
 private:
     QMap<QString, QString> m_defaults;
     QMap<QString, QString> m_overrides;
@@ -83,6 +84,5 @@ private:
     QString m_package_prefix;
     QString m_document_prefix;
 };
-
 }
 #endif // XLSXCONTENTTYPES_H

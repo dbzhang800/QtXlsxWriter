@@ -34,7 +34,8 @@
 namespace QXlsx {
 
 Drawing::Drawing(AbstractSheet *sheet, CreateFlag flag)
-    :AbstractOOXmlFile(flag), sheet(sheet)
+    : AbstractOOXmlFile(flag)
+    , sheet(sheet)
 {
     workbook = sheet->workbook();
 }
@@ -52,13 +53,16 @@ void Drawing::saveToXmlFile(QIODevice *device) const
 
     writer.writeStartDocument(QStringLiteral("1.0"), true);
     writer.writeStartElement(QStringLiteral("xdr:wsDr"));
-    writer.writeAttribute(QStringLiteral("xmlns:xdr"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"));
-    writer.writeAttribute(QStringLiteral("xmlns:a"), QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/main"));
+    writer.writeAttribute(
+        QStringLiteral("xmlns:xdr"),
+        QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"));
+    writer.writeAttribute(QStringLiteral("xmlns:a"),
+                          QStringLiteral("http://schemas.openxmlformats.org/drawingml/2006/main"));
 
     foreach (DrawingAnchor *anchor, anchors)
         anchor->saveToXml(writer);
 
-    writer.writeEndElement();//xdr:wsDr
+    writer.writeEndElement(); // xdr:wsDr
     writer.writeEndDocument();
 }
 
@@ -69,13 +73,13 @@ bool Drawing::loadFromXmlFile(QIODevice *device)
         reader.readNextStartElement();
         if (reader.tokenType() == QXmlStreamReader::StartElement) {
             if (reader.name() == QLatin1String("absoluteAnchor")) {
-                DrawingAbsoluteAnchor * anchor = new DrawingAbsoluteAnchor(this);
+                DrawingAbsoluteAnchor *anchor = new DrawingAbsoluteAnchor(this);
                 anchor->loadFromXml(reader);
             } else if (reader.name() == QLatin1String("oneCellAnchor")) {
-                DrawingOneCellAnchor * anchor = new DrawingOneCellAnchor(this);
+                DrawingOneCellAnchor *anchor = new DrawingOneCellAnchor(this);
                 anchor->loadFromXml(reader);
             } else if (reader.name() == QLatin1String("twoCellAnchor")) {
-                DrawingTwoCellAnchor * anchor = new DrawingTwoCellAnchor(this);
+                DrawingTwoCellAnchor *anchor = new DrawingTwoCellAnchor(this);
                 anchor->loadFromXml(reader);
             }
         }

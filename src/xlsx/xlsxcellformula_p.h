@@ -48,15 +48,16 @@ QT_BEGIN_NAMESPACE_XLSX
 class CellFormulaPrivate : public QSharedData
 {
 public:
-    CellFormulaPrivate(const QString &formula, const CellRange &reference, CellFormula::FormulaType type);
+    CellFormulaPrivate(const QString &formula, const CellRange &reference,
+                       CellFormula::FormulaType type);
     CellFormulaPrivate(const CellFormulaPrivate &other);
     ~CellFormulaPrivate();
 
-    QString formula; //formula contents
+    QString formula; // formula contents
     CellFormula::FormulaType type;
     CellRange reference;
-    bool ca; //Calculate Cell
-    int si;  //Shared group index
+    bool ca; // Calculate Cell
+    int si; // Shared group index
 };
 
 QT_END_NAMESPACE_XLSX

@@ -31,9 +31,9 @@ int main()
     QXlsx::Format format4;
     format4.setFontBold(true);
     format4.setFontColor(QColor(Qt::magenta));
-    for (int row=21; row<=40; row++)
-        for (int col=9; col<16; col++)
-            xlsx.write(row, col, row+col);
+    for (int row = 21; row <= 40; row++)
+        for (int col = 9; col < 16; col++)
+            xlsx.write(row, col, row + col);
     xlsx.setColumnFormat(9, 16, format4);
 
     xlsx.write("A5", QDate(2013, 8, 29));

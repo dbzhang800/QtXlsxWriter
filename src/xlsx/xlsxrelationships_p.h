@@ -64,7 +64,8 @@ public:
     void addDocumentRelationship(const QString &relativeType, const QString &target);
     void addPackageRelationship(const QString &relativeType, const QString &target);
     void addMsPackageRelationship(const QString &relativeType, const QString &target);
-    void addWorksheetRelationship(const QString &relativeType, const QString &target, const QString &targetMode=QString());
+    void addWorksheetRelationship(const QString &relativeType, const QString &target,
+                                  const QString &targetMode = QString());
 
     void saveToXmlFile(QIODevice *device) const;
     QByteArray saveToXmlData() const;
@@ -78,10 +79,10 @@ public:
 
 private:
     QList<XlsxRelationship> relationships(const QString &type) const;
-    void addRelationship(const QString &type, const QString &target, const QString &targetMode=QString());
+    void addRelationship(const QString &type, const QString &target,
+                         const QString &targetMode = QString());
 
     QList<XlsxRelationship> m_relationships;
 };
-
 }
 #endif // XLSXRELATIONSHIPS_H

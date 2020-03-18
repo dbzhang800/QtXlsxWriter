@@ -27,7 +27,7 @@
 
 namespace QXlsx {
 SimpleOOXmlFile::SimpleOOXmlFile(CreateFlag flag)
-    :AbstractOOXmlFile(flag)
+    : AbstractOOXmlFile(flag)
 {
 }
 
@@ -52,5 +52,4 @@ bool SimpleOOXmlFile::loadFromXmlFile(QIODevice *device)
     xmlData = device->readAll();
     return true;
 }
-
 }

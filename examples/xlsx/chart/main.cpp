@@ -9,10 +9,10 @@ int main()
 {
     //![0]
     Document xlsx;
-    for (int i=1; i<10; ++i) {
-        xlsx.write(i, 1, i*i*i);   //A1:A9
-        xlsx.write(i, 2, i*i); //B1:B9
-        xlsx.write(i, 3, i*i-1); //C1:C9
+    for (int i = 1; i < 10; ++i) {
+        xlsx.write(i, 1, i * i * i); // A1:A9
+        xlsx.write(i, 2, i * i); // B1:B9
+        xlsx.write(i, 3, i * i - 1); // C1:C9
     }
     //![0]
 
@@ -53,14 +53,14 @@ int main()
 
     Chart *scatterChart = xlsx.insertChart(83, 3, QSize(300, 300));
     scatterChart->setChartType(Chart::CT_Scatter);
-    //Will generate three lines.
+    // Will generate three lines.
     scatterChart->addSeries(CellRange("A1:A9"));
     scatterChart->addSeries(CellRange("B1:B9"));
     scatterChart->addSeries(CellRange("C1:C9"));
 
     Chart *scatterChart_2 = xlsx.insertChart(83, 9, QSize(300, 300));
     scatterChart_2->setChartType(Chart::CT_Scatter);
-    //Will generate two lines.
+    // Will generate two lines.
     scatterChart_2->addSeries(CellRange("A1:C9"));
 
     Chart *doughnutChart = xlsx.insertChart(103, 3, QSize(300, 300));
