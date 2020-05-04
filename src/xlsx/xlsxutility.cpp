@@ -104,7 +104,7 @@ QDateTime datetimeFromNumber(double num, bool is1904)
 
 #if QT_VERSION >= 0x050200
     // Remove one hour to see whether the date is Daylight
-    QDateTime dt2 = dt.addMSecs(-3600);
+    QDateTime dt2 = dt.addMSecs(-1000*60*60);
     if (dt2.isDaylightTime())
         return dt2;
 #endif
