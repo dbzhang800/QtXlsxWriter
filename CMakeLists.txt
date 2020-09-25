@@ -34,6 +34,10 @@ set_target_properties(QtXlsxWriter PROPERTIES DEBUG_POSTFIX "d")
 target_link_libraries(QtXlsxWriter ${Qt5Core_LIBRARIES})
 target_link_libraries(QtXlsxWriter ${Qt5Gui_LIBRARIES})
 
+target_include_directories(QtXlsxWriter
+  INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/xlsx
+  )
+
 if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
